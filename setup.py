@@ -22,11 +22,12 @@ setup(
     package_dir = {'': 'src'},
     install_requires=[
         'Flask',
+        'Flask-MySQL',
         'requests',
         'setuptools',
         ],
     entry_points = dict(console_scripts=[
-        'run = librarian.hw:main',
+        'run = librarian.app:main',
         ]),
     include_package_data = True,
     zip_safe = False,
