@@ -18,12 +18,14 @@ def get_items():
     """Get a list of all items"""
     cursor = get_cursor()
     cursor.execute('SELECT * FROM items;')
-    fields = [f[0] for f in cursor.description]
-    return jsonify({
-        'status': 200,
-        'status_msg': 'Ok',
-        'result': [dict(zip(fields, row)) for row in cursor.fetchall()]
-        })
+    return result(200, 'Ok', {'result': cursor.fetchall()})
+
+@app.route('/items/<item>', methods=['GET'])
+def get_item(item):
+    """Get an item."""
+    cursor = get_cursor()
+    cursor.execute('SELECT * FROM items where id = %s;', (int(item),))
+    return result(200, 'Ok', {'result': cursor.fetchone()})
 
 
 @app.route('/checkout', methods=['GET', 'POST'])
