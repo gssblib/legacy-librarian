@@ -44,7 +44,7 @@ def result(code, msg, data=None):
 
 def main():
     # Load modules, so that their routes get registered. A bit lame.
-    from librarian import item
+    from librarian import item, borrower
     app.run(debug=DEBUG)
 
 if __name__ == '__main__':
