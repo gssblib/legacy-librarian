@@ -12,6 +12,22 @@ from librarian import json
 from librarian.app import app, log, get_cursor, result
 
 CHECKOUT_DURATION = 21 # days
+ITEM_FIELDS = (('barcode', None, unicode),
+               ('description', None, unicode),
+               ('title', None, unicode),
+               ('author', None, unicode),
+               ('subject', None, unicode),
+               ('publicationyear', None, int),
+               ('publishercode', None, unicode),
+               ('age', None, unicode),
+               ('media', None, unicode),
+               ('serial', None, int),
+               ('seriestitle', None, unicode),
+               ('classification', None, unicode),
+               ('country', None, unicode),
+               ('itemnotes', None, unicode),
+               ('replacementprice', None, float),
+               ('issues', None, int))
 
 @app.route('/items', methods=['GET'])
 def get_items():
@@ -26,6 +42,81 @@ def get_item(item):
     cursor = get_cursor()
     cursor.execute('SELECT * FROM items where id = %s;', (int(item),))
     return result(200, 'Ok', {'result': cursor.fetchone()})
+
+@app.route('/items/new', methods=['GET', 'POST'])
+def add_item():
+    """Add an item."""
+    data = {}
+    for field_name, default, type in ITEM_FIELDS:
+        value = request.args.get(field_name)
+        value = type(value) if value is not None else default
+        data[field_name] = value
+    data['added'] = datetime.datetime.now()
+
+    cursor = get_cursor()
+    cursor.execute(
+        """
+        INSERT INTO items (
+            barcode,
+            description,
+            title,
+            author,
+            subject,
+            publicationyear,
+            publishercode,
+            age,
+            media,
+            serial,
+            seriestitle,
+            classification,
+            country,
+            itemnotes,
+            replacementprice,
+            issues,
+            added)
+        VALUES (
+            %(barcode)s,
+            %(description)s,
+            %(title)s,
+            %(author)s,
+            %(subject)s,
+            %(publicationyear)s,
+            %(publishercode)s,
+            %(age)s,
+            %(media)s,
+            %(serial)s,
+            %(seriestitle)s,
+            %(classification)s,
+            %(country)s,
+            %(itemnotes)s,
+            %(replacementprice)s,
+            %(issues)s,
+            %(added)s
+            );
+        """, data)
+    cursor.execute('SELECT LAST_INSERT_ID() as id;')
+    return result(200, 'Ok', {'result': cursor.fetchone()})
+
+
+@app.route('/items/<item>', methods=['POST'])
+@app.route('/items/<item>/edit', methods=['GET', 'POST'])
+def edit_item(item):
+    """Edit an item."""
+    data = {}
+    for field_name, default, type in ITEM_FIELDS:
+        if field_name in request.args:
+            data[field_name] = type(request.args[field_name])
+    data['id'] = int(item)
+    cursor = get_cursor()
+    cursor.execute(
+        """
+        UPDATE items
+        SET
+          %s
+        WHERE id = %%(id)s
+        """ %', '.join(['%s = %%(%s)s' %(n, n) for n in data if n != 'id']),
+        data)
+    return result(200, 'Ok', {'result': {'id': int(item)}})
 
 
 @app.route('/checkout', methods=['GET', 'POST'])
