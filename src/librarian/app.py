@@ -5,14 +5,17 @@
 #
 ##############################################################################
 """Application Setup"""
-import os
-import logging
 import MySQLdb
-from flask import Flask, jsonify
+import datetime
+import logging
+import os
+from flask import Flask, json, jsonify
 from flaskext.mysql import MySQL
 
 app = Flask('librarian')
 log = logging.getLogger('librarian')
+
+API_PREFIX = '/api'
 
 DEBUG = True
 
