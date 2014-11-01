@@ -8,8 +8,7 @@
 import datetime
 from flask import jsonify, request
 
-from librarian import json
-from librarian.app import app, log, get_cursor, result
+from librarian import app
 
 BORROWER_FIELDS = (('borrowernumber', None, int),
                    ('cardnumber', None, unicode),
@@ -24,21 +23,28 @@ BORROWER_FIELDS = (('borrowernumber', None, int),
                    ('contactname', None, unicode),
                    ('debarred', None, int))
 
-@app.route('/borrowers', methods=['GET'])
+@app.app.route(app.API_PREFIX+'/borrowers', methods=['GET'])
 def get_borrowers():
     """Get a list of all borrowers"""
-    cursor = get_cursor()
-    cursor.execute('SELECT * FROM borrowers;')
-    return result(200, 'Ok', {'result': cursor.fetchall()})
+    query, qargs = 'SELECT * FROM borrowers', ()
 
-@app.route('/borrowers/<borrower>', methods=['GET'])
+    query, qargs = app.add_search_params(('surname',), request, query, qargs)
+    query, qargs = app.add_limit_params(request, query, qargs)
+
+    print query
+    print qargs
+    cursor = app.get_cursor()
+    cursor.execute(query, qargs)
+    return app.result(200, 'Ok', {'result': cursor.fetchall()})
+
+@app.app.route(app.API_PREFIX+'/borrowers/<borrower>', methods=['GET'])
 def get_borrower(borrower):
     """Get a borrower."""
-    cursor = get_cursor()
+    cursor = app.get_cursor()
     cursor.execute('SELECT * FROM borrowers where id = %s;', (int(borrower),))
-    return result(200, 'Ok', {'result': cursor.fetchone()})
+    return app.result(200, 'Ok', {'result': cursor.fetchone()})
 
-@app.route('/borrowers/new', methods=['GET', 'POST'])
+@app.app.route(app.API_PREFIX+'/borrowers/new', methods=['GET', 'POST'])
 def add_borrower():
     """Add a borrower."""
     data = {}
@@ -47,7 +53,7 @@ def add_borrower():
         value = type(value) if value is not None else default
         data[field_name] = value
 
-    cursor = get_cursor()
+    cursor = app.get_cursor()
     cursor.execute(
         """
         INSERT INTO borrowers (
@@ -79,11 +85,11 @@ def add_borrower():
             );
         """, data)
     cursor.execute('SELECT LAST_INSERT_ID() as id;')
-    return result(200, 'Ok', {'result': cursor.fetchone()})
+    return app.result(200, 'Ok', {'result': cursor.fetchone()})
 
 
-@app.route('/borrowers/<borrower>', methods=['POST'])
-@app.route('/borrowers/<borrower>/edit', methods=['GET', 'POST'])
+@app.app.route(app.API_PREFIX+'/borrowers/<borrower>', methods=['POST'])
+@app.app.route(app.API_PREFIX+'/borrowers/<borrower>/edit', methods=['GET', 'POST'])
 def edit_borrower(borrower):
     """Edit a borrower."""
     data = {}
@@ -91,7 +97,7 @@ def edit_borrower(borrower):
         if field_name in request.args:
             data[field_name] = type(request.args[field_name])
     data['id'] = int(borrower)
-    cursor = get_cursor()
+    cursor = app.get_cursor()
     cursor.execute(
         """
         UPDATE borrowers
@@ -100,4 +106,4 @@ def edit_borrower(borrower):
         WHERE id = %%(id)s
         """ %', '.join(['%s = %%(%s)s' %(n, n) for n in data if n != 'id']),
         data)
-    return result(200, 'Ok', {'result': {'id': int(borrower)}})
+    return app.result(200, 'Ok', {'result': {'id': int(borrower)}})

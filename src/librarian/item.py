@@ -8,8 +8,7 @@
 import datetime
 from flask import jsonify, request
 
-from librarian import json
-from librarian.app import app, log, get_cursor, result
+from librarian import app
 
 CHECKOUT_DURATION = 21 # days
 ITEM_FIELDS = (('barcode', None, unicode),
@@ -29,21 +28,26 @@ ITEM_FIELDS = (('barcode', None, unicode),
                ('replacementprice', None, float),
                ('issues', None, int))
 
-@app.route('/items', methods=['GET'])
+@app.app.route(app.API_PREFIX+'/items', methods=['GET'])
 def get_items():
     """Get a list of all items"""
-    cursor = get_cursor()
-    cursor.execute('SELECT * FROM items;')
-    return result(200, 'Ok', {'result': cursor.fetchall()})
+    query, qargs = 'SELECT * FROM items', ()
 
-@app.route('/items/<item>', methods=['GET'])
+    query, qargs = app.add_search_params(('title',), request, query, qargs)
+    query, qargs = app.add_limit_params(request, query, qargs)
+
+    cursor = app.get_cursor()
+    cursor.execute(query, qargs)
+    return app.result(200, 'Ok', {'result': cursor.fetchall()})
+
+@app.app.route(app.API_PREFIX+'/items/<item>', methods=['GET'])
 def get_item(item):
     """Get an item."""
-    cursor = get_cursor()
+    cursor = app.get_cursor()
     cursor.execute('SELECT * FROM items where id = %s;', (int(item),))
-    return result(200, 'Ok', {'result': cursor.fetchone()})
+    return app.result(200, 'Ok', {'result': cursor.fetchone()})
 
-@app.route('/items/new', methods=['GET', 'POST'])
+@app.app.route(app.API_PREFIX+'/items/new', methods=['GET', 'POST'])
 def add_item():
     """Add an item."""
     data = {}
@@ -53,7 +57,7 @@ def add_item():
         data[field_name] = value
     data['added'] = datetime.datetime.now()
 
-    cursor = get_cursor()
+    cursor = app.get_cursor()
     cursor.execute(
         """
         INSERT INTO items (
@@ -95,11 +99,11 @@ def add_item():
             );
         """, data)
     cursor.execute('SELECT LAST_INSERT_ID() as id;')
-    return result(200, 'Ok', {'result': cursor.fetchone()})
+    return app.result(200, 'Ok', {'result': cursor.fetchone()})
 
 
-@app.route('/items/<item>', methods=['POST'])
-@app.route('/items/<item>/edit', methods=['GET', 'POST'])
+@app.app.route(app.API_PREFIX+'/items/<item>', methods=['POST'])
+@app.app.route(app.API_PREFIX+'/items/<item>/edit', methods=['GET', 'POST'])
 def edit_item(item):
     """Edit an item."""
     data = {}
@@ -107,7 +111,7 @@ def edit_item(item):
         if field_name in request.args:
             data[field_name] = type(request.args[field_name])
     data['id'] = int(item)
-    cursor = get_cursor()
+    cursor = app.get_cursor()
     cursor.execute(
         """
         UPDATE items
@@ -116,10 +120,10 @@ def edit_item(item):
         WHERE id = %%(id)s
         """ %', '.join(['%s = %%(%s)s' %(n, n) for n in data if n != 'id']),
         data)
-    return result(200, 'Ok', {'result': {'id': int(item)}})
+    return app.result(200, 'Ok', {'result': {'id': int(item)}})
 
 
-@app.route('/checkout', methods=['GET', 'POST'])
+@app.app.route(app.API_PREFIX+'/checkout', methods=['GET', 'POST'])
 def checkout_item():
     """Check-out an item for a borrower.
 
@@ -129,14 +133,14 @@ def checkout_item():
     # Get the barcode from the request
     barcode = request.args.get('barcode')
     if barcode is None:
-        return result(410, 'Missing barcode')
+        return app.result(410, 'Missing barcode')
 
     # Get the borrower from the request
     borrowernum = request.args.get('borrower')
     if borrowernum is None:
-        return result(410, 'Missing borrower')
+        return app.result(410, 'Missing borrower')
 
-    cursor = get_cursor()
+    cursor = app.get_cursor()
 
     # Ensure the item exists.
     cursor.execute(
@@ -144,7 +148,7 @@ def checkout_item():
         )
     item = cursor.fetchone()
     if item is None:
-        return result(411, 'Unknown barcode', {'barcode': barcode})
+        return app.result(411, 'Unknown barcode', {'barcode': barcode})
 
     # Ensure the borrower exists.
     cursor.execute(
@@ -153,7 +157,7 @@ def checkout_item():
         )
     borrower = cursor.fetchone()
     if borrower is None:
-        return result(412, 'Unknown borrower', {'borrowernum': borrowernum})
+        return app.result(412, 'Unknown borrower', {'borrowernum': borrowernum})
 
     # If the item is already checked out, check it in automatically.
     cursor.execute("""SELECT * FROM `out` WHERE barcode = %s""", (barcode,))
@@ -182,12 +186,12 @@ def checkout_item():
         )
 
     # The item was successfully checked out.
-    return result(
+    return app.result(
         200, 'Success',
         {'barcode': barcode, 'borrower': borrowernum})
 
 
-@app.route('/checkin', methods=['GET', 'POST'])
+@app.app.route(app.API_PREFIX+'/checkin', methods=['GET', 'POST'])
 def checkin_item():
     """Check-in an item.
 
@@ -197,22 +201,22 @@ def checkin_item():
     # Get the barcode from the request
     barcode = request.args.get('barcode')
     if barcode is None:
-        return result(410, 'Missing barcode')
+        return app.result(410, 'Missing barcode')
 
-    cursor = get_cursor()
+    cursor = app.get_cursor()
 
     # Check that the barcode exists.
     cursor.execute("SELECT * FROM items WHERE barcode = %s", (barcode,))
     item = cursor.fetchone()
     if item is None:
-        return result(411, 'Unknown barcode', {'barcode': barcode})
+        return app.result(411, 'Unknown barcode', {'barcode': barcode})
 
     # Is the item checked out? If not return error code.
     cursor.execute('SELECT * FROM `out` WHERE barcode = %s', (barcode,))
 
     out_item = cursor.fetchone()
     if out_item is None:
-        return result(420, 'Item not checked out', {'barcode': barcode})
+        return app.result(420, 'Item not checked out', {'barcode': barcode})
 
     # If necessary, make a late fee entry.
     if out_item['fine_due'] != None and out_item['fine_paid'] == 0:
@@ -256,4 +260,4 @@ def checkin_item():
     cursor.execute("DELETE FROM `out` WHERE barcode = %s;", (barcode,));
 
     # The item was successfully checked in.
-    return result(200, 'Success', {'barcode': barcode})
+    return app.result(200, 'Success', {'barcode': barcode})
