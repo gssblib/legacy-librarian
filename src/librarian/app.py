@@ -27,6 +27,15 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql = MySQL()
 mysql.init_app(app)
 
+class CustomJSONEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, datetime.date):
+            return obj.strftime('%Y-%m-%d')
+        return json.JSONEncoder.default(self, obj)
+
+app.json_encoder = CustomJSONEncoder
+
 def get_cursor():
     db = mysql.get_db()
     return db.cursor(MySQLdb.cursors.DictCursor)
