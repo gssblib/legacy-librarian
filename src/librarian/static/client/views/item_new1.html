@@ -1,0 +1,79 @@
+<h2>New Item</h2>
+<div class="well" ng-controller="itemCtrl">
+  <form class="form-horizontal" ng-submit="addItem(data.item)">
+    <div class="form-group">
+      <label class="control-label col-sm-2">Barcode</label>
+      <div class="col-sm-10">
+	<input class="form-control" ng-model="data.item.barcode" autofocus/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Categories</label>
+      <div class="col-sm-10">
+	<select class="form-control" ng-model="data.item.type" ng-options="type for type in refdata.types">
+	</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Title</label>
+      <div class="col-sm-10">
+	<input class="form-control" ng-model="data.item.title"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Author</label>
+      <div class="col-sm-5">
+	<input class="form-control" ng-model="data.item.author.firstname" placeholder="firstname"/>
+      </div>
+      <div class="col-sm-5">
+	<input class="form-control" ng-model="data.item.author.lastname" placeholder="lastname"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Publisher</label>
+      <div class="col-sm-10">
+	<input class="form-control" ng-model="data.item.publisher"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Publication Year</label>
+      <div class="col-sm-10">
+	<input class="form-control" ng-model="data.item.publicationyear"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Subject</label>
+      <div class="col-sm-10">
+	<select class="form-control" ng-model="data.item.type" ng-options="type for type in refdata.subjects">
+	</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Reading Age</label>
+      <div class="col-sm-10">
+	<select class="form-control" ng-model="data.item.age" ng-options="type for type in refdata.ages">
+	</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Serial</label>
+      <div class="col-sm-10">
+	<input class="form-control" ng-model="data.item.serial"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Series Title</label>
+      <div class="col-sm-10">
+	<input class="form-control" ng-model="data.item.series"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Medium</label>
+      <div class="col-sm-10">
+	<select class="form-control" ng-model="data.item.medium" ng-options="type for type in refdata.media">
+	</select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>

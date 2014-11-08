@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="library">
+<head>
+  <title>GSSB Library</title>
+  <link href="lib/bootstrap/bootstrap.css" rel="stylesheet"/>
+  <link href="app.css" rel="stylesheet"/>
+  <script src="lib/jquery/jquery.js"></script>
+  <script src="lib/angular/angular.js"></script>
+  <script src="lib/angular-route/angular-route.js"></script>
+  <script src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="app.js"></script>
+  <script src="controllers/library.js"></script>
+  <script src="controllers/borrowers.js"></script>
+  <script src="controllers/items.js"></script>
+  <script src="controllers/returns.js"></script>
+</head>
+<body ng-controller="libraryCtrl">
+  <div class="container-fluid">
+    <nav class="navbar navbar-default" role="navigation">
+      <a href="#/dashboard" class="navbar-brand navbar-right">GSSB Library</a>
+      <div class="navbar-header">
+      <ul class="nav navbar-nav">
+	<li><a href="#/returns">Returns</a></li>
+	<li><a href="#/borrower">Borrower</a></li>
+	<li class="dropdown">
+	  <a class="dropdown-toggle">Items <span class="caret"></span></a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><a href="#/items">Search</a></li>
+	    <li><a href="#/item/new">New</a></li>	  
+	  </ul>
+	</li>
+	<li class="dropdown">
+	  <a class="dropdown-toggle">Fees <span class="caret"></span></a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><a href="#/fee/overview">Overview</a></li>
+	    <li><a href="#/fee/update">Update</a></li>	  
+	  </ul>
+	</li>
+      </ul>
+      </div>
+    </nav>
+    <ng-view/>
+  </div>
+</body>
+</html>

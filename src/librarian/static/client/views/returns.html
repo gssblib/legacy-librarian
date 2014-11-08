@@ -1,0 +1,9 @@
+<div ng-controller="returnCtrl">
+  <h3>Returns</h3>
+  <form class="form-inline" ng-submit="returnItem(data.barcode)">
+    <div class="form-group">
+      <input only-digits maxlength="9" inputmode="numeric" class="form-control" ng-model="data.barcode" autofocus placeholder="barcode"/>
+      <button type="submit" class="btn btn-primary">Return</button>
+    </div>
+  </form>
+</div>

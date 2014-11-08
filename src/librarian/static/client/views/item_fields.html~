@@ -1,0 +1,52 @@
+<div class="form-group col-md-6">
+  <label>Barcode</label>
+  <input class="form-control" ng-model="data.item.barcode" autofocus/>
+</div>
+<div class="form-group col-md-6">
+  <label>Categories</label>
+  <select class="form-control" ng-model="data.item.type" ng-options="type for type in refdata.types">
+  </select>
+</div>
+<div class="form-group col-md-6">
+  <label>Title</label>
+  <input class="form-control" ng-model="data.item.title"/>
+</div>
+<div class="form-group col-md-6">
+  <label>Author</label>
+  <input class="form-control" ng-model="data.item.author" placeholder="last name, first name"/>
+</div>
+<div class="form-group col-md-6">
+  <label>Publisher</label>
+  <input class="form-control" ng-model="data.item.publisher"/>
+</div>
+<div class="form-group col-md-6">
+  <label>Publication Year</label>
+  <input class="form-control" ng-model="data.item.publicationyear"/>
+</div>
+<div class="form-group col-md-6">
+  <label>Subject</label>
+  <select class="form-control" ng-model="data.item.type" ng-options="type for type in refdata.subjects">
+  </select>
+</div>
+<div class="form-group col-md-6">
+  <label>Reading Age</label>
+  <select class="form-control" ng-model="data.item.age" ng-options="type for type in refdata.ages">
+  </select>
+</div>
+<div class="form-group col-md-6">
+  <label>Serial</label>
+  <input class="form-control" ng-model="data.item.serial"/>
+</div>
+<div class="form-group col-md-6">
+  <label>Series Title</label>
+  <input class="form-control" ng-model="data.item.series"/>
+</div>
+<div class="form-group col-md-6">
+  <label>Medium</label>
+  <select class="form-control" ng-model="data.item.medium" ng-options="type for type in refdata.media">
+  </select>
+</div>
+<span class="clearfix"></span>
+<div class="form-group col-md-6">    
+  <button type="submit" class="btn btn-primary">Save</button>
+</div>
