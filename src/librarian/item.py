@@ -259,5 +259,11 @@ def checkin_item():
         )
     cursor.execute("DELETE FROM `out` WHERE barcode = %s;", (barcode,));
 
+    cursor.execute(
+        'SELECT * FROM borrowers where borrowernumber = %s;',
+        (out_item['borrowernumber'],))
+
     # The item was successfully checked in.
-    return app.result(200, 'Success', {'barcode': barcode})
+    return app.result(
+        200, 'Success',
+        {'item': item, 'borrower': cursor.fetchone()})
