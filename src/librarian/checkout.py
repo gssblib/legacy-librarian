@@ -11,7 +11,7 @@ from librarian import app
 
 @app.app.route(app.API_PREFIX+'/checkouts', methods=['GET'])
 def get_checkouts():
-    """Get a list of all borrowers"""
+    """Get a list of all checked out items of a borrower"""
     query, qargs = 'SELECT * FROM `out`', ()
 
     borrowernumber = request.args.get('borrower')
