@@ -16,7 +16,7 @@ angular.module("library")
    */
   $scope.getNames = function (viewValue) {
     return $http.get(
-      'api/borrowers', { params: {surname: viewValue, start: 0, count: 20}}
+      '/api/borrowers', { params: {surname: viewValue, start: 0, count: 20}}
     ).then(function (response) {
 	return response.data.result;
     });
@@ -38,7 +38,7 @@ angular.module("library")
   $scope.showSelectedBorrower = function (borrower, model, label) {
     $scope.data.borrower = borrower;
     $http.get(
-      'api/checkouts', { params: {borrower: borrower.borrowernumber}}
+      '/api/checkouts', { params: {borrower: borrower.borrowernumber}}
     ).then(function (response) {
       $scope.data.items = response.data.result;
       $timeout(function () {
@@ -81,7 +81,7 @@ angular.module("library")
    * Returns a checked out item.
    */
   $scope.returnItem = function (item) {
-    
+
   };
 
   $scope.sortKey = 'title';

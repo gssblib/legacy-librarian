@@ -6,7 +6,7 @@ angular.module("library")
   $scope.refdata = {
     types: [
       "Buch", "CD", "CD-ROM", "DVD", "Comic", "Multimedia", "Zeitschrift",
-      "Kassette" 
+      "Kassette"
     ],
     subjects: [
       "CD", "CD-ROM", "DVD", "Bilderbuch B-gelb", "Comic C-orange",
@@ -38,7 +38,7 @@ angular.module("library")
    */
   $scope.getItems = function (viewValue) {
     return $http.get(
-      'api/items', { params: {title: viewValue, start: 0, count: 20}}
+      '/api/items', { params: {title: viewValue, start: 0, count: 20}}
     ).then(function (response) {
       return response.data.result;
     });
