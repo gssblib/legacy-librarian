@@ -1,0 +1,100 @@
+.navbar {
+  margin-top: 0.3em;
+  padding-top: 0.3em;
+}
+.navbar-brand {
+  padding: 10px 15px 13px 15px;
+}
+.nav-pills {
+  font-size: 16px;
+}
+.main-content {
+}
+.items {
+  margin-top: 2em;
+}
+.accesskey {
+  text-decoration: underline;
+}
+.gssb-left-gap {
+  margin-left: 2em;
+}
+.fee {
+  margin-right: 5px;
+  vertical-align: buttom;
+  font-size: 120%;
+}
+.content-area {
+}
+.message-area {
+  position: absolute;
+  width: 50%;
+  top: 3em;
+  left: 25%;
+}
+.field-list {
+}
+.field-list label {
+  width: 10em;
+  text-align: right;
+  margin-right: 0.5em;
+}
+.fade {
+  transition: 0.1s linear all;
+  opacity: 1;
+}
+.fade.ng-hide {
+  transition: 0.3s linear all;
+  opacity: 0;
+}
+.slideUp {
+  transition: 0.1s linear all;
+  height: 3em;
+}
+.slideUp.ng-hide {
+  transition: 0.3s linear all;
+  height: 0em;
+}
+.item-search-form {
+  margin-top: 2em;
+}
+.dashboard-buttons {
+  border-spacing: 1em;
+}
+.dashboard-button {
+  white-space: normal;
+  font-size: 150%;
+  margin: 0.2em;
+  width: 7em;
+  height: 5em;
+}
+tr.clickable > td, td.clickable {
+  cursor: pointer;
+}
+.checked-out {
+  color: red;
+}
+.available {
+  color: green;
+}
+.login-info {
+  padding: 0px 1em;
+}
+.jumbotron {
+  padding: 1em;
+}
+.tab-panel {
+  padding-top: 1em;
+}
+form .ng-invalid.ng-dirty {
+  background-color: #fee;
+}
+form .ng-valid.ng-dirty {
+  background-color: #efe;
+}
+.form-field-error {
+  color: red;
+}
+.form-control.date {
+  width: 12em;
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html ng-app="library">
+<head>
+  <title>GSSB Library</title>
+  <!--
+    For ease of testing, temporarily set 'user-scalable=0' to prevent chrome
+    on mobile from scaling the page when focussing on an input field.
+    -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, user-scalable=0">
+  <link href="vendor/bootstrap/bootstrap.css" rel="stylesheet"/>
+  <link href="app.css" rel="stylesheet"/>
+  <script src="vendor/angular/angular.js"></script>
+  <script src="vendor/angular-route/angular-route.js"></script>
+  <script src="vendor/angular-animate/angular-animate.js"></script>
+  <script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="auth/auth.js"></script>
+  <script src="app.js"></script>
+  <script src="components/util.js"></script>
+  <script src="components/directives.js"></script>
+  <script src="components/filters.js"></script>
+  <script src="library/library.js"></script>
+  <script src="library/library_ctrl.js"></script>
+  <script src="borrower/borrowers.js"></script>
+  <script src="borrower/borrower_history.js"></script>
+  <script src="borrower/borrower_fees.js"></script>
+  <script src="borrower/borrower_new.js"></script>
+  <script src="borrower/borrower_profile.js"></script>
+  <script src="item/item.js"></script>
+  <script src="item/items.js"></script>
+  <script src="fee/fees.js"></script>
+  <script src="login/login_popup.js"></script>
+  <script src="return/returns.js"></script>
+  <script src="dashboard/dashboard.js"></script>
+</head>
+<body ng-controller="libraryCtrl as appCtrl">
+  <div class="container-fluid">
+    <nav class="navbar navbar-default" role="navigation">
+      <a href="#/dashboard" class="navbar-brand">GSSB Library</a>
+      <div class="navbar-header">
+        <ul class="nav nav-pills">
+          <li role="presentation" ng-class="appCtrl.navClass('returns')"
+	      ng-show="authorized('items', 'checkin')">
+            <a href="#/returns" accesskey="r">
+              <span class="accesskey">R</span>eturn
+            </a>
+          </li>
+          <li role="presentation" ng-class="appCtrl.navClass('borrowers')"
+              ng-show="authorized('borrowers', 'read')">
+            <a href="#/borrowers" accesskey="c">
+              <span class="accesskey">C</span>heck Out
+            </a>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle">Items <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#/items">Find/Update</a></li>
+              <li><a href="#/item/new">New</a></li>          
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle">Borrowers <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#/borrowers">Find/Update</a></li>
+              <li><a href="#/borrower/new">New</a></li>          
+            </ul>
+          </li>
+          <li class="presentation" ng-class="appCtrl.navClass('fees')"
+              ng-show="authorized('checkouts', 'update')">
+            <a href="#/fees" accesskey="f">
+              <span class="accesskey">F</span>ees
+            </a> 
+          </li>
+        </ul>
+      </div>
+      <div class="login-info">
+        <p class="navbar-text navbar-right" ng-show="appCtrl.getUser()">
+          Signed in as {{appCtrl.getUser().username}} - 
+          <a href="#" ng-click="appCtrl.logout()">
+            log out
+          </a>
+        </p>
+        <p class="navbar-text navbar-right" ng-hide="appCtrl.getUser()">
+          <a href="#" ng-click="appCtrl.login()">
+            Log in
+          </a>
+        </p>
+      </div>
+    </nav>
+    <div class="main-content">
+      <div class="message-area">
+        <div ng-hide="!appCtrl.showError" class="fade">
+          <alert close="appCtrl.closeAlert()">
+            {{appCtrl.errorMessage}}
+          </alert>
+        </div>
+      </div>
+      <ng-view/>
+    </div>
+  </div>
+</body>
+</html>

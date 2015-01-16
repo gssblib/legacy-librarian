@@ -1,0 +1,15 @@
+{
+  "name": "mysqlq",
+  "version": "1.0.0",
+  "description": "Q-based promise API for mysql",
+  "main": "lib/mysqlq.js",
+  "scripts": {
+  },
+  "keywords": [
+    "mysql",
+    "q",
+    "promise"
+  ],
+  "author": "Andreas Hohmann",
+  "license": "MIT"
+}

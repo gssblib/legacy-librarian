@@ -1,0 +1,91 @@
+<h2>New Item</h2>
+<div class="" ng-controller="itemCtrl as ctrl">
+  <form name="newItemForm" class="" ng-submit="ctrl.addItem(ctrl.item)" novalidate>
+    <div class="form-group col-sm-6">
+      <label for="newItemBarcode">Barcode</label>
+      <input id="newItemBarcode" name="barcode"
+             only-digits minlength="9" maxlength="9" required
+             class="form-control"
+             ng-model="ctrl.item.barcode" autofocus/>
+    </div>
+    <div class="form-group col-sm-6">
+      <label for="newItemDescription">Categories</label>
+      <select id="newItemDescription" name="description" class="form-control"
+              ng-model="ctrl.item.description"
+              ng-options="type for type in ctrl.refdata.types">
+      </select>
+    </div>
+    <div class="form-group col-sm-6">
+      <label for="newItemTitle">Title</label>
+      <input id="newItemTitle" name="title" class="form-control" required
+             ng-model="ctrl.item.title"/>
+      <div class="form-field-error"
+           ng-show="newItemForm.title.$invalid && newItemForm.title.$dirty">
+        <span ng-show="newItemForm.title.$error.required">
+          Please enter the title.
+        </span>
+      </div>
+    </div>
+    <div class="form-group col-sm-6">
+      <label for="newItemAuthor">Author</label>
+      <input id="newItemAuthor" name="author" class="form-control" required
+             ng-model="ctrl.item.author" placeholder="last name, first name"/>
+    </div>
+    <div class="form-group col-sm-6">
+      <label for="newItemPublisher">Publisher</label>
+      <input id="newItemPublisher" name="publishercode" class="form-control"
+             ng-model="ctrl.item.publishercode"/>
+    </div>
+    <div class="form-group col-sm-6">
+      <label>Publication Year</label>
+      <input class="form-control"
+             ng-model="ctrl.item.publicationyear"/>
+    </div>
+    <div class="form-group col-sm-6">
+      <label>Subject</label>
+      <select class="form-control"
+              ng-model="ctrl.item.subject"
+              ng-options="type for type in ctrl.refdata.subjects">
+      </select>
+    </div>
+    <div class="form-group col-sm-6">
+      <label>Reading Age</label>
+      <select class="form-control"
+              ng-model="ctrl.item.age" ng-options="type for type in ctrl.refdata.ages">
+      </select>
+    </div>
+    <div class="form-group col-sm-6">
+      <label>Serial</label>
+      <input class="form-control"
+             ng-model="ctrl.item.serial"/>
+    </div>
+    <div class="form-group col-sm-6">
+      <label for="newItemSeriesTitle">Series Title</label>
+      <input id="newItemSeriesTitle" class="form-control"
+             ng-model="ctrl.item.seriestitle"/>
+    </div>
+    <div class="form-group col-sm-6">
+      <label for="newItemMedia">Media</label>
+      <select id="newItemMedia" class="form-control"
+              ng-model="ctrl.item.media" ng-options="type for type in ctrl.refdata.media">
+      </select>
+    </div>
+    <div class="form-group col-sm-6">
+      <label for="newItemNotes">Notes</label>
+      <input id="newItemNotes" name="itemnotes" class="form-control"
+             ng-model="ctrl.item.itemnotes"/>
+    </div>
+    <div class="form-group col-sm-6">
+      <label for="newItemReplacementPrice">Replacement Price</label>
+      <input id="newItemReplacementPrice" name="replacementprice" class="form-control"
+             ng-model="ctrl.item.replacementprice" type="number"/>
+    </div>
+    <span class="clearfix"></span>
+    <div class="form-group col-sm-6">    
+      <button type="submit" class="btn btn-primary"
+              ng-disabled="newItemForm.$invalid">
+        Save
+      </button>
+    </div>
+</div>
+

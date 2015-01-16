@@ -1,0 +1,44 @@
+<div ng-controller="feesCtrl as ctrl">
+<h4>Compute Fees</h4>
+
+The fees are computed as of the given date.  If the due date of a checked out
+item is before this date, the fee will be set to 50ȼ.
+<p>
+<form name="feeUpdateForm" ng-submit="ctrl.updateFees(ctrl.feeDate)">
+  <div class="form-group col-md-6">
+    <label for="feeDate">Date</label>
+    <input id="feeDate" name="feeDate" type="date" class="form-control date"
+           ng-model="ctrl.feeDate"/>
+  </div>
+  <span class="clearfix"></span>
+  <div class="form-group col-md-6">    
+    <button type="submit" class="btn btn-primary"
+            ng-disabled="feeUpdateForm.$invalid">
+      Update Fees
+    </button>
+  </div>
+</form>
+
+  <table class="table table-striped table-hover table-condensed">
+    <thead>
+      <th><a ng-click="ctrl.setSortKey('borrowernumber')">Borrower Number</a></th>
+      <th><a ng-click="ctrl.setSortKey('surname')">Borrower Name</a></th>
+      <th><a ng-click="ctrl.setSortKey('fee')">Fee Due</a></th>
+      <th><a ng-click="ctrl.setSortKey('newFee')">Checked Out Items</a></th>
+      <th><a ng-click="ctrl.setSortKey('oldFee')">Returned Items</a></th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="fee in ctrl.fees | orderBy:ctrl.sortKey">
+        <td class="clickable" ng-click="ctrl.showBorrower(fee.borrowernumber)">
+          {{fee.borrowernumber}}
+        </td>
+        <td class="clickable" ng-click="ctrl.showBorrower(fee.borrowernumber)">
+          {{ctrl.borrowerLabel(fee)}}
+        </td>
+        <td>{{fee.fee | currency}}</td>
+        <td>{{fee.newFee | currency}}</td>
+        <td>{{fee.oldFee | currency}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,23 @@
+<div class="jumbotron" ng-controller="dashboardCtrl as ctrl">
+  <h3>Welcome to the GSSB Library!</h3>
+    <a href="#/returns" class="dashboard-button btn btn-primary btn-lg"
+       ng-show="authorized('items', 'checkin')"
+       role="button">
+      Return Items
+    </a>
+    <a href="#/borrowers" class="dashboard-button btn btn-primary btn-lg"
+       ng-show="authorized('borrowers', 'read')"
+       role="button">
+      Check Out and Renew Items
+    </a>
+    <a href="#/items" class="dashboard-button btn btn-primary btn-lg"
+       ng-show="authorized('items', 'read')"
+       role="button">
+      Look for Items
+    </a>
+    <a href="#/item/new" class="dashboard-button btn btn-primary btn-lg"
+       ng-show="authorized('items', 'create')"
+       role="button">
+      Add New Item
+    </a>
+</div>

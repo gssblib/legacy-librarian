@@ -1,0 +1,86 @@
+<div ng-controller="itemsCtrl as ctrl">
+  <div class="form-horizontal">
+    <h4>Fast Search by Title</h4>  
+    <div class="form-group">
+      <label for="itemSearchTitle" class="control-label col-sm-2">Title</label>
+      <div class="col-sm-4 col-md-6">
+        <input id="item-query" type="text" class="form-control"
+               ng-model="ctrl.data.itemTitle"
+               placeholder="part of item's title"
+               typeahead="item.title for item in ctrl.getItems($viewValue)"
+               typeahead-on-select="ctrl.selectItem($item)">
+      </div>
+    </div>
+  </div>
+  <form name="itemSearchForm" class="item-search-form form-horizontal"
+        ng-submit="ctrl.searchItems(ctrl.search, 0)">
+    <h4>Search by Fields</h4>
+    <div class="form-group">
+      <label for="itemSearchBarcode" class="control-label col-sm-2">Barcode</label>
+      <div class="col-sm-4 col-md-6">
+        <input id="itemSearchBarcode" name="barcode" class="form-control"
+               ng-model="ctrl.search.barcode"
+               inputmode="numeric" only-digits maxlength="9" minlength="9"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="itemSearchAuthor" class="control-label col-sm-2">Author</label>
+      <div class="col-sm-4 col-md-6">
+        <input id="itemSearchAuthor" name="author" class="form-control"
+               ng-model="ctrl.search.author"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="itemSearchTitle" class="control-label col-sm-2">Title</label>
+      <div class="col-sm-4 col-md-6">
+        <input id="itemSearchTitle" name="title" class="form-control"
+               ng-model="ctrl.search.title"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-4 col-md-6">
+        <button type="submit" class="btn btn-primary"
+                ng-disabled="itemSearchForm.$invalid">
+          Search
+        </button>
+        <button class="btn btn-primary" ng-click="ctrl.clearSearchForm($event)"
+                ng-disabled="itemSearchForm.$pristine">
+          Clear
+        </button>
+      </div> 
+    </div>
+  </form>
+  <div ng-show="ctrl.data.showItems">
+    <h4 ng-show="ctrl.data.items.length == 0">No matching items found.</h4>
+    <div ng-show="ctrl.data.items.length > 0">
+      <div class="pull-right btn-group"
+           ng-show="ctrl.data.pagination.pageCount > 1">
+        <a class="btn btn-default"
+           ng-show="ctrl.data.pagination.showFirst"
+	   ng-click="ctrl.searchItems(ctrl.search, 0)">&laquo;</a>
+	<a ng-repeat="page in ctrl.data.pagination.pageRange"
+	   class="btn btn-default"
+	   ng-click="ctrl.searchItems(ctrl.search, page)"
+	   ng-class="ctrl.pageClass(page)">{{page + 1}}</a>
+	<a class="btn btn-default"
+	   ng-show="ctrl.data.pagination.showLast"
+	   ng-click="ctrl.searchItems(ctrl.search, ctrl.data.pagination.pageCount - 1)">&raquo;</a>
+      </div>
+      <table class="table table-striped table-hover table-condensed">
+	<thead>
+	  <th>Barcode</th>
+	  <th>Title</th>
+	  <th>Author</th>
+	</thead>
+	<tbody>
+	  <tr ng-repeat="item in ctrl.data.items" class="clickable"
+	      ng-click="ctrl.selectItem(item)">
+	    <td>{{item.barcode}}</td>
+	    <td>{{item.title}}</td>
+	    <td>{{item.author}}</td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+  </div>
+</div>

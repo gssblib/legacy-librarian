@@ -1,0 +1,18 @@
+<div ng-controller="borrowersCtrl as ctrl">
+  <h4>Select Borrower</h4>  
+  <form name="borrowerSearch" class="form-horizontal">
+    <div class="form-group">
+      <label for="borrowerSearch" class="control-label col-sm-2">
+	Name
+      </label>
+      <div class="col-sm-4 col-md-6">
+	<input id="borrowerSearch" autofocus class="form-control"
+	     ng-model="ctrl.data.borrowerLabel"
+	     placeholder="part of borrower's last name"
+	     typeahead="ctrl.borrowerLabel(borrower) for borrower in ctrl.getBorrowers($viewValue)"
+	     typeahead-input-formatter="ctrl.formatSelectedBorrower()"
+	     typeahead-on-select="ctrl.selectBorrower($item)"/>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,61 @@
+<div ng-controller="itemCtrl as ctrl">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3>Item {{ctrl.item.barcode}}: {{ctrl.item.title}}</h3>
+    </div>
+    <form name="editItemForm" ng-submit="ctrl.saveItem(ctrl.item)"
+          class="panel-body" novalidate>
+      <div class="form-group col-md-6">
+        <label>Categories</label>
+        <select class="form-control" ng-model="ctrl.item.description" ng-options="type for type in ctrl.refdata.types">
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Title</label>
+        <input class="form-control" ng-model="ctrl.item.title"/>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Author</label>
+        <input class="form-control" ng-model="ctrl.item.author" placeholder="last name, first name"/>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Publisher</label>
+        <input class="form-control" ng-model="ctrl.item.publishercode"/>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Publication Year</label>
+        <input class="form-control" ng-model="ctrl.item.publicationyear"/>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Subject</label>
+        <select class="form-control" ng-model="ctrl.item.subject" ng-options="type for type in ctrl.refdata.subjects">
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Reading Age</label>
+        <select class="form-control" ng-model="ctrl.item.age" ng-options="type for type in ctrl.refdata.ages">
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Serial</label>
+        <input class="form-control" ng-model="ctrl.item.serial"/>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Series Title</label>
+        <input class="form-control" ng-model="ctrl.item.seriestitle"/>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Media</label>
+        <select class="form-control" ng-model="ctrl.item.media" ng-options="type for type in ctrl.refdata.media">
+        </select>
+      </div>
+      <span class="clearfix"></span>
+      <div class="form-group col-md-6">    
+        <button type="submit" class="btn btn-primary"
+                ng-disabled="editItemForm.$invalid">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

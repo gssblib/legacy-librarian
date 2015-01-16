@@ -1,0 +1,27 @@
+<div ng-controller="borrowerCtrl as ctrl" class="content-area">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4>{{ctrl.borrowerLabel(ctrl.borrower)}}</h4>
+    </div>
+    <div class="panel-body">
+      <tabset>
+        <tab heading="Checkouts">
+          <div class="tab-panel"
+               ng-include="'/borrower/borrower_checkouts.html'"></div>
+        </tab>
+        <tab heading="Fees">
+          <div ng-controller="borrowerFeesCtrl as ctrl" class="tab-panel"
+               ng-include="'/borrower/borrower_fees.html'"></div>
+        </tab>
+        <tab heading="History">
+          <div ng-controller="borrowerHistoryCtrl as ctrl" class="tab-panel"
+               ng-include="'/borrower/borrower_history.html'"></div>
+        </tab>
+        <tab heading="Profile">
+          <div ng-controller="borrowerProfileCtrl as ctrl" class="tab-panel"
+               ng-include="'/borrower/borrower_profile.html'"></div>
+        </tab>
+      </tabset>
+    </div>
+  </div>
+</div>
