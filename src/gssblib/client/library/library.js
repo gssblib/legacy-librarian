@@ -40,22 +40,15 @@ angular.module("library")
   };
 
   library.getItems = function (criteria, offset, limit, returnCount) {
-    var params = angular.extend({}, criteria);
-    if (count) {
+    var params = angular.copy(criteria);
+    if (limit) {
       params.offset = offset;
       params.limit = limit;
     }
     if (returnCount) {
       params.returnCount = true;
     }
-    return httpGet('/items', params).then(
-      function (data) {
-        console.log('getItems: ', data);
-        return data;
-      },
-      function (err) {
-        console.log('getItems: err=', err);
-      });
+    return httpGet('/items', params);
   };
 
   library.returnItem = function (barcode) {
@@ -79,7 +72,6 @@ angular.module("library")
   };
 
   library.payFee = function (item) {
-    console.log('payFee', item);
     if (item.type === 'checkouts') {
       return httpPost('/checkouts/' + item.barcode + '/payFee');
     } else {

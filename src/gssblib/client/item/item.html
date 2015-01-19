@@ -68,4 +68,8 @@
      accesskey="c">
     <span class="accesskey">C</span>hange
   </a>
+  <a ng-show="authorized('items', 'update')"
+     ng-click="ctrl.copyItem(ctrl.item)" class="btn btn-primary">
+    Copy
+  </a>
 </div>

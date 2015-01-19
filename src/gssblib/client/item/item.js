@@ -2,9 +2,20 @@
  * Controller for the views for a single item.
  */
 angular.module("library")
+// Service for sharing data between multiple instances of the item
+// controllers.
+.factory('itemService', function () {
+  var savedItem;
+  return {
+    item: function (item) {
+      if (item === undefined) return savedItem;
+      savedItem = item;
+    }
+  };
+})
 .controller('itemCtrl',
-            ['$rootScope', '$scope', '$log', '$location', '$routeParams', 'library', 'util',
-             function($rootScope, $scope, $log, $location, $routeParams, library, util) {
+            ['$scope', '$log', '$location', '$routeParams', 'library', 'itemService',
+             function($scope, $log, $location, $routeParams, library, itemService) {
   var self = this;
   $scope.$emit('nav-item-changed', 'items');
 
@@ -47,17 +58,18 @@ angular.module("library")
   }
 
   $scope.$on('$routeChangeSuccess', function (event) {
-    if ($location.path().indexOf("/item/") == 0) {
+    if ($location.path() === "/item/new") {
+      self.item = itemService.item();
+      itemService.item(null);
+    } else if ($location.path().indexOf("/item/") == 0) {
       var barcode = $routeParams["barcode"];
       getItem(barcode);
     }
   });
 
   self.addItem = function (item) {
-    $log.log('addItem', item);
     library.createItem(item).then(
       function (data) {
-        $log.log('added item', data);
         $location.path('/item/' + item.barcode);
       },
       function (err) {
@@ -73,4 +85,11 @@ angular.module("library")
         $location.path('/item/' + item.barcode);
       });
   };
+
+  self.copyItem = function (item) {
+    var newItem = angular.copy(item);
+    newItem.barcode = "";
+    itemService.item(newItem);
+    $location.path('/item/new');
+  }; 
 }]);

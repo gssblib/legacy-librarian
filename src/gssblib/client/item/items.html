@@ -4,7 +4,7 @@
     <div class="form-group">
       <label for="itemSearchTitle" class="control-label col-sm-2">Title</label>
       <div class="col-sm-4 col-md-6">
-        <input id="item-query" type="text" class="form-control"
+        <input id="item-query" type="text" class="form-control" autofocus
                ng-model="ctrl.data.itemTitle"
                placeholder="part of item's title"
                typeahead="item.title for item in ctrl.getItems($viewValue)"
