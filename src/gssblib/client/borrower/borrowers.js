@@ -68,7 +68,7 @@ angular.module("library")
   }
 
   function errorText(barcode, reason) {
-    return 'Could not check out item ' + barcode + ': ';
+    return 'Could not check out item ' + barcode + ': ' + reason;
   }
 
   self.checkOutItem = function (barcode) {
@@ -91,7 +91,7 @@ angular.module("library")
         });
   };
 
-  self.sortKey = 'title';
+  self.sortKey = '-checkout_date';
 
   /**
    * Sets the sort key for the table showing the checked out items of a
