@@ -19,6 +19,10 @@ angular.module("library")
     return errorMessages[errorCode] || 'Unknown error (' + errorCode + ')';
   }
 
+  function errorText(barcode, reason) {
+    return 'Unable to return item ' + barcode + ': ' + reason;
+  }
+
   self.data = {};
   self.data.returnedItems = library.returnedItems();
 
@@ -27,14 +31,16 @@ angular.module("library")
       .then(
         function(data) {
           self.data.returnedItems = library.returnedItems();
+          self.barcode = '';
         },
         function(res) {
           var err = res.data;
           if (err && err.code) {
-            $scope.$emit('new-error-message', errorMessage(err.code));
+            $scope.$emit('new-error-message', errorText(barcode, errorMessage(err.code)));
           } else {
-            $scope.$emit('new-error-message', 'Server error');
+            $scope.$emit('new-error-message', errorText(barcode, 'Server error'));
           }
+          self.barcode = '';
         }
     );
   };

@@ -67,20 +67,27 @@ angular.module("library")
     return errorMessages[code] || 'Server error (' + code + ')';
   }
 
+  function errorText(barcode, reason) {
+    return 'Could not check out item ' + barcode + ': ';
+  }
+
   self.checkOutItem = function (barcode) {
     var borrowerNumber = self.borrower.borrowernumber;
     library.checkOutItem(barcode, borrowerNumber)
       .then(
         function (data) {
-          console.log('checkOutItem: data=', data);
           getBorrower(borrowerNumber);
+          self.barcode = '';
         },
         function (res) {
           console.log('checkOutItem: res=', res);
           var err = res.data;
           if (err && err.code) {
-            $scope.$emit('new-error-message', errorMessage(err.code));
+            $scope.$emit('new-error-message', errorText(barcode, errorMessage(err.code)));
+          } else {
+            $scope.$emit('new-error-message', errorText(barcode, 'Server error'));
           }
+          self.barcode = '';
         });
   };
 
