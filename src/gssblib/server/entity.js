@@ -4,7 +4,8 @@
  * Each Entity represents a single table (not a row, that is, an Entity is a
  * table data gateway) which is assumed to have an autogenenerated 'id' column.
  *
- * An Entity offers four CRUD methods:
+ * An Entity offers the following CRUD methods ('get', 'find', and 'read' being
+ * the read methods):
  *
  *   create: inserts a new object
  *   get:    retrieves a single object, throws error if not found
@@ -13,7 +14,7 @@
  *   update: updates an existing object
  *   remove: removes an object
  *
- * All method return a promise of the object(s) being manipulated and database
+ * All methods return a promise of the object(s) being manipulated and database
  * errors are propagated.
  * 
  * Usage:
