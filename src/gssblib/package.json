@@ -8,7 +8,7 @@
     "doc": "doc"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine-node server/tests/spec"
   },
   "contributors": [
     {
@@ -32,5 +32,8 @@
     "mysql": "^2.5.3",
     "q": "^1.1.2",
     "winston": "^0.8.3"
+  },
+  "devDependencies": {
+    "jasmine-node": "^1.14.5"
   }
 }
