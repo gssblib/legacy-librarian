@@ -35,7 +35,7 @@ server.use(require('express-session')({
 }));
 
 // Serve the client web application as static content.
-server.use(express.static(__dirname + '/../client'));
+server.use(express.static(__dirname + '/../client/app'));
 
 httpcall.handlePaths([
   { get: '/borrowers/fees',
