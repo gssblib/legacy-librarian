@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     bower: {
       install: {
 	options: {
-	  targetDir: './client/vendor'
+	  targetDir: './client/app/vendor'
 	}
       }
     }
