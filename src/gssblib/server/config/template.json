@@ -1,0 +1,21 @@
+{
+  // node/express server
+  "server": {
+    "port": ...
+  },
+
+  // Library database
+  "db": {
+    "database": "...",
+    "host": "...",
+    "user": "...",
+    "password": "..."
+  },
+
+  "auth": {
+    // generate with 'openssl rand -base64 32'
+    "salt": "...",
+    "cookie": "...",
+    "session": "..."
+  }
+}
