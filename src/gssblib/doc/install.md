@@ -15,7 +15,12 @@ a new Ubuntu Linux machine.
 ```
 $ cd
 $ mkdir -p github/gssb
+$ cd github/gssb
+$ git clone https://github.com/gssblib/librarian.git
 ```
+
+The angular/node project can be found under `~/github/gssblib/library/src/gssblib/`.
+The following instructions use the `GSSBLIB_HOME` variable for this directory.
 
 
 ## Install node
@@ -63,18 +68,44 @@ $ mysql -p -u gssb spils
 mysql> select count(*) from items;
 ```
 
+### Add new user tables
+
+```
+$ cd $GSSBLIB_HOME
+$ mysql -p -u gssb spils < sql/user_schema.sql
+```
+
+### Add users
+
+Users are added with the `add_user.js` node script which takes
+the username, password, and list of roles as arguments.
+
+```
+$ cd $GSSBLIB_HOME/server
+$ ./add_user.js yolyett some_nice_password librarian
+$ ./add_user.js volunteer another_password clerk
+``` 
 
 
 ## Gssblib server
 
 ```
-$ cd ~/github/gssblib/librarian/src/gssblib
+$ cd $GSSBLIB_HOME
 $ npm install
+$ grunt bower:install
+```
+
+After this, the server is ready to be started using the `library_server.js`
+script and accessed using `http://localhost:<port>/`.
+
+```
+$ cd $GSSBLIB_HOME/server
+$ ./library_server.js
 ```
 
 ## Work environment (optional)
 
-To fell comfortable, I also installed my vim configuration:
+To feel comfortable, I also installed my vim configuration:
 
 ```
 $ cd ~/github
