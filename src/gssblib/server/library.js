@@ -259,10 +259,14 @@ module.exports = {
           result = data;
           var checkout = data.checkout;
           checkoutId = checkout.id;
+
+          // Copy checkout to history.
           checkout.returndate = new Date();
+          delete checkout.id;
           return history.create(checkout);
         })
-        .then(function (data) {
+        .then(function () {
+          // If successfully copied to history, remove from checkouts.
           return checkouts.remove(checkoutId);
         })
         .then(function () { return result; });

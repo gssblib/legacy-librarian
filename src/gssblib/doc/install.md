@@ -75,19 +75,34 @@ $ cd $GSSBLIB_HOME
 $ mysql -p -u gssb spils < sql/user_schema.sql
 ```
 
+## Gssblib server
+
+### Create configuration
+
+The server and node based tools get their configuration using the [node config
+module][node-config-module].  As shown in the template file
+`server/config/template.json`, the configuration contains the server port, the
+database connection data, and the salt strings for the session and
+authentication.  After creating a `prod.json` configuration file in the same
+directory, it can be referenced by setting the `NODE_ENV` environment variable
+when running the server or tools.
+
+[node-config-module]: https://github.com/lorenwest/node-config
+
 ### Add users
 
-Users are added with the `add_user.js` node script which takes
-the username, password, and list of roles as arguments.
+Users are added with the `add_user.js` node script which takes the username,
+password, and list of roles as arguments.
 
 ```
 $ cd $GSSBLIB_HOME/server
-$ ./add_user.js yolyett some_nice_password librarian
-$ ./add_user.js volunteer another_password clerk
+$ NODE_ENV=prod ./add_user.js some_user some_nice_password librarian
+$ NODE_ENV=prod ./add_user.js another_user another_password clerk
 ``` 
 
+### Install node and bower modules
 
-## Gssblib server
+To download and install all modules, run the npm and bower installation.
 
 ```
 $ cd $GSSBLIB_HOME
@@ -100,7 +115,7 @@ script and accessed using `http://localhost:<port>/`.
 
 ```
 $ cd $GSSBLIB_HOME/server
-$ ./library_server.js
+$ NODE_ENV=prod ./library_server.js
 ```
 
 ## Work environment (optional)

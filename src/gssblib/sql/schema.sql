@@ -17,7 +17,7 @@ CREATE TABLE `borrowers` (
   UNIQUE KEY `borrowernumber` (`borrowernumber`),
   UNIQUE KEY `cardnumber` (`cardnumber`),
   KEY `borrowernumber_2` (`borrowernumber`)
-) ENGINE=InnoDB AUTO_INCREMENT=672 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `latefee`;
@@ -33,7 +33,7 @@ CREATE TABLE `latefee` (
   `fine_paid` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `barcode` (`barcode`)
-) ENGINE=InnoDB AUTO_INCREMENT=15073 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `items`;
 CREATE TABLE `items` (
@@ -59,7 +59,7 @@ CREATE TABLE `items` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `barcode` (`barcode`),
   KEY `barcode_2` (`barcode`)
-) ENGINE=InnoDB AUTO_INCREMENT=10739 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `out`;
 
@@ -78,7 +78,7 @@ CREATE TABLE `out` (
   KEY `borrowernumber` (`borrowernumber`),
   CONSTRAINT `out_ibfk_1` FOREIGN KEY (`barcode`) REFERENCES `items` (`barcode`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `out_ibfk_2` FOREIGN KEY (`borrowernumber`) REFERENCES `borrowers` (`borrowernumber`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30048 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `issue_history`;
 CREATE TABLE `issue_history` (
@@ -92,4 +92,17 @@ CREATE TABLE `issue_history` (
   `fine_due` float DEFAULT '0',
   `fine_paid` float DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=123659 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  username VARCHAR(64) NOT NULL,
+  hashed_password VARCHAR(512) NOT NULL,
+  roles VARCHAR(512) NOT NULL,
+  failed_login_attempts INT NOT NULL,
+  primary KEY (id),
+  UNIQUE KEY username (username)
+) ENGINE=InnoDB DEFAULT CHARSET = utf8;
+
+
