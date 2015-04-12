@@ -9,12 +9,17 @@ module.exports = {
   /**
    * Factory function creating a new GSSB library service object.
    *
+   * If provided, the 'time' object must have a function 'now' that returns
+   * the current time as a JavaScript Date object.
+   *
    * @param db mysql-promise database object
    * @param config optional configuration with borrowDays and renewalDays
+   * @param time optional time source that can be used to override time functions
    * @return library service with entities borrowers, items, checkouts, and history
    */
-  create: function (db, config) {
+  create: function (db, config, time) {
     config = merge({ borrowDays: 21, renewalDays: 21 }, config);
+    time = time || { now: function() { return new Date(); }};
 
     // borrowers table/entity
     var borrowers = entity(db, {
@@ -290,7 +295,7 @@ module.exports = {
       return getCheckedOutItem(barcode).then(function (data) {
         result = data;
         var checkout = data.checkout;
-        checkout.date_due = addDays(checkout.date_due, config.renewalDays);
+        checkout.date_due = addDays(time.now(), config.renewalDays);
         return checkouts.update({id: checkout.id, date_due: checkout.date_due});
       }).then(function () { return result; });
     };

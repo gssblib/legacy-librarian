@@ -9,7 +9,7 @@ describe('entity', function () {
         expect(sql).toEqual('insert into `person` (first_name, last_name) values (?, ?)');
         return deferred.promise;
       }
-    }
+    };
     var persons = entity(db, {name: 'person', columns: ['first_name', 'last_name']});
     var person = {first_name: 'Homer', last_name: 'Simpson'}
     persons.create(person).then(function (row) {
