@@ -99,4 +99,20 @@ angular.module('library')
   self.navClass = function (navItem) {
     return {active: navItem == currentNavItem};
   };
+
+  // Allows to react to global keydown events.  A controller can register and
+  // unregister (by setting the handler back to null) a handler using the
+  // set-keydown-handler event.
+  //
+  // This is used to automatically focus on barcode input fields when noticing
+  // that a number key is pressed on forms that only have a barcode field.
+  var keyDownHandler = null;
+  $scope.$on('set-keydown-handler', function (event, handler) {
+    keyDownHandler = handler;
+  });
+  $(document).on('keydown', function (event) {
+    if (keyDownHandler) {
+      keyDownHandler(event);
+    }
+  });
 }]);

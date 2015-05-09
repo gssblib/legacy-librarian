@@ -5,7 +5,8 @@
     </div>
     <div class="panel-body">
       <tabset>
-        <tab heading="Checkouts">
+        <tab heading="Checkouts"
+            select="ctrl.onSelect()" deselect="ctrl.onDeselect()">
           <div class="tab-panel"
                ng-include="'/borrower/borrower_checkouts.html'"></div>
         </tab>

@@ -91,7 +91,7 @@ angular.module("library")
         });
   };
 
-  self.sortKey = '-checkout_date';
+  self.sortKey = '-id';
 
   /**
    * Sets the sort key for the table showing the checked out items of a
@@ -99,6 +99,23 @@ angular.module("library")
    */
   self.setSortKey = function (field) {
     self.sortKey = (field === self.sortKey ? "-" : "") + field;
+  };
+
+  self.keyDown = function (event) {
+    if (!event.ctrlKey && !event.altKey) {
+      var keyCode = event.keyCode;
+      if (keyCode >= 48 && keyCode < 58) {
+        document.getElementById('checkoutBarcode').focus();
+      }
+    }
+  };
+
+  self.onSelect = function () {
+    $scope.$emit('set-keydown-handler', self.keyDown);
+  };
+
+  self.onDeselect = function () {
+    $scope.$emit('set-keydown-handler', null);
   };
 }])
 /**
