@@ -101,7 +101,20 @@ angular.module("library")
     self.sortKey = (field === self.sortKey ? "-" : "") + field;
   };
 
+  /**
+   * Focus on the barcode field if a number key is pressed.
+   *
+   * The barcode field is the only field on the checkout form.  This event
+   * handler makes sure that the scanner input is sent to this field even
+   * if the field has lost focus, for example, by accidentally touching
+   * the mouse or touch pad.
+   *
+   * The refocusing is only done if the checkout form is visible.
+   */
   self.keyDown = function (event) {
+    if (!$('#borrowerCheckoutsPanel').is(':visible')) {
+      return;
+    }
     if (!event.ctrlKey && !event.altKey) {
       var keyCode = event.keyCode;
       if (keyCode >= 48 && keyCode < 58) {
@@ -117,6 +130,9 @@ angular.module("library")
   self.onDeselect = function () {
     $scope.$emit('set-keydown-handler', null);
   };
+
+  // Reset the keydown handler when this controller is destroyed.
+  $scope.$on('$destroy', self.onDeselect);
 }])
 /**
  * Controller for the borrower search page.

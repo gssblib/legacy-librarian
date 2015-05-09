@@ -5,9 +5,9 @@ angular.module('library')
 })
 .controller('libraryCtrl',
             ['$log', '$scope', '$timeout', '$location', '$modal',
-	     'util', 'Auth', 'AuthEvents', 'AppEvents',
+             'util', 'Auth', 'AuthEvents', 'AppEvents',
              function ($log, $scope, $timeout, $location, $modal,
-		       util, Auth, AuthEvents, AppEvents) {
+                       util, Auth, AuthEvents, AppEvents) {
   var self = this;
 
   self.errorMessage = '';
@@ -78,7 +78,7 @@ angular.module('library')
 
   self.logout = function () {
     Auth.logout();
-    //    openModalLogin();    
+    //    openModalLogin();
   };
 
   self.login = function () {
