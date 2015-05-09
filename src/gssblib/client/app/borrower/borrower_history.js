@@ -4,8 +4,7 @@ angular.module('library')
   var self = this;
   self.borrower = {};
 
-  $scope.sortKey = 'checkout_date';
-  $scope.reverse = true;
+  $scope.sortKey = '-checkout_date';
 
   // Load history in background after the borrower has changed.
   $scope.$on('borrower-changed', function (event, borrower) {
@@ -26,12 +25,7 @@ angular.module('library')
     return {'btn-primary': page == self.pagination.page};
   };
 
-  self.setSortKey = function (newSortKey) {
-    if ($scope.sortKey === newSortKey) {
-      $scope.reverse = !$scope.reverse;
-    } else {
-      $scope.sortKey = newSortKey;
-      $scope.reverse = false;
-    }
+  self.setSortKey = function (field) {
+    self.sortKey = (field === self.sortKey ? "-" : "") + field;
   };
 }]); 

@@ -34,7 +34,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="item in ctrl.borrower.history |
-                     orderBy:sortKey:reverse |
+                     orderBy:ctrl.sortKey |
                      range:ctrl.pagination.page:ctrl.pagination.pageSize">
         <td>{{item.barcode}}</td>
         <td>{{item.title}}</td>
