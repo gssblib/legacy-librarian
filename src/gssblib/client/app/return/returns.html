@@ -33,7 +33,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="returned in ctrl.data.returnedItems">
+        <tr ng-repeat="returned in ctrl.data.returnedItems.slice().reverse()">
           <td>
             <a ng-href="#/item/{{returned.barcode}}">
               {{returned.barcode}}
