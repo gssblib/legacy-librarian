@@ -9,12 +9,15 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1, user-scalable=0">
   <link href="vendor/bootstrap/bootstrap.css" rel="stylesheet"/>
+  <link href="vendor/angular-dialog-service/dialogs.min.css" rel="stylesheet"/>
   <link href="app.css" rel="stylesheet"/>
   <script src="vendor/jquery/jquery.js"></script>
   <script src="vendor/angular/angular.js"></script>
   <script src="vendor/angular-route/angular-route.js"></script>
   <script src="vendor/angular-animate/angular-animate.js"></script>
   <script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="vendor/angular-sanitize/angular-sanitize.js"></script>
+  <script src="vendor/angular-dialog-service/dialogs.min.js"></script>
   <script src="auth/auth.js"></script>
   <script src="app.js"></script>
   <script src="components/util.js"></script>
@@ -41,7 +44,7 @@
       <div class="navbar-header">
         <ul class="nav nav-pills">
           <li role="presentation" ng-class="appCtrl.navClass('returns')"
-	      ng-show="authorized('items', 'checkin')">
+              ng-show="authorized('items', 'checkin')">
             <a href="#/returns" accesskey="r">
               <span class="accesskey">R</span>eturn
             </a>
@@ -56,27 +59,27 @@
             <a class="dropdown-toggle">Items <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               <li><a href="#/items">Find/Update</a></li>
-              <li><a href="#/item/new">New</a></li>          
+              <li><a href="#/item/new">New</a></li>
             </ul>
           </li>
           <li class="dropdown">
             <a class="dropdown-toggle">Borrowers <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               <li><a href="#/borrowers">Find/Update</a></li>
-              <li><a href="#/borrower/new">New</a></li>          
+              <li><a href="#/borrower/new">New</a></li>
             </ul>
           </li>
           <li class="presentation" ng-class="appCtrl.navClass('fees')"
               ng-show="authorized('checkouts', 'update')">
             <a href="#/fees" accesskey="f">
               <span class="accesskey">F</span>ees
-            </a> 
+            </a>
           </li>
         </ul>
       </div>
       <div class="login-info">
         <p class="navbar-text navbar-right" ng-show="appCtrl.getUser()">
-          Signed in as {{appCtrl.getUser().username}} - 
+          Signed in as {{appCtrl.getUser().username}} -
           <a href="#" ng-click="appCtrl.logout()">
             log out
           </a>
@@ -89,6 +92,7 @@
       </div>
     </nav>
     <div class="main-content">
+      <!--
       <div class="message-area">
         <div ng-hide="!appCtrl.showError" class="fade">
           <alert close="appCtrl.closeAlert()">
@@ -96,6 +100,7 @@
           </alert>
         </div>
       </div>
+      -->
       <ng-view/>
     </div>
   </div>

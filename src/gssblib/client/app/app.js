@@ -2,7 +2,7 @@
  * Main angularjs file. Define the library module and the routes.
  */
 
-angular.module('library', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'lbAuth'],
+angular.module('library', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'dialogs.main', 'lbAuth'],
   ['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push(
       ['$location', '$q', '$rootScope', function ($location, $q, $rootScope) {

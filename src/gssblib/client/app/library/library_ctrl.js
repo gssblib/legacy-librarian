@@ -4,26 +4,25 @@ angular.module('library')
   CLEAR_ERROR_MESSAGE: 'clear-error-message'
 })
 .controller('libraryCtrl',
-            ['$log', '$scope', '$timeout', '$location', '$modal',
+            ['$log', '$scope', '$timeout', '$location', '$modal', 'dialogs',
              'util', 'Auth', 'AuthEvents', 'AppEvents',
-             function ($log, $scope, $timeout, $location, $modal,
+             function ($log, $scope, $timeout, $location, $modal, dialogs,
                        util, Auth, AuthEvents, AppEvents) {
   var self = this;
 
-  self.errorMessage = '';
-  self.showError = false;
+  // Show messages for 5s.
+  var messageTimeout = 5000;
 
   function showError(message) {
-    self.errorMessage = message;
-    self.showError = true;
-    $timeout(function () {
-      self.showError = false;
-    }, 3000);
+    if (!angular.isObject(message)) {
+      message = {
+        header: 'Error',
+        text: message
+      };
+    }
+    var dialog = dialogs.error(message.header, message.text);
+    $timeout(function () { dialog.close(); }, messageTimeout);
   }
-
-  self.closeAlert = function () {
-    self.showError = false;
-  };
 
   $scope.$on(AppEvents.NEW_ERROR_MESSAGE, function (event, message) {
     showError(message);

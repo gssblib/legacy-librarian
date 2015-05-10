@@ -36,9 +36,15 @@ angular.module("library")
         function(res) {
           var err = res.data;
           if (err && err.code) {
-            $scope.$emit('new-error-message', errorText(barcode, errorMessage(err.code)));
+            $scope.$emit('new-error-message', {
+                header: 'Unable to return item ' + barcode,
+                text: errorMessage(err.code)
+            });
           } else {
-            $scope.$emit('new-error-message', errorText(barcode, 'Server error'));
+            $scope.$emit('new-error-message', {
+                header: 'Unable to return item ' + barcode,
+                text: 'Server error'
+            });
           }
           self.barcode = '';
         }
