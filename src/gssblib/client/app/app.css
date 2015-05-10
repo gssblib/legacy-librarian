@@ -98,3 +98,39 @@ form .ng-valid.ng-dirty {
 .form-control.date {
   width: 12em;
 }
+.checked-out-item-count {
+  display: inline-block;
+  line-height: 30px;
+  width: 40px;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 20px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #428bca;
+  color: #fff;
+}
+@keyframes pulse {
+  50% {
+    transform: scale(1.3);
+  }
+}
+@-moz-keyframes pulse {
+  50% {
+    -moz-transform: scale(1.3);
+  }
+}
+@-webkit-keyframes pulse {
+  50% {
+    -webkit-transform: scale(1.3);
+  }
+}
+.pulse {
+  animation-duration: 0.5s;
+  animation-name: pulse;
+  -webkit-animation-duration: 0.5s;
+  -webkit-animation-name: pulse;
+  -moz-animation-duration: 0.5s;
+  -moz-animation-name: pulse;
+}
+

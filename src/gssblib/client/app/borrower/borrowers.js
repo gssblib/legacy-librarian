@@ -7,8 +7,8 @@ angular.module("library")
  * checked-out items.
  */
 .controller("borrowerCtrl",
-            ['$scope', '$location', '$routeParams', 'util', 'library',
-             function ($scope, $location, $routeParams, util, library) {
+            ['$scope', '$location', '$routeParams', '$timeout', 'util', 'library',
+             function ($scope, $location, $routeParams, $timeout, util, library) {
   var self = this;
   $scope.$emit('nav-item-changed', 'borrowers');
 
@@ -18,6 +18,16 @@ angular.module("library")
     return borrower ?
       util.joinFields(borrower, ['surname', 'firstname', 'contactname']) : '';
   };
+
+  self.itemCountClass = '';
+
+  /**
+   * Lets the item count pulse (used to draw attention to a change).
+   */
+  function pulseCount() {
+    self.itemCountClass = 'pulse';
+    $timeout(function () { self.itemCountClass = ''; }, 1000);
+  }
 
   function getBorrower(borrowerNumber) {
     library.getBorrower(borrowerNumber, {options: 'items'}).then(
@@ -43,6 +53,7 @@ angular.module("library")
       .then(function (data) {
         console.log('returnItem: data=', data);
         getBorrower(data.borrower.borrowernumber);
+        pulseCount();
       });
   };
 
@@ -78,6 +89,7 @@ angular.module("library")
         function (data) {
           getBorrower(borrowerNumber);
           self.barcode = '';
+          pulseCount();
         },
         function (res) {
           console.log('checkOutItem: res=', res);
