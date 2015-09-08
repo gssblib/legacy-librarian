@@ -32,17 +32,24 @@ module.exports = {
 
     /**
      * Override the 'create' method to first compute the next borrowernumber
-     * and cardnumber.
+     * and cardnumber if not provided.
      */
     borrowers.create = function (obj) {
       var self = this;
-      return db.selectRow(
-          'select max(borrowernumber) as max_borrowernumber from borrowers')
-        .then(function (data) {
-          obj.borrowernumber = 1 + data.max_borrowernumber;
+      if (obj.borrowernumber) {
+        if (!obj.cardnumber) {
           obj.cardnumber = 100000000 + obj.borrowernumber;
-          return borrowers.constructor.prototype.create.call(self, obj);
-        });
+        }
+        return borrowers.constructor.prototype.create.call(self, obj);
+      } else {
+        return db.selectRow(
+            'select max(borrowernumber) as max_borrowernumber from borrowers')
+          .then(function (data) {
+            obj.borrowernumber = 1 + data.max_borrowernumber;
+            obj.cardnumber = 100000000 + obj.borrowernumber;
+            return borrowers.constructor.prototype.create.call(self, obj);
+          });
+      }
     };
 
     /**
