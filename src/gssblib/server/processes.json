@@ -1,0 +1,15 @@
+{
+  "apps" : [{
+    // GSSB Library Server
+    "name"        : "library-server",
+    "script"      : "library_server.js",
+    "args"        : [],
+    "watch"       : true,
+    "node_args"   : "--harmony",
+    "merge_logs"  : true,
+    "cwd"         : "/home/gssblib/github/gssblib/librarian/src/gssblib/server/",
+    "env": {
+        "NODE_ENV": "test",
+    }
+  }]
+}
