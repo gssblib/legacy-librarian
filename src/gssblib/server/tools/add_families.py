@@ -10,28 +10,10 @@
 # Python implementation.
 #
 
-import json # for the server config
 import sys
 import csv
 
-def _getConfig(env):
-    """
-    Returns the server configuration as a dictionary.
-
-    The server config uses JSON with comments. Since we only use full-line
-    comments, we can filter them out by looking at // at the beginning of
-    a line.
-    """
-    def isComment(line):
-        return line.strip().startswith('//')
-
-    configFilename = 'config/%s.json' % env
-    configFile = open(configFilename)
-    config = "".join([
-        line for line in configFile.readlines() if not isComment(line)])
-    return json.loads(config)
-
-def _csvRowToBorrower(row):
+def _csv_row_to_borrower(row):
     """
     Converts a row (given as a list) to a borrower dictionary.
     """
@@ -71,25 +53,24 @@ def _csvRowToBorrower(row):
 
     return borrower
 
-def _getBorrowers(csvFilename):
+def _get_borrowers(csv_filename):
     """
     Reads the CSV file and returns the parsed borrower rows as a list
     of Borrower objects.
     """
     borrowers = []
-    with open(csvFilename) as csvFile:
+    with open(csv_filename) as csvFile:
         reader = csv.reader(csvFile)
         # skip head line
         reader.next()
         for row in reader:
-            borrowers.append(_csvRowToBorrower(row))
+            borrowers.append(_csv_row_to_borrower(row))
     return borrowers
 
 if __name__ == '__main__':
     env = sys.argv[1]
-    csvFilename = sys.argv[2]
+    csv_filename = sys.argv[2]
 
-    print _getConfig(env)
-    for borrower in _getBorrowers(csvFilename):
+    for borrower in _get_borrowers(csv_filename):
         print borrower
 
