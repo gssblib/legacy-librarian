@@ -59,7 +59,7 @@ class Email(object):
         message["From"] = self.sender
         message["To"] = self.recipient
         return message
-        
+
     def get_text_message(self):
         """Returns this email as a MIMEText object."""
         # brutally convert to ascii for now so that it's easier to check
@@ -72,7 +72,7 @@ class Email(object):
     def get_message(self):
         """Returns a combined text/html message."""
         if not self.html:
-            return self.get_text_message()        
+            return self.get_text_message()
         message = MIMEMultipart('alternative')
         self._init_message(message)
         message.attach(MIMEText(_ascii(self.text), 'plain'))
