@@ -39,9 +39,9 @@ if __name__ == '__main__':
     def to_existing_dir(s):
         """Argument type function checking that 's' is an existing directory."""
         if not os.path.exists(s):
-            raise ArgumentTypeError('backup_dir %s does not exist')
+            raise ArgumentTypeError("backup_dir '%s' does not exist" % s)
         if not os.path.isdir(s):
-            raise ArgumentTypeError('backup_dir %s is not a directory')
+            raise ArgumentTypeError("backup_dir '%s' is not a directory" % s)
         return s
 
     arg_parser = ArgumentParser(description='Create library database backup')
