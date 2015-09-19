@@ -97,6 +97,7 @@ angular.module("library")
   self.copyItem = function (item) {
     var newItem = angular.copy(item);
     newItem.barcode = "";
+    newItem.id = undefined;
     itemService.item(newItem);
     $location.path('/item/new');
   }; 

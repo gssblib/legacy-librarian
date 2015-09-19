@@ -1,5 +1,6 @@
 .installed.cfg
 *.pyc
+*~
 ve/
 src/*.egg-info
 bin/
