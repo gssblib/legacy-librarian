@@ -74,7 +74,15 @@ angular.module("library")
       },
       function (err) {
         if (err.code === 'ER_DUP_ENTRY') {
-          $scope.$emit('new-error-message', 'Duplicate barcode.');
+          $scope.$emit('new-error-message', {
+              header: 'Unable to add item',
+              text: 'Duplicate barcode ' + barcode
+          });
+        } else {
+          $scope.$emit('new-error-message', {
+              header: 'Unable to add item',
+              text: 'Server error'
+          });
         }
       });
   };

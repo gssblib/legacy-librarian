@@ -85,7 +85,7 @@ httpcall.handlePaths([
 ]);
 
 httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew']);
-httpcall.handleEntity(library.borrowers, ['payFees']);
+httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
 
 // Start server.
 const port = config.get('server').port;

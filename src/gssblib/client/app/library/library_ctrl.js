@@ -10,10 +10,21 @@ angular.module('library')
                        util, Auth, AuthEvents, AppEvents) {
   var self = this;
 
-  // Show messages for 5s.
-  var messageTimeout = 5000;
+  // Show messages for a short while.
+  var messageTimeout = 2500;
 
-  function showError(message) {
+  /**
+   * Shows an error popup with the given message.
+   *
+   * The 'message' is either a string or an object with a 'header' and
+   * a 'text' property. In case of a string, an error with the header
+   * 'Error' will be shown.
+   *
+   * If provided, the 'closeCallback' function is called when the dialog
+   * closes after the predefined time. This is typically used to refocus
+   * on the main input field.
+   */
+  function showError(message, closeCallback) {
     if (!angular.isObject(message)) {
       message = {
         header: 'Error',
@@ -21,11 +32,16 @@ angular.module('library')
       };
     }
     var dialog = dialogs.error(message.header, message.text);
-    $timeout(function () { dialog.close(); }, messageTimeout);
+    $timeout(function () {
+      dialog.close();
+      if (closeCallback) {
+        closeCallback();
+      }
+    }, messageTimeout);
   }
 
-  $scope.$on(AppEvents.NEW_ERROR_MESSAGE, function (event, message) {
-    showError(message);
+  $scope.$on(AppEvents.NEW_ERROR_MESSAGE, function (event, message, closeCallback) {
+    showError(message, closeCallback);
   });
 
   $scope.$on(AppEvents.CLEAR_ERROR_MESSAGE, function (event) {

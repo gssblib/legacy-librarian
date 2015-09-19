@@ -53,6 +53,10 @@
         <select class="form-control" ng-model="ctrl.item.media" ng-options="type for type in ctrl.refdata.media">
         </select>
       </div>
+      <div class="form-group col-sm-6">
+        <label for="itemNotes">Notes</label>
+        <input id="itemNotes" name="itemnotes" class="form-control" ng-model="ctrl.item.itemnotes"/>
+      </div>
       <div class="form-group col-md-6">
         <label>Replacement Price</label>
         <input class="form-control" ng-model="ctrl.item.replacementprice"/>

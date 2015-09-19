@@ -63,6 +63,10 @@ angular.module("library")
     return httpPost('/items/' + barcode + '/renew');
   };
 
+  library.renewBorrowerItems = function (borrowernumber) {
+    return httpPost('/borrowers/' + borrowernumber + '/renewAllItems');
+  };
+
   library.checkOutItem = function (barcode, borrowerNumber) {
     return httpPost('/items/' + barcode + '/checkout', {borrower: borrowerNumber});
   };

@@ -3,7 +3,8 @@
  */
 angular.module("library")
 .controller("returnCtrl",
-            ['$log', '$scope', 'library', function ($log, $scope, library) {
+            ['$log', '$scope', '$timeout', 'library',
+              function ($log, $scope, $timeout, library) {
 
   var self = this;
 
@@ -19,12 +20,23 @@ angular.module("library")
     return errorMessages[errorCode] || 'Unknown error (' + errorCode + ')';
   }
 
-  function errorText(barcode, reason) {
-    return 'Unable to return item ' + barcode + ': ' + reason;
+  self.itemCountClass = '';
+
+  /**
+   * Lets the item count pulse (used to draw attention to a change).
+   */
+  function pulseCount() {
+    self.itemCountClass = 'pulse';
+    $timeout(function () { self.itemCountClass = ''; }, 1000);
   }
 
   self.data = {};
   self.data.returnedItems = library.returnedItems();
+
+  function onCloseErrorDialog() {
+    // using DOM directly - not very angularly, but simple.
+    document.getElementById('returnBarcode').focus();
+  }
 
   self.returnItem = function(barcode) {
     library.returnItem(barcode)
@@ -32,20 +44,14 @@ angular.module("library")
         function(data) {
           self.data.returnedItems = library.returnedItems();
           self.barcode = '';
+          pulseCount();
         },
         function(res) {
           var err = res.data;
-          if (err && err.code) {
-            $scope.$emit('new-error-message', {
-                header: 'Unable to return item ' + barcode,
-                text: errorMessage(err.code)
-            });
-          } else {
-            $scope.$emit('new-error-message', {
-                header: 'Unable to return item ' + barcode,
-                text: 'Server error'
-            });
-          }
+          $scope.$emit('new-error-message', {
+              header: 'Unable to return item ' + barcode,
+              text: err && err.code ? errorMessage(err.code) : 'Server error'
+          }, onCloseErrorDialog);
           self.barcode = '';
         }
     );

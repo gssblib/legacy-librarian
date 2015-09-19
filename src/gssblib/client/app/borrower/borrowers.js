@@ -65,6 +65,21 @@ angular.module("library")
       });
   };
 
+  self.renewAll = function (item) {
+    library.renewBorrowerItems(self.borrower.borrowernumber).then(
+      function (data) {
+        getBorrower(self.borrower.borrowernumber);
+        var rows_changed = data[0].rowsChanged;
+        // show number of rows changed?
+      },
+      function (err) {
+        $scope.$emit('new-error-message', {
+            header: 'Unable to renew items',
+            text: 'Server Error'
+        });
+      });
+  };
+
   self.selectItem = function (item) {
     $location.path('/item/' + item.barcode);
   };

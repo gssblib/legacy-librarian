@@ -22,6 +22,9 @@
       <ng-pluralize count="ctrl.borrower.items.length"
         when="{'one': 'item checked out', 'other': 'items checked out'}">
       </ng-pluralize>
+      <button class="btn btn-success renew-all-button" ng-click="ctrl.renewAll()">
+        Renew All
+      </button>
     </h4>
     <table class="table table-striped table-hover table-condensed">
       <thead>

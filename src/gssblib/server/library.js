@@ -144,7 +144,18 @@ module.exports = {
             'where fine_due > fine_paid and borrowernumber = ?',
             borrowerNumber)]);
       });
-    }
+    };
+
+    /**
+     * Renews all items of a borrower.
+     */
+    borrowers.renewAllItems = function (borrowerNumber) {
+      new_date_due = addDays(time.now(), config.renewalDays);
+      return db.query(
+        'update `out` ' +
+        'set date_due = ? ' +
+        'where borrowernumber = ?', [new_date_due, borrowerNumber]);
+    };
 
     /**
      * Returns promise of the list of borrowers with fees due.

@@ -25,7 +25,7 @@ var roles = {
   librarian: {
     permissions: [
       {resource: 'items', operations: crud.concat('checkin', 'checkout', 'renew')},
-      {resource: 'borrowers', operations: crud.concat('payFees')},
+      {resource: 'borrowers', operations: crud.concat('payFees', 'renewAllItems')},
       {resource: 'fees', operations: crud},
       {resource: 'checkouts', operations: crud}
     ]
@@ -56,35 +56,35 @@ module.exports = function (db) {
    */
   function authenticate(login) {
     return db.selectRow('select * from users where username = ?',
-			login.username, true)
+                        login.username, true)
       .then(function (user) {
-	if (!user) {
-	  return {
-	    authenticated: false,
-	    reason: 'UNKNOWN_USER'
-	  };
-	}
-	if (saltedHash(login.password) !== user.hashed_password) {
-	  return {
-	    authenticated: false,
-	    reason: 'INCORRECT_PASSWORD'
-	  };
-	}
+        if (!user) {
+          return {
+            authenticated: false,
+            reason: 'UNKNOWN_USER'
+          };
+        }
+        if (saltedHash(login.password) !== user.hashed_password) {
+          return {
+            authenticated: false,
+            reason: 'INCORRECT_PASSWORD'
+          };
+        }
         var permissions = [];
         user.roles.split(',').forEach(function (roleName) {
           var role = roles[roleName];
           if (role) {
             permissions = permissions.concat(role.permissions);
-          } 
+          }
         });
-	return {
-	  authenticated: true,
-	  user: {
-	    username: user.username,
-	    roles: user.roles,
-	    permissions: permissions
-	  }
-	};
+        return {
+          authenticated: true,
+          user: {
+            username: user.username,
+            roles: user.roles,
+            permissions: permissions
+          }
+        };
       });
   }
 
