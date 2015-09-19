@@ -32,6 +32,10 @@
         </select>
       </div>
       <div class="form-group col-md-6">
+        <label>Classification</label>
+        <input class="form-control" ng-model="ctrl.item.classification"/>
+      </div>
+      <div class="form-group col-md-6">
         <label>Reading Age</label>
         <select class="form-control" ng-model="ctrl.item.age" ng-options="type for type in ctrl.refdata.ages">
         </select>
