@@ -43,6 +43,11 @@ angular.module("library")
       .then(
         function(data) {
           self.data.returnedItems = library.returnedItems();
+          self.data.returnedItem = self.data.returnedItems.filter(
+            function (item) { return item.barcode == barcode; })[0];
+          $timeout(function () {
+            self.data.returnedItem = null;
+          }, 1000);
           self.barcode = '';
           pulseCount();
         },

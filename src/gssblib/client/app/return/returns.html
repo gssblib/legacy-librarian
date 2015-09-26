@@ -40,16 +40,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="returned in ctrl.data.returnedItems.slice().reverse()">
+        <tr ng-repeat="item in ctrl.data.returnedItems.slice().reverse()"
+            ng-class="item === ctrl.data.returnedItem ? 'returned-item' : ''">
           <td>
-            <a ng-href="#/item/{{returned.barcode}}">
-              {{returned.barcode}}
+            <a ng-href="#/item/{{item.barcode}}">
+              {{item.barcode}}
             </a>
           </td>
           <td>{{returned.title}}</td>
           <td>
-            <a href="#/borrower/{{returned.borrower.borrowernumber}}">
-              {{borrowerLabel(returned.borrower)}}
+            <a href="#/borrower/{{item.borrower.borrowernumber}}">
+              {{borrowerLabel(item.borrower)}}
             </a>
           </td>
         </tr>

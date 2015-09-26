@@ -136,3 +136,6 @@ form .ng-valid.ng-dirty {
 .renew-all-button {
   margin-left: 1em;
 }
+tr.returned-item td {
+  background-color: #7f7 !important;
+}

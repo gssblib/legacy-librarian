@@ -14,26 +14,25 @@ function saltedHash(s) {
   return hash(config.auth.salt + s);
 }
 
-function storeUser(username, hashedPassword, roles) {
+function updatePassword(username, hashedPassword) {
   return db.query(
-    'insert into users (username, hashed_password, roles, failed_login_attempts)'
-      + ' values (?, ?, ?, 0)', [username, hashedPassword, roles]);
+    'update users set hashed_password = ? where username = ?',
+    [hashedPassword, username]);
 }
 
 function main() {
   var args = process.argv.slice(2);
   var username = args[0];
   var password = args[1];
-  var roles = args[2];
   var hashedPassword = saltedHash(password);
 
-  storeUser(username, hashedPassword, roles)
+  updatePassword(username, hashedPassword)
     .then(
       function (data) {
-        console.log('added user', username);
+        console.log('password changed for ', username);
       },
       function (err) {
-        console.log('error adding user:', err);
+        console.log('error changing password:', err);
       })
     .fin(function () {
       db.pool.end();
