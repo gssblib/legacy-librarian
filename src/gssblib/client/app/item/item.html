@@ -3,89 +3,32 @@
     <div class="panel-heading">
       <h3>Item {{ctrl.item.barcode}}: {{ctrl.item.title}}</h3>
     </div>
+    <div class="button-row">
+      <a ng-href="#/items" class="btn btn-primary" accesskey="s">
+        New <span class="accesskey">S</span>earch
+      </a>
+      <a ng-show="authorized('items', 'update')"
+         ng-href="#/item/{{ctrl.item.barcode}}/edit" class="btn btn-primary"
+         accesskey="c">
+        <span class="accesskey">C</span>hange
+      </a>
+      <a ng-show="authorized('items', 'update')"
+         ng-click="ctrl.copyItem(ctrl.item)" class="btn btn-primary">
+        Copy
+      </a>
+    </div>
     <div class="panel-body">
-      <div class="field-list">
-        <div class="col-sm-6">
-          <label>Status:</label>
-          <a ng-show="ctrl.item.checkout" class="checked-out"
-             ng-href="#/borrower/{{ctrl.item.borrower.borrowernumber}}">
-            Checked out
-            on {{ctrl.item.checkout.checkout_date | date:'dd MMM yyyy'}}
-          </a>
-          <span ng-hide="ctrl.item.checkout" class="available">
-            Available
-          </span>
-        </div>
-        <div class="col-sm-6">
-          <label>
-            <span ng-show="ctrl.item.checkout">Borrower:</span>
-            <span ng-hide="ctrl.item.checkout">&nbsp;</span>
-          </label>
-          <a ng-href="#/borrower/{{ctrl.item.borrower.borrowernumber}}">
-            {{ctrl.item.borrower.surname}}
-          </a>
-        </div>
-        <div class="col-sm-6">
-          <label>Category:</label>
-          <span>{{ctrl.item.description}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Author:</label>
-          <span>{{ctrl.item.author}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Publisher:</label>
-          <span>{{ctrl.item.publishercode}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Publication Year:</label>
-          <span>{{ctrl.item.publicationyear}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Subject:</label>
-          <span>{{ctrl.item.subject}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Classification:</label>
-          <span>{{ctrl.item.classification}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Reading Age:</label>
-          <span>{{ctrl.item.age}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Serial:</label>
-          <span>{{ctrl.item.serial}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Series Title:</label>
-          <span>{{ctrl.item.seriestitle}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Media:</label>
-          <span>{{ctrl.item.media}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Notes:</label>
-          <span>{{ctrl.item.itemnotes}}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>Replacement Price:</label>
-          <span>{{ctrl.item.replacementprice | currency}}</span>
-        </div>
-      </div>
+      <tabset>
+        <tab heading="Details">
+          <div id="itemDetailsPanel" class="tab-panel"
+               ng-include="'/item/item_details.html'"></div>
+        </tab>
+        <tab heading="History">
+          <div id="itemHistoryPanel" class="tab-panel"
+               ng-controller="itemHistoryCtrl as ctrl" 
+               ng-include="'/item/item_history.html'"></div>
+        </tab>
+      </tabset>
     </div>
   </div>
-  <a ng-href="#/items" class="btn btn-primary" accesskey="s">
-    New <span class="accesskey">S</span>earch
-  </a>
-  <a ng-show="authorized('items', 'update')"
-     ng-href="#/item/{{ctrl.item.barcode}}/edit" class="btn btn-primary"
-     accesskey="c">
-    <span class="accesskey">C</span>hange
-  </a>
-  <a ng-show="authorized('items', 'update')"
-     ng-click="ctrl.copyItem(ctrl.item)" class="btn btn-primary">
-    Copy
-  </a>
 </div>

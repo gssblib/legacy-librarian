@@ -51,6 +51,7 @@ angular.module("library")
     library.getItem(barcode).then(
       function (item) {
         self.item = item;
+        $scope.$broadcast('item-changed', self.item);
       },
       function (err) {
         $log.log('getItem: err=', err);

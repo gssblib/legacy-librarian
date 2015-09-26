@@ -232,11 +232,22 @@ module.exports = {
     }
 
     /**
+     * Returns the promise of the issue_history entries for the item with the given
+     * barcode. Adds the surname of the associated borrower.
+     */
+    function getItemHistory(barcode) {
+      var sql = 'select h.*, b.surname from issue_history h, borrowers b ' +
+        'where h.barcode = ? and h.borrowernumber = b.borrowernumber';
+      return db.selectRows(sql, barcode);
+    }
+
+    /**
      * Returns the promise of an item together with its checkout information.
      * Throws an error if the item does not exist.
      */
-    items.get = function (barcode) {
+    items.get = function (barcode, options) {
       var self = this;
+      options = options || {};
       var result;
       return items.constructor.prototype.get.call(self, barcode)
         .then(function (item) {
@@ -248,6 +259,16 @@ module.exports = {
             result.checkout = checkout;
             return borrowers.get(checkout.borrowernumber).then(function (borrower) {
               result.borrower = borrower;
+              return result;
+            });
+          } else {
+            return result;
+          }
+        })
+        .then(function () {
+          if (options['history']) {
+            return getItemHistory(barcode).then(function (history) {
+              result.history = history;
               return result;
             });
           } else {

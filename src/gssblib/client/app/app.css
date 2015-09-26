@@ -139,3 +139,13 @@ form .ng-valid.ng-dirty {
 tr.returned-item td {
   background-color: #7f7 !important;
 }
+.item-history-length {
+  font-weight: bold;
+  font-size: 120%;
+}
+.button-row {
+  padding: 1em 1em 0 1em;
+}
+.button-row .btn {
+  padding: 10px 5px
+}

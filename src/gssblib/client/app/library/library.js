@@ -27,8 +27,8 @@ angular.module("library")
     return $http.post(api_prefix + path, obj).then(getData);
   }
 
-  library.getItem = function (barcode) {
-    return httpGet('/items/' + barcode);
+  library.getItem = function (barcode, params) {
+    return httpGet('/items/' + barcode, params);
   };
 
   library.createItem = function (item) {

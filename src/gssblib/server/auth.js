@@ -19,7 +19,7 @@ var roles = {
   clerk: {
     permissions: [
       {resource: 'items', operations: ['read', 'checkin', 'checkout', 'renew']},
-      {resource: 'borrowers', operations: ['read', 'payFees']}
+      {resource: 'borrowers', operations: ['read', 'payFees', 'renewAllItems']}
     ]
   },
   librarian: {
