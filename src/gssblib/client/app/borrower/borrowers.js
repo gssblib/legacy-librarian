@@ -89,8 +89,23 @@ angular.module("library")
     'ITEM_ALREADY_CHECKED_OUT': "This item is already checked out."
   };
 
-  function errorMessage(code) {
-    return errorMessages[code] || 'Server error (' + code + ')';
+  // Error messages depending on a non-circulating item's state.
+  var nonCirculatingItemMessages = {
+    'STORED': 'Item is in storage.',
+    'DELETED': 'Item has been deleted.',
+    'LOST': 'Item was reported as lost.'
+  };
+
+  function errorMessage(err) {
+    if (!err || !err.code) {
+      return 'Server error';
+    }
+    var code = err.code;
+    if (code === 'ITEM_NOT_CIRCULATING') {
+      return nonCirculatingItemMessages[err.item.state];
+    } else {
+      return errorMessages[code] || 'Server error (' + code + ')';
+    }
   }
 
   self.checkOutItem = function (barcode) {
@@ -103,19 +118,11 @@ angular.module("library")
           pulseCount();
         },
         function (res) {
-          console.log('checkOutItem: res=', res);
           var err = res.data;
-          if (err && err.code) {
-            $scope.$emit('new-error-message', {
-                header: 'Could not check out item ' + barcode,
-                text: errorMessage(err.code)
-            });
-          } else {
-            $scope.$emit('new-error-message', {
-                header: 'Could not check out item ' + barcode,
-                text: 'Server error'
-            });
-          }
+          $scope.$emit('new-error-message', {
+              header: 'Could not check out item ' + barcode,
+              text: errorMessage(err)
+          });
           self.barcode = '';
         });
   };

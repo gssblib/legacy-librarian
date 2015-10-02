@@ -6,6 +6,11 @@
     <form name="editItemForm" ng-submit="ctrl.saveItem(ctrl.item)"
           class="panel-body" novalidate>
       <div class="form-group col-md-6">
+        <label>State</label>
+        <select class="form-control" ng-model="ctrl.item.state" ng-options="type for type in ctrl.refdata.states">
+        </select>
+      </div>
+      <div class="form-group col-md-6">
         <label>Categories</label>
         <select class="form-control" ng-model="ctrl.item.description" ng-options="type for type in ctrl.refdata.types">
         </select>

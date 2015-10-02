@@ -9,6 +9,13 @@
              ng-model="ctrl.item.barcode" autofocus/>
     </div>
     <div class="form-group col-sm-6">
+      <label for="newItemState">State</label>
+      <select id="newItemState" name="state" class="form-control"
+              ng-model="ctrl.item.state"
+              ng-options="type for type in ctrl.refdata.states">
+      </select>
+    </div>
+    <div class="form-group col-sm-6">
       <label for="newItemDescription">Categories</label>
       <select id="newItemDescription" name="description" class="form-control"
               ng-model="ctrl.item.description"

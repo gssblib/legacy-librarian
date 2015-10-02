@@ -199,7 +199,8 @@ module.exports = {
         {name: 'title', queryOp: 'contains'},
         {name: 'author', queryOp: 'contains'},
         'publicationyear', 'publishercode', 'age', 'media', 'serial', 'seriestitle',
-        'classification', 'country', 'itemnotes', 'replacementprice', 'issues'],
+        'classification', 'country', 'itemnotes', 'replacementprice', 'issues',
+        'state'],
       naturalKey: 'barcode'});
 
     var checkoutColumns = [
@@ -351,14 +352,20 @@ module.exports = {
           result.borrower = borrower;
           return items.get(barcode);
         })
-        .then(function (data) {
-          if (data.checkout) {
+        .then(function (item) {
+          if (item.checkout) {
             throw {
               httpStatusCode: 400, code: 'ITEM_ALREADY_CHECKED_OUT', errno: 1105,
-              checkout: data.checkout
+              checkout: item.checkout
             };
           }
-          result.item = data.item;
+          if (item.state !== 'CIRCULATING') {
+            throw {
+              httpStatusCode: 400, code: 'ITEM_NOT_CIRCULATING', errno: 1106,
+              item: item
+            };
+          }
+          result.item = item;
           return null;
         })
         .then(function () {

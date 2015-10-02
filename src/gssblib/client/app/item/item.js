@@ -44,6 +44,9 @@ angular.module("library")
     media: [
       "na", "DVD-Europa", "DVD-USA", "Software-Mac", "Software-Windows",
       "Software-Windows/Mac"
+    ],
+    states: [
+      'CIRCULATING', 'STORED', 'DELETED', 'LOST'
     ]
   };
 
