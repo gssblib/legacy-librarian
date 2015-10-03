@@ -1,21 +1,21 @@
 {
   // node/express server
   "server": {
-    "port": ...
+    "port": 3000
   },
 
   // Library database
   "db": {
-    "database": "...",
-    "host": "...",
-    "user": "...",
-    "password": "..."
+    "database": "spils",
+    "host": "localhost",
+    "user": "gssb",
+    "password": "<passwd>"
   },
 
   "auth": {
     // generate with 'openssl rand -base64 32'
-    "salt": "...",
-    "cookie": "...",
-    "session": "..."
+    "salt": "sJt4w7r9O8FgQ/T8kaX6SZq2gtUm8axZYgzxeh3xTUs=",
+    "cookie": "b8TAcp+KA8/E+Rqvifc5hP7gDKVggpss5hYhoYlPSQk=",
+    "session": "Jpmvm5kQ2g8dEfEX8+x6Xe6nhpiQHrn9dfalBBMp5Bw="
   }
 }
