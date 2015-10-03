@@ -50,15 +50,16 @@ should be available.
 ```
 $ mysql -p -u root
 ...
-mysql> create user 'gssb'@'localhost' identified by '...';
-mysql> create database spils;
+mysql> CREATE USER 'gssb'@'localhost' IDENTIFIED BY '<passwd>';
+mysql> CREATE DATABASE spils;
+mysql> GRANT ALL ON spils TO 'gssb'@'localhost';
 mysql> quit
 ```
 
 ### Upload dump
 
 ```
-$ mysql -p -u gssb < dump.sql
+$ zcat ./dump-<timestamp>.sql.gz | mysql -p -u gssb spils
 ```
 
 Check:
