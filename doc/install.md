@@ -69,13 +69,6 @@ $ mysql -p -u gssb spils
 mysql> select count(*) from items;
 ```
 
-### Add new user tables
-
-```
-$ cd $GSSBLIB_HOME
-$ mysql -p -u gssb spils < sql/user_schema.sql
-```
-
 ## Gssblib server
 
 ### Create configuration
@@ -90,6 +83,25 @@ when running the server or tools.
 
 [node-config-module]: https://github.com/lorenwest/node-config
 
+### Install node and bower modules
+
+To download and install all modules, run the npm and bower installation.
+
+```
+$ cd $GSSBLIB_HOME
+$ npm install
+$ sudo npm install grunt grunt-cli -g
+$ grunt bower:install
+```
+
+### Setting up config file
+
+```
+$ cd $GSSBLIB_HOME/server/config
+$ cp template.json prod.json
+$ nano prod.json
+```
+
 ### Add users
 
 Users are added with the `add_user.js` node script which takes the username,
@@ -99,17 +111,9 @@ password, and list of roles as arguments.
 $ cd $GSSBLIB_HOME/server
 $ NODE_ENV=prod ./add_user.js some_user some_nice_password librarian
 $ NODE_ENV=prod ./add_user.js another_user another_password clerk
-``` 
-
-### Install node and bower modules
-
-To download and install all modules, run the npm and bower installation.
-
 ```
-$ cd $GSSBLIB_HOME
-$ npm install
-$ grunt bower:install
-```
+
+### Running the server
 
 After this, the server is ready to be started using the `library_server.js`
 script and accessed using `http://localhost:<port>/`.
