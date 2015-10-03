@@ -1,8 +1,5 @@
-.installed.cfg
+node_modules
+bower_components
+tags
 *.pyc
-*~
-ve/
-src/*.egg-info
-bin/
-develop-eggs/
-parts/
+*.swo
