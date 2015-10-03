@@ -1,6 +1,0 @@
-.accesskey {
-  text-decoration: underline;
-}
-.actions .btn {
-  margin-right: 4px;
-}
