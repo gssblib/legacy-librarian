@@ -27,14 +27,16 @@ var roles = {
       {resource: 'items', operations: crud.concat('checkin', 'checkout', 'renew')},
       {resource: 'borrowers', operations: crud.concat('payFees', 'renewAllItems')},
       {resource: 'fees', operations: crud},
-      {resource: 'checkouts', operations: crud}
+      {resource: 'checkouts', operations: crud},
+      {resource: 'reports', operations: crud}
     ]
   },
   admin: {
     permissions: [
       {resource: 'users', operations: crud},
       {resource: 'items', operations: crud.concat('checkin', 'checkout', 'renew')},
-      {resource: 'borrowers', operations: crud}
+      {resource: 'borrowers', operations: crud},
+      {resource: 'reports', operations: crud}
     ]
   }
 };
@@ -98,4 +100,3 @@ module.exports = function (db) {
     hashPassword: saltedHash
   };
 };
-

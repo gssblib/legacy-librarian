@@ -54,7 +54,16 @@ httpcall.handlePaths([
     fn: function (call) {
       return library.checkouts.updateFees(call.req.body.date);
     },
-    action: {resource: 'checkouts', operation: 'update'}}]);
+    action: {resource: 'checkouts', operation: 'update'
+    }},
+  { get: '/reports/itemUsage',
+    fn: function (call) {
+        return library.reports.getItemUsage(call.param('lastCheckoutDate'));
+    },
+    action: {resource: 'reports', operation: 'read'
+    }}
+]);
+
 
 httpcall.handlePaths([
   { get: '/users/current',
@@ -62,7 +71,7 @@ httpcall.handlePaths([
       return Q(call.req.session.user);
     }},
   { post: '/users/authenticate',
-    fn: function (call) {      
+    fn: function (call) {
       return auth.authenticate(call.req.body).tap(function (result) {
         console.log('authenticate', result);
 	if (result.authenticated) {
@@ -97,4 +106,3 @@ server.listen(port, function() {
 process.on('exit', function() {
   db.end();
 });
-
