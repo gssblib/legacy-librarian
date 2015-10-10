@@ -25,6 +25,13 @@
 
     <p>Items found: <b>{{ctrl.report.length}}</b></p>
 
+    <button class="btn btn-default"
+            ng-csv="ctrl.report"
+            csv-header="['Barcode', 'Title', 'Author', 'Last Checkout Date']"
+            filename="report.csv"
+            field-separator="," decimal-separator="."
+            >Export to CSV</button>
+
     <div class="pull-right btn-group"
          ng-show="ctrl.pagination.pageCount > 1">
       <a class="btn btn-default"
