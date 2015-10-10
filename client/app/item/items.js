@@ -3,15 +3,32 @@
  */
 angular.module('library')
 .controller('itemsCtrl',
-            ['$scope', '$location', '$routeParams', 'library', 'util',
-             function($scope, $location, $routeParams, library, util) {
+            ['$scope', '$location', '$routeParams', 'library', 'util', 'itemService',
+             function($scope, $location, $routeParams, library, util, itemService) {
   var self = this;
   $scope.$emit('nav-item-changed', 'items');
+
+  self.refdata = itemService.refdata;
+  self.tabActive = {
+    'title': false,
+    'barcode': false,
+    'form': false
+  };
+
+  function selectTab(tab) {
+    if (tab) {
+      for (t in self.tabActive) {
+        self.tabActive[t] = false;
+      }
+      self.tabActive[tab] = true;
+    }
+  }
 
   self.data = {
     showItems: false,
     items: []
   };
+  self.lookup = {};
 
   /**
    * Returns the items whose titles contain the titlePart (for typeahead).
@@ -27,8 +44,12 @@ angular.module('library')
     $location.path('/item/' + item.barcode);
   };
 
+  self.selectItemByBarcode = function (barcode) {
+    $location.path('/item/' + barcode);
+  };
+
   self.searchItems = function (criteria, page) {
-    $location.search(angular.extend(criteria || {}, {page: page}));
+    $location.search(angular.extend(criteria || {}, {page: page, tab: 'form'}));
   };
 
   var pageSize = 10;
@@ -54,9 +75,11 @@ angular.module('library')
     self.data.showItems = false;
   }
 
+  var formFields = ['author', 'title', 'barcode', 'state'];
   $scope.$on('$routeChangeSuccess', function (event) {
     if ($location.path().indexOf("/items") == 0) {
-      var criteria = util.fields($routeParams, ['author', 'title', 'barcode']);
+      selectTab($routeParams['tab'] || 'title');
+      var criteria = util.fields($routeParams, formFields);
       if (criteria) {
         self.search = criteria;
         var page = $routeParams['page'];

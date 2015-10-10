@@ -8,6 +8,13 @@
 .nav-pills {
   font-size: 16px;
 }
+.nav-pills a {
+  width: 7em;
+  text-align: center;
+}
+ul.nav-tabs li {
+  cursor: pointer;
+}
 .main-content {
 }
 .items {
@@ -54,9 +61,6 @@
 .slideUp.ng-hide {
   transition: 0.3s linear all;
   height: 0em;
-}
-.item-search-form {
-  margin-top: 2em;
 }
 .dashboard-buttons {
   border-spacing: 1em;
