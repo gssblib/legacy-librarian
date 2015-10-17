@@ -3,17 +3,14 @@
   <form name="returnForm" class="form-horizontal" novalidate
         ng-submit="ctrl.returnItem(ctrl.barcode)">
     <div class="form-group">
-      <label for="returnBarcode" class="control-label col-sm-2">
-        Barcode
-      </label>
-      <div class="col-sm-4 col-md-6">
+      <div class="col-sm-4 col-md-4">
         <input id="returnBarcode" name="barcode" ng-model="ctrl.barcode"
                required only-digits maxlength="9"
                class="form-control" autofocus placeholder="barcode"/>
       </div>
     </div>
     <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-4">
+      <div class="col-sm-4 col-md-4">
         <button type="submit" class="btn btn-primary" required
                 ng-disabled="returnForm.$invalid || ctrl.barcode.length != 9">
           Return

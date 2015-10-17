@@ -1,13 +1,9 @@
 <div ng-controller="borrowersCtrl as ctrl">
-  <a href="#/borrower/new" class="btn btn-primary">
-   New Borrower
+  <a href="#/borrower/new" class="btn btn-primary" ng-show="authorized('borrowers', 'create')">
+   Add New Borrower
   </a>
-  <h4>Select Borrower</h4>  
-  <form name="borrowerSearch" class="form-horizontal">
+  <form name="borrowerSearch">
     <div class="form-group">
-      <label for="borrowerSearch" class="control-label col-sm-2">
-	Name
-      </label>
       <div class="col-sm-4 col-md-6">
 	<input id="borrowerSearch" autofocus class="form-control"
 	     ng-model="ctrl.data.borrowerLabel"

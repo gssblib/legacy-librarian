@@ -24,14 +24,14 @@
           <form name="barcodeForm" class="form-horizontal" novalidate
               ng-submit="ctrl.selectItemByBarcode(ctrl.lookup.barcode)">
             <div class="form-group">
-              <div class="col-sm-4 col-md-6">
+              <div class="col-sm-4 col-md-4">
                 <input id="itemBarcode" name="barcode" ng-model="ctrl.lookup.barcode"
                        required only-digits maxlength="9"
                        class="form-control col-sm-4" autofocus placeholder="barcode"/>
                </div>
              </div>
              <div class="form-group">
-               <div class="col-sm-4 col-md-6">
+               <div class="col-sm-4 col-md-4">
                  <button type="submit" class="btn btn-primary" required
                         ng-disabled="barcodeForm.$invalid || ctrl.lookup.barcode.length != 9">
                   Search

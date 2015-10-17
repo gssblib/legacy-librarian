@@ -75,6 +75,9 @@ ul.nav-tabs li {
 tr.clickable > td, td.clickable {
   cursor: pointer;
 }
+.action-row {
+  margin-bottom: 0.5em;
+}
 .checked-out {
   color: red;
 }
