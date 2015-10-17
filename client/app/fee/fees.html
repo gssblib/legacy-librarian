@@ -1,23 +1,25 @@
 <div ng-controller="feesCtrl as ctrl">
-<h4>Compute Fees</h4>
+  <h4>Compute Fees</h4>
 
-The fees are computed as of the given date.  If the due date of a checked out
-item is before this date, the fee will be set to 50ȼ.
-<p>
-<form name="feeUpdateForm" ng-submit="ctrl.updateFees(ctrl.feeDate)">
-  <div class="form-group col-md-6">
-    <label for="feeDate">Date</label>
-    <input id="feeDate" name="feeDate" type="date" class="form-control date"
-           ng-model="ctrl.feeDate"/>
-  </div>
-  <span class="clearfix"></span>
-  <div class="form-group col-md-6">    
-    <button type="submit" class="btn btn-primary"
-            ng-disabled="feeUpdateForm.$invalid">
-      Update Fees
-    </button>
-  </div>
-</form>
+  <p>
+    The fees are computed as of the given date.  If the due date of a checked
+    out item is before this date, the fee will be set to 50ȼ.
+  </p>
+
+  <form name="feeUpdateForm" ng-submit="ctrl.updateFees(ctrl.feeDate)">
+    <div class="form-group col-md-6">
+      <label for="feeDate">Date</label>
+      <input id="feeDate" name="feeDate" type="date" class="form-control date"
+             ng-model="ctrl.feeDate"/>
+    </div>
+    <span class="clearfix"></span>
+    <div class="form-group col-md-6">
+      <button type="submit" class="btn btn-primary"
+              ng-disabled="feeUpdateForm.$invalid">
+        Update Fees
+      </button>
+    </div>
+  </form>
 
   <table class="table table-striped table-hover table-condensed">
     <thead>

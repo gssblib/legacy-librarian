@@ -82,7 +82,7 @@ module.exports = {
     function totalFine(items) {
       return items.reduce(function (total, item) {
         return total + item.fine_due - item.fine_paid;
-      }, 0); 
+      }, 0);
     }
 
     /**
@@ -385,14 +385,25 @@ module.exports = {
           result.checkout = checkout;
           return result;
         });
-    }
+    };
+
+    var reports = {};
+
+    reports.getItemUsage = function(lastCheckoutDate) {
+      var sql = 'select a.barcode, a.title, a.author, ' +
+                'max(h.checkout_date) as last_checkout_date ' +
+                'from items a, issue_history h ' +
+                'where a.barcode = h.barcode ' +
+                'group by a.barcode having last_checkout_date < ?';
+      return db.selectRows(sql, lastCheckoutDate);
+    };
 
     return {
       borrowers: borrowers,
       items: items,
       checkouts: checkouts,
-      history: history
+      history: history,
+      reports: reports
     };
   }
 };
-

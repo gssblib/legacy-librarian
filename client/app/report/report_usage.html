@@ -1,0 +1,71 @@
+<div ng-controller="itemUsageReportCtrl as ctrl">
+  <p>
+    This report shows the items which have not been checked out since the
+    given date.
+  </p>
+
+  <form name="itemUsageForm"
+        ng-submit="ctrl.getReport(ctrl.lastCheckoutDate)">
+    <div class="form-group">
+      <label for="lastCheckoutDate">Last Checkout Date</label>
+      <input id="lastCheckoutDate" name="lastCheckoutDate"
+             type="date" class="form-control date"
+             ng-model="ctrl.lastCheckoutDate"/>
+    </div>
+    <span class="clearfix"></span>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary"
+              ng-disabled="itemUsageForm.$invalid">
+        Update Report
+      </button>
+    </div>
+  </form>
+
+  <div ng-show="ctrl.report.length">
+
+    <p>Items found: <b>{{ctrl.report.length}}</b></p>
+
+    <button class="btn btn-default"
+            ng-csv="ctrl.report"
+            csv-header="['Barcode', 'Title', 'Author', 'Last Checkout Date']"
+            quote-stringsxf="true"
+            filename="report.csv"
+            field-separator="," decimal-separator="."
+            >Export to CSV</button>
+
+    <div class="pull-right btn-group"
+         ng-show="ctrl.pagination.pageCount > 1">
+      <a class="btn btn-default"
+         ng-show="ctrl.pagination.showFirst"
+         ng-click="ctrl.setPage(0)">&laquo;</a>
+      <a ng-repeat="page in ctrl.pagination.pageRange"
+         class="btn btn-default"
+         ng-click="ctrl.setPage(page)"
+         ng-class="ctrl.pageClass(page)">{{page + 1}}</a>
+      <a class="btn btn-default"
+         ng-show="ctrl.pagination.showLast"
+         ng-click="ctrl.setPage(ctrl.pagination.pageCount - 1)">&raquo;</a>
+    </div>
+
+    <table class="table table-striped table-hover table-condensed">
+      <thead>
+        <th><a ng-click="ctrl.setSortKey('barcode')">Barcode</a></th>
+        <th><a ng-click="ctrl.setSortKey('title')">Title</a></th>
+        <th><a ng-click="ctrl.setSortKey('author')">Author</a></th>
+        <th><a ng-click="ctrl.setSortKey('last_checkout_date')">Last Checkout Date</a></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in ctrl.report |
+                       orderBy:ctrl.sortKey |
+                       range:ctrl.pagination.page:ctrl.pagination.pageSize">
+          <td class="clickable" ng-click="ctrl.showItem(item.barcode)">
+            {{item.barcode}}</td>
+          <td>{{item.title}}</td>
+          <td>{{item.author}}</td>
+          <td>{{item.last_checkout_date | date}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

@@ -18,6 +18,8 @@
   <script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="vendor/angular-sanitize/angular-sanitize.js"></script>
   <script src="vendor/angular-dialog-service/dialogs.min.js"></script>
+  <script src="vendor/angular-sanitize/angular-sanitize.js"></script>
+  <script src="vendor/ng-csv/ng-csv.min.js"></script>
   <script src="auth/auth.js"></script>
   <script src="app.js"></script>
   <script src="components/util.js"></script>
@@ -37,6 +39,7 @@
   <script src="login/login_popup.js"></script>
   <script src="return/returns.js"></script>
   <script src="dashboard/dashboard.js"></script>
+  <script src="report/report.js"></script>
 </head>
 <body ng-controller="libraryCtrl as appCtrl">
   <div class="container-fluid">
@@ -66,6 +69,12 @@
               ng-show="authorized('checkouts', 'update')">
             <a href="#/fees" accesskey="f">
               <span class="accesskey">F</span>ees
+            </a>
+          </li>
+          <li class="presentation" ng-class="appCtrl.navClass('reports')"
+              ng-show="authorized('checkouts', 'update')">
+            <a href="#/reports" accesskey="r">
+              <span class="accesskey">R</span>eports
             </a>
           </li>
         </ul>

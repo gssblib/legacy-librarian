@@ -2,7 +2,9 @@
  * Main angularjs file. Define the library module and the routes.
  */
 
-angular.module('library', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'dialogs.main', 'lbAuth'],
+angular.module('library', [
+  'ngRoute', 'ngAnimate', 'ui.bootstrap', 'dialogs.main', 'lbAuth',
+  'ngSanitize', 'ngCsv'],
   ['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push(
       ['$location', '$q', '$rootScope', function ($location, $q, $rootScope) {
@@ -53,6 +55,10 @@ angular.module('library', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'dialogs.main
       templateUrl: '/fee/fees.html',
       authAction: {resource: 'fees', operation: 'update'}
     })
+    .when('/reports', {
+      templateUrl: '/report/reports.html',
+      authAction: {resource: 'reports', operation: 'read'}
+    })
     .when('/dashboard', {
       templateUrl: '/dashboard/dashboard.html'
     })
@@ -60,4 +66,3 @@ angular.module('library', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'dialogs.main
       templateUrl: '/dashboard/dashboard.html'
     });
 }]);
-
