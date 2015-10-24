@@ -52,7 +52,7 @@ $ mysql -p -u root
 ...
 mysql> CREATE USER 'gssb'@'localhost' IDENTIFIED BY '<passwd>';
 mysql> CREATE DATABASE spils;
-mysql> GRANT ALL ON spils TO 'gssb'@'localhost';
+mysql> GRANT ALL ON spils.* TO 'gssb'@'localhost';
 mysql> quit
 ```
 
