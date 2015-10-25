@@ -75,7 +75,11 @@ angular.module('library')
     self.data.showItems = false;
   }
 
-  var formFields = ['author', 'title', 'barcode', 'state', 'subject', 'classification'];
+  var formFields = [
+    'author', 'title', 'barcode', 'state', 'subject', 'classification',
+    'seriestitle'
+  ];
+
   $scope.$on('$routeChangeSuccess', function (event) {
     if ($location.path().indexOf("/items") == 0) {
       selectTab($routeParams['tab'] || 'title');

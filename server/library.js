@@ -198,7 +198,8 @@ module.exports = {
         'barcode', 'description', 'subject', 'added', 'itemlost',
         {name: 'title', queryOp: 'contains'},
         {name: 'author', queryOp: 'contains'},
-        'publicationyear', 'publishercode', 'age', 'media', 'serial', 'seriestitle',
+        'publicationyear', 'publishercode', 'age', 'media', 'serial',
+        {name: 'seriestitle', queryOp: 'contains'},
         'classification', 'country', 'itemnotes', 'replacementprice', 'issues',
         'state'],
       naturalKey: 'barcode'});
