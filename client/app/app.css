@@ -27,7 +27,7 @@ ul.nav-tabs li {
   margin-left: 2em;
 }
 .fee {
-  margin-right: 5px;
+  margin-left: 5px;
   vertical-align: buttom;
   font-size: 120%;
 }
@@ -72,7 +72,7 @@ ul.nav-tabs li {
   width: 7em;
   height: 5em;
 }
-tr.clickable > td, td.clickable {
+tr.clickable > td, td.clickable, th.clickable {
   cursor: pointer;
 }
 .action-row {

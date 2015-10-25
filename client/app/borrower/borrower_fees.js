@@ -3,6 +3,16 @@ angular.module('library')
     ['$scope', 'library', function($scope, library) {
   var self = this;
   self.borrower = {};
+  self.sortKey = '-checkout_date';
+
+
+  /**
+   * Sets the sort key for the table showing the checked out items of a
+   * borrower.
+   */
+  self.setSortKey = function (field) {
+    self.sortKey = (field === self.sortKey ? "-" : "") + field;
+  };
 
   function allItems(borrower) {
     var items = [];
@@ -17,36 +27,28 @@ angular.module('library')
     return items; 
   }
 
-  function getBorrowerFees() {
-    library.getBorrower(self.borrower.borrowernumber, {options: 'fees'}).then(
-      function (borrower) {
-        self.borrower = borrower;
-        self.items = allItems(borrower);
-      });
-  }
-
   // Load fees and associated check-outs after the borrower has changed.
   $scope.$on('borrower-changed', function(event, borrower) {
     self.borrower = borrower;
-    getBorrowerFees();
+    self.items = allItems(borrower);
   });
 
   self.payAllFees = function () {
     var borrowerNumber = self.borrower.borrowernumber;
     library.payFees(borrowerNumber).then(function (data) {
-      getBorrowerFees();
+      $scope.$emit('update-borrower');
     });   
   };
 
   self.payFee = function (item) {
     library.payFee(item).then(function (data) {
-      getBorrowerFees();
+      $scope.$emit('update-borrower');
     });
   };
 
   self.waiveFee = function (item) {
     library.waiveFee(item).then(function (data) {
-      getBorrowerFees();
+      $scope.$emit('update-borrower');
     });
   };
 }]);

@@ -30,12 +30,16 @@ angular.module("library")
   }
 
   function getBorrower(borrowerNumber) {
-    library.getBorrower(borrowerNumber, {options: 'items'}).then(
+    library.getBorrower(borrowerNumber, {options: 'items,fees'}).then(
       function (borrower) {
         self.borrower = borrower;
         $scope.$broadcast('borrower-changed', self.borrower);
       });
   }
+
+  $scope.$on('update-borrower', function() {
+    getBorrower(self.borrower.borrowernumber);
+  });
 
   $scope.$on('$routeChangeSuccess', function (event) {
     if ($location.path().indexOf("/borrower/") == 0) {

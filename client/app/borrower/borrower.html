@@ -15,7 +15,7 @@
           <div id="borrowerCheckoutsPanel" class="tab-panel"
                ng-include="'/borrower/borrower_checkouts.html'"></div>
         </tab>
-        <tab heading="Fees">
+        <tab heading="Fees ({{ctrl.borrower.fees.total | currency}})">
           <div ng-controller="borrowerFeesCtrl as ctrl" class="tab-panel"
                ng-include="'/borrower/borrower_fees.html'"></div>
         </tab>
