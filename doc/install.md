@@ -19,31 +19,24 @@ $ cd github/gssb
 $ git clone https://github.com/gssblib/librarian.git
 ```
 
-The angular/node project can be found under `~/github/gssblib/library/src/gssblib/`.
+The angular/node project can be found under `~/github/gssblib/librarian/`.
 The following instructions use the `GSSBLIB_HOME` variable for this directory.
 
 
 ## Install node
 
-We use a local installation under ~/local and build node from
-the source tar ball.  The following instructions use a build
-directory under `~/install`, but one can obviously pick any
-directory for this step.
+The easiest way to install node locally is to use the node version manager
+[nvm][nvm]. Install nvm by following the instructions on the nvm page and
+then install the latest stable node version with
 
 ```
-$ cd
-$ mkdir ~/install
-$ cd install
-$ curl http://nodejs.org/dist/v0.12.0/node-v0.12.0.tar.gz | tar xzf
-$ ln -s node-v0.12.0 node-latest
-$ cd node-latest
-$ ./configure --prefix=/home/gssblib/local
-$ make install
-$ cd
+nvm install stable
 ```
 
-After adding `~/local/bin` to the `PATH`, the `node` and `npm` commands
-should be available.
+[nvm]: https://github.com/creationix/nvm
+
+After that, `node` and `nvm` should be available. One can see the installation
+location with `nvm which`.
 
 ## Mysql gssb database
 
