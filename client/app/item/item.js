@@ -15,7 +15,7 @@ angular.module("library")
     refdata: {
       types: [
         "Buch", "CD", "CD-ROM", "DVD", "Comic", "Multimedia", "Zeitschrift",
-        "Kassette"
+        "Kassette", "Computer", "Projector", "DVD Player"
       ],
       subjects: [
         "CD", "CD-ROM", "DVD", "Bilderbuch B-gelb", "Comic C-orange",
