@@ -56,6 +56,7 @@ CREATE TABLE `items` (
   `issues` int(11) DEFAULT NULL,
   `added` datetime DEFAULT NULL,
   `itemlost` varchar(25) DEFAULT NULL,
+  `antolin` boolean DEFAULT false,
   PRIMARY KEY (`id`),
   UNIQUE KEY `barcode` (`barcode`),
   KEY `barcode_2` (`barcode`)
