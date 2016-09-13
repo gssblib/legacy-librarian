@@ -13,6 +13,7 @@ CREATE TABLE `borrowers` (
   `emailaddress_2` text,
   `contactname` text,
   `debarred` int(11) DEFAULT NULL,
+  `state` enum('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
   PRIMARY KEY (`id`),
   UNIQUE KEY `borrowernumber` (`borrowernumber`),
   UNIQUE KEY `cardnumber` (`cardnumber`),
@@ -57,6 +58,7 @@ CREATE TABLE `items` (
   `added` datetime DEFAULT NULL,
   `itemlost` varchar(25) DEFAULT NULL,
   `antolin` boolean DEFAULT false,
+  `state` enum('CIRCULATING', 'STORED', 'DELETED', 'LOST') NOT NULL DEFAULT 'CIRCULATING',
   PRIMARY KEY (`id`),
   UNIQUE KEY `barcode` (`barcode`),
   KEY `barcode_2` (`barcode`)
