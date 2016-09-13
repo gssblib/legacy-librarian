@@ -66,8 +66,19 @@
         <label>Replacement Price</label>
         <input class="form-control" ng-model="ctrl.item.replacementprice"/>
       </div>
+      <div class="form-group col-sm-6 col-md-4">
+        <label>Available in Antolin</label>
+        <div class="checkbox">
+          <label>
+            <input id="antolin-yes" name="antolin"
+                   ng-model="ctrl.item.antolin"
+                   type="checkbox" />
+            Yes
+          </label>
+        </div>
+      </div>
       <span class="clearfix"></span>
-      <div class="form-group col-sm-6 col-md-4">    
+      <div class="form-group col-sm-6 col-md-4">
         <button type="submit" class="btn btn-primary"
                 ng-disabled="editItemForm.$invalid">
           Save
