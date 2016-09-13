@@ -16,7 +16,9 @@ angular.module('library')
     self.mode = 'edit';
   };
   self.saveBorrower = function() {
-    library.saveBorrower(self.borrower).then(function (data) {
+    var borrower = angular.copy(self.borrower);
+    delete borrower.history;
+    library.saveBorrower(borrower).then(function (data) {
       console.log('saveBorrower', data);
       self.data.borrower = self.borrower;
       $scope.$emit('borrower-profile-updated', self.borrower);
