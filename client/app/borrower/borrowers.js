@@ -2,14 +2,26 @@
  * Defines the controllers for the borrower views.
  */
 angular.module("library")
+.factory('borrowerService', function () {
+  return {
+    refdata: {
+      states: [
+        'ACTIVE', 'INACTIVE'
+      ]
+    }
+  };
+})
 /**
  * Constroller for the borrower view (showing a single borrower and his/her
  * checked-out items.
  */
 .controller("borrowerCtrl",
             ['$scope', '$location', '$routeParams', '$timeout', 'util', 'library',
-             function ($scope, $location, $routeParams, $timeout, util, library) {
+             'borrowerService',
+             function ($scope, $location, $routeParams, $timeout, util, library,
+               borrowerService) {
   var self = this;
+  self.refdata = borrowerService.refdata;
   $scope.$emit('nav-item-changed', 'borrowers');
 
   self.borrower = {};
