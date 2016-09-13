@@ -6,7 +6,12 @@
   </div-->
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h4>{{ctrl.borrowerLabel(ctrl.borrower)}}</h4>
+      <h4>
+        {{ctrl.borrowerLabel(ctrl.borrower)}}
+        <span ng-if="ctrl.borrower.state == 'INACTIVE'" class="label label-danger">
+          inactive
+        </span>
+      </h4>
     </div>
     <div class="panel-body">
       <tabset>
