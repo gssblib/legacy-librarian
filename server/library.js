@@ -27,7 +27,8 @@ module.exports = {
       columns: [
         'borrowernumber', 'cardnumber', 'firstname', 'contactname',
         {name: 'surname', queryOp: 'contains'},
-        'streetaddress', 'city', 'zipcode', 'phone', 'emailaddress', 'emailaddress_2'],
+        'streetaddress', 'city', 'zipcode', 'phone', 'emailaddress',
+        'emailaddress_2', 'state'],
       naturalKey: 'borrowernumber'});
 
     /**
@@ -201,7 +202,7 @@ module.exports = {
         'publicationyear', 'publishercode', 'age', 'media', 'serial',
         {name: 'seriestitle', queryOp: 'contains'},
         'classification', 'country', 'itemnotes', 'replacementprice', 'issues',
-        'state'],
+        'state', 'antolin'],
       naturalKey: 'barcode'});
 
     var checkoutColumns = [
