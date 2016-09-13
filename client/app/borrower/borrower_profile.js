@@ -1,7 +1,9 @@
 angular.module('library')
 .controller('borrowerProfileCtrl',
-    ['$scope', 'library', function($scope, library) {
+    ['$scope', 'library', 'borrowerService',
+    function($scope, library, borrowerService) {
   var self = this;
+  self.refdata = borrowerService.refdata;
   self.data = {};
   self.mode = 'view';
 

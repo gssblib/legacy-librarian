@@ -1,8 +1,11 @@
 angular.module('library')
 .controller('borrowerNewCtrl',
-    ['$scope', '$location', 'library', function($scope, $location, library) {
+    ['$scope', '$location', 'library', 'borrowerService',
+     function($scope, $location, library, borrowerService) {
   var self = this;
+  self.refdata = borrowerService.refdata;
   self.data = {};
+  self.borrower = {'state': 'ACTIVE'};
 
   self.addBorrower = function (borrower) {
     library.createBorrower(borrower).then(

@@ -39,6 +39,10 @@
     <label>Email Address</label>
     <span>{{ctrl.data.borrower.emailaddress}}</span>
   </div>
+  <div class="col-sm-6">
+    <label>State</label>
+    <span>{{ctrl.data.borrower.state}}</span>
+  </div>
 </div>
 <div ng-show="ctrl.mode == 'edit'">
   <form name="editBorrowerForm" ng-submit="ctrl.saveBorrower(ctrl.borrower)">
@@ -78,6 +82,11 @@
     <div class="form-group col-sm-6 col-md-4">
       <label>Email Address</label>
       <input class="form-control" ng-model="ctrl.borrower.emailaddress"/>
+    </div>
+    <div class="form-group col-sm-6 col-md-4">
+      <label>State</label>
+      <select class="form-control" ng-model="ctrl.borrower.state"
+              ng-options="state for state in ctrl.refdata.states">
     </div>
   </form>
 </div>
