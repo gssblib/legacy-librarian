@@ -77,7 +77,7 @@ angular.module('library')
 
   var formFields = [
     'author', 'title', 'barcode', 'state', 'subject', 'classification',
-    'seriestitle'
+    'seriestitle', 'antolin'
   ];
 
   $scope.$on('$routeChangeSuccess', function (event) {

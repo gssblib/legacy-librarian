@@ -68,6 +68,8 @@
           </td>
           <td class="clickable" ng-click="ctrl.selectItem(item)">
             {{item.title}}
+            <span class="antolin-icon"
+                  ng-show="item.antolin == true"></span>
           </td>
           <td class="clickable" ng-click="ctrl.selectItem(item)">
             {{item.description}}

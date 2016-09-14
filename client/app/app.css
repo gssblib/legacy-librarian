@@ -156,3 +156,27 @@ tr.returned-item td {
 .button-row .btn {
   padding: 10px 5px
 }
+.antolin-icon-header {
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    width: 35px;
+    height: 25px;
+    background: url(antolin.png);
+    background-size: 35px 25px;
+    background-repeat: no-repeat;
+}
+.antolin-icon {
+    display: inline-block;
+    position: relative;
+    top: 0.1em;
+    width: 1.5em;
+    height: 1em;
+    background: url(antolin.png);
+    background-size: 1.5em 1em;
+    background-repeat: no-repeat;
+}
+
+.label-baseline {
+    padding-bottom: 0.2em;
+}

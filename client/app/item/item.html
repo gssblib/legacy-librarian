@@ -1,7 +1,23 @@
 <div class="" ng-controller="itemCtrl as ctrl">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3>Item {{ctrl.item.barcode}}: {{ctrl.item.title}}</h3>
+      <h4>
+        Item {{ctrl.item.barcode}}: {{ctrl.item.title}}
+        <span class="antolin-icon-header"
+              ng-show="ctrl.item.antolin == true"></span>
+        <span class="label label-baseline label-danger"
+              ng-show="ctrl.item.state != 'CIRCULATING'">
+          Unavailable
+        </span>
+        <span class="label label-baseline label-warning"
+              ng-show="ctrl.item.state == 'CIRCULATING' && ctrl.item.checkout">
+          Checked out
+        </span>
+        <span class="label label-baseline label-success"
+              ng-show="ctrl.item.state == 'CIRCULATING' && !ctrl.item.checkout">
+          Available
+        </span>
+      </h4>
     </div>
     <div class="button-row">
       <a ng-href="#/items" class="btn btn-primary" accesskey="s">
@@ -25,7 +41,7 @@
         </tab>
         <tab heading="History">
           <div id="itemHistoryPanel" class="tab-panel"
-               ng-controller="itemHistoryCtrl as ctrl" 
+               ng-controller="itemHistoryCtrl as ctrl"
                ng-include="'/item/item_history.html'"></div>
         </tab>
       </tabset>

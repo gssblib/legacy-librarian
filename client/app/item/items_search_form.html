@@ -39,13 +39,25 @@
   </div>
   <div class="form-group col-sm-6 col-md-4">
     <label for="itemSearchSubject">Subject</label>
-    <select id="itemSearchSubject" class="form-control" ng-model="ctrl.search.subject"
-        ng-options="type for type in ctrl.refdata.subjects">
+    <select id="itemSearchSubject" class="form-control"
+            ng-model="ctrl.search.subject"
+            ng-options="type for type in ctrl.refdata.subjects">
     </select>
   </div>
   <div class="form-group col-sm-6 col-md-4">
     <label for="itemSearchClassification">Classification</label>
-    <input id="itemSearchClassification" class="form-control" ng-model="ctrl.search.classification"/>
+    <input id="itemSearchClassification" class="form-control"
+           ng-model="ctrl.search.classification"/>
+  </div>
+  <div class="form-group col-sm-6 col-md-4">
+    <label for="itemSearchAntolin">Antolin is Available</label>
+    <div class="checkbox">
+      <label>
+        <input name="antolin" type="checkbox"
+               ng-model="ctrl.search.antolin" />
+        Yes
+      </label>
+    </div>
   </div>
 </form>
 <div ng-show="ctrl.data.showItems">
