@@ -140,9 +140,9 @@ def find_isbns():
         print title
         print author
         print
-        #find_openlib_results(title, author)
-        #find_isbndb_results(title, author)
-        #find_antolin_results(title, author)
+        find_openlib_results(title, author)
+        find_isbndb_results(title, author)
+        find_antolin_results(title, author)
         find_amazon_results(title, author)
 
 if __name__ == '__main__':
