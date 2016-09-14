@@ -44,6 +44,8 @@ CREATE TABLE `items` (
   `title` text,
   `author` text,
   `subject` text,
+  `isbn10` varchar(10),
+  `isbn13` varchar(13),
   `publicationyear` smallint(6) DEFAULT NULL,
   `publishercode` text,
   `age` text,
@@ -58,7 +60,9 @@ CREATE TABLE `items` (
   `added` datetime DEFAULT NULL,
   `itemlost` varchar(25) DEFAULT NULL,
   `antolin` boolean DEFAULT false,
+  `antolin_book_id` int,
   `state` enum('CIRCULATING', 'STORED', 'DELETED', 'LOST') NOT NULL DEFAULT 'CIRCULATING',
+  `cover` blob,
   PRIMARY KEY (`id`),
   UNIQUE KEY `barcode` (`barcode`),
   KEY `barcode_2` (`barcode`)
