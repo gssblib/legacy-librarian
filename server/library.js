@@ -281,6 +281,32 @@ module.exports = {
     };
 
     /**
+     * Returns promise to result containing items and their checkout status.
+     */
+    items.read = function (query, limit) {
+      /* Seems hacky, but better than other options. */
+      if ('antolin' in query) {
+        query['antolin'] = (query['antolin'] == 'true');
+      }
+      var self = this;
+      var result;
+      return items.constructor.prototype.read.call(self, query, limit)
+        .then(function (items) {
+          result = items;
+          return Q.all(
+            items.rows.map(function(item) {
+              return checkouts.find(item.barcode);
+            }))
+            .then(function(checkouts) {
+              for (i=0; i < result.rows.length; ++i) {
+                result.rows[i].checkout = checkouts[i]
+              }
+              return result;
+            });
+        })
+    };
+
+    /**
      * Returns promise to result containing item and checkout.
      *
      * Throws an error if the item does not exist or is not checked out,
