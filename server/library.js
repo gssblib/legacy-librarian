@@ -303,7 +303,7 @@ module.exports = {
               }
               return result;
             });
-        })
+        });
     };
 
     /**
@@ -417,13 +417,17 @@ module.exports = {
 
     var reports = {};
 
-    reports.getItemUsage = function(lastCheckoutDate) {
+    reports.getItemUsage = function(query) {
+      var itemsWhere = items.sqlWhere(query);
       var sql = 'select a.barcode, a.title, a.author, ' +
                 'max(h.checkout_date) as last_checkout_date ' +
                 'from items a, issue_history h ' +
-                'where a.barcode = h.barcode ' +
+                itemsWhere.sql +
+                ' and a.barcode = h.barcode ' +
                 'group by a.barcode having last_checkout_date < ?';
-      return db.selectRows(sql, lastCheckoutDate);
+      itemsWhere.params.push(query.lastCheckoutDate);
+      console.log(sql);
+      return db.selectRows(sql, itemsWhere.params);
     };
 
     return {

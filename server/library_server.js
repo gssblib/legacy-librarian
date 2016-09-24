@@ -58,7 +58,7 @@ httpcall.handlePaths([
     }},
   { get: '/reports/itemUsage',
     fn: function (call) {
-        return library.reports.getItemUsage(call.param('lastCheckoutDate'));
+        return library.reports.getItemUsage(call.req.query);
     },
     action: {resource: 'reports', operation: 'read'
     }}
