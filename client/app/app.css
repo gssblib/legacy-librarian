@@ -84,6 +84,9 @@ tr.clickable > td, td.clickable, th.clickable {
 .available {
   color: green;
 }
+.unavailable {
+  color: red;
+}
 .login-info {
   padding: 0px 1em;
 }

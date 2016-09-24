@@ -7,8 +7,12 @@
         Checked out
         on {{ctrl.item.checkout.checkout_date | date:'dd MMM yyyy'}}
       </a>
-      <span ng-hide="ctrl.item.checkout" class="available">
+      <span ng-hide="ctrl.item.state != 'CIRCULATING' || ctrl.item.checkout"
+            class="available">
         Available
+      </span>
+      <span ng-hide="ctrl.item.state == 'CIRCULATING'" class="unavailable">
+        Unavailable
       </span>
     </div>
     <div class="col-sm-6">
