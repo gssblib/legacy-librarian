@@ -113,8 +113,8 @@ angular.module("library")
     return httpPost('/checkouts/updateFees', {date: date});
   };
 
-  library.getItemUsageReport = function (lastCheckoutDate) {
-    return httpGet('/reports/itemUsage', {lastCheckoutDate: lastCheckoutDate});
+  library.getItemUsageReport = function (query) {
+    return httpGet('/reports/itemUsage', query);
   };
 
   return library;

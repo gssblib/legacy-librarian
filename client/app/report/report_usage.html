@@ -5,12 +5,24 @@
   </p>
 
   <form name="itemUsageForm"
-        ng-submit="ctrl.getReport(ctrl.lastCheckoutDate)">
-    <div class="form-group">
+        ng-submit="ctrl.getReport(ctrl.query)">
+    <div class="form-group col-sm-6 col-md-4">
       <label for="lastCheckoutDate">Last Checkout Date</label>
       <input id="lastCheckoutDate" name="lastCheckoutDate"
              type="date" class="form-control date"
-             ng-model="ctrl.lastCheckoutDate"/>
+             ng-model="ctrl.query.lastCheckoutDate"/>
+    </div>
+    <div class="form-group col-sm-6 col-md-4">
+      <label for="subject">Subject</label>
+      <select id="subject" class="form-control"
+              ng-model="ctrl.query.subject"
+              ng-options="type for type in ctrl.refdata.subjects">
+      </select>
+    </div>
+    <div class="form-group col-sm-6 col-md-4">
+      <label for="classification">Classification</label>
+      <input id="classification" class="form-control"
+             ng-model="ctrl.query.classification"/>
     </div>
     <span class="clearfix"></span>
     <div class="form-group">
