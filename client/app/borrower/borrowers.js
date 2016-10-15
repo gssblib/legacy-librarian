@@ -198,7 +198,7 @@ angular.module("library")
   self.getBorrowers = function (surname) {
     return library.getBorrowers(surname, 0, 20)
       .then(function (data) {
-        return data;
+        return data.rows;
       });
   };
 

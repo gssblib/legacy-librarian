@@ -36,7 +36,7 @@ angular.module('library')
   self.getItems = function (titlePart) {
     return library.getItems({title: titlePart}, 0, 20).then(
       function (data) {
-        return data;
+        return data.rows;
       });
   };
 

@@ -10,7 +10,7 @@ angular.module('library')
 
   self.getReport = function(query) {
     library.getItemUsageReport(query).then(function (report) {
-      self.report = report;
+      self.report = report.rows;
       self.pagination = util.pagination(report.length, 30);
     });
   };

@@ -96,10 +96,12 @@ module.exports = {
       return Q.all([
           self.checkouts(borrowerNumber, true),
           self.history(borrowerNumber, true)]).then(function (data) {
+        var newFees = totalFine(data[0].rows);
+        var oldFees = totalFine(data[1].rows);
         return {
-          total: totalFine(data[0]) + totalFine(data[1]),
-          items: data[0],
-          history: data[1]
+          total: newFees + oldFees,
+          items: newFees,
+          history: oldFees
         };
       });
     };
@@ -116,11 +118,11 @@ module.exports = {
           var extras = [];
           if (options.items) {
             extras.push(self.checkouts(borrowernumber)
-              .then(function (items) { borrower.items = items; }));
+              .then(function (items) { borrower.items = items.rows; }));
           }
           if (options.history) {
             extras.push(self.history(borrowernumber)
-              .then(function (history) { borrower.history = history; }));
+              .then(function (history) { borrower.history = history.rows; }));
           }
           if (options.fees) {
             extras.push(self.fees(borrowernumber)
@@ -173,12 +175,14 @@ module.exports = {
                     db.selectRows(feeQuery('issue_history'))])
         .then(function (data) {
           var borrowers = {};
-          data[0].forEach(function (borrower) {
+          var newItems = data[0].rows;
+          var oldItems = data[1].rows;
+          newItems.forEach(function (borrower) {
             borrower.newFee = borrower.fee;
             borrower.oldFee = 0;
             borrowers[borrower.borrowernumber] = borrower;
           });
-          data[1].forEach(function (borrower) {
+          oldItems.forEach(function (borrower) {
             borrower.oldFee = borrower.fee;
             borrower.newFee = 0;
             if (borrowers[borrower.borrowernumber] === undefined) {
