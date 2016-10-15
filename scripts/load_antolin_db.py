@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import codecs
 import csv
 import datetime
@@ -34,7 +36,10 @@ def main(argv=sys.argv[1:]):
         charset='utf8')
     cur = conn.cursor()
 
-    csv_io = open(args[0], 'r')
+    filename = args[0]
+    print "reading antolin CSV file", filename
+
+    csv_io = open(filename, 'r')
     reader = csv.reader(csv_io, delimiter=";", quotechar='"')
     # Drop header row.
     reader.next()
