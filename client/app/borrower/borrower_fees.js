@@ -15,6 +15,7 @@ angular.module('library')
   };
 
   function allItems(borrower) {
+    console.log(borrower);
     var items = [];
     borrower.fees.items.forEach(function (item) {
       item.type = 'checkouts';

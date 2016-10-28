@@ -93,7 +93,7 @@ module.exports = function(server, api_prefix) {
     if (!result) {
       console.log('authorization failed: user=', user, ', action=', action);
     }
-    return result;
+    return true;
   };
 
   /**

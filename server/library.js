@@ -96,12 +96,12 @@ module.exports = {
       return Q.all([
           self.checkouts(borrowerNumber, true),
           self.history(borrowerNumber, true)]).then(function (data) {
-        var newFees = totalFine(data[0].rows);
-        var oldFees = totalFine(data[1].rows);
+        var newFeeItems = data[0].rows;
+        var oldFeeItems = data[1].rows;
         return {
-          total: newFees + oldFees,
-          items: newFees,
-          history: oldFees
+          total: totalFine(newFeeItems) + totalFine(oldFeeItems),
+          items: newFeeItems,
+          history: oldFeeItems
         };
       });
     };
