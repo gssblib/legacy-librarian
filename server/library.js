@@ -206,7 +206,7 @@ module.exports = {
         'publicationyear', 'publishercode', 'age', 'media', 'serial',
         {name: 'seriestitle', queryOp: 'contains'},
         'classification', 'country', 'itemnotes', 'replacementprice', 'issues',
-        'state', 'antolin'],
+        'state', 'antolin', 'isbn10', 'isbn13'],
       naturalKey: 'barcode'});
 
     var checkoutColumns = [

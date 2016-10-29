@@ -51,6 +51,10 @@ angular.module('library', [
       templateUrl: '/return/returns.html',
       authAction: {resource: 'items', operation: 'checkin'}
     })
+    .when('/admin/isbn_scan', {
+      templateUrl: '/admin/isbn_scan.html',
+      authAction: {resource: 'items', operation: 'update'}
+    })
     .when('/fees', {
       templateUrl: '/fee/fees.html',
       authAction: {resource: 'fees', operation: 'update'}

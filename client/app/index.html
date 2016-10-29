@@ -27,6 +27,7 @@
   <script src="components/filters.js"></script>
   <script src="library/library.js"></script>
   <script src="library/library_ctrl.js"></script>
+  <script src="admin/isbn_scan.js"></script>
   <script src="borrower/borrowers.js"></script>
   <script src="borrower/borrower_history.js"></script>
   <script src="borrower/borrower_fees.js"></script>
@@ -75,6 +76,12 @@
               ng-show="authorized('checkouts', 'update')">
             <a href="#/reports" accesskey="r">
               <span class="accesskey">R</span>eports
+            </a>
+          </li>
+          <li class="presentation" ng-class="appCtrl.navClass('admin')"
+              ng-show="authorized('items', 'update')">
+            <a href="#/admin/isbn_scan" accesskey="r">
+              ISBN Scan
             </a>
           </li>
         </ul>
