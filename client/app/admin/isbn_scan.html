@@ -26,13 +26,25 @@
       <tr>
         <th>Barcode</th>
         <th>ISBN</th>
+        <th>Antolin</th>
         <th>Title</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="item in ctrl.items">
-        <td>{{item.barcode}}</td>
+        <td>
+          <a ng-href="#/item/{{item.barcode}}">
+            {{item.barcode}}
+          </a>
+        </td>
         <td>{{item.isbn13}}</td>
+        <td>
+          <span ng-show="item.antolin">
+            <a href="{{item.antolin.link}}" target="_blank">
+              {{item.antolin.book_id}}
+            </a>
+          </span>
+        </td>
         <td>{{item.title}}</td>
       </tr>
     </tbody>
