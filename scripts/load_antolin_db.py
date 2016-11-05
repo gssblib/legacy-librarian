@@ -44,6 +44,8 @@ def main(argv=sys.argv[1:]):
     # Drop header row.
     reader.next()
 
+    seen = []
+    duplicates = 0
     for idx, row in enumerate(reader):
         if idx % 100 == 0:
             sys.stdout.write('.')
@@ -53,13 +55,19 @@ def main(argv=sys.argv[1:]):
         day, month, year = [int(p) for p in since.split('.')]
         # Some entries are bad.
         if len(isbn13) != 13:
-            isbn13 = None
+            continue
         if len(isbn13f) != 17:
             isbn13f = None
         if len(isbn10) != 10:
             isbn10 = None
         if len(isbn10f) != 13:
             isbn10f = None
+
+        if isbn13 in seen:
+            duplicates += 1
+            continue
+        seen.append(isbn13)
+
         try:
             cur.execute(
                 insert_sql,
@@ -75,6 +83,8 @@ def main(argv=sys.argv[1:]):
             import pdb; pdb.set_trace()
     conn.commit()
     print
+    print u'Books loaded:', len(seen)
+    print u'Duplicates:', duplicates
 
 if __name__ == '__main__':
     main()
