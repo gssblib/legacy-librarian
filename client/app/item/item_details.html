@@ -88,5 +88,15 @@
         </a>
       </span>
     </div>
+    <div class="col-sm-6">
+      <label>Antolin Sticker</label>
+      <span>
+        {{ctrl.item.antolin_sticker ? 'true' : 'false'}}
+        <button ng-show="!ctrl.item.antolin_sticker"
+                ng-click="ctrl.addAntolinSticker(ctrl.item)">
+          Add
+        </button>
+      </span>
+    </div>
   </div>
 </div>

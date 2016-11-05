@@ -105,4 +105,15 @@ angular.module("library")
     itemService.item(newItem);
     $location.path('/item/new');
   }; 
+
+  self.addAntolinSticker = function(item) {
+    var newItem = {
+      id: item.id,
+      antolin_sticker: true
+    };
+    library.saveItem(newItem).then(
+      function (data) {
+        item.antolin_sticker = true;
+      });
+  };
 }]);
