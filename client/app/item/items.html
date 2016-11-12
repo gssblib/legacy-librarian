@@ -4,21 +4,6 @@
   </a>
   <div class="panel-body">
     <tabset>
-      <tab heading="By Title" active="ctrl.tabActive['title']">
-        <div id="itemTitleSearchPanel" class="tab-panel">
-          <div class="form-horizontal">
-            <div class="form-group">
-              <div class="col-sm-4 col-md-6">
-                <input id="item-query" type="text" class="form-control" autofocus
-                       ng-model="ctrl.data.itemTitle"
-                       placeholder="part of item's title"
-                       typeahead="item.title for item in ctrl.getItems($viewValue)"
-                       typeahead-on-select="ctrl.selectItem($item)">
-              </div>
-            </div>
-          </div>
-        </div>
-      </tab>
       <tab heading="By Barcode" active="ctrl.tabActive['barcode']">
         <div id="itemBarcodeSearchPanel" class="tab-panel">
           <form name="barcodeForm" class="form-horizontal" novalidate
@@ -39,6 +24,21 @@
               </div>
             </div>
           </form>
+        </div>
+      </tab>
+      <tab heading="By Title" active="ctrl.tabActive['title']">
+        <div id="itemTitleSearchPanel" class="tab-panel">
+          <div class="form-horizontal">
+            <div class="form-group">
+              <div class="col-sm-4 col-md-6">
+                <input id="item-query" type="text" class="form-control" autofocus
+                       ng-model="ctrl.data.itemTitle"
+                       placeholder="part of item's title"
+                       typeahead="item.title for item in ctrl.getItems($viewValue)"
+                       typeahead-on-select="ctrl.selectItem($item)">
+              </div>
+            </div>
+          </div>
         </div>
       </tab>
       <tab heading="Search Form" active="ctrl.tabActive['form']">

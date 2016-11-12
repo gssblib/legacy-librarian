@@ -82,7 +82,7 @@ angular.module('library')
 
   $scope.$on('$routeChangeSuccess', function (event) {
     if ($location.path().indexOf("/items") == 0) {
-      selectTab($routeParams['tab'] || 'title');
+      selectTab($routeParams['tab'] || 'barcode');
       var criteria = util.fields($routeParams, formFields);
       if (criteria) {
         self.search = criteria;
