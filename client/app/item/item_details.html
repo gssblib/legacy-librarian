@@ -37,6 +37,10 @@
       <span>{{ctrl.item.author}}</span>
     </div>
     <div class="col-sm-6">
+      <label>ISBN:</label>
+      <span>{{ctrl.item.isbn13}}</span>
+    </div>
+    <div class="col-sm-6">
       <label>Publisher:</label>
       <span>{{ctrl.item.publishercode}}</span>
     </div>
@@ -77,8 +81,22 @@
       <span>{{ctrl.item.replacementprice | currency}}</span>
     </div>
     <div class="col-sm-6">
-      <label>Available in Antolin:</label>
-      <span>{{ctrl.item.antolin ? 'yes': 'no'}}</span>
+      <label>Antolin:</label>
+      <span ng-show="ctrl.item.antolin">
+        <a href="{{ctrl.item.antolin.link}}" target="_blank">
+          {{ctrl.item.antolin.book_id}}
+        </a>
+      </span>
+    </div>
+    <div class="col-sm-6">
+      <label>Antolin Sticker</label>
+      <span>
+        {{ctrl.item.antolin_sticker ? 'true' : 'false'}}
+        <button ng-show="!ctrl.item.antolin_sticker"
+                ng-click="ctrl.addAntolinSticker(ctrl.item)">
+          Add
+        </button>
+      </span>
     </div>
   </div>
 </div>

@@ -206,7 +206,7 @@ module.exports = {
         'publicationyear', 'publishercode', 'age', 'media', 'serial',
         {name: 'seriestitle', queryOp: 'contains'},
         'classification', 'country', 'itemnotes', 'replacementprice', 'issues',
-        'state', 'antolin', 'isbn10', 'isbn13'],
+        'state', 'antolin', 'antolin_sticker', 'isbn10', 'isbn13'],
       naturalKey: 'barcode'});
 
     var checkoutColumns = [
@@ -276,6 +276,16 @@ module.exports = {
           if (options['history']) {
             return getItemHistory(barcode).then(function (history) {
               result.history = history.rows;
+              return result;
+            });
+          } else {
+            return result;
+          }
+        })
+        .then(function () {
+          if (result.isbn13) {
+            return antolin.get(result.isbn13).then(function (entry) {
+              result.antolin = entry;
               return result;
             });
           } else {
@@ -434,12 +444,32 @@ module.exports = {
       return db.selectRows(sql, itemsWhere.params);
     };
 
+    // antolin table/entity
+    var antolin = entity(db, {
+      name: 'antolin',
+      columns: [
+        'author', 'title', 'publisher',
+        'isbn10', 'isbn10_formatted', 'isbn13', 'isbn13_formatted',
+        'book_id', 'available_since', 'grade', 'num_read'
+      ],
+      naturalKey: 'isbn13'});
+
+    antolin.get = function (isbn13) {
+      var self = this;
+      return antolin.constructor.prototype.get.call(self, isbn13)
+        .then(function (entry) {
+          entry.link = 'https://www.antolin.de/all/bookdetail.jsp?book_id=' + entry.book_id;
+          return entry;
+        });
+    };
+
     return {
       borrowers: borrowers,
       items: items,
       checkouts: checkouts,
       history: history,
-      reports: reports
+      reports: reports,
+      antolin: antolin
     };
   }
 };
