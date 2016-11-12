@@ -284,10 +284,17 @@ module.exports = {
         })
         .then(function () {
           if (result.isbn13) {
-            return antolin.get(result.isbn13).then(function (entry) {
-              result.antolin = entry;
-              return result;
-            });
+            return antolin.get(result.isbn13).then(
+                function (entry) {
+                  result.antolin = entry;
+                  return result;
+                },
+                function (err) {
+                  if (err.code !== 'ENTITY_NOT_FOUND') {
+                    console.log("antolin lookup failed", err);
+                  }
+                  return result;
+                });
           } else {
             return result;
           }
