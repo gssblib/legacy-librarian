@@ -283,6 +283,7 @@ module.exports = {
           }
         })
         .then(function () {
+          // Try and look up antolin information by ISBN13 or ISBN10.
           if (result.isbn13) {
             return antolin.get(result.isbn13).then(
                 function (entry) {
@@ -293,6 +294,18 @@ module.exports = {
                   if (err.code !== 'ENTITY_NOT_FOUND') {
                     console.log("antolin lookup failed", err);
                   }
+                  return result;
+                });
+          } else if (result.isbn10) {
+            return antolin.read({isbn10: result.isbn10}).then(
+                function (data) {
+                  if (data.rows && data.rows.length > 0) {
+                    result.antolin = data.rows[0];
+                  }
+                  return result;
+                },
+                function (err) {
+                  console.log("isbn10 antolin lookup error", err);
                   return result;
                 });
           } else {
