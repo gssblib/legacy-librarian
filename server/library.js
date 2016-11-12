@@ -275,7 +275,7 @@ module.exports = {
         .then(function () {
           if (options['history']) {
             return getItemHistory(barcode).then(function (history) {
-              result.history = history;
+              result.history = history.rows;
               return result;
             });
           } else {
