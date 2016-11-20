@@ -2,16 +2,66 @@
   <a href="#/borrower/new" class="btn btn-primary" ng-show="authorized('borrowers', 'create')">
    Add New Borrower
   </a>
-  <form name="borrowerSearch">
-    <div class="form-group">
-      <div class="col-sm-4 col-md-6">
-	<input id="borrowerSearch" autofocus class="form-control"
-	     ng-model="ctrl.data.borrowerLabel"
-	     placeholder="part of borrower's last name"
-	     typeahead="ctrl.borrowerLabel(borrower) for borrower in ctrl.getBorrowers($viewValue)"
-	     typeahead-input-formatter="ctrl.formatSelectedBorrower()"
-	     typeahead-on-select="ctrl.selectBorrower($item)"/>
-      </div>
-    </div>
-  </form>
+  <div class="panel-body">
+    <tabset>
+      <tab heading="By Last Name" active="ctrl.tabActive['surname']">
+        <div id="borrowerSurnameSearchPanel" class="tab-panel">
+          <form name="borrowerSearch">
+            <div class="form-group">
+              <div class="col-sm-4 col-md-6">
+                <input id="borrowerSearch" autofocus class="form-control"
+                     ng-model="ctrl.data.borrowerLabel"
+                     placeholder="part of borrower's last name"
+                     typeahead="ctrl.borrowerLabel(borrower) for borrower in ctrl.getBorrowers($viewValue)"
+                     typeahead-input-formatter="ctrl.formatSelectedBorrower()"
+                     typeahead-on-select="ctrl.selectBorrower($item)"/>
+              </div>
+            </div>
+          </form>
+        </div>
+      </tab>
+      <tab heading="Search Form" active="ctrl.tabActive['form']">
+        <div id="borrowerFormSearchPanel" class="tab-panel"
+             ng-include="'/borrower/borrowers_search_form.html'"></div>
+      </tab>
+    </tabset>
+  </div>
 </div>
+<div ng-show="ctrl.data.showBorrowers">
+  <h4 ng-show="ctrl.data.borrowers.length == 0">No matching borrowers found.</h4>
+  <div ng-show="ctrl.data.borrowers.length > 0">
+    <div class="pull-right btn-group"
+         ng-show="ctrl.data.pagination.pageCount > 1">
+      <a class="btn btn-default"
+         ng-show="ctrl.data.pagination.showFirst"
+         ng-click="ctrl.searchBorrowers(ctrl.search, 0)">&laquo;</a>
+      <a ng-repeat="page in ctrl.data.pagination.pageRange"
+         class="btn btn-default"
+         ng-click="ctrl.searchBorrowers(ctrl.search, page)"
+         ng-class="ctrl.pageClass(page)">{{page + 1}}</a>
+      <a class="btn btn-default"
+         ng-show="ctrl.data.pagination.showLast"
+         ng-click="ctrl.searchBorrowers(ctrl.search, ctrl.data.pagination.pageCount - 1)">&raquo;</a>
+    </div>
+    <table class="table table-striped table-hover table-condensed">
+      <thead>
+        <th>Number</th>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Email Address</th>
+        <th>Contact Name</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="borrower in ctrl.data.borrowers" class="clickable"
+            ng-click="ctrl.selectBorrower(borrower)">
+          <td>{{borrower.borrowernumber}}</td>
+          <td>{{borrower.surname}}</td>
+          <td>{{borrower.firstname}}</td>
+          <td>{{borrower.emailaddress}}</td>
+          <td>{{borrower.contactname}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

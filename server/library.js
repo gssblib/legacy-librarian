@@ -25,9 +25,12 @@ module.exports = {
     var borrowers = entity(db, {
       name: 'borrowers',
       columns: [
-        'borrowernumber', 'cardnumber', 'firstname', 'contactname',
+        'borrowernumber', 'cardnumber',
+        {name: 'firstname', queryOp: 'contains'},
+        {name: 'contactname', queryOp: 'contains'},
         {name: 'surname', queryOp: 'contains'},
-        'streetaddress', 'city', 'zipcode', 'phone', 'emailaddress',
+        'streetaddress', 'city', 'zipcode', 'phone',
+        {name: 'emailaddress', queryOp: 'contains'},
         'emailaddress_2', 'state'],
       naturalKey: 'borrowernumber'});
 

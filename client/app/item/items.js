@@ -14,6 +14,7 @@ angular.module('library')
     'barcode': false,
     'form': false
   };
+  self.search = { _order: 'title' }
 
   function selectTab(tab) {
     if (tab) {
@@ -29,6 +30,12 @@ angular.module('library')
     items: []
   };
   self.lookup = {};
+
+  self.setSortKey = function (field) {
+    self.search._order = (field === self.search._order ? "-" : "") + field;
+    self.searchItems(self.search, 0);
+  };
+
 
   /**
    * Returns the items whose titles contain the titlePart (for typeahead).
@@ -77,7 +84,7 @@ angular.module('library')
 
   var formFields = [
     'author', 'title', 'barcode', 'state', 'subject', 'classification',
-    'seriestitle', 'antolin'
+    'seriestitle', 'antolin', '_order'
   ];
 
   $scope.$on('$routeChangeSuccess', function (event) {

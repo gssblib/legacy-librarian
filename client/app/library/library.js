@@ -39,7 +39,10 @@ angular.module("library")
     return httpPut('/items', item);
   };
 
-  library.getItems = function (criteria, offset, limit, returnCount) {
+  /**
+   * Combines the search criteria with the pagination parameters.
+   */
+  function createSearchParams(criteria, offset, limit, returnCount) {
     var params = angular.copy(criteria);
     if (limit) {
       params.offset = offset;
@@ -48,7 +51,12 @@ angular.module("library")
     if (returnCount) {
       params.returnCount = true;
     }
-    return httpGet('/items', params);
+    return params;
+  }
+
+  library.getItems = function (criteria, offset, limit, returnCount) {
+    return httpGet('/items',
+        createSearchParams(criteria, offset, limit, returnCount));
   };
 
   library.returnItem = function (barcode) {
@@ -99,10 +107,9 @@ angular.module("library")
     return httpPut('/borrowers', borrower);
   };
 
-  library.getBorrowers = function (surname, offset, limit) {
-    return httpGet('/borrowers', {
-      surname: surname, offset: offset, limit: limit
-    });
+  library.getBorrowers = function (criteria, offset, limit, returnCount) {
+    return httpGet('/borrowers',
+        createSearchParams(criteria, offset, limit, returnCount));
   };
 
   library.getFees = function () {

@@ -205,7 +205,7 @@ Entity.prototype.get = function (query) {
 Entity.prototype.read = function (query, limit) {
   var whereClause = this.sqlWhere(query);
   var sql = 'select * from ' + this.table + whereClause.sql;
-  return this.db.selectRows(sql, whereClause.params, limit);
+  return this.db.selectRows(sql, whereClause.params, limit, query._order);
 };
 
 /**
