@@ -44,7 +44,7 @@
 <span class="clearfix"></span>
 <div ng-show="ctrl.data.showBorrowers">
   <h4>
-    <ng-pluralize count="ctrl.data.borrowers.length"
+    <ng-pluralize count="ctrl.data.pagination.count"
                   when="{'0': 'No matching borrower found',
                          'one': 'One matching borrower found',
                          'other': '{} matching borrowers found'}">

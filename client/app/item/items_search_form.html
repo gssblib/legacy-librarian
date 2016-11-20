@@ -63,7 +63,7 @@
 <span class="clearfix"></span>
 <div ng-show="ctrl.data.showItems">
   <h4>
-    <ng-pluralize count="ctrl.data.items.length"
+    <ng-pluralize count="ctrl.data.pagination.count"
                   when="{'0': 'No matching item found',
                          'one': 'One matching item found',
                          'other': '{} matching items found'}">
