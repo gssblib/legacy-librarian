@@ -22,3 +22,5 @@ CREATE TABLE antolin (
   PRIMARY KEY (id),
   UNIQUE KEY book_id (book_id)
 ) ENGINE=InnoDB DEFAULT CHARSET = utf8;
+CREATE INDEX antolin_by_isbn10 ON antolin (isbn10);
+CREATE INDEX antolin_by_isbn13 ON antolin (isbn13);
