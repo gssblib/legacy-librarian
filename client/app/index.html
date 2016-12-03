@@ -36,6 +36,7 @@
   <script src="borrower/borrower.js"></script>
   <script src="item/item.js"></script>
   <script src="item/item_history.js"></script>
+  <script src="item/item_new_isbn.js"></script>
   <script src="item/items.js"></script>
   <script src="fee/fees.js"></script>
   <script src="login/login_popup.js"></script>
@@ -56,16 +57,50 @@
             </a>
           </li>
           <li role="presentation" ng-class="appCtrl.navClass('borrowers')"
+              class="dropdown"
               ng-show="authorized('borrowers', 'read')">
-            <a href="#/borrowers" accesskey="b">
-              <span class="accesskey">B</span>orrowers
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="accesskey">B</span>orrowers<span class="caret"></span>
             </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="#/borrowers" role="button" accesskey="b">
+                  Search
+                </a>
+              </li>
+              <li>
+                <a href="#/borrower/new" role="button"
+                   ng-show="authorized('borrowers', 'create')">
+                  New
+                </a>
+              </li>
+            </ul>
           </li>
           <li role="presentation" ng-class="appCtrl.navClass('items')"
+              class="dropdown"
               ng-show="authorized('items', 'read')">
-            <a href="#/items" accesskey="i">
-              <span class="accesskey">I</span>tems
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="accesskey">I</span>tems<span class="caret"></span>
             </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="#/items" role="button" accesskey="i">
+                  Search
+                </a>
+              </li>
+              <li>
+                <a href="#/item/new" role="button"
+                   ng-show="authorized('items', 'create')">
+                  New
+                </a>
+              </li>
+              <li>
+                <a href="#/item/new/isbn" role="button"
+                   ng-show="authorized('items', 'create')">
+                  New by ISBN
+                </a>
+              </li>
+            </ul>
           </li>
           <li class="presentation" ng-class="appCtrl.navClass('fees')"
               ng-show="authorized('checkouts', 'update')">

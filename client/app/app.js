@@ -35,6 +35,10 @@ angular.module('library', [
     .when('/items', {
       templateUrl: '/item/items.html'
     })
+    .when('/item/new/isbn', {
+      templateUrl: '/item/item_new_isbn.html',
+      authAction: {resource: 'items', operation: 'create'}
+    })
     .when('/item/new', {
       templateUrl: '/item/item_new.html',
       authAction: {resource: 'items', operation: 'create'}

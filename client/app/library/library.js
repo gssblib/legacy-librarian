@@ -27,6 +27,10 @@ angular.module("library")
     return $http.post(api_prefix + path, obj).then(getData);
   }
 
+  library.searchIsbn = function (isbn13) {
+    return httpGet('/antolin/' + isbn13);
+  }
+
   library.getItem = function (barcode, params) {
     return httpGet('/items/' + barcode, params);
   };

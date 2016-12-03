@@ -1,0 +1,19 @@
+<div class="" ng-controller="itemNewIsbnCtrl as ctrl">
+  <h4>Scan ISBN</h4>
+  <form name="isbnForm" class="form-horizontal" novalidate
+        ng-submit="ctrl.searchIsbn(ctrl.search.isbn)">
+    <div class="form-group">
+      <div class="col-sm-4 col-md-4">
+        <input id="isbnScanIsbn" name="isbn" ng-model="ctrl.search.isbn"
+               required only-digits maxlength="13" autofocus
+               class="form-control" placeholder="isbn">
+      </div>
+    </div>
+    <div class="form-group col-sm-6 col-md-4">
+      <button type="submit" class="btn btn-primary"
+              ng-disabled="isbnForm.$invalid">
+        Search
+      </button>
+    </div>
+  </form>
+</div>

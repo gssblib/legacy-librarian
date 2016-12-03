@@ -47,7 +47,9 @@ angular.module("library")
   var self = this;
   $scope.$emit('nav-item-changed', 'items');
 
+  // Item shown and edited (on item_new and item_edit page).
   self.item = {};
+
   self.refdata = itemService.refdata;
 
   function getItem(barcode) {

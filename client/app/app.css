@@ -9,8 +9,12 @@
   font-size: 16px;
 }
 .nav-pills a {
-  width: 7em;
+  width: 7.5em;
   text-align: center;
+}
+.dropdown-menu a {
+  text-align: left;
+  width: 100%;
 }
 ul.nav-tabs li {
   cursor: pointer;
