@@ -59,7 +59,19 @@ angular.module("library")
         $scope.$broadcast('item-changed', self.item);
       },
       function (err) {
+        if (err.data.code == 'ENTITY_NOT_FOUND') {
+          $scope.$emit('new-error-message', {
+              header: 'barcode not found',
+              text: 'Item with barcode ' + barcode + ' not found'
+          });
+        } else {
+          $scope.$emit('new-error-message', {
+              header: 'System Error',
+              text: 'Unknown error while looking for barcode ' + barcode
+          });
+        }
         $log.log('getItem: err=', err);
+        $location.path('/items');
       });
   }
 

@@ -3,7 +3,7 @@
  */
 angular.module("library")
 .controller("isbnScanCtrl",
-    ['$log', 'library', function ($log, library) {
+    ['$scope', '$log', 'library', function ($scope, $log, library) {
   var self = this;
 
   self.items = [];
@@ -24,9 +24,19 @@ angular.module("library")
         focus('isbnScanIsbn');
       },
       function (err) {
-        $log.log('getItem: err=', err);
-      }
-    );
+        if (err.data.code == 'ENTITY_NOT_FOUND') {
+          $scope.$emit('new-error-message', {
+              header: 'barcode not found',
+              text: 'Item with barcode ' + barcode + ' not found'
+          });
+        } else {
+          $scope.$emit('new-error-message', {
+              header: 'System Error',
+              text: 'Unknown error while looking for barcode ' + barcode
+          });
+        }
+        self.barcode = '';
+      });
   };
 
   self.setIsbn = function(isbn) {
