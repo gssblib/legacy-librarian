@@ -41,15 +41,20 @@ angular.module("library")
 
   self.setIsbn = function(isbn) {
     var item = self.item;
-    var itemStore = angular.copy(self.item);
-    itemStore.isbn13 = isbn;
-    itemStore.antolin = undefined;
-    itemStore.added = undefined; // datetime not handled yet
-    library.saveItem(itemStore).then(
+    var itemStored = angular.copy(self.item);
+    if (isbn.length == 10) {
+      itemStored.isbn10 = isbn;
+    } else {
+      itemStored.isbn13 = isbn;
+    }
+    itemStored.antolin = undefined;
+    itemStored.added = undefined; // datetime not handled yet
+    library.saveItem(itemStored).then(
       function (data) {
         library.getItem(item.barcode, {options: 'antolin'}).then(function (newItem) {
           item.antolin = newItem.antolin;
           item.isbn13 = newItem.isbn13;
+          item.isbn10 = newItem.isbn10;
         })
       },
       function (err) {

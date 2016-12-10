@@ -16,7 +16,7 @@
       <div class="col-sm-4 col-md-4">
         <input id="isbnScanIsbn" name="isbn" ng-model="ctrl.isbn"
                required only-digits maxlength="13"
-               class="form-control" placeholder="isbn">
+               class="form-control" placeholder="10 or 13 digit ISBN">
       </div>
     </div>
   </form>
@@ -25,7 +25,8 @@
     <thead>
       <tr>
         <th>Barcode</th>
-        <th>ISBN</th>
+        <th>ISBN 13</th>
+        <th>ISBN 10</th>
         <th>Antolin</th>
         <th>Title</th>
       </tr>
@@ -38,6 +39,7 @@
           </a>
         </td>
         <td>{{item.isbn13}}</td>
+        <td>{{item.isbn10}}</td>
         <td>
           <span ng-show="item.antolin">
             <a href="{{item.antolin.link}}" target="_blank">
