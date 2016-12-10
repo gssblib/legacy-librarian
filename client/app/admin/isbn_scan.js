@@ -42,9 +42,11 @@ angular.module("library")
   self.setIsbn = function(isbn) {
     var item = self.item;
     var itemStored = angular.copy(self.item);
-    if (isbn.length == 10) {
+    if (!isbn) {
+      itemStored.isbn13 = 'XXX';
+    } else if (isbn.length == 10) {
       itemStored.isbn10 = isbn;
-    } else {
+    } else if (isbn.length == 13) {
       itemStored.isbn13 = isbn;
     }
     itemStored.antolin = undefined;
