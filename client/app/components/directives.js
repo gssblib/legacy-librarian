@@ -26,6 +26,29 @@ angular.module("library")
     }
   };
 })
+/**
+ * Restrict input for ISBN fields.
+ *
+ * For now, we only check if the characters are digits or 'X'.
+ */
+.directive('isbn', function(util) {
+  return {
+    require: '?ngModel',
+    restrict: 'A',
+    link: function(scope, element, attrs, ngModel) {
+      if (!ngModel) return;
+      ngModel.$parsers.push(function (value) {
+        if (!value) return value;
+        var digits = value.replace(/[^0-9X]+/g, '');
+        if (digits != value) {
+          ngModel.$setViewValue(digits);
+          ngModel.$render();
+        }
+        return digits;
+      });
+    }
+  };
+})
 .directive('autofocus', function($timeout) {
   return {
     restrict: 'A',
