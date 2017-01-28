@@ -53,8 +53,12 @@ function dbEscape(name) { return '`' + name + '`'; }
  *   naturalKey: optional name of the natural key column
  *
  * A column is either just the column name or an object with a
- * 'name' property and an optimal 'queryOp' property specifying the
- * default comparison operation (see see the sqlTerm method below).
+ * 'name' property and the following optional properties:
+ *
+ * - queryOp: specifies the default comparison operation (see see the
+ *            sqlTerm method below).
+ * - type: an object containing
+ *      fromDb: (optional) converts from db value to javascript value
  */
 function Entity(db, config) {
   var self = this;
@@ -72,6 +76,38 @@ function Entity(db, config) {
   }
   config.columns.map(addColumn);
   addColumn('id');
+  this.fromDb = createFromDb(this);
+}
+
+function identity(x) {
+  return x;
+}
+
+/**
+ * Returns the function that is applied to the objects fetched from the
+ * database.
+ *
+ * For the most part, the javascript objects can be returned unchanged, but
+ * there are exceptions. For example, boolean columns are implemented as
+ * tinyint(1) by mysql and therefore returned as javascript integers.
+ *
+ * The returned function applies the fromDb functions defined in any
+ * column types of the entity to the corresponding column values.
+ */
+function createFromDb(entity) {
+  var fromDbColumns =
+    entity.columns.filter(column => column.type && column.type.fromDb);
+  if (fromDbColumns.length === 0) {
+    return identity;
+  }
+  return function(data) {
+    if (data !== undefined) {
+      fromDbColumns.forEach(function(column) {
+        data[column.name] = column.type.fromDb(data[column.name]);
+      });
+    }
+    return data;
+  };
 }
 
 /**
@@ -181,9 +217,10 @@ Entity.prototype.sqlWhere = function(query) {
  * undefined if not found.
  */
 Entity.prototype.find = function (query) {
+  var self = this;
   var whereClause = this.sqlWhere(query);
   var sql = 'select * from ' + this.table + whereClause.sql;
-  return this.db.selectRow(sql, whereClause.params);
+  return this.db.selectRow(sql, whereClause.params).then(self.fromDb);
 };
 
 /**
@@ -203,9 +240,16 @@ Entity.prototype.get = function (query) {
  * Returns the promise of the objects (rows) identified by the query.
  */
 Entity.prototype.read = function (query, limit) {
+  var self = this;
   var whereClause = this.sqlWhere(query);
   var sql = 'select * from ' + this.table + whereClause.sql;
-  return this.db.selectRows(sql, whereClause.params, limit, query._order);
+  return this.db.selectRows(sql, whereClause.params, limit, query._order).then(
+      function(data) {
+        if (data.rows) {
+          data.rows = data.rows.map(self.fromDb);
+        }
+        return data;
+      });
 };
 
 /**
@@ -236,7 +280,22 @@ Entity.prototype.remove = function (id) {
   return this.db.query('delete from ' + this.table + ' where id = ?', id);
 };
 
-module.exports = function (db, config) {
+var entity = function (db, config) {
   return new Entity(db, config);
 };
+
+/**
+ * Predefined column types.
+ *
+ * These types can be used as values for the 'type' property of a column.
+ */
+entity.types = {
+  'boolean': {
+    fromDb: function(dbValue) {
+      return dbValue === 1;
+    }
+  }
+}
+
+module.exports = entity;
 

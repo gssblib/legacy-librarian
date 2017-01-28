@@ -209,7 +209,9 @@ module.exports = {
         'publicationyear', 'publishercode', 'age', 'media', 'serial',
         {name: 'seriestitle', queryOp: 'contains'},
         'classification', 'country', 'itemnotes', 'replacementprice', 'issues',
-        'state', 'antolin_sticker', 'isbn10', 'isbn13'],
+        'state',
+        {name: 'antolin_sticker', type: entity.types.boolean},
+        'isbn10', 'isbn13'],
       naturalKey: 'barcode'});
 
     var checkoutColumns = [
@@ -477,9 +479,9 @@ module.exports = {
       ],
       naturalKey: 'isbn13'});
 
-    antolin.get = function (isbn13) {
+    antolin.get = function (isbn) {
       var self = this;
-      return antolin.constructor.prototype.get.call(self, isbn13)
+      return antolin.constructor.prototype.get.call(self, isbn)
         .then(function (entry) {
           entry.link = 'https://www.antolin.de/all/bookdetail.jsp?book_id=' + entry.book_id;
           return entry;

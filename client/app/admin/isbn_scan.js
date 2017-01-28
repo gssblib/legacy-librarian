@@ -50,7 +50,6 @@ angular.module("library")
       itemStored.isbn13 = isbn;
     }
     itemStored.antolin = undefined;
-    itemStored.added = undefined; // datetime not handled yet
     library.saveItem(itemStored).then(
       function (data) {
         library.getItem(item.barcode, {options: 'antolin'}).then(function (newItem) {

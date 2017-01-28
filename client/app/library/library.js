@@ -27,8 +27,8 @@ angular.module("library")
     return $http.post(api_prefix + path, obj).then(getData);
   }
 
-  library.searchIsbn = function (isbn13) {
-    return httpGet('/antolin/' + isbn13);
+  library.searchIsbn = function (isbn) {
+    return httpGet('/antolin/' + isbn);
   }
 
   library.getItem = function (barcode, params) {
@@ -40,7 +40,9 @@ angular.module("library")
   };
 
   library.saveItem = function (item) {
-    return httpPut('/items', item);
+    var itemStored = angular.copy(item);
+    itemStored.added = undefined; // datetime not handled yet
+    return httpPut('/items', itemStored);
   };
 
   /**

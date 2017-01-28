@@ -22,9 +22,8 @@ angular.module("library")
     };
   }
 
-  self.searchIsbn = function(isbn13) {
-    console.log('isbn', isbn13);
-    library.searchIsbn(isbn13).then(
+  self.searchIsbn = function(isbn) {
+    library.searchIsbn(isbn).then(
       function (data) {
         console.log('data', data);
         itemService.item(toItem(data));
@@ -33,9 +32,9 @@ angular.module("library")
       function (err) {
         $scope.$emit('new-error-message', {
             header: 'ISBN not found',
-            text: 'ISBN ' + isbn13 + ' not found in databases'
+            text: 'ISBN ' + isbn + ' not found in databases'
         });
-        self.search.isbn13 = '';
+        self.search.isbn = '';
       });
   };
 }]);
