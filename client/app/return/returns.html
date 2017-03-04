@@ -47,7 +47,8 @@
           </td>
           <td>
             <span ng-show="item.isbn13">{{item.isbn13}}</span>
-            <span ng-show="!item.isbn13 && item.description == 'Buch'"
+            <span ng-show="item.isbn10 && !item.isbn13">{{item.isbn10}}</span>
+            <span ng-show="!item.isbn13 && !item.isbn10 && item.description == 'Buch'"
                   class="label label-danger">
               missing
             </span>
