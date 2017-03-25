@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+
+<document>
+  <pageInfo pageSize="(3.5in, 1.125in)" />
+  <pageDrawing>
+
+    <setFont name="Times-Bold" size="16" />
+    <drawCenteredString x="1.75in" y="0.6in">
+      Barcode on inside
+    </drawCenteredString>
+
+  </pageDrawing>
+</document>

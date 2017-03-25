@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import jinja2
 import json
@@ -31,7 +32,7 @@ class LabelMaker(object):
         self.data = data or {}
 
     @classmethod
-    def is_applicable(self, item, data=None):
+    def is_applicable(cls, item, data=None):
         return False
 
     def prepare(self):
@@ -58,14 +59,137 @@ class LeseleiterLabelMaker(LabelMaker):
     template = os.path.join(TEMPLATES_DIR, 'leseleiter.rml')
 
     @classmethod
-    def is_applicable(self, item, data=None):
+    def is_applicable(cls, item, data=None):
         return item['age'].startswith('Leseleiter-')
 
     def prepare(self):
         age = self.item['age']
-        if not age.startswith('Leseleiter-'):
-            raise ValueError('Leseleiter age not found in "%s"' % age)
         self.data['age'] = age.split('-')[1]
+
+
+@register
+class BilderbuchLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'bilderbuch.rml')
+
+    classification_to_size = {
+        'B/K': u'klein',
+        'B/M': u'mittel',
+        'B/G': u'groß'
+    }
+
+    @classmethod
+    def is_applicable(cls, item, data=None):
+        return item['classification'] in ('B/K', 'B/M', 'B/G')
+
+    def prepare(self):
+        self.data['size'] = self.classification_to_size[
+            self.item['classification']]
+
+
+@register
+class BilderbuchWithAuthorLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'bilderbuch-with-author.rml')
+
+    @classmethod
+    def is_applicable(cls, item, data=None):
+        return (
+            item['classification'].startswith('B/A') or
+            item['classification'].startswith('B/K/A'))
+
+    def prepare(self):
+        # Sometimes the author or category is listed as part of the
+        # classification
+        parts = self.item['classification'].split(' ', 1)
+        if len(parts) == 1:
+            classification = parts[0]
+            author = self.item['author'].split(',')[0]
+            author_abbr = author[:3]
+        else:
+            author = None
+            classification, author_abbr = parts
+
+            # Special and crappy case.
+            if author_abbr == 'Bilderbuch klein Autor':
+                # It turns out that if the book is a series, we use it
+                # as the author value! WTF?!
+                author = self.item['seriestitle']
+                if author == 'na':
+                    author = self.item['author'].split(',')[0]
+                author_abbr = author[:3]
+            else:
+                # It turns out that if the book is a series, we use it
+                # as the author value! WTF?!
+                # Sometimes it is just a substring too: Mau -> Die Maus
+                if author_abbr in self.item['seriestitle']:
+                    author = self.item['seriestitle']
+                else:
+                    author = self.item['author'].split(',')[0]
+
+        self.data['author_abbr'] = author_abbr[:3].upper()
+        self.data['author'] = author
+        self.data['classification'] = classification
+
+
+@register
+class BilderbuchWithTopicLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'bilderbuch-with-topic.rml')
+
+    topics = {
+        'bau': u'Bauernhof',
+        'fam': u'Familie',
+        'far': u'Farben',
+        'nat': u'Natur',
+        'sch': u'Schule',
+        'ti': u'Tiere',
+        've': u'Verkehr',
+        'za': u'Zahlen',
+        'ze': u'Zeit',
+    }
+
+    @classmethod
+    def is_applicable(cls, item, data=None):
+        return (
+            any([
+                item['classification'].lower().startswith(topic)
+                for topic in cls.topics
+            ])
+            and
+            item['subject'].startswith('Bilderbuch'))
+
+    def prepare(self):
+        for topic_abbr, topic in self.topics.items():
+            if self.item['classification'].lower().startswith(topic_abbr):
+                break
+        self.data['topic_abbr'] = topic_abbr.title()
+        self.data['topic'] = topic
+
+
+@register
+class BoardbookLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'boardbook.rml')
+
+    @classmethod
+    def is_applicable(cls, item, data=None):
+        return item['classification'].startswith('Bb')
+
+
+@register
+class BarcodeInsideLabelMaker(LabelMaker):
+
+    category = 'barcode-inside'
+    template = os.path.join(TEMPLATES_DIR, 'barcode-inside.rml')
+
+    @classmethod
+    def is_applicable(cls, item, data=None):
+        return True
 
 
 def get_label_maker(item, category=None, data=None):
@@ -128,6 +252,9 @@ def main(argv=sys.argv[1:]):
         pprint.pprint(item)
 
     label_maker = get_label_maker(item, args.category, args.data)
+    if label_maker is None:
+        print 'No label maker found!'
+        sys.exit(1)
     if args.verbose:
         print 'Label Maker:', label_maker.__class__.__name__
 
