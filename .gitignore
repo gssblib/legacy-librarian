@@ -5,3 +5,5 @@ tags
 *.sql.gz
 
 scripts/ve
+server/tools/ve
+server/tools/*.pdf

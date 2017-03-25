@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+
+<document
+    filename="sample.pdf">
+  <pageInfo pageSize="(3.5in, 1.125in)" />
+  <pageDrawing>
+
+    <setFont name="Times-Bold" size="12" />
+    <drawCenteredString x="1.75in" y="0.8in">
+      {{age}}
+    </drawCenteredString>
+    <drawCenteredString x="1.75in" y="0.6in">
+      L
+    </drawCenteredString>
+
+    <setFont name="Times-Italic" size="12" />
+    <drawRightString x="3.25in" y="0.6in">
+      Leseleiter
+    </drawRightString>
+    <drawCenteredString x="1.75in" y="0.4in">
+      Leseleiter
+    </drawCenteredString>
+
+    <setFont name="Times-Bold" size="12" />
+    <drawCenteredString x="1.75in" y="0.2in">
+      Deutsche Sonnabendschule Boston
+    </drawCenteredString>
+  </pageDrawing>
+</document>
