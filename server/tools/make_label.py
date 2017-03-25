@@ -9,6 +9,9 @@ import pprint
 import subprocess
 import sys
 import z3c.rml.document
+import zope.interface
+import zope.schema
+
 import common
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'label-templates')
@@ -26,22 +29,34 @@ class LabelMaker(object):
 
     category = None
     template = None
+    data_schema = None
 
     def __init__(self, item, data=None):
         self.item = item
         self.data = data or {}
 
     @classmethod
-    def is_applicable(cls, item, data=None):
+    def is_applicable(cls, item):
         return False
 
     def prepare(self):
         pass
 
+    def validate_data(self):
+        if self.data_schema is None:
+            return
+        for name, field in zope.schema.getDescriptionsFor(self.data_schema):
+            if name in self.data:
+                field.validate(self.data[name])
+                continue
+            if field.default is not None:
+                self.data[name] = field.default
+
     def render(self, output_fn):
         with open(self.template, 'r') as fi:
             template = jinja2.Template(fi.read())
 
+        self.validate_data()
         self.prepare()
         rml = template.render(item=self.item, **self.data)
 
@@ -59,7 +74,7 @@ class LeseleiterLabelMaker(LabelMaker):
     template = os.path.join(TEMPLATES_DIR, 'leseleiter.rml')
 
     @classmethod
-    def is_applicable(cls, item, data=None):
+    def is_applicable(cls, item):
         return item['age'].startswith('Leseleiter-')
 
     def prepare(self):
@@ -80,7 +95,7 @@ class BilderbuchLabelMaker(LabelMaker):
     }
 
     @classmethod
-    def is_applicable(cls, item, data=None):
+    def is_applicable(cls, item):
         return item['classification'] in ('B/K', 'B/M', 'B/G')
 
     def prepare(self):
@@ -95,7 +110,7 @@ class BilderbuchWithAuthorLabelMaker(LabelMaker):
     template = os.path.join(TEMPLATES_DIR, 'bilderbuch-with-author.rml')
 
     @classmethod
-    def is_applicable(cls, item, data=None):
+    def is_applicable(cls, item):
         return (
             item['classification'].startswith('B/A') or
             item['classification'].startswith('B/K/A'))
@@ -153,7 +168,7 @@ class BilderbuchWithTopicLabelMaker(LabelMaker):
     }
 
     @classmethod
-    def is_applicable(cls, item, data=None):
+    def is_applicable(cls, item):
         return (
             any([
                 item['classification'].lower().startswith(topic)
@@ -177,8 +192,31 @@ class BoardbookLabelMaker(LabelMaker):
     template = os.path.join(TEMPLATES_DIR, 'boardbook.rml')
 
     @classmethod
-    def is_applicable(cls, item, data=None):
+    def is_applicable(cls, item):
         return item['classification'].startswith('Bb')
+
+
+
+@register
+class PropertyLabelMaker(LabelMaker):
+
+    category = 'property'
+    template = os.path.join(TEMPLATES_DIR, 'property.rml')
+
+    class data_schema(zope.interface.Interface):
+
+        year = zope.schema.TextLine(
+            title=u'School Year Aquired',
+            required=False)
+
+        include_price = zope.schema.Bool(
+            title=u'Include Replacement Price',
+            default=True,
+            required=False)
+
+    @classmethod
+    def is_applicable(cls, item):
+        return True
 
 
 @register
@@ -188,17 +226,17 @@ class BarcodeInsideLabelMaker(LabelMaker):
     template = os.path.join(TEMPLATES_DIR, 'barcode-inside.rml')
 
     @classmethod
-    def is_applicable(cls, item, data=None):
+    def is_applicable(cls, item):
         return True
 
 
-def get_label_maker(item, category=None, data=None):
+def get_label_maker(item, category=None):
     for maker_class in REGISTRY:
         if category is not None and maker_class.category != category:
             continue
-        if not maker_class.is_applicable(item, data):
+        if not maker_class.is_applicable(item):
             continue
-        return maker_class(item, data)
+        return maker_class
 
 
 def get_db_connection(config):
@@ -217,31 +255,7 @@ def get_item(conn, barcode):
     return dict(zip(cursor.column_names, row))
 
 
-parser = argparse.ArgumentParser(
-    description='Create or print a PDF label for a given library item.')
-parser.add_argument(
-    'barcode',
-    help='The barcode of the library item.')
-parser.add_argument(
-    '--category', '-c', dest='category', default=None,
-    help='Specifies the category of label to use.')
-parser.add_argument(
-    '--print', '-p', dest='doprint', default=False, action='store_true',
-    help='When specifed, the label is sent directly to the printer.'
-    )
-parser.add_argument(
-    '--out', '-o', dest='output',
-    help='The output filename of the generated label PDF.')
-parser.add_argument(
-    '--data', '-d', dest='data', type=json.loads, default=None,
-    help='Additional data needed to render the label.')
-parser.add_argument(
-    '--verbose', '-v', dest='verbose', action='store_true')
-
-
-def main(argv=sys.argv[1:]):
-    args = parser.parse_args(argv)
-
+def create(args):
     config = common.get_json_config(os.environ['NODE_ENV'])
 
     conn = get_db_connection(config)
@@ -251,7 +265,7 @@ def main(argv=sys.argv[1:]):
         print 'Item:'
         pprint.pprint(item)
 
-    label_maker = get_label_maker(item, args.category, args.data)
+    label_maker = get_label_maker(item, args.category)(item, args.data)
     if label_maker is None:
         print 'No label maker found!'
         sys.exit(1)
@@ -272,6 +286,119 @@ def main(argv=sys.argv[1:]):
         subprocess.call(
             ['lp', '-d', config['printer']['name'], out_fn])
 
+
+def list_categories(args):
+    config = common.get_json_config(os.environ['NODE_ENV'])
+
+    conn = get_db_connection(config)
+    item = get_item(conn, args.barcode)
+
+    if args.verbose:
+        print 'Item:'
+        pprint.pprint(item)
+
+    categories = []
+    for maker_class in REGISTRY:
+        if maker_class.is_applicable(item):
+            categories.append(maker_class.category)
+
+    if args.json:
+        print json.dumps({'categories': categories})
+    else:
+        print '\n'.join(categories)
+
+
+def get_category_details(args):
+    config = common.get_json_config(os.environ['NODE_ENV'])
+
+    conn = get_db_connection(config)
+    item = get_item(conn, args.barcode)
+
+    if args.verbose:
+        print 'Item:'
+        pprint.pprint(item)
+
+    label_maker = get_label_maker(item, args.category)
+
+    fields = []
+    if label_maker.data_schema:
+        for name, field in zope.schema.getFieldsInOrder(label_maker.data_schema):
+            fields.append({
+                'name': name,
+                'title': field.title,
+                'type': field.__class__.__name__.lower(),
+                'required': field.required,
+                'default': field.default,
+            })
+
+    details = {
+        'category': label_maker.category,
+        'fields': fields}
+    if args.json:
+        print json.dumps({'categories': categories})
+    else:
+        pprint.pprint(details)
+
+parser = argparse.ArgumentParser(
+    description='Create or print a PDF label for a given library item.')
+subparsers = parser.add_subparsers(
+    title='Available sub-commands')
+
+create_parser = subparsers.add_parser(
+    'create', help='Create a label.')
+create_parser.set_defaults(func=create)
+create_parser.add_argument(
+    'barcode',
+    help='The barcode of the library item.')
+create_parser.add_argument(
+    '--category', '-c', dest='category', default=None,
+    help='Specifies the category of label to use.')
+create_parser.add_argument(
+    '--print', '-p', dest='doprint', default=False, action='store_true',
+    help='When specifed, the label is sent directly to the printer.'
+    )
+create_parser.add_argument(
+    '--out', '-o', dest='output',
+    help='The output filename of the generated label PDF.')
+create_parser.add_argument(
+    '--data', '-d', dest='data', type=json.loads, default=None,
+    help='Additional data needed to render the label.')
+create_parser.add_argument(
+    '--verbose', '-v', dest='verbose', action='store_true')
+
+
+list_parser = subparsers.add_parser(
+    'list', help='List all categories available for the given item.')
+list_parser.set_defaults(func=list_categories)
+list_parser.add_argument(
+    'barcode',
+    help='The barcode of the library item.')
+list_parser.add_argument(
+    '--verbose', '-v', dest='verbose', action='store_true')
+list_parser.add_argument(
+    '--json', dest='json', action='store_true',
+    help='Returns the result as JSON string.')
+
+
+details_parser = subparsers.add_parser(
+    'details', help='Provides details about a specific category.')
+details_parser.set_defaults(func=get_category_details)
+details_parser.add_argument(
+    'barcode',
+    help='The barcode of the library item.')
+details_parser.add_argument(
+    '--category', '-c', dest='category', default=None,
+    help='Specifies the category of label to use.')
+details_parser.add_argument(
+    '--verbose', '-v', dest='verbose', action='store_true')
+details_parser.add_argument(
+    '--json', dest='json', action='store_true',
+    help='Returns the result as JSON string.')
+
+
+def main(argv=sys.argv[1:]):
+    args = parser.parse_args(argv)
+    args.func(args)
 
 if __name__ == '__main__':
     main()
