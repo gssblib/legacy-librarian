@@ -17,5 +17,9 @@
     "salt": "sJt4w7r9O8FgQ/T8kaX6SZq2gtUm8axZYgzxeh3xTUs=",
     "cookie": "b8TAcp+KA8/E+Rqvifc5hP7gDKVggpss5hYhoYlPSQk=",
     "session": "Jpmvm5kQ2g8dEfEX8+x6Xe6nhpiQHrn9dfalBBMp5Bw="
+  },
+
+  "printer": {
+    "name": "LabelWriter-450-Trubo"
   }
 }
