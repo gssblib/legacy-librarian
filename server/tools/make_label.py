@@ -5,6 +5,7 @@ import lxml.etree
 import mysql.connector
 import os
 import pprint
+import subprocess
 import sys
 import z3c.rml.document
 import common
@@ -76,8 +77,7 @@ def get_label_maker(item, category=None, data=None):
         return maker_class(item, data)
 
 
-def get_db_connection():
-    config = common.get_json_config(os.environ['NODE_ENV'])
+def get_db_connection(config):
     db_config = config['db']
     return mysql.connector.connect(
       host=db_config['host'],
@@ -102,7 +102,7 @@ parser.add_argument(
     '--category', '-c', dest='category', default=None,
     help='Specifies the category of label to use.')
 parser.add_argument(
-    '--print', '-p', dest='print', default=False, action='store_true',
+    '--print', '-p', dest='doprint', default=False, action='store_true',
     help='When specifed, the label is sent directly to the printer.'
     )
 parser.add_argument(
@@ -118,7 +118,9 @@ parser.add_argument(
 def main(argv=sys.argv[1:]):
     args = parser.parse_args(argv)
 
-    conn = get_db_connection()
+    config = common.get_json_config(os.environ['NODE_ENV'])
+
+    conn = get_db_connection(config)
     item = get_item(conn, args.barcode)
 
     if args.verbose:
@@ -136,6 +138,12 @@ def main(argv=sys.argv[1:]):
         print 'Output Filename:', out_fn
 
     label_maker.render(out_fn)
+
+    if args.doprint:
+        if args.verbose:
+            print 'Printing to', config['printer']['name']
+        subprocess.call(
+            ['lp', '-d', config['printer']['name'], out_fn])
 
 
 if __name__ == '__main__':
