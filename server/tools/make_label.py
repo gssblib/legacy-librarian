@@ -230,6 +230,17 @@ class BarcodeInsideLabelMaker(LabelMaker):
         return True
 
 
+@register
+class CopyrightLabelMaker(LabelMaker):
+
+    category = 'copyright'
+    template = os.path.join(TEMPLATES_DIR, 'copyright.rml')
+
+    @classmethod
+    def is_applicable(cls, item):
+        return True
+
+
 def get_label_maker(item, category=None):
     for maker_class in REGISTRY:
         if category is not None and maker_class.category != category:

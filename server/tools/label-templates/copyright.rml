@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+
+<document>
+  <pageInfo pageSize="(3.5in, 1.125in)" />
+  <pageDrawing>
+
+    <place x="0.25in" y="0.07in" width="3.0in" height="0.925in">
+        <para fontSize="6pt" leading="9pt" alignment="center">
+          <b>Notice: Warning of Copyright Restrictions</b>
+        </para>
+        <para fontSize="5pt" leading="7pt" alignment="justify"
+              spaceAfter="0" spaceBefore="0pt">
+          The copyright law of the United States (title 17, United
+          States Code) governs the reproduction, distribution,
+          adaptation, public performance, and public display of
+          copyrighted material. Under certain conditions specified in
+          law, nonprofit libraries are authorized to lend, lease, or
+          rent copies of DVDs/CDs/Videos to patrons on a nonprofit
+          basis and for nonprofit purposes. Any person who makes an
+          unauthorized copy or adaptation of the DVD/CD/Video, or
+          redistributes the loan copy, or publicly performs or
+          displays the DVD/CD/Video/CDRom, except as permitted by
+          title 17 of the United States Code, may be liable for
+          copyright infringement.
+        </para>
+    </place>
+
+  </pageDrawing>
+</document>
