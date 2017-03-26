@@ -25,6 +25,15 @@ def register(maker_class):
     return maker_class
 
 
+class AttrDict(dict):
+
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name)
+
+
 class LabelMaker(object):
 
     category = None
@@ -54,7 +63,7 @@ class LabelMaker(object):
 
     def render(self, output_fn):
         with open(self.template, 'r') as fi:
-            template = jinja2.Template(fi.read())
+            template = jinja2.Template(fi.read().decode('utf-8'))
 
         self.validate_data()
         self.prepare()
@@ -75,11 +84,35 @@ class LeseleiterLabelMaker(LabelMaker):
 
     @classmethod
     def is_applicable(cls, item):
-        return item['age'].startswith('Leseleiter-')
+        return item.age.startswith('Leseleiter-')
 
     def prepare(self):
-        age = self.item['age']
+        age = self.item.age
         self.data['age'] = age.split('-')[1]
+
+
+@register
+class ErzaehlungLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'erzaehlung.rml')
+
+    @classmethod
+    def is_applicable(cls, item):
+        return item.subject.startswith('Erzaehlung')
+
+    def prepare(self):
+        self.data['big'] = big = self.item.classification.startswith('E/G')
+        if big:
+            author_abbr = self.item.author[:3]
+        # Messed up data once more.
+        elif self.item.classification in (u'Erzaehlung',
+                                          u'Erzaehlungen',
+                                          u'Erzählung'):
+            author_abbr = self.item.author[:3]
+        else:
+            author_abbr = self.item.classification
+        self.data['author_abbr'] = author_abbr
 
 
 @register
@@ -96,11 +129,11 @@ class BilderbuchLabelMaker(LabelMaker):
 
     @classmethod
     def is_applicable(cls, item):
-        return item['classification'] in ('B/K', 'B/M', 'B/G')
+        return item.classification in ('B/K', 'B/M', 'B/G')
 
     def prepare(self):
         self.data['size'] = self.classification_to_size[
-            self.item['classification']]
+            self.item.classification]
 
 
 @register
@@ -112,16 +145,16 @@ class BilderbuchWithAuthorLabelMaker(LabelMaker):
     @classmethod
     def is_applicable(cls, item):
         return (
-            item['classification'].startswith('B/A') or
-            item['classification'].startswith('B/K/A'))
+            item.classification.startswith('B/A') or
+            item.classification.startswith('B/K/A'))
 
     def prepare(self):
         # Sometimes the author or category is listed as part of the
         # classification
-        parts = self.item['classification'].split(' ', 1)
+        parts = self.item.classification.split(' ', 1)
         if len(parts) == 1:
             classification = parts[0]
-            author = self.item['author'].split(',')[0]
+            author = self.item.author.split(',')[0]
             author_abbr = author[:3]
         else:
             author = None
@@ -131,18 +164,18 @@ class BilderbuchWithAuthorLabelMaker(LabelMaker):
             if author_abbr == 'Bilderbuch klein Autor':
                 # It turns out that if the book is a series, we use it
                 # as the author value! WTF?!
-                author = self.item['seriestitle']
+                author = self.item.seriestitle
                 if author == 'na':
-                    author = self.item['author'].split(',')[0]
+                    author = self.item.author.split(',')[0]
                 author_abbr = author[:3]
             else:
                 # It turns out that if the book is a series, we use it
                 # as the author value! WTF?!
                 # Sometimes it is just a substring too: Mau -> Die Maus
-                if author_abbr in self.item['seriestitle']:
-                    author = self.item['seriestitle']
+                if author_abbr in self.item.seriestitle:
+                    author = self.item.seriestitle
                 else:
-                    author = self.item['author'].split(',')[0]
+                    author = self.item.author.split(',')[0]
 
         self.data['author_abbr'] = author_abbr[:3].upper()
         self.data['author'] = author
@@ -171,15 +204,15 @@ class BilderbuchWithTopicLabelMaker(LabelMaker):
     def is_applicable(cls, item):
         return (
             any([
-                item['classification'].lower().startswith(topic)
+                item.classification.lower().startswith(topic)
                 for topic in cls.topics
             ])
             and
-            item['subject'].startswith('Bilderbuch'))
+            item.subject.startswith('Bilderbuch'))
 
     def prepare(self):
         for topic_abbr, topic in self.topics.items():
-            if self.item['classification'].lower().startswith(topic_abbr):
+            if self.item.classification.lower().startswith(topic_abbr):
                 break
         self.data['topic_abbr'] = topic_abbr.title()
         self.data['topic'] = topic
@@ -193,7 +226,7 @@ class BoardbookLabelMaker(LabelMaker):
 
     @classmethod
     def is_applicable(cls, item):
-        return item['classification'].startswith('Bb')
+        return item.classification.startswith('Bb')
 
 
 
@@ -263,7 +296,7 @@ def get_item(conn, barcode):
     cursor = conn.cursor()
     cursor.execute(ITEM_SQL % barcode)
     row = cursor.fetchone()
-    return dict(zip(cursor.column_names, row))
+    return AttrDict(zip(cursor.column_names, row))
 
 
 def create(args):
