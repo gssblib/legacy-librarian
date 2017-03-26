@@ -280,6 +280,10 @@ def create(args):
 
     label_maker.render(out_fn)
 
+    if args.aspng:
+        subprocess.call(
+            ['convert', '-density', '300', out_fn, out_fn[:-3]+'png'])
+
     if args.doprint:
         if args.verbose:
             print 'Printing to', config['printer']['name']
@@ -356,6 +360,10 @@ create_parser.add_argument(
 create_parser.add_argument(
     '--print', '-p', dest='doprint', default=False, action='store_true',
     help='When specifed, the label is sent directly to the printer.'
+    )
+create_parser.add_argument(
+    '--png', '-i', dest='aspng', default=False, action='store_true',
+    help='When specifed, a PNG file is also created.'
     )
 create_parser.add_argument(
     '--out', '-o', dest='output',
