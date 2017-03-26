@@ -5,11 +5,19 @@
   <pageInfo pageSize="(3.5in, 1.125in)" />
   <pageDrawing>
 
-    <barCode x="0.3in" y="0.5in" code="standard93"
-             humanReadable="true" fontName="Courier" fontSize="7"
-             barHeight="0.3in">
+    <setFont name="Helvetica-Bold" size="7.0pt" />
+    <drawCenteredString x="1.3in" y="0.81in">
+      German Saturday School Boston Library
+    </drawCenteredString>
+    <barCode x="0.3in" y="0.4in" code="standard39" barHeight="0.375in"
+             quiet="false" barWidth="0.015in" width="2in"
+             checksum="0">
       {{item.barcode}}
-   </barCode>
+    </barCode>
+    <setFont name="Courier-Bold" size="9pt" />
+    <drawString x="0.3in" y="0.28in">
+      *{{item.barcode}}*
+    </drawString>
 
   </pageDrawing>
 </document>
