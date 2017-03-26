@@ -116,6 +116,30 @@ class ErzaehlungLabelMaker(LabelMaker):
 
 
 @register
+class ComicLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'comic.rml')
+
+    @classmethod
+    def is_applicable(cls, item):
+        return item.subject.startswith('Comic')
+
+    def prepare(self):
+        sub_cat = self.item.classification
+        if sub_cat.startswith('Comic') or sub_cat.startswith('Serie'):
+            sub_cat = self.item.seriestitle
+        if sub_cat == 'na':
+            sub_cat = ''
+
+        self.data['sub_category'] = sub_cat
+        self.data['sub_category_abbr'] = sub_cat[:3]
+        self.data['sc_font_size'] = 12
+        if len(sub_cat) > 10:
+            self.data['sc_font_size'] = 12 - 4 * (len(sub_cat)-15) / 10
+
+
+@register
 class BilderbuchLabelMaker(LabelMaker):
 
     category = 'main'
