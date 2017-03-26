@@ -45,7 +45,7 @@ class LabelMaker(object):
     def validate_data(self):
         if self.data_schema is None:
             return
-        for name, field in zope.schema.getDescriptionsFor(self.data_schema):
+        for name, field in zope.schema.getFieldsInOrder(self.data_schema):
             if name in self.data:
                 field.validate(self.data[name])
                 continue

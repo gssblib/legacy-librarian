@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+
+<document>
+  <pageInfo pageSize="(3.5in, 1.125in)" />
+  <pageDrawing>
+
+    <setFont name="Times-Bold" size="12" />
+    <drawCenteredString x="1.75in" y="0.8in">
+      Eigentum der Deutschen
+    </drawCenteredString>
+    <drawCenteredString x="1.75in" y="0.6in">
+      Sonnabendschule Boston
+    </drawCenteredString>
+
+    <setFont name="Times-Roman" size="12" />
+    {% if year %}
+    <drawString x="0.85in" y="0.4in">
+      {{year}}
+    </drawString>
+    {% endif %}
+
+    {% if include_price %}
+    <drawRightString x="2.65in" y="0.4in">
+      ${{'%.2f' % item['replacementprice']}}
+    </drawRightString>
+    {% endif %}
+
+  </pageDrawing>
+</document>
