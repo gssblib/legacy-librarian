@@ -140,6 +140,17 @@ class ComicLabelMaker(LabelMaker):
 
 
 @register
+class ZeitschriftLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'zeitschrift.rml')
+
+    @classmethod
+    def is_applicable(cls, item):
+        return item.subject.startswith('Zeitschrift')
+
+
+@register
 class BilderbuchLabelMaker(LabelMaker):
 
     category = 'main'
