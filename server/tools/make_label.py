@@ -569,7 +569,12 @@ def cli_details(args):
 
 def cli_serve(args):
     APP.labels = Labels()
-    APP.run(host=args.host, port=args.port)
+    config = APP.labels.config['label-server']
+    APP.run(
+        host=args.host \
+            if args.host is not None else config.get('host', '0.0.0.0'),
+        port=args.port \
+            if args.port is not None else config.get('port', 3001))
 
 
 parser = argparse.ArgumentParser(
@@ -637,10 +642,10 @@ serve_parser = subparsers.add_parser(
     'serve', help='Start the Label Maker HTTP microservice.')
 serve_parser.set_defaults(func=cli_serve)
 serve_parser.add_argument(
-    '--host', '-H', dest='host', default='0.0.0.0',
+    '--host', '-H', dest='host',
     help='Network Interface of HTTP server.')
 serve_parser.add_argument(
-    '--port', '-p', dest='port', type=int, default=8088,
+    '--port', '-p', dest='port', type=int,
     help='Port of HTTP server.')
 
 
