@@ -187,3 +187,15 @@ tr.returned-item td {
 .label-baseline {
     padding-bottom: 0.2em;
 }
+
+.item-label-preview {
+    margin-bottom: 15px;
+}
+
+.item-label-preview img {
+    display: block;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: 3px 3px 3px #bbb;
+}
