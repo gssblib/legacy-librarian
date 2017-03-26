@@ -342,7 +342,12 @@ def create(args):
         if args.verbose:
             print 'Printing to', config['printer']['name']
         subprocess.call(
-            ['lp', '-d', config['printer']['name'], out_fn])
+            ['lp', '-d', config['printer']['name'],
+             # Make sure we are printing in high-quality mode, so that
+             # graphics, especially barcodes are printed in sufficiant detail.
+             '-o', 'DymoPrintQuality=Graphics',
+             '-o', 'Resolution=300x600dpi',
+             out_fn])
 
 
 def list_categories(args):
