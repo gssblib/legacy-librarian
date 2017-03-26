@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 import argparse
+import contextlib
+import flask
 import jinja2
 import json
+import lazy
+import logging
 import lxml.etree
 import mysql.connector
 import os
 import pprint
+import shutil
 import subprocess
 import sys
+import tempfile
 import z3c.rml.document
 import zope.interface
 import zope.schema
@@ -18,11 +24,9 @@ TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'label-templates')
 
 ITEM_SQL = 'select * from items where barcode = %s'
 
+APP = flask.Flask('Label Maker')
 
-REGISTRY = []
-def register(maker_class):
-    REGISTRY.append(maker_class)
-    return maker_class
+log = logging.getLogger('label_maker')
 
 
 class AttrDict(dict):
@@ -32,6 +36,120 @@ class AttrDict(dict):
             return self[name]
         except KeyError:
             raise AttributeError(name)
+
+
+@contextlib.contextmanager
+def TemporaryDirectory():
+    path = tempfile.mkdtemp()
+    try:
+        yield path
+    finally:
+        shutil.rmtree(path)
+
+
+class Labels(object):
+
+    makers = []
+
+    @classmethod
+    def register(cls, maker):
+        cls.makers.append(maker)
+        return maker
+
+    @lazy.lazy
+    def config(self):
+        return common.get_json_config(os.environ['NODE_ENV'])
+
+    @lazy.lazy
+    def connection(self):
+        db_config = self.config['db']
+        return mysql.connector.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            db=db_config['database'])
+
+    def get_label_maker(self, item, category=None):
+        for maker_cls in self.makers:
+            if category is not None and maker_cls.category != category:
+                continue
+            if not maker_cls.is_applicable(item):
+                continue
+            log.info('Selected Label Maker: %s', maker_cls.__name__)
+            return maker_cls
+        raise ValueError('No label maker class found')
+
+    def get_item(self, barcode):
+        cursor = self.connection.cursor()
+        cursor.execute(ITEM_SQL % barcode)
+        row = cursor.fetchone()
+        item = AttrDict(zip(cursor.column_names, row))
+        log.debug('Item:\n%s', pprint.pformat(item))
+        return item
+
+    def create_label(self, item, category=None, data=None, pdf_path=None):
+        if pdf_path is None:
+            pdf_path = tempfile.mktmep('label-%s.pdf' % item.barcode)
+
+        label_maker_cls = self.get_label_maker(item, category)
+        label_maker = label_maker_cls(item, data)
+        label_maker.render(pdf_path)
+        log.info('Label saved: %s', pdf_path)
+
+        return pdf_path
+
+    def preview_label(self, pdf_path, png_path=None):
+        if png_path is None:
+            png_path = pdf_path[:-3] + 'png'
+
+        cmd = ['convert', '-density', '300', pdf_path, png_path]
+        log.debug('Running command: %s' % ' '.join(cmd))
+        subprocess.call(cmd)
+
+        return png_path
+
+    def print_label(self, pdf_path):
+        printer = self.config['printer']['name']
+        log.info('Printing to %s', printer)
+
+        cmd = [
+            'lp', '-d', printer,
+             # Make sure we are printing in high-quality mode, so that
+             # graphics, especially barcodes are printed in sufficiant detail.
+             '-o', 'DymoPrintQuality=Graphics',
+             '-o', 'Resolution=300x600dpi',
+             pdf_path]
+        log.debug('Running command: %s' % ' '.join(cmd))
+        subprocess.call(cmd)
+
+    def list_categories(self, item):
+        categories = set()
+        for maker_cls in self.makers:
+            if maker_cls.is_applicable(item):
+                categories.add(maker_cls.category)
+        return list(categories)
+
+    def get_category_details(self, item, category=None):
+        # 2. Get the label maker.
+        label_maker = self.get_label_maker(item, category)
+
+        # 3. Create the field descriptions.
+        fields = []
+        if label_maker.data_schema:
+            for name, field in zope.schema.getFieldsInOrder(
+                    label_maker.data_schema):
+                fields.append({
+                    'name': name,
+                    'title': field.title,
+                    'type': field.__class__.__name__.lower(),
+                    'required': field.required,
+                    'default': field.default,
+                })
+
+        details = {
+            'category': label_maker.category,
+            'fields': fields}
+        return details
 
 
 class LabelMaker(object):
@@ -76,7 +194,7 @@ class LabelMaker(object):
             doc.process(fo)
 
 
-@register
+@Labels.register
 class LeseleiterLabelMaker(LabelMaker):
 
     category = 'main'
@@ -91,7 +209,7 @@ class LeseleiterLabelMaker(LabelMaker):
         self.data['age'] = age.split('-')[1]
 
 
-@register
+@Labels.register
 class ErzaehlungLabelMaker(LabelMaker):
 
     category = 'main'
@@ -115,7 +233,7 @@ class ErzaehlungLabelMaker(LabelMaker):
         self.data['author_abbr'] = author_abbr
 
 
-@register
+@Labels.register
 class ComicLabelMaker(LabelMaker):
 
     category = 'main'
@@ -139,7 +257,7 @@ class ComicLabelMaker(LabelMaker):
             self.data['sc_font_size'] = 12 - 4 * (len(sub_cat)-15) / 10
 
 
-@register
+@Labels.register
 class ZeitschriftLabelMaker(LabelMaker):
 
     category = 'main'
@@ -150,7 +268,7 @@ class ZeitschriftLabelMaker(LabelMaker):
         return item.subject.startswith('Zeitschrift')
 
 
-@register
+@Labels.register
 class HolidayLabelMaker(LabelMaker):
 
     category = 'main'
@@ -173,7 +291,7 @@ class HolidayLabelMaker(LabelMaker):
         self.data['holiday_initial'] = self.item.subject[0]
 
 
-@register
+@Labels.register
 class BilderbuchLabelMaker(LabelMaker):
 
     category = 'main'
@@ -194,7 +312,7 @@ class BilderbuchLabelMaker(LabelMaker):
             self.item.classification]
 
 
-@register
+@Labels.register
 class BilderbuchWithAuthorLabelMaker(LabelMaker):
 
     category = 'main'
@@ -240,7 +358,7 @@ class BilderbuchWithAuthorLabelMaker(LabelMaker):
         self.data['classification'] = classification
 
 
-@register
+@Labels.register
 class BilderbuchWithTopicLabelMaker(LabelMaker):
 
     category = 'main'
@@ -276,7 +394,7 @@ class BilderbuchWithTopicLabelMaker(LabelMaker):
         self.data['topic'] = topic
 
 
-@register
+@Labels.register
 class BoardbookLabelMaker(LabelMaker):
 
     category = 'main'
@@ -287,7 +405,7 @@ class BoardbookLabelMaker(LabelMaker):
         return item.classification.startswith('Bb')
 
 
-@register
+@Labels.register
 class BarcodeLabelMaker(LabelMaker):
 
     category = 'barcode'
@@ -298,7 +416,7 @@ class BarcodeLabelMaker(LabelMaker):
         return True
 
 
-@register
+@Labels.register
 class PropertyLabelMaker(LabelMaker):
 
     category = 'property'
@@ -320,7 +438,7 @@ class PropertyLabelMaker(LabelMaker):
         return True
 
 
-@register
+@Labels.register
 class BarcodeInsideLabelMaker(LabelMaker):
 
     category = 'barcode-inside'
@@ -331,7 +449,7 @@ class BarcodeInsideLabelMaker(LabelMaker):
         return True
 
 
-@register
+@Labels.register
 class CopyrightLabelMaker(LabelMaker):
 
     category = 'copyright'
@@ -342,123 +460,117 @@ class CopyrightLabelMaker(LabelMaker):
         return True
 
 
-def get_label_maker(item, category=None):
-    for maker_class in REGISTRY:
-        if category is not None and maker_class.category != category:
-            continue
-        if not maker_class.is_applicable(item):
-            continue
-        return maker_class
+# -----[ Flask Endpoints ]-----------------------------------------------------
+
+@APP.route("/<barcode>/<category>/label")
+def endpoint_create_label(barcode, category):
+    item = APP.labels.get_item(barcode)
+    data = flask.request.get_json()
+    with TemporaryDirectory() as dir:
+        pdf_path = os.path.join(dir, 'label.pdf')
+        APP.labels.create_label(item, category, data, pdf_path)
+
+        return flask.send_file(pdf_path, mimetype='application/pdf')
 
 
-def get_db_connection(config):
-    db_config = config['db']
-    return mysql.connector.connect(
-      host=db_config['host'],
-      user=db_config['user'],
-      password=db_config['password'],
-      db=db_config['database'])
+@APP.route("/<barcode>/<category>/preview")
+def endpoint_preview_label(barcode, category):
+    item = APP.labels.get_item(barcode)
+    data = flask.request.get_json()
+    with TemporaryDirectory() as dir:
+        pdf_path = os.path.join(dir, 'label.pdf')
+        APP.labels.create_label(item, category, data, pdf_path)
+        png_path = APP.labels.preview_label(pdf_path)
+
+        return flask.send_file(png_path, mimetype='image/png')
 
 
-def get_item(conn, barcode):
-    cursor = conn.cursor()
-    cursor.execute(ITEM_SQL % barcode)
-    row = cursor.fetchone()
-    return AttrDict(zip(cursor.column_names, row))
+@APP.route("/<barcode>/<category>/print")
+def endpoint_print_label(barcode, category):
+    item = APP.labels.get_item(barcode)
+    data = flask.request.get_json()
+    with TemporaryDirectory() as dir:
+        pdf_path = os.path.join(dir, 'label.pdf')
+        APP.labels.create_label(item, category, data, pdf_path)
+        APP.labels.print_label(pdf_path)
+    return 'Ok'
 
 
-def create(args):
-    config = common.get_json_config(os.environ['NODE_ENV'])
+@APP.route("/<barcode>/categories")
+def endpoint_categories(barcode):
+    item = APP.labels.get_item(barcode)
+    categories = APP.labels.list_categories(item)
+    return flask.jsonify({'categories': categories})
 
-    conn = get_db_connection(config)
-    item = get_item(conn, args.barcode)
 
-    if args.verbose:
-        print 'Item:'
-        pprint.pprint(item)
+@APP.route("/<barcode>/<category>/details")
+def endpoint_category_details(barcode, category):
+    item = APP.labels.get_item(barcode)
+    details = APP.labels.get_category_details(item, category)
+    return flask.jsonify(details)
 
-    label_maker = get_label_maker(item, args.category)(item, args.data)
-    if label_maker is None:
-        print 'No label maker found!'
-        sys.exit(1)
-    if args.verbose:
-        print 'Label Maker:', label_maker.__class__.__name__
 
+# -----[ Command Line Interface ]----------------------------------------------
+
+
+def cli_create(args):
+    labels = Labels()
+
+    # 1. Get the item.
+    item = labels.get_item(args.barcode)
+
+    # 2. Create the label.
     out_fn = args.output
     if out_fn is None:
         out_fn = 'label-%s.pdf' % args.barcode
-    if args.verbose:
-        print 'Output Filename:', out_fn
+    out_fn = labels.create_label(
+        item, category=args.category, data=args.data, pdf_path=out_fn)
 
-    label_maker.render(out_fn)
-
+    # 3. If requested, create preview PNG.
     if args.aspng:
-        subprocess.call(
-            ['convert', '-density', '300', out_fn, out_fn[:-3]+'png'])
+        labels.preview_label(out_fn)
 
+    # 4. If requested, print label.
     if args.doprint:
-        if args.verbose:
-            print 'Printing to', config['printer']['name']
-        subprocess.call(
-            ['lp', '-d', config['printer']['name'],
-             # Make sure we are printing in high-quality mode, so that
-             # graphics, especially barcodes are printed in sufficiant detail.
-             '-o', 'DymoPrintQuality=Graphics',
-             '-o', 'Resolution=300x600dpi',
-             out_fn])
+        labels.print_label(out_fn)
 
 
-def list_categories(args):
-    config = common.get_json_config(os.environ['NODE_ENV'])
+def cli_list(args):
+    labels = Labels()
 
-    conn = get_db_connection(config)
-    item = get_item(conn, args.barcode)
+    # 1. Get the item.
+    item = labels.get_item(args.barcode)
 
-    if args.verbose:
-        print 'Item:'
-        pprint.pprint(item)
+    # 2. Compute all available categories for the item.
+    categories = labels.list_categories(item)
 
-    categories = []
-    for maker_class in REGISTRY:
-        if maker_class.is_applicable(item):
-            categories.append(maker_class.category)
-
+    # 3. Output the categories in the requested format.
     if args.json:
         print json.dumps({'categories': categories})
     else:
         print '\n'.join(categories)
 
 
-def get_category_details(args):
-    config = common.get_json_config(os.environ['NODE_ENV'])
+def cli_details(args):
+    labels = Labels()
 
-    conn = get_db_connection(config)
-    item = get_item(conn, args.barcode)
+    # 1. Get the item.
+    item = labels.get_item(args.barcode)
 
-    if args.verbose:
-        print 'Item:'
-        pprint.pprint(item)
+    # 2. Get the category information.
+    details = labels.get_category_details(item, args.category)
 
-    label_maker = get_label_maker(item, args.category)
-
-    fields = []
-    if label_maker.data_schema:
-        for name, field in zope.schema.getFieldsInOrder(label_maker.data_schema):
-            fields.append({
-                'name': name,
-                'title': field.title,
-                'type': field.__class__.__name__.lower(),
-                'required': field.required,
-                'default': field.default,
-            })
-
-    details = {
-        'category': label_maker.category,
-        'fields': fields}
+    # 3. Output the details in the requested format.
     if args.json:
-        print json.dumps({'categories': categories})
+        print json.dumps(details)
     else:
         pprint.pprint(details)
+
+
+def cli_serve(args):
+    APP.labels = Labels()
+    APP.run(host=args.host, port=args.port)
+
 
 parser = argparse.ArgumentParser(
     description='Create or print a PDF label for a given library item.')
@@ -467,7 +579,7 @@ subparsers = parser.add_subparsers(
 
 create_parser = subparsers.add_parser(
     'create', help='Create a label.')
-create_parser.set_defaults(func=create)
+create_parser.set_defaults(func=cli_create)
 create_parser.add_argument(
     'barcode',
     help='The barcode of the library item.')
@@ -494,7 +606,7 @@ create_parser.add_argument(
 
 list_parser = subparsers.add_parser(
     'list', help='List all categories available for the given item.')
-list_parser.set_defaults(func=list_categories)
+list_parser.set_defaults(func=cli_list)
 list_parser.add_argument(
     'barcode',
     help='The barcode of the library item.')
@@ -507,7 +619,7 @@ list_parser.add_argument(
 
 details_parser = subparsers.add_parser(
     'details', help='Provides details about a specific category.')
-details_parser.set_defaults(func=get_category_details)
+details_parser.set_defaults(func=cli_details)
 details_parser.add_argument(
     'barcode',
     help='The barcode of the library item.')
@@ -521,9 +633,21 @@ details_parser.add_argument(
     help='Returns the result as JSON string.')
 
 
+serve_parser = subparsers.add_parser(
+    'serve', help='Start the Label Maker HTTP microservice.')
+serve_parser.set_defaults(func=cli_serve)
+serve_parser.add_argument(
+    '--host', '-H', dest='host', default='0.0.0.0',
+    help='Network Interface of HTTP server.')
+serve_parser.add_argument(
+    '--port', '-p', dest='port', type=int, default=8088,
+    help='Port of HTTP server.')
+
+
 def main(argv=sys.argv[1:]):
     args = parser.parse_args(argv)
     args.func(args)
+
 
 if __name__ == '__main__':
     main()
