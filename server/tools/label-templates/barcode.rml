@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+
+<document>
+  <pageInfo pageSize="(3.5in, 1.125in)" />
+  <pageDrawing>
+
+    <barCode x="0.3in" y="0.5in" code="standard93"
+             humanReadable="true" fontName="Courier" fontSize="7"
+             barHeight="0.3in">
+      {{item.barcode}}
+   </barCode>
+
+  </pageDrawing>
+</document>

@@ -229,6 +229,16 @@ class BoardbookLabelMaker(LabelMaker):
         return item.classification.startswith('Bb')
 
 
+@register
+class BarcodeLabelMaker(LabelMaker):
+
+    category = 'barcode'
+    template = os.path.join(TEMPLATES_DIR, 'barcode.rml')
+
+    @classmethod
+    def is_applicable(cls, item):
+        return True
+
 
 @register
 class PropertyLabelMaker(LabelMaker):
