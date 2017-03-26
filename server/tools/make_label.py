@@ -462,6 +462,13 @@ class CopyrightLabelMaker(LabelMaker):
 
 # -----[ Flask Endpoints ]-----------------------------------------------------
 
+
+@APP.after_request
+def allow_all_origins(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
 @APP.route("/<barcode>/<category>/label")
 def endpoint_create_label(barcode, category):
     item = APP.labels.get_item(barcode)
@@ -574,7 +581,8 @@ def cli_serve(args):
         host=args.host \
             if args.host is not None else config.get('host', '0.0.0.0'),
         port=args.port \
-            if args.port is not None else config.get('port', 3001))
+            if args.port is not None else config.get('port', 3001),
+        debug=args.debug)
 
 
 parser = argparse.ArgumentParser(
@@ -647,6 +655,9 @@ serve_parser.add_argument(
 serve_parser.add_argument(
     '--port', '-p', dest='port', type=int,
     help='Port of HTTP server.')
+serve_parser.add_argument(
+    '--debug', '-d', dest='debug', default=False, action='store_true',
+    help='Run Flask in debug mode.')
 
 
 def main(argv=sys.argv[1:]):
