@@ -151,6 +151,29 @@ class ZeitschriftLabelMaker(LabelMaker):
 
 
 @register
+class HolidayLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'feiertage.rml')
+
+    holidays = (
+        'Fasching',
+        'Halloween',
+        'Ostern',
+        'St. Martin',
+        'Weihnachten',
+    )
+
+    @classmethod
+    def is_applicable(cls, item):
+        return item.subject in cls.holidays
+
+    def prepare(self):
+        self.data['holiday'] = self.item.subject
+        self.data['holiday_initial'] = self.item.subject[0]
+
+
+@register
 class BilderbuchLabelMaker(LabelMaker):
 
     category = 'main'
