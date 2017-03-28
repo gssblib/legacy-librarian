@@ -7,6 +7,8 @@ angular.module('library')
   self.category = null;
   self.categories = [];
   self.previewImage = null;
+  self.status = null;
+  self.status_type = null;
 
   function _arrayBufferToBase64(buffer) {
     var binary = '';
@@ -51,8 +53,14 @@ angular.module('library')
     return $http.get(
       self.labels_server + item.barcode + '/' + category + '/print').then(
       function (response) {
-        return;
-      });
+        self.status = response.data.status;
+        self.status_type = 'success';
+      },
+      function (response) {
+        self.status = response.data.status;
+        self.status_type = 'danger';
+      }
+    );
   };
 
 }]);

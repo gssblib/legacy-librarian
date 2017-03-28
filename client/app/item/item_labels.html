@@ -1,4 +1,10 @@
 <div>
+
+  <div class="status alert alert-{{ctrl.status_type}}" role="alert"
+       ng-show="ctrl.status != null">
+    {{ctrl.status}}
+  </div>
+
   <form name="itemLabelsForm" class="panel-body"
         ng-submit="ctrl.printLabel(ctrl.item, ctrl.category)">
 
