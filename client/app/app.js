@@ -4,7 +4,7 @@
 
 angular.module('library', [
   'ngRoute', 'ngAnimate', 'ui.bootstrap', 'dialogs.main', 'lbAuth',
-  'ngSanitize', 'ngCsv'],
+  'ngSanitize', 'ngCsv', 'formly', 'formlyBootstrap'],
   ['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push(
       ['$location', '$q', '$rootScope', function ($location, $q, $rootScope) {
