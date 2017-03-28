@@ -475,9 +475,33 @@ class BarcodeInsideLabelMaker(LabelMaker):
     category = 'barcode-inside'
     template = os.path.join(TEMPLATES_DIR, 'barcode-inside.rml')
 
+    page_size_map = {
+        'w79h252': (3.5, 1.125),
+        'w54h180': (2.5, 0.75),
+        'w72h154.1': (2.125, 1.0)
+    }
+
+    class data_schema(zope.interface.Interface):
+
+        label_size = zope.schema.Choice(
+            title=u'Label Size',
+            vocabulary=zope.schema.vocabulary.SimpleVocabulary([
+                zope.schema.vocabulary.SimpleTerm(
+                    'w79h252', 'w79h252', u'Dymo 30252 1 1/8 x 3 1/2'),
+                zope.schema.vocabulary.SimpleTerm(
+                    'w54h180', 'w54h180', u'Dymo 1738595 3/4 x 2 1/2'),
+                zope.schema.vocabulary.SimpleTerm(
+                    'w72h154.1', 'w72h154.1', u'Dymo 30336 1 x 2 1/8'),
+            ]),
+            default='w79h252',
+            required=True)
+
     @classmethod
     def is_applicable(cls, item):
         return True
+
+    def prepare(self):
+        self.page_size = self.page_size_map[self.data['label_size']]
 
 
 @Labels.register

@@ -6,7 +6,9 @@
   <pageDrawing>
 
     <setFont name="Times-Bold" size="16" />
-    <drawCenteredString x="1.75in" y="0.6in">
+    <drawCenteredString
+       x="{{page_width * 72 / 2}}"
+       y="{{page_height * 72 / 2 - 8}}">
       Barcode on inside
     </drawCenteredString>
 
