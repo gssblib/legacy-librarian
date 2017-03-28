@@ -2,7 +2,7 @@
 <!DOCTYPE document SYSTEM "rml.dtd">
 
 <document>
-  <pageInfo pageSize="(3.5in, 1.125in)" />
+  <pageInfo pageSize="{{page_size}}" />
   <pageDrawing>
 
     <place x="0.25in" y="0.07in" width="3.0in" height="0.925in">

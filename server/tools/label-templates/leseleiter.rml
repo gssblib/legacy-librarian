@@ -2,7 +2,7 @@
 <!DOCTYPE document SYSTEM "rml.dtd">
 
 <document>
-  <pageInfo pageSize="(3.5in, 1.125in)" />
+  <pageInfo pageSize="{{page_size}}" />
   <pageDrawing>
 
     <setFont name="Times-Bold" size="12" />

@@ -209,6 +209,12 @@ class LabelMaker(object):
 
         self.validate_data()
         self.prepare()
+
+        # Add page size to the data.
+        self.data['page_width'] = self.page_size[0]
+        self.data['page_height'] = self.page_size[1]
+        self.data['page_size'] = '(%fin, %fin)' % self.page_size
+
         rml = template.render(item=self.item, **self.data)
 
         root = lxml.etree.fromstring(rml.encode('utf-8'))
