@@ -29,6 +29,13 @@ APP = flask.Flask('Label Maker')
 log = logging.getLogger('label_maker')
 
 
+class NoPrinter(Exception):
+
+    def __init__(self, page_size):
+        self.page_size = page_size
+        super(NoPrinter, self).__init__(page_size)
+
+
 class AttrDict(dict):
 
     def __getattr__(self, name):
@@ -69,6 +76,13 @@ class Labels(object):
             password=db_config['password'],
             db=db_config['database'])
 
+    @lazy.lazy
+    def printers_by_size(self):
+        return {
+            tuple(printer['papersize']): AttrDict(printer)
+            for printer in self.config['printers']
+        }
+
     def get_label_maker(self, item, category=None):
         for maker_cls in self.makers:
             if category is not None and maker_cls.category != category:
@@ -96,7 +110,7 @@ class Labels(object):
         label_maker.render(pdf_path)
         log.info('Label saved: %s', pdf_path)
 
-        return pdf_path
+        return pdf_path, label_maker.page_size
 
     def preview_label(self, pdf_path, png_path=None):
         if png_path is None:
@@ -108,19 +122,28 @@ class Labels(object):
 
         return png_path
 
-    def print_label(self, pdf_path):
-        printer = self.config['printer']['name']
-        log.info('Printing to %s', printer)
+    def print_label(self, pdf_path, page_size):
+        try:
+            printer = self.printers_by_size[page_size]
+        except KeyError:
+            raise NoPrinter(page_size)
+        log.info('Printing to %s', printer.title)
 
         cmd = [
-            'lp', '-d', printer,
+            'lp', '-d', printer.printer,
              # Make sure we are printing in high-quality mode, so that
              # graphics, especially barcodes are printed in sufficiant detail.
              '-o', 'DymoPrintQuality=Graphics',
              '-o', 'Resolution=300x600dpi',
-             pdf_path]
+        ]
+        for name, value in printer.options.items():
+            cmd += ['-o', '%s="%s"' % (name, value)]
+
+        cmd += [pdf_path]
         log.debug('Running command: %s' % ' '.join(cmd))
         subprocess.call(cmd)
+
+        return printer
 
     def list_categories(self, item):
         categories = set()
@@ -156,6 +179,7 @@ class LabelMaker(object):
 
     category = None
     template = None
+    page_size = (3.5, 1.125)
     data_schema = None
 
     def __init__(self, item, data=None):
@@ -410,6 +434,7 @@ class BarcodeLabelMaker(LabelMaker):
 
     category = 'barcode'
     template = os.path.join(TEMPLATES_DIR, 'barcode.rml')
+    page_size = (2.5, 0.75)
 
     @classmethod
     def is_applicable(cls, item):
@@ -498,9 +523,18 @@ def endpoint_print_label(barcode, category):
     data = flask.request.get_json()
     with TemporaryDirectory() as dir:
         pdf_path = os.path.join(dir, 'label.pdf')
-        APP.labels.create_label(item, category, data, pdf_path)
-        APP.labels.print_label(pdf_path)
-    return 'Ok'
+        pdf_path, page_size = APP.labels.create_label(
+            item, category, data, pdf_path)
+        try:
+            printer = APP.labels.print_label(pdf_path, page_size)
+        except NoPrinter as err:
+            label_size = '%sin x %sin' % err.page_size
+            resp = flask.jsonify(
+                {'status': 'No printer found for label size: ' + label_size})
+            resp.status_code = 400
+            return resp
+    return flask.jsonify(
+        {'status': 'Sent to printer: %s' % printer.title})
 
 
 @APP.route("/<barcode>/categories")
@@ -530,7 +564,7 @@ def cli_create(args):
     out_fn = args.output
     if out_fn is None:
         out_fn = 'label-%s.pdf' % args.barcode
-    out_fn = labels.create_label(
+    out_fn, page_size = labels.create_label(
         item, category=args.category, data=args.data, pdf_path=out_fn)
 
     # 3. If requested, create preview PNG.
@@ -539,7 +573,7 @@ def cli_create(args):
 
     # 4. If requested, print label.
     if args.doprint:
-        labels.print_label(out_fn)
+        labels.print_label(out_fn, page_size)
 
 
 def cli_list(args):
