@@ -152,22 +152,67 @@ class Labels(object):
                 categories.add(maker_cls.category)
         return list(categories)
 
+
+    def build_desc_TextLine(self, fld):
+        return {
+            'key': fld.__name__,
+            'type': 'input',
+            'defaultValue': fld.default,
+            'templateOptions': {
+                'type': 'text',
+                'label': fld.title,
+                'required': fld.required
+            }
+        }
+
+    def build_desc_Text(self, fld):
+        return {
+            'key': fld.__name__,
+            'type': 'textarea',
+            'defaultValue': fld.default,
+            'templateOptions': {
+                'label': fld.title,
+                'required': fld.required
+            }
+        }
+
+    def build_desc_Bool(self, fld):
+        return {
+            'key': fld.__name__,
+            'type': 'checkbox',
+            'defaultValue': fld.default,
+            'templateOptions': {
+                'label': fld.title,
+                'required': fld.required
+            }
+        }
+
+    def build_desc_Choice(self, fld):
+        return {
+            'key': fld.__name__,
+            'type': 'select',
+            'defaultValue': fld.default,
+            'templateOptions': {
+                'options': [
+                    {'value': term.value, 'name': term.title}
+                    for term in fld.vocabulary
+                ],
+                'label': fld.title,
+                'required': fld.required
+            }
+        }
+
     def get_category_details(self, item, category=None):
-        # 2. Get the label maker.
+        # 1. Get the label maker.
         label_maker = self.get_label_maker(item, category)
 
-        # 3. Create the field descriptions.
+        # 2. Create the field descriptions.
         fields = []
         if label_maker.data_schema:
-            for name, field in zope.schema.getFieldsInOrder(
+            for name, fld in zope.schema.getFieldsInOrder(
                     label_maker.data_schema):
-                fields.append({
-                    'name': name,
-                    'title': field.title,
-                    'type': field.__class__.__name__.lower(),
-                    'required': field.required,
-                    'default': field.default,
-                })
+                builder = getattr(self, 'build_desc_'+fld.__class__.__name__)
+                fields.append(builder(fld))
 
         details = {
             'category': label_maker.category,
@@ -521,6 +566,8 @@ class CopyrightLabelMaker(LabelMaker):
 @APP.after_request
 def allow_all_origins(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-type'
     return response
 
 
@@ -535,7 +582,7 @@ def endpoint_create_label(barcode, category):
         return flask.send_file(pdf_path, mimetype='application/pdf')
 
 
-@APP.route("/<barcode>/<category>/preview")
+@APP.route("/<barcode>/<category>/preview", methods=['GET', 'POST'])
 def endpoint_preview_label(barcode, category):
     item = APP.labels.get_item(barcode)
     data = flask.request.get_json()
@@ -547,7 +594,7 @@ def endpoint_preview_label(barcode, category):
         return flask.send_file(png_path, mimetype='image/png')
 
 
-@APP.route("/<barcode>/<category>/print")
+@APP.route("/<barcode>/<category>/print", methods=['GET', 'POST'])
 def endpoint_print_label(barcode, category):
     item = APP.labels.get_item(barcode)
     data = flask.request.get_json()
