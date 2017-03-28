@@ -217,3 +217,7 @@ tr.returned-item td {
     padding:0 10px;
     border-bottom:none;
 }
+
+.items-label-form .btn-toolbar {
+    margin-top: 0.5em;
+}

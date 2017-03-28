@@ -46,13 +46,17 @@ angular.module('library')
       self.labels_server + item.barcode + '/' + category + '/details'
     ).then(
       function (response) {
+        self.data = {};
+        self.categoryFields = null;
+        if (response.data.fields.length === 0) {
+          return;
+        }
         angular.forEach(response.data.fields, function(fld, key) {
           fld.templateOptions['onChange'] = function(
             $viewValue, $modelValue, $scope) {
               self.updatePreview(self.item, self.category);
           };
         });
-        self.data = {};
         self.categoryFields = response.data.fields;
       });
   };

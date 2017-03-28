@@ -16,15 +16,15 @@
               ng-options="cat for cat in ctrl.categories">
       </select>
 
-      <fieldset>
+      <fieldset ng-hide="ctrl.categoryFields == null">
         <legend>Options</legend>
-      <div ng-show="ctrl.categoryFields">
-        <formly-form model="ctrl.data" fields="ctrl.categoryFields">
-        </formly-form>
-      </div>
+        <div>
+          <formly-form model="ctrl.data" fields="ctrl.categoryFields">
+          </formly-form>
+        </div>
       </fieldset>
 
-      <div class="form-group">
+      <div class="btn-toolbar justify-content-between" role="toolbar" >
         <button name="Preview" type="submit" class="btn btn-primary">
           Print
         </button>
