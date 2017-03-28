@@ -26,7 +26,7 @@
   "printers": [
     {
       "title": "Single Dymo LabelWriter 450",
-      "printer": "dymo",
+      "printer": "LabelWriter-450-Turbo",
       "papersize": [3.5, 1.125],
       "code": "Dymo 30252",
       "options": {
@@ -35,7 +35,7 @@
     },
     {
       "title": "Twin Dymo LabelWriter 450 - Left",
-      "printer": "dymo_twin",
+      "printer": "LabelWriter-450-Twin-Turbo",
       "papersize": [2.5, 0.75],
       "code": "Dymo 1738595",
       "options": {
@@ -45,7 +45,7 @@
     },
     {
       "title": "Twin Dymo LabelWriter 450 - Right",
-      "printer": "dymo_twin",
+      "printer": "LabelWriter-450-Twin-Turbo",
       "papersize": [2.125, 1.0],
       "code": "Dymo 30336",
       "options": {

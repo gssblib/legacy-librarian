@@ -25,6 +25,7 @@ angular.module('library')
   $scope.$on('item-changed', function (event, item) {
     self.item = item;
     self.loadCategories(item);
+    return true;
   });
 
   self.loadCategories = function(item) {
@@ -33,6 +34,10 @@ angular.module('library')
         self.categories = response.data.categories;
         self.category = self.categories[0];
         self.onCategoryChange(item, self.category);
+      },
+      function (response) {
+        self.status = response.data.status;
+        self.status_type = 'danger';
       });
   };
 

@@ -15,6 +15,7 @@ angular.module('library')
         self.item.history = history;
         self.pagination = util.pagination(history.length, 10);
       });
+    return true;
   });
 
   self.setPage = function (page) {
