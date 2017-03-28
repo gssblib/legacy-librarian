@@ -199,3 +199,21 @@ tr.returned-item td {
     width: 100%;
     box-shadow: 3px 3px 3px #bbb;
 }
+
+.items-label-form fieldset {
+    border: 1px solid #ccc !important;
+    border-radius: 4px;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 1em 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+.items-label-form  legend {
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    width:auto;
+    padding:0 10px;
+    border-bottom:none;
+}

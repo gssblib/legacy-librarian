@@ -5,28 +5,37 @@
     {{ctrl.status}}
   </div>
 
-  <form name="itemLabelsForm" class="panel-body"
+  <form name="itemLabelsForm" class="panel-body items-label-form"
         ng-submit="ctrl.printLabel(ctrl.item, ctrl.category)">
 
-    <div class="form-group col-sm-6 col-md-4">
+    <div class="form-group col-sm-6 col-md-6">
+
       <label>Label Categories</label>
       <select class="form-control" ng-model="ctrl.category"
               ng-change="ctrl.onCategoryChange(ctrl.item, ctrl.category)"
               ng-options="cat for cat in ctrl.categories">
       </select>
+
+      <fieldset>
+        <legend>Options</legend>
+      <div ng-show="ctrl.categoryFields">
+        <formly-form model="ctrl.data" fields="ctrl.categoryFields">
+        </formly-form>
+      </div>
+      </fieldset>
+
+      <div class="form-group">
+        <button name="Preview" type="submit" class="btn btn-primary">
+          Print
+        </button>
+      </div>
+
     </div>
 
-    <span class="clearfix"></span>
-    <div id="item-label-preview" class="item-label-preview col-sm-6 col-md-4"
+    <div id="item-label-preview" class="item-label-preview col-sm-6 col-md-6"
          ng-if="ctrl.category">
+      <h2>Preview</h2>
       <img data-ng-src="data:image/png;base64,{{ctrl.previewImage}}" />
-    </div>
-
-    <span class="clearfix"></span>
-    <div class="form-group col-sm-6 col-md-4">
-      <button name="Preview" type="submit" class="btn btn-primary">
-        Print
-      </button>
     </div>
 
   </form>

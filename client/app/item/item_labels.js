@@ -5,6 +5,8 @@ angular.module('library')
   self.labels_server = 'http://localhost:3001/';
   self.item = null;
   self.category = null;
+  self.categoryFields = null;
+  self.data = {};
   self.categories = [];
   self.previewImage = null;
   self.status = null;
@@ -30,18 +32,36 @@ angular.module('library')
       function (response) {
         self.categories = response.data.categories;
         self.category = self.categories[0];
-        self.updatePreview(item, self.category);
+        self.onCategoryChange(item, self.category);
       });
   };
 
   self.onCategoryChange = function(item, category) {
+    self.updateFields(item, category);
     self.updatePreview(item, category);
+  };
+
+  self.updateFields = function (item, category) {
+    return $http.get(
+      self.labels_server + item.barcode + '/' + category + '/details'
+    ).then(
+      function (response) {
+        angular.forEach(response.data.fields, function(fld, key) {
+          fld.templateOptions['onChange'] = function(
+            $viewValue, $modelValue, $scope) {
+              self.updatePreview(self.item, self.category);
+          };
+        });
+        self.data = {};
+        self.categoryFields = response.data.fields;
+      });
   };
 
   self.updatePreview = function (item, category) {
     return $http({
-      'method': 'GET',
+      'method': 'POST',
       'url': self.labels_server + item.barcode + '/' + category + '/preview',
+      'data': self.data,
       'responseType': 'arraybuffer'}
     ).then(
       function (response) {
@@ -50,8 +70,11 @@ angular.module('library')
   };
 
   self.printLabel = function (item, category) {
-    return $http.get(
-      self.labels_server + item.barcode + '/' + category + '/print').then(
+    return $http({
+      'method': 'POST',
+      'url': self.labels_server + item.barcode + '/' + category + '/print',
+      'data': self.data}
+    ).then(
       function (response) {
         self.status = response.data.status;
         self.status_type = 'success';
