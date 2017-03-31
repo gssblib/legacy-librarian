@@ -1,3 +1,6 @@
+/**
+ * Represents an item (as stored in the database).
+ */
 export class Item {
   barcode: string;
   author: string;

@@ -1,5 +1,4 @@
-<h1>
-  {{title}}
+<h1>{{title}}</h1>
 
-  <gsl-item *ngIf="item" [item]="item"></gsl-item>
-</h1>
+<button routerLink="/items" routerLinkActive="active">Items</button>
+<router-outlet></router-outlet>
