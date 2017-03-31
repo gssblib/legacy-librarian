@@ -16,4 +16,12 @@ widget library.
   * `npm install font-awesome --save`
 * add PrimeNG and font-awesome CSS files to `styles.css`
 
+## Generating application structure
+
+```
+$ ng generate module core
+$ ng generate module items
+$ ng generate service core/config
+$ ng generate component items/item
+$ ng generate service items/shares/items
 
