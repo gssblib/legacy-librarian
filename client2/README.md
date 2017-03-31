@@ -8,9 +8,12 @@ widget library.
 
 ## Steps
 
+* install angular-cli
+  * `npm install -g @angular/cli`
 * create ng project with `ng new client2` from parent directory
 * in this project, add PrimeNG and font-awesome npm libraries
   * `npm install primeng --save`
   * `npm install font-awesome --save`
 * add PrimeNG and font-awesome CSS files to `styles.css`
+
 
