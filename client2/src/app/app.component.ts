@@ -10,7 +10,6 @@ import { MenuItem } from "primeng/primeng";
 })
 export class AppComponent implements OnInit {
   private items: MenuItem[];
-  title = 'app works!';
 
   constructor() {
   }

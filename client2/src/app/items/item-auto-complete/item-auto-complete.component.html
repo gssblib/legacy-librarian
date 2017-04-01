@@ -1,0 +1,9 @@
+<p-autoComplete [(ngModel)]="selection"
+                (onSelect)="selected()"
+                [suggestions]="suggestions"
+                field="title"
+                (completeMethod)="findSuggestions($event)"
+                placeholder="part of title"
+                delay="100"
+                [size]="30">
+</p-autoComplete>

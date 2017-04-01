@@ -14,4 +14,8 @@ export class ItemSearchComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  showItem(item) {
+    console.log('show item: ' + item.title);
+  }
 }

@@ -1,25 +1,48 @@
 import { Injectable } from '@angular/core';
-import { Response } from "@angular/http";
+import { Http, Response } from "@angular/http";
 import { Observable } from "rxjs";
+import { ConfigService } from "./config.service";
+import { FetchResult } from "./fetch-result";
 
 /**
  * Support for RPC (REST over HTTP) calls.
  */
 @Injectable()
 export class RpcService {
-
-  constructor() {
+  constructor(private config: ConfigService, private http: Http) {
   }
 
   /**
    * Returns the JSON object contained in the response.
-   *
-   * The REST currently does not wrap the data inside of the response payload. We
-   * may add this wrapper in the future in which case we can update just this function.
    */
-  extractData(res: Response) {
-    let body = res.json();
-    return body || {};
+  getData(response: Response) {
+    const body = response.json() || {};
+    return body.data || body;
+  }
+
+  /**
+   * Combines the search criteria with the pagination parameters.
+   */
+  private createSearchParams(
+      criteria: object, offset?: number, limit?: number, returnCount?: number) {
+    const params: any = Object.assign({}, criteria);
+    if (limit) {
+      params.offset = offset;
+      params.limit = limit;
+    }
+    if (returnCount) {
+      params.returnCount = returnCount;
+    }
+    return params;
+  }
+
+  httpGet(path: string, params: object) {
+    return this.http.get(this.config.apiPath(path), {params: params}).map(this.getData);
+  }
+
+  fetch(path: string, criteria: object, offset?: number, limit?: number, returnCount?: number):
+      Observable<FetchResult> {
+    return this.httpGet(path, this.createSearchParams(criteria, offset, limit, returnCount));
   }
 
   /**

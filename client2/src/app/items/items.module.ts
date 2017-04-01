@@ -4,6 +4,10 @@ import { ItemComponent } from "./item/item.component";
 import { ItemsService } from "./shared/items.service";
 import { ItemSearchComponent } from './item-search/item-search.component';
 import { ItemPageComponent } from './item-page/item-page.component';
+import { ItemAutoCompleteComponent } from './item-auto-complete/item-auto-complete.component';
+import { AutoCompleteModule } from "primeng/primeng";
+import { FormsModule } from "@angular/forms";
+import { ItemSearchFormComponent } from './item-search-form/item-search-form.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -13,12 +17,16 @@ import { ItemPageComponent } from './item-page/item-page.component';
  */
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    AutoCompleteModule
   ],
   declarations: [
     ItemComponent,
     ItemSearchComponent,
-    ItemPageComponent
+    ItemPageComponent,
+    ItemAutoCompleteComponent,
+    ItemSearchFormComponent
   ],
   providers: [
     ItemsService
