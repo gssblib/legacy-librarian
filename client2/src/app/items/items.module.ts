@@ -6,8 +6,10 @@ import { ItemSearchComponent } from './item-search/item-search.component';
 import { ItemPageComponent } from './item-page/item-page.component';
 import { ItemAutoCompleteComponent } from './item-auto-complete/item-auto-complete.component';
 import { AutoCompleteModule } from "primeng/primeng";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ItemSearchFormComponent } from './item-search-form/item-search-form.component';
+import { MaterialModule } from "@angular/material";
+import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -19,14 +21,17 @@ import { ItemSearchFormComponent } from './item-search-form/item-search-form.com
   imports: [
     CommonModule,
     FormsModule,
-    AutoCompleteModule
+    ReactiveFormsModule,
+    AutoCompleteModule,
+    MaterialModule
   ],
   declarations: [
     ItemComponent,
     ItemSearchComponent,
     ItemPageComponent,
     ItemAutoCompleteComponent,
-    ItemSearchFormComponent
+    ItemSearchFormComponent,
+    ItemSearchBarComponent,
   ],
   providers: [
     ItemsService
@@ -34,6 +39,8 @@ import { ItemSearchFormComponent } from './item-search-form/item-search-form.com
   exports: [
     ItemComponent,
     ItemSearchComponent,
+    ItemAutoCompleteComponent,
+    ItemSearchBarComponent,
     ItemPageComponent
   ]
 })

@@ -1,9 +1,8 @@
-<p-autoComplete [(ngModel)]="selection"
-                (onSelect)="selected()"
-                [suggestions]="suggestions"
-                field="title"
-                (completeMethod)="findSuggestions($event)"
-                placeholder="part of title"
-                delay="100"
-                [size]="30">
-</p-autoComplete>
+<md-input-container floatPlaceholder="never">
+  <input mdInput size="50" placeholder="Search" [formControl]="itemCtrl" [mdAutocomplete]="auto">
+</md-input-container>
+<md-autocomplete #auto="mdAutocomplete" [displayWith]="displayWith">
+  <md-option *ngFor="let suggestion of suggestions" [value]="suggestion">
+    {{suggestion.title}}
+  </md-option>
+</md-autocomplete>

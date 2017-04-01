@@ -1,0 +1,10 @@
+.search-bar {
+  margin-left: 2em;
+  padding: 4px;
+  font-size: 16px;
+  background: white;
+}
+.search-bar-icon {
+  vertical-align: middle;
+}
+

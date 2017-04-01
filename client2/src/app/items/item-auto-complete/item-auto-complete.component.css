@@ -1,0 +1,7 @@
+:host /deep/ .mat-input-wrapper {
+  margin: 0;
+}
+:host /deep/ .mat-input-underline {
+  border: 0;
+}
+

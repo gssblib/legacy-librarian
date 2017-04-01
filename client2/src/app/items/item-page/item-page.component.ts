@@ -24,7 +24,6 @@ export class ItemPageComponent implements OnInit {
 
   private loadItem(barcode: string) {
     this.itemService.getItem(barcode).subscribe(item => {
-      console.log("received item: ", item);
       this.item = item;
     });
   }
