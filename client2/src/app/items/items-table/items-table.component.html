@@ -1,3 +1,4 @@
+<!--
 <table>
   <thead>
     <tr>
@@ -19,3 +20,12 @@
     </tr>
   </tbody>
 </table>
+-->
+
+<td-data-table [data]="items" [columns]="columns">
+  <ng-template tdDataTableTemplate="type" let-value="value" let-row="row" let-column="column">
+    <div layout="row">
+      <span flex>{{value}}</span>
+    </div>
+  </ng-template>
+</td-data-table>

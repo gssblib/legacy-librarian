@@ -5,12 +5,12 @@ import { ItemsService } from "./shared/items.service";
 import { ItemSearchComponent } from './item-search/item-search.component';
 import { ItemPageComponent } from './item-page/item-page.component';
 import { ItemAutoCompleteComponent } from './item-auto-complete/item-auto-complete.component';
-import { AutoCompleteModule } from "primeng/primeng";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ItemSearchFormComponent } from './item-search-form/item-search-form.component';
 import { MaterialModule } from "@angular/material";
 import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
 import { ItemsTableComponent } from './items-table/items-table.component';
+import { CovalentDataTableModule } from "@covalent/core";
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -23,8 +23,8 @@ import { ItemsTableComponent } from './items-table/items-table.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    AutoCompleteModule,
-    MaterialModule
+    MaterialModule,
+    CovalentDataTableModule,
   ],
   declarations: [
     ItemComponent,

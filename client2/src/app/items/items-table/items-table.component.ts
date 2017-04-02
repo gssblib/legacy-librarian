@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Item } from "../shared/item";
+import { ITdDataTableColumn } from "@covalent/core";
 
 @Component({
   selector: 'gsl-items-table',
@@ -9,6 +10,11 @@ import { Item } from "../shared/item";
 export class ItemsTableComponent implements OnInit {
   @Input()
   items: Item[] = [];
+
+  columns: ITdDataTableColumn[] = [
+    { name: 'barcode', label: 'Barcode', sortable: true },
+    { name: 'title', label: 'Title', sortable: true },
+  ];
 
   constructor() { }
 

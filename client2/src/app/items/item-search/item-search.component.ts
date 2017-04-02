@@ -20,21 +20,12 @@ export class ItemSearchComponent implements OnInit {
     this.items = [];
   }
 
-  search(query) {
-    const criteria = this.toCriteria(query);
+  search(criteria) {
     this.itemsService.getItems(criteria, 0, 20, true).subscribe(
       fetchResult => {
         this.items = fetchResult.rows;
         console.log('items: ' + JSON.stringify(this.items));
       }
     );
-  }
-
-  private toCriteria(query) {
-    const criteria: any = {};
-    if (query.title !== '') {
-      criteria.title = query.title;
-    }
-    return criteria;
   }
 }
