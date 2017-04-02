@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Borrower } from "../shared/Borrower";
+import { BorrowersService } from "../shared/borrowers.service";
 
 /**
  * Presents the items that a borrower has currently checked out.
@@ -9,10 +11,24 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./borrower-checkouts.component.css']
 })
 export class BorrowerCheckoutsComponent implements OnInit {
+  @Input()
+  borrower: Borrower;
 
-  constructor() { }
+  @Output()
+  borrowerChange: EventEmitter<any> = new EventEmitter();
+
+  constructor(private borrowersService: BorrowersService) {
+  }
 
   ngOnInit() {
   }
 
+  checkout(barcode) {
+    console.log('checkout ' + JSON.stringify(barcode));
+    this.borrowersService.checkOutItem(barcode, this.borrower.borrowernumber).subscribe(
+      result => {
+        this.borrowerChange.emit(null);
+      }
+    );
+  }
 }

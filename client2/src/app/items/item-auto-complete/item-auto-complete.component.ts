@@ -36,7 +36,7 @@ export class ItemAutoCompleteComponent implements OnInit {
    * Handles changes of the input field.
    *
    * While typing, the value is a string, and we fetch new suggestions. When one of
-   * the items is selected, the value is the Item object, and we emit the change event.
+   * the items is selected, the value is the Item object, and we emit the borrowerChange event.
    *
    * This doesn't look like the best way to get notified of the selection, but I couldn't
    * find a more direct way, for example, an event on the md-autocomplete element.

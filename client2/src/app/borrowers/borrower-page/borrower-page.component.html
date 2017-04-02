@@ -1,3 +1,20 @@
 <md-card *ngIf="borrower">
-  {{borrower.surname}}
+  <h3>
+    {{borrower.surname}}, {{borrower.firstname}}, {{borrower.contactname}}
+  </h3>
+  <md-tab-group>
+    <md-tab label="Checkouts">
+      <gsl-borrower-checkouts class="tab-content" [borrower]="borrower"
+                              (borrowerChange)="reloadBorrower()"></gsl-borrower-checkouts>
+    </md-tab>
+    <md-tab label="Fees">
+      <gsl-borrower-fees></gsl-borrower-fees>
+    </md-tab>
+    <md-tab label="History">
+      <gsl-borrower-history></gsl-borrower-history>
+    </md-tab>
+    <md-tab label="Profile">
+      <gsl-borrower-profile></gsl-borrower-profile>
+    </md-tab>
+  </md-tab-group>
 </md-card>

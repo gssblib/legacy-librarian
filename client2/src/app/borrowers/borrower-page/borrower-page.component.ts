@@ -23,8 +23,14 @@ export class BorrowerPageComponent implements OnInit {
     this.route.params.subscribe(params => this.loadBorrower(params['id']));
   }
 
-  private loadBorrower(id: string) {
-    this.borrowersService.getBorrower(id).subscribe(borrower => {
+  private reloadBorrower() {
+    if (this.borrower) {
+      this.loadBorrower(this.borrower.borrowernumber);
+    }
+  }
+
+  private loadBorrower(id: number) {
+    this.borrowersService.getBorrower(id, {options: 'items,fees'}).subscribe(borrower => {
       this.borrower = borrower;
     });
   }

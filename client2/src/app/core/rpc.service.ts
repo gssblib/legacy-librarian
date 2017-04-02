@@ -40,6 +40,10 @@ export class RpcService {
     return this.http.get(this.config.apiPath(path), {params: params}).map(this.getData);
   }
 
+  httpPost(path: string, params: object) {
+    return this.http.post(this.config.apiPath(path), params).map(this.getData);
+  }
+
   fetch(path: string, criteria: object, offset?: number, limit?: number, returnCount?: number):
       Observable<FetchResult> {
     return this.httpGet(path, this.createSearchParams(criteria, offset, limit, returnCount));

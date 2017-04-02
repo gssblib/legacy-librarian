@@ -12,6 +12,9 @@ import { BorrowersService } from "./shared/borrowers.service";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MaterialModule } from "@angular/material";
 import { CovalentDataTableModule } from "@covalent/core";
+import { SharedModule } from "../shared/shared.module";
+import { BorrowerCheckoutsTableComponent } from './borrower-checkouts-table/borrower-checkouts-table.component';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   imports: [
@@ -19,8 +22,10 @@ import { CovalentDataTableModule } from "@covalent/core";
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
+    BrowserAnimationsModule,
     CovalentDataTableModule,
     BorrowersRoutingModule,
+    SharedModule
   ],
   declarations: [
     BorrowerPageComponent,
@@ -28,7 +33,8 @@ import { CovalentDataTableModule } from "@covalent/core";
     BorrowerCheckoutsComponent,
     BorrowerFeesComponent,
     BorrowerHistoryComponent,
-    BorrowerProfileComponent
+    BorrowerProfileComponent,
+    BorrowerCheckoutsTableComponent
   ],
   providers: [
     BorrowersService,

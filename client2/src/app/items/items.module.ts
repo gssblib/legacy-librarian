@@ -13,6 +13,7 @@ import { ItemsTableComponent } from './items-table/items-table.component';
 import { CovalentDataTableModule } from "@covalent/core";
 import { ReturnPageComponent } from './return-page/return-page.component';
 import { ItemsRoutingModule } from "./items-routing.module";
+import { SharedModule } from "../shared/shared.module";
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -28,6 +29,7 @@ import { ItemsRoutingModule } from "./items-routing.module";
     MaterialModule,
     CovalentDataTableModule,
     ItemsRoutingModule,
+    SharedModule,
   ],
   declarations: [
     ItemComponent,

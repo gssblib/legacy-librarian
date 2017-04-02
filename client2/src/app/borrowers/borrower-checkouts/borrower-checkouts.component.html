@@ -1,3 +1,5 @@
-<p>
-  borrower-checkouts works!
-</p>
+<div *ngIf="borrower">
+  <gsl-barcode-field icon="add" (barcodeSubmit)="checkout($event)"></gsl-barcode-field>
+  <gsl-borrower-checkouts-table [checkouts]="borrower.items"></gsl-borrower-checkouts-table>
+</div>
+

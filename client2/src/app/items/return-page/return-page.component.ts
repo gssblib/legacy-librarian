@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ItemsService } from "../shared/items.service";
 
 @Component({
   selector: 'gsl-return-page',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReturnPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(private itemsService: ItemsService) { }
 
   ngOnInit() {
   }
 
+  returnItem(barcode) {
+
+  }
 }

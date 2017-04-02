@@ -15,13 +15,15 @@ export class BorrowersService {
   /**
    * Gets a single Borrower identified by id (borrowernumber).
    */
-  getBorrower(id: string): Observable<Borrower> {
-    return this.http.get(this.config.apiPath('borrowers/' + id))
-      .map(this.rpc.getData)
-      .catch(this.rpc.handleError);
+  getBorrower(id: number, params?): Observable<Borrower> {
+    return this.rpc.httpGet('borrowers/' + id, params);
   }
 
   getBorrowers(criteria, offset, limit, returnCount): Observable<FetchResult> {
     return this.rpc.fetch('borrowers', criteria, offset, limit, returnCount);
+  }
+
+  checkOutItem(barcode, borrowerNumber) {
+    return this.rpc.httpPost('items/' + barcode + '/checkout', {borrower: borrowerNumber});
   }
 }
