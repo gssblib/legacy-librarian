@@ -11,6 +11,8 @@ import { MaterialModule } from "@angular/material";
 import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
 import { ItemsTableComponent } from './items-table/items-table.component';
 import { CovalentDataTableModule } from "@covalent/core";
+import { ReturnPageComponent } from './return-page/return-page.component';
+import { ItemsRoutingModule } from "./items-routing.module";
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -25,6 +27,7 @@ import { CovalentDataTableModule } from "@covalent/core";
     ReactiveFormsModule,
     MaterialModule,
     CovalentDataTableModule,
+    ItemsRoutingModule,
   ],
   declarations: [
     ItemComponent,
@@ -34,6 +37,7 @@ import { CovalentDataTableModule } from "@covalent/core";
     ItemSearchFormComponent,
     ItemSearchBarComponent,
     ItemsTableComponent,
+    ReturnPageComponent,
   ],
   providers: [
     ItemsService

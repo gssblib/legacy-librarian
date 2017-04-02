@@ -1,14 +1,13 @@
-
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { ItemSearchComponent } from "./items/item-search/item-search.component";
-import { ItemPageComponent } from "./items/item-page/item-page.component";
+import { HomeComponent } from "./home/home.component";
+import { NotFoundComponent } from "./not-found/not-found.component";
 
 @NgModule({
   imports: [
     RouterModule.forRoot([
-      { path: 'items/:id', component: ItemPageComponent },
-      { path: 'items', component: ItemSearchComponent }
+      { path: '', component: HomeComponent },
+      { path: '**', component: NotFoundComponent },
     ])
   ],
   exports: [
@@ -16,5 +15,4 @@ import { ItemPageComponent } from "./items/item-page/item-page.component";
   ]
 })
 export class AppRoutingModule {
-
 }

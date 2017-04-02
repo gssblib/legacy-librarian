@@ -22,8 +22,10 @@ export class ItemSearchFormComponent implements OnInit {
 
   private toCriteria(query) {
     const criteria: any = {};
-    if (query.title !== '') {
-      criteria.title = query.title;
+    for (let field of ['title', 'author']) {
+      if (query[field] !== '') {
+        criteria[field] = query[field];
+      }
     }
     return criteria;
   }

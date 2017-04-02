@@ -1,6 +1,7 @@
 .flex {
   flex: 1 1 auto;
 }
-.side-nav {
+.sidenav-container {
+  min-height: 20em;
 }
 

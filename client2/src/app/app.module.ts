@@ -8,20 +8,23 @@ import { CoreModule } from "./core/core.module";
 import { ItemsModule } from "./items/items.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { MaterialModule } from "@angular/material";
+import { HomeComponent } from './home/home.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     CoreModule,
-    AppRoutingModule,
-    ItemsModule,
     MaterialModule,
-    ItemsModule
+    ItemsModule,
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
