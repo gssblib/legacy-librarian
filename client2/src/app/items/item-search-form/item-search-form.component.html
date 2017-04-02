@@ -1,8 +1,15 @@
-<form>
+<form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
   <md-input-container>
-    <input name="title" mdInput [(ngModel)]="query.title" placeholder="Title">
+    <input name="title" ngModel mdInput placeholder="Title" autocomplete="off">
   </md-input-container>
   <md-input-container>
-    <input mdInput placeholder="Author">
+    <input name="author" ngModel mdInput placeholder="Author" autocomplete="off">
   </md-input-container>
+  <md-input-container>
+    <input name="series" ngModel mdInput placeholder="Series Title" autocomplete="off">
+  </md-input-container>
+  <md-input-container>
+    <input name="subject" ngModel mdInput placeholder="Subject" autocomplete="off">
+  </md-input-container>
+  <button md-fab><md-icon>search</md-icon></button>
 </form>

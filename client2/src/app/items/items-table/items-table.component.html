@@ -1,0 +1,21 @@
+<table>
+  <thead>
+    <tr>
+      <th>Barcode</th>
+      <th>Status</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Category</th>
+    </tr>
+
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of items">
+      <td>{{item.barcode}}</td>
+      <td>{{item.state}}</td>
+      <td>{{item.title}}</td>
+      <td>{{item.author}}</td>
+      <td>{{item.subject}}</td>
+    </tr>
+  </tbody>
+</table>

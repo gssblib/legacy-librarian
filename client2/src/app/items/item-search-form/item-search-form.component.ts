@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ItemQuery } from "../shared/item-query";
 
 @Component({
@@ -7,12 +7,16 @@ import { ItemQuery } from "../shared/item-query";
   styleUrls: ['./item-search-form.component.css']
 })
 export class ItemSearchFormComponent implements OnInit {
-  query: ItemQuery = new ItemQuery();
+  @Output()
+  search: EventEmitter<ItemQuery> = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() {
-
   }
 
+  onSubmit(query) {
+    console.log('query: ' + JSON.stringify(query));
+    this.search.emit(query);
+  }
 }

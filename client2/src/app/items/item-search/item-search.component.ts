@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Item } from "../shared/item";
+import { ItemsService } from "../shared/items.service";
 
 /**
  * Presents the search form for Items.
@@ -9,13 +11,30 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./item-search.component.css']
 })
 export class ItemSearchComponent implements OnInit {
+  items: Item[];
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private itemsService: ItemsService) {
   }
 
-  showItem(item) {
-    console.log('show item: ' + item.title);
+  ngOnInit() {
+    this.items = [];
+  }
+
+  search(query) {
+    const criteria = this.toCriteria(query);
+    this.itemsService.getItems(criteria, 0, 20, true).subscribe(
+      fetchResult => {
+        this.items = fetchResult.rows;
+        console.log('items: ' + JSON.stringify(this.items));
+      }
+    );
+  }
+
+  private toCriteria(query) {
+    const criteria: any = {};
+    if (query.title !== '') {
+      criteria.title = query.title;
+    }
+    return criteria;
   }
 }

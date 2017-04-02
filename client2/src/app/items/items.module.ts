@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ItemSearchFormComponent } from './item-search-form/item-search-form.component';
 import { MaterialModule } from "@angular/material";
 import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
+import { ItemsTableComponent } from './items-table/items-table.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -32,6 +33,7 @@ import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.compon
     ItemAutoCompleteComponent,
     ItemSearchFormComponent,
     ItemSearchBarComponent,
+    ItemsTableComponent,
   ],
   providers: [
     ItemsService
@@ -41,7 +43,8 @@ import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.compon
     ItemSearchComponent,
     ItemAutoCompleteComponent,
     ItemSearchBarComponent,
-    ItemPageComponent
+    ItemPageComponent,
+    ItemsTableComponent,
   ]
 })
 export class ItemsModule { }
