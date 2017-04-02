@@ -10,6 +10,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { MaterialModule } from "@angular/material";
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { BorrowersModule } from "./borrowers/borrowers.module";
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     CoreModule,
     MaterialModule,
     ItemsModule,
+    BorrowersModule,
     AppRoutingModule,
   ],
   providers: [],
