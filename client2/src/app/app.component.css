@@ -4,4 +4,7 @@
 .sidenav-container {
   min-height: 20em;
 }
+.content {
+  padding: 1em;
+}
 
