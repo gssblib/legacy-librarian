@@ -11,6 +11,7 @@ import { MaterialModule } from "@angular/material";
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { BorrowersModule } from "./borrowers/borrowers.module";
+import { IsbnModule } from "./isbn/isbn.module";
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { BorrowersModule } from "./borrowers/borrowers.module";
     MaterialModule,
     ItemsModule,
     BorrowersModule,
+    IsbnModule,
     AppRoutingModule,
   ],
   providers: [],
