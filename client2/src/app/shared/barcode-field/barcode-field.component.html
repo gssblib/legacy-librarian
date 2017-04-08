@@ -1,7 +1,8 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
   <md-input-container>
     <input mdInput placeholder="Barcode" [formControl]="barcodeCtrl"
-      [(ngModel)]="barcode" (keypress)="keyPress($event)" maxlength="9">
+           [(ngModel)]="barcode" (keypress)="keyPress($event)" maxlength="9"
+           [autofocus]="autofocus">
   </md-input-container>
   <button md-fab [disabled]="!barcodeCtrl.valid"><md-icon>{{icon}}</md-icon></button>
 </form>
