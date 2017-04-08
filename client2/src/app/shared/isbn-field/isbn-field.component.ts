@@ -2,31 +2,27 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, Validators } from "@angular/forms";
 
 @Component({
-  selector: 'gsl-barcode-field',
-  templateUrl: './barcode-field.component.html',
-  styleUrls: ['./barcode-field.component.css']
+  selector: 'gsl-isbn-field',
+  templateUrl: './isbn-field.component.html',
+  styleUrls: ['./isbn-field.component.css']
 })
-export class BarcodeFieldComponent implements OnInit {
-  barcodeCtrl: FormControl;
-  barcode: string = '';
+export class IsbnFieldComponent implements OnInit {
+  isbnCtrl: FormControl;
+  isbn: string = '';
 
   @Input()
   icon = 'add';
 
-  @Input()
-  autofocus = true;
-
   @Output()
-  barcodeSubmit: EventEmitter<string> = new EventEmitter();
+  isbnSubmit: EventEmitter<string> = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() {
-    this.barcodeCtrl = new FormControl('', [
+    this.isbnCtrl = new FormControl('', [
       Validators.required,
-      Validators.minLength(9),
-      Validators.maxLength(9)
       ])
+
   }
 
   keyPress(event: any) {
@@ -38,6 +34,7 @@ export class BarcodeFieldComponent implements OnInit {
   }
 
   onSubmit(value) {
-    this.barcodeSubmit.emit(this.barcode);
+    this.isbnSubmit.emit(this.isbn);
   }
+
 }

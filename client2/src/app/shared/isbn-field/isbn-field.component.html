@@ -1,0 +1,7 @@
+<form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
+  <md-input-container>
+    <input mdInput placeholder="Isbn" [formControl]="isbnCtrl"
+      [(ngModel)]="isbn" (keypress)="keyPress($event)" maxlength="9">
+  </md-input-container>
+  <button md-fab [disabled]="!isbnCtrl.valid"><md-icon>{{icon}}</md-icon></button>
+</form>
