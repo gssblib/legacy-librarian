@@ -1,5 +1,6 @@
 <md-input-container floatPlaceholder="never">
-  <input mdInput size="50" placeholder="Search" [formControl]="itemCtrl" [mdAutocomplete]="auto">
+  <input mdInput size="50" placeholder="Search"
+         [formControl]="itemCtrl" [mdAutocomplete]="auto">
 </md-input-container>
 <md-autocomplete #auto="mdAutocomplete" [displayWith]="displayWith">
   <md-option *ngFor="let suggestion of suggestions" [value]="suggestion">

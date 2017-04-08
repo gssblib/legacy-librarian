@@ -1,0 +1,12 @@
+<md-input-container>
+  <input mdInput size="50" placeholder="Borrower name"
+         [formControl]="input"
+         [mdAutocomplete]="borrowerAutoComplete">
+</md-input-container>
+<md-autocomplete #borrowerAutoComplete="mdAutocomplete"
+                 [displayWith]="displayName">
+  <md-option *ngFor="let suggestion of suggestions; let i = $index;"
+             [value]="suggestion">
+    {{displayName(suggestion)}}
+  </md-option>
+</md-autocomplete>

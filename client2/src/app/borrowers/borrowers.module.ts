@@ -15,6 +15,7 @@ import { CovalentDataTableModule } from "@covalent/core";
 import { SharedModule } from "../shared/shared.module";
 import { BorrowerCheckoutsTableComponent } from './borrower-checkouts-table/borrower-checkouts-table.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { BorrowerAutoCompleteComponent } from './borrower-auto-complete/borrower-auto-complete.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     BorrowerFeesComponent,
     BorrowerHistoryComponent,
     BorrowerProfileComponent,
-    BorrowerCheckoutsTableComponent
+    BorrowerCheckoutsTableComponent,
+    BorrowerAutoCompleteComponent
   ],
   providers: [
     BorrowersService,

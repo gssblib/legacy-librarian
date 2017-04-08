@@ -20,7 +20,7 @@ export class ItemAutoCompleteComponent implements OnInit {
   suggestions: Item[];
 
   @Output()
-  itemSelected: EventEmitter<Item> = new EventEmitter<Item>();
+  itemSelected: EventEmitter<Item> = new EventEmitter();
 
   @Input()
   size: number = 20;

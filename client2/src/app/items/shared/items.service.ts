@@ -27,4 +27,10 @@ export class ItemsService {
   getItems(criteria, offset, limit, returnCount): Observable<FetchResult> {
     return this.rpc.fetch('items', criteria, offset, limit, returnCount);
   }
+
+  returnItem(barcode: string) {
+    return this.http.post(this.config.apiPath(`items/${barcode}/checkin`), 'foo')
+      .map(this.rpc.getData)
+      .catch(this.rpc.handleError);
+  }
 }

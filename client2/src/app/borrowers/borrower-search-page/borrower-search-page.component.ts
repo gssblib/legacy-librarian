@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {Borrower} from "../shared/Borrower";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'gsl-borrower-search-page',
@@ -7,9 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BorrowerSearchPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
+  showBorrower(borrower: Borrower) {
+    this.router.navigate(['/borrowers', borrower.borrowernumber]);
+  }
 }
