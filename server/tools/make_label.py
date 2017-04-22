@@ -94,11 +94,13 @@ class Labels(object):
         raise ValueError('No label maker class found')
 
     def get_item(self, barcode):
+        self.connection.rollback()
         cursor = self.connection.cursor()
         cursor.execute(ITEM_SQL % barcode)
         row = cursor.fetchone()
         item = AttrDict(zip(cursor.column_names, row))
         log.debug('Item:\n%s', pprint.pformat(item))
+        self.connection.rollback()
         return item
 
     def create_label(self, item, category=None, data=None, pdf_path=None):
