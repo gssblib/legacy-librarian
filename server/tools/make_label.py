@@ -367,10 +367,10 @@ class HolidayLabelMaker(LabelMaker):
 
 
 @Labels.register
-class BilderbuchLabelMaker(LabelMaker):
+class BilderbuchWithAuthorLabelMaker(LabelMaker):
 
     category = 'main'
-    template = os.path.join(TEMPLATES_DIR, 'bilderbuch.rml')
+    template = os.path.join(TEMPLATES_DIR, 'bilderbuch-with-author.rml')
 
     classification_to_size = {
         'B/K': u'klein',
@@ -380,29 +380,13 @@ class BilderbuchLabelMaker(LabelMaker):
 
     @classmethod
     def is_applicable(cls, item):
-        return item.classification in ('B/K', 'B/M', 'B/G')
-
-    def prepare(self):
-        self.data['size'] = self.classification_to_size[
-            self.item.classification]
-
-
-@Labels.register
-class BilderbuchWithAuthorLabelMaker(LabelMaker):
-
-    category = 'main'
-    template = os.path.join(TEMPLATES_DIR, 'bilderbuch-with-author.rml')
-
-    @classmethod
-    def is_applicable(cls, item):
-        return (
-            item.classification.startswith('B/A') or
-            item.classification.startswith('B/K/A'))
+        return item.classification.startswith('B/')
 
     def prepare(self):
         # Sometimes the author or category is listed as part of the
         # classification
         parts = self.item.classification.split(' ', 1)
+
         if len(parts) == 1:
             classification = parts[0]
             author = self.item.author.split(',')[0]
