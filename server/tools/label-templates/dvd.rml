@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+
+<document>
+  <pageInfo pageSize="{{page_size}}" />
+  <pageDrawing>
+
+    <!-- Center rows -->
+    <setFont name="Times-Roman" size="12" />
+    <drawCenteredString x="1.75in" y="0.8in">
+      {{title_abbr}}
+    </drawCenteredString>
+
+    <setFont name="Times-Bold" size="14" />
+    <drawCenteredString x="1.75in" y="0.6in">
+      {{classification}}
+    </drawCenteredString>
+
+    <setFont name="Times-Italic" size="12" />
+    <drawCenteredString x="1.75in" y="0.4in">
+      DVD
+    </drawCenteredString>
+
+    <setFont name="Times-Bold" size="12" />
+    <drawCenteredString x="1.75in" y="0.15in">
+      Deutsche Sonnabendschule Boston
+    </drawCenteredString>
+
+    <!-- Right side entries -->
+    <setFont name="Times-Italic" size="12" />
+    <drawRightString x="3.25in" y="0.8in">
+      {{add_on}}
+    </drawRightString>
+    <setFont name="Times-Bold" size="12" />
+    <drawRightString x="3.25in" y="0.6in">
+      {{classification}}
+    </drawRightString>
+
+  </pageDrawing>
+</document>
