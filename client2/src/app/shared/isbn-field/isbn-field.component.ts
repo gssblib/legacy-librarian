@@ -13,6 +13,9 @@ export class IsbnFieldComponent implements OnInit {
   @Input()
   icon = 'add';
 
+  @Input()
+  focus = false;
+
   @Output()
   isbnSubmit: EventEmitter<string> = new EventEmitter();
 
