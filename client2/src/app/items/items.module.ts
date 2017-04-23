@@ -10,7 +10,7 @@ import { ItemSearchFormComponent } from './item-search-form/item-search-form.com
 import { MaterialModule } from "@angular/material";
 import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
 import { ItemsTableComponent } from './items-table/items-table.component';
-import { CovalentDataTableModule } from "@covalent/core";
+import {CovalentDataTableModule, CovalentPagingModule} from "@covalent/core";
 import { ReturnPageComponent } from './return-page/return-page.component';
 import { ItemsRoutingModule } from "./items-routing.module";
 import { SharedModule } from "../shared/shared.module";
@@ -28,6 +28,7 @@ import { SharedModule } from "../shared/shared.module";
     ReactiveFormsModule,
     MaterialModule,
     CovalentDataTableModule,
+    CovalentPagingModule,
     ItemsRoutingModule,
     SharedModule,
   ],

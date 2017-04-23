@@ -2,5 +2,5 @@
   <gsl-item-search-form (search)="search($event)"></gsl-item-search-form>
 </md-card>
 <md-card>
-  <gsl-items-table *ngIf="items.length > 0" [items]="items"></gsl-items-table>
+  <gsl-items-table *ngIf="fetcher" [fetcher]="fetcher"></gsl-items-table>
 </md-card>

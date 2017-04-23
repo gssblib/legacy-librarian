@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
+import {TableFetcher} from "../../core/table-fetcher";
 
 /**
  * Presents the search form for Items.
@@ -11,21 +12,15 @@ import { ItemsService } from "../shared/items.service";
   styleUrls: ['./item-search.component.css']
 })
 export class ItemSearchComponent implements OnInit {
-  items: Item[];
+  fetcher: TableFetcher<Item>;
 
   constructor(private itemsService: ItemsService) {
   }
 
   ngOnInit() {
-    this.items = [];
   }
 
   search(criteria) {
-    this.itemsService.getItems(criteria, 0, 20, true).subscribe(
-      fetchResult => {
-        this.items = fetchResult.rows;
-        console.log('items: ' + JSON.stringify(this.items));
-      }
-    );
+    this.fetcher = this.itemsService.getItemsFetcher(criteria);
   }
 }
