@@ -14,7 +14,7 @@ export class BarcodeFieldComponent implements OnInit {
   icon = 'add';
 
   @Input()
-  autofocus = true;
+  focus = true;
 
   @Output()
   barcodeSubmit: EventEmitter<string> = new EventEmitter();

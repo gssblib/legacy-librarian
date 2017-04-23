@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 import { Item } from "./item";
 import { RpcService } from "../../core/rpc.service";
 import { FetchResult } from "../../core/fetch-result";
-import {TableFetcher, TableFetchQuery, TableFetchResult} from "../../core/table-fetcher";
+import {TablePageFetcher, TablePageRequest, TableFetchResult} from "../../core/table-fetcher";
 
 /**
  * Service for fetching and manipulating items.
@@ -29,8 +29,16 @@ export class ItemsService {
     return this.rpc.fetch('items', criteria, offset, limit, returnCount);
   }
 
-  getItemsFetcher(criteria): TableFetcher<Item> {
-    return new ItemsFetcher(this, criteria);
+  getItemsFetcher(criteria): TablePageFetcher<Item> {
+    return (query: TablePageRequest) => {
+      const params = { ...criteria };
+      if (query.sortOrder) {
+        params._order = query.sortOrder;
+      }
+      return this.getItems(
+        criteria, query.offset, query.limit, true).map(
+        result => new TableFetchResult(result.rows, result.count));
+    };
   }
 
   returnItem(barcode: string) {
@@ -40,16 +48,3 @@ export class ItemsService {
   }
 }
 
-class ItemsFetcher implements TableFetcher<Item> {
-  constructor(private itemsService: ItemsService, private criteria) {}
-
-  fetch(query: TableFetchQuery): Observable<TableFetchResult<Item>> {
-    const criteria = { ...this.criteria };
-    if (query.sortOrder) {
-      criteria._order = query.sortOrder;
-    }
-    return this.itemsService.getItems(
-      criteria, query.offset, query.limit, true).map(
-        result => new TableFetchResult(result.rows, result.count));
-  }
-}

@@ -1,8 +1,9 @@
 import {Observable} from "rxjs";
+
 /**
- * Request for a subset of some list.
+ * Specifies which page of a table-like result to fetch.
  */
-export class TableFetchQuery {
+export class TablePageRequest {
   /**
    * @param offset Zero-based offset of the first item to return
    * @param limit Maximal number of items to return
@@ -14,11 +15,17 @@ export class TableFetchQuery {
   }
 }
 
+/**
+ * Data of a page of some table-like set.
+ */
 export class TableFetchResult<T> {
   constructor(readonly rows: T[], readonly count: number) {
   }
 }
 
-export interface TableFetcher<T> {
-  fetch(query: TableFetchQuery): Observable<TableFetchResult<T>>;
+/**
+ * Function interface for fetching pages of some table-like set.
+ */
+export interface TablePageFetcher<T> {
+  (pageRequest: TablePageRequest): Observable<TableFetchResult<T>>;
 }

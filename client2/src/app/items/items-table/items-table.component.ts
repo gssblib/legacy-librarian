@@ -4,7 +4,7 @@ import {
   IPageChangeEvent, ITdDataTableColumn, ITdDataTableSortChangeEvent,
   TdDataTableSortingOrder
 } from "@covalent/core";
-import {TableFetcher, TableFetchQuery, TableFetchResult} from "../../core/table-fetcher";
+import {TablePageFetcher, TablePageRequest, TableFetchResult} from "../../core/table-fetcher";
 
 /**
  * Shows a table of Items with sorting and pagination.
@@ -17,7 +17,7 @@ import {TableFetcher, TableFetchQuery, TableFetchResult} from "../../core/table-
 export class ItemsTableComponent implements OnInit, OnChanges {
   /** Fetches the range of items shown in the table. */
   @Input()
-  fetcher: TableFetcher<Item>;
+  fetcher: TablePageFetcher<Item>;
 
   /** Items currently shown in the table. */
   result: TableFetchResult<Item>;
@@ -73,13 +73,13 @@ export class ItemsTableComponent implements OnInit, OnChanges {
     this.fetch();
   }
 
-  private getQuery(): TableFetchQuery {
+  private getQuery(): TablePageRequest {
     const offset = (this.page - 1) * this.pageSize;
-    return new TableFetchQuery(offset, this.pageSize, this.sortOrder);
+    return new TablePageRequest(offset, this.pageSize, this.sortOrder);
   }
 
   private fetch() {
-    this.fetcher.fetch(this.getQuery()).subscribe(result => {
+    this.fetcher(this.getQuery()).subscribe(result => {
       this.result = result;
     });
   }

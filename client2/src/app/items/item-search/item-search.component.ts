@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
-import {TableFetcher} from "../../core/table-fetcher";
+import {TablePageFetcher} from "../../core/table-fetcher";
 
 /**
  * Presents the search form for Items.
@@ -12,7 +12,7 @@ import {TableFetcher} from "../../core/table-fetcher";
   styleUrls: ['./item-search.component.css']
 })
 export class ItemSearchComponent implements OnInit {
-  fetcher: TableFetcher<Item>;
+  fetcher: TablePageFetcher<Item>;
 
   constructor(private itemsService: ItemsService) {
   }
