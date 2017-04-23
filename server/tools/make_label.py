@@ -94,11 +94,13 @@ class Labels(object):
         raise ValueError('No label maker class found')
 
     def get_item(self, barcode):
+        self.connection.rollback()
         cursor = self.connection.cursor()
         cursor.execute(ITEM_SQL % barcode)
         row = cursor.fetchone()
         item = AttrDict(zip(cursor.column_names, row))
         log.debug('Item:\n%s', pprint.pformat(item))
+        self.connection.rollback()
         return item
 
     def create_label(self, item, category=None, data=None, pdf_path=None):
@@ -367,10 +369,10 @@ class HolidayLabelMaker(LabelMaker):
 
 
 @Labels.register
-class BilderbuchLabelMaker(LabelMaker):
+class BilderbuchWithAuthorLabelMaker(LabelMaker):
 
     category = 'main'
-    template = os.path.join(TEMPLATES_DIR, 'bilderbuch.rml')
+    template = os.path.join(TEMPLATES_DIR, 'bilderbuch-with-author.rml')
 
     classification_to_size = {
         'B/K': u'klein',
@@ -380,29 +382,13 @@ class BilderbuchLabelMaker(LabelMaker):
 
     @classmethod
     def is_applicable(cls, item):
-        return item.classification in ('B/K', 'B/M', 'B/G')
-
-    def prepare(self):
-        self.data['size'] = self.classification_to_size[
-            self.item.classification]
-
-
-@Labels.register
-class BilderbuchWithAuthorLabelMaker(LabelMaker):
-
-    category = 'main'
-    template = os.path.join(TEMPLATES_DIR, 'bilderbuch-with-author.rml')
-
-    @classmethod
-    def is_applicable(cls, item):
-        return (
-            item.classification.startswith('B/A') or
-            item.classification.startswith('B/K/A'))
+        return item.classification.startswith('B/')
 
     def prepare(self):
         # Sometimes the author or category is listed as part of the
         # classification
         parts = self.item.classification.split(' ', 1)
+
         if len(parts) == 1:
             classification = parts[0]
             author = self.item.author.split(',')[0]
@@ -428,9 +414,11 @@ class BilderbuchWithAuthorLabelMaker(LabelMaker):
                 else:
                     author = self.item.author.split(',')[0]
 
-        self.data['author_abbr'] = author_abbr[:3].upper()
+        self.data['author_abbr'] = author_abbr[:1].upper()
         self.data['author'] = author
         self.data['classification'] = classification
+        self.data['size'] = self.classification_to_size.get(
+            self.item.classification[:3])
 
 
 @Labels.register
@@ -478,6 +466,48 @@ class BoardbookLabelMaker(LabelMaker):
     @classmethod
     def is_applicable(cls, item):
         return item.classification.startswith('Bb')
+
+
+@Labels.register
+class DVDLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'dvd.rml')
+
+    title_words_to_ignore = ('der', 'die', 'das')
+
+    class data_schema(zope.interface.Interface):
+
+        title_abbr = zope.schema.TextLine(
+            title=u'Title Abbreviation',
+            required=False)
+
+    @classmethod
+    def is_applicable(cls, item):
+        return item.description == 'DVD'
+
+    def prepare(self):
+        if not self.data.get('title_abbr'):
+            title = self.item.title.upper()
+            for word in self.title_words_to_ignore:
+                if title.startswith(word.upper()+' '):
+                    title = title[len(word)+1:]
+            self.data['title_abbr'] = title[:3]
+        self.data['classification'] = self.item.classification
+        add_on = ''
+        if self.item.classification == 'Teenager':
+            add_on = u'Teenager'
+            self.data['classification'] = 'T12'
+        if self.item.classification == 'Erwachsene':
+            add_on = u'Erwachsene'
+            self.data['classification'] = 'T17'
+        if self.item.classification == 'Klassiker':
+            add_on = u'Klassiker'
+            self.data['classification'] = 'KL'
+        if self.item.classification == 'Sachkunde':
+            add_on = u'Sachkunde'
+            self.data['classification'] = 'S'
+        self.data['add_on'] = add_on
 
 
 @Labels.register

@@ -6,7 +6,7 @@
   <pageDrawing>
 
     <!-- Center rows -->
-    <setFont name="Times-Roman" size="12" />
+    <setFont name="Times-Bold" size="14" />
     <drawCenteredString x="1.75in" y="0.8in">
       {{author_abbr}}
     </drawCenteredString>
@@ -29,10 +29,10 @@
     <!-- Right side entries -->
     <setFont name="Times-Italic" size="12" />
     <drawRightString x="3.25in" y="0.8in">
-      {{author}}
+      Bilderbuch/
     </drawRightString>
     <drawRightString x="3.25in" y="0.6in">
-      Autor
+      {{ size }}
     </drawRightString>
 
   </pageDrawing>

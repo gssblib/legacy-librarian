@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Item } from "../../items/shared/item";
+import { ItemsService } from "../../items/shared/items.service";
 
 @Component({
   selector: 'gsl-isbn-assignment-page',
@@ -7,12 +9,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IsbnAssignmentPageComponent implements OnInit {
 
-  constructor() { }
+  scannedItems: Array<Item>;
+  currentItem: Item;
+
+  focusOnBarcode = true;
+  focusOnIsbn = false;
+
+  constructor(private itemsService: ItemsService) {
+    console.log(this.currentItem);
+  }
 
   ngOnInit() {
   }
 
-  returnItem(barcode) {
+  setCurrentItem(barcode) {
+      this.itemsService.getItem(barcode).subscribe( item => {
+          this.currentItem = item;
+          this.focusOnBarcode = false;
+          this.focusOnIsbn = true;
+      });
   }
 
 

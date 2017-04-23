@@ -1,2 +1,15 @@
-<gsl-barcode-field [autofocus]="true" icon="check" (barcodeSubmit)="returnItem($event)"></gsl-barcode-field>
-<gsl-isbn-field icon="check" (isbnSubmit)="returnItem($event)"></gsl-isbn-field>
+<gsl-barcode-field
+   [focus]="focusOnBarcode" icon="check"
+   (barcodeSubmit)="setCurrentItem($event)"></gsl-barcode-field>
+<gsl-isbn-field
+   [focus]="focusOnIsbn"
+   icon="check" (isbnSubmit)="returnItem($event)"></gsl-isbn-field>
+
+<h1>
+  {{ currentItem !== undefined ? currentItem.title : '' }}
+</h1>
+<!--
+<div>
+  <gsl-isbn-items-table [items]="scannedItems"></gsl-isbn-items-table>
+</div>
+-->
