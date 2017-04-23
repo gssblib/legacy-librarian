@@ -29,10 +29,14 @@ export class ItemsTableComponent implements OnInit, OnChanges {
 
   sortOrder: string = 'title';
 
+  order: TdDataTableSortingOrder = TdDataTableSortingOrder.Ascending;
+
   /** Meta-data for the table. */
   columns: ITdDataTableColumn[] = [
     { name: 'barcode', label: 'Barcode', sortable: true },
     { name: 'title', label: 'Title', sortable: true },
+    { name: 'author', label: 'Author', sortable: true },
+    { name: 'description', label: 'Description', sortable: true },
   ];
 
   constructor() { }
@@ -45,8 +49,20 @@ export class ItemsTableComponent implements OnInit, OnChanges {
     this.fetch();
   }
 
+  private toggleOrder(order: TdDataTableSortingOrder) {
+    return TdDataTableSortingOrder.Ascending === order
+      ? TdDataTableSortingOrder.Descending
+      : TdDataTableSortingOrder.Ascending;
+  }
+
   onSort(sortChange: ITdDataTableSortChangeEvent) {
-    const sign = sortChange.order == TdDataTableSortingOrder.Descending ? '-' : '';
+    if (this.sortOrder === sortChange.name) {
+      this.order = this.toggleOrder(this.order);
+    } else {
+      this.sortOrder = sortChange.name;
+      this.order = TdDataTableSortingOrder.Ascending;
+    }
+    const sign = this.order == TdDataTableSortingOrder.Descending ? '-' : '';
     this.sortOrder = sign + sortChange.name;
     this.fetch();
   }
@@ -57,12 +73,12 @@ export class ItemsTableComponent implements OnInit, OnChanges {
     this.fetch();
   }
 
-  getQuery(): TableFetchQuery {
+  private getQuery(): TableFetchQuery {
     const offset = (this.page - 1) * this.pageSize;
     return new TableFetchQuery(offset, this.pageSize, this.sortOrder);
   }
 
-  fetch() {
+  private fetch() {
     this.fetcher.fetch(this.getQuery()).subscribe(result => {
       this.result = result;
     });

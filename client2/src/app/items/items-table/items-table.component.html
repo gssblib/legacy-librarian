@@ -1,14 +1,28 @@
 <div *ngIf="result">
-  <td-data-table [data]="result.rows" [columns]="columns"
-                 [sortable]="true"
-                 (sortChange)="onSort($event)">
-    <ng-template tdDataTableTemplate="type"
-                 let-value="value" let-row="row" let-column="column">
-      <div layout="row">
-        <span flex>{{value}}</span>
-      </div>
-    </ng-template>
-  </td-data-table>
+  <table td-data-table>
+    <tr>
+      <th td-data-table-column *ngFor="let column of columns"
+          (sortChange)="onSort($event)"
+          [sortOrder]="order"
+          [name]="column.name" [sortable]="column.sortable">
+        {{column.label}}
+      </th>
+    </tr>
+    <tr td-data-table-row *ngFor="let item of result.rows">
+      <td td-data-table-cell>
+        <a [routerLink]="item.barcode">{{item.barcode}}</a>
+      </td>
+      <td td-data-table-cell>
+        {{item.title}}
+      </td>
+      <td td-data-table-cell>
+        {{item.author}}
+      </td>
+      <td td-data-table-cell>
+        {{item.description}}
+      </td>
+    </tr>
+  </table>
   <td-paging-bar #pagingBar (change)="onPage($event)"
                  [pageSizes]="[10,20,50,100]"
                  [total]="result.count">
