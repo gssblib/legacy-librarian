@@ -1,0 +1,27 @@
+<md-card>
+  <gsl-item-search-form [criteria]="criteria" (search)="onSearch($event)">
+  </gsl-item-search-form>
+  <div *ngIf="result">
+    <td-data-table *ngIf="result"
+                   [data]="result.rows"
+                   [columns]="columns"
+                   [sortable]="true"
+                   [sortBy]="sortKey.name"
+                   [sortOrder]="sortKey.order"
+                   (sortChange)="onSort($event)">
+      <ng-template tdDataTableTemplate="barcode" let-value="value">
+        <a [routerLink]="value">{{value}}</a>
+      </ng-template>
+    </td-data-table>
+    <td-paging-bar #pagingBar (change)="onPage($event)"
+                   [pageSizes]="[10,20,50,100]"
+                   [initialPage]="page"
+                   [pageSize]="pageSize"
+                   [total]="result.count">
+      <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
+      <span>Items {{pagingBar.range}}</span>
+      <span hide-xs> of {{pagingBar.total}}</span>
+    </td-paging-bar>
+  </div>
+</md-card>
+

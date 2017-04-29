@@ -4,6 +4,8 @@ import { BarcodeFieldComponent } from './barcode-field/barcode-field.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MaterialModule } from "@angular/material";
 import { IsbnFieldComponent } from './isbn-field/isbn-field.component';
+import { LinkIfComponent } from './link-if/link-if.component';
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   imports: [
@@ -11,6 +13,7 @@ import { IsbnFieldComponent } from './isbn-field/isbn-field.component';
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
+    RouterModule,
   ],
   declarations: [
     BarcodeFieldComponent,

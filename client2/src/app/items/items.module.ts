@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ItemComponent } from "./item/item.component";
 import { ItemsService } from "./shared/items.service";
-import { ItemSearchComponent } from './item-search/item-search.component';
 import { ItemPageComponent } from './item-page/item-page.component';
 import { ItemAutoCompleteComponent } from './item-auto-complete/item-auto-complete.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -14,6 +13,7 @@ import {CovalentDataTableModule, CovalentPagingModule} from "@covalent/core";
 import { ReturnPageComponent } from './return-page/return-page.component';
 import { ItemsRoutingModule } from "./items-routing.module";
 import { SharedModule } from "../shared/shared.module";
+import { ItemSearchPageComponent } from './item-search-page/item-search-page.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -34,20 +34,19 @@ import { SharedModule } from "../shared/shared.module";
   ],
   declarations: [
     ItemComponent,
-    ItemSearchComponent,
     ItemPageComponent,
     ItemAutoCompleteComponent,
     ItemSearchFormComponent,
     ItemSearchBarComponent,
     ItemsTableComponent,
     ReturnPageComponent,
+    ItemSearchPageComponent,
   ],
   providers: [
     ItemsService
   ],
   exports: [
     ItemComponent,
-    ItemSearchComponent,
     ItemAutoCompleteComponent,
     ItemSearchBarComponent,
     ItemPageComponent,

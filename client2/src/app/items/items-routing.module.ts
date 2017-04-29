@@ -4,12 +4,13 @@ import { RouterModule } from "@angular/router";
 import { ItemSearchComponent } from "./item-search/item-search.component";
 import { ItemPageComponent } from "./item-page/item-page.component";
 import { ReturnPageComponent } from "./return-page/return-page.component";
+import {ItemSearchPageComponent} from "./item-search-page/item-search-page.component";
 
 @NgModule({
   imports: [
     RouterModule.forChild([
       { path: 'items/:id', component: ItemPageComponent },
-      { path: 'items', component: ItemSearchComponent },
+      { path: 'items', component: ItemSearchPageComponent },
       { path: 'return', component: ReturnPageComponent },
     ])
   ],
