@@ -78,7 +78,9 @@ export class ItemSearchPageComponent implements OnInit {
     const p = new ParamsUtil(params);
     this.page = p.getNumber('page', 1);
     this.pageSize = p.getNumber('pageSize', 10);
-    this.sortKey = SortKey.fromString(params['order']);
+    this.sortKey = params['order']
+      ? SortKey.fromString(params['order'])
+      : new SortKey('title', 'ASC');
     p.mergeInto(this.criteria, ['title', 'author']);
   }
 
