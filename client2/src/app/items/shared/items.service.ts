@@ -6,6 +6,7 @@ import { Item } from "./item";
 import { RpcService } from "../../core/rpc.service";
 import { FetchResult } from "../../core/fetch-result";
 import {TablePageFetcher, TablePageRequest, TableFetchResult} from "../../core/table-fetcher";
+import { ItemState } from "./item-state";
 
 /**
  * Service for fetching and manipulating items.
@@ -25,8 +26,9 @@ export class ItemsService {
       .catch(this.rpc.handleError);
   }
 
-  getItems(criteria, offset, limit, returnCount): Observable<FetchResult> {
-    return this.rpc.fetch('items', criteria, offset, limit, returnCount);
+  getItems(criteria, offset, limit, returnCount): Observable<TableFetchResult<Item>> {
+    return this.rpc.fetch('items', criteria, offset, limit, returnCount)
+      .map(this.fetchResultToItemResult.bind(this));
   }
 
   getItemsFetcher(criteria): TablePageFetcher<Item> {
@@ -39,6 +41,22 @@ export class ItemsService {
         criteria, query.offset, query.limit, true).map(
         result => new TableFetchResult(result.rows, result.count));
     };
+  }
+
+  rowToItem(row: Object): Item {
+    const item = Object.assign(new Item(), row);
+    if (typeof item.state === 'string') {
+      item.state = ItemState[<string> item.state];
+    }
+    return item;
+  }
+
+  rowsToItems(rows: Object[]): Item[] {
+    return rows.map(this.rowToItem);
+  }
+
+  fetchResultToItemResult(result: FetchResult): TableFetchResult<Item> {
+    return new TableFetchResult(this.rowsToItems(result.rows), result.count);
   }
 
   returnItem(barcode: string) {

@@ -12,6 +12,12 @@
       <ng-template tdDataTableTemplate="barcode" let-value="value">
         <a [routerLink]="value">{{value}}</a>
       </ng-template>
+      <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
+        <a [routerLink]="row.barcode">{{value}}</a>
+      </ng-template>
+      <ng-template tdDataTableTemplate="author" let-row="row" let-value="value">
+        <a routerLink="/items" [queryParams]="{author: value}">{{value}}</a>
+      </ng-template>
     </td-data-table>
     <td-paging-bar #pagingBar (change)="onPage($event)"
                    [pageSizes]="[10,20,50,100]"

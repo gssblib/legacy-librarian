@@ -20,4 +20,15 @@ export class ParamsUtil {
       }
     }
   }
+
+  getValues(names: string[]) {
+    const values = {};
+    for (let name of names) {
+      const value = this.params[name];
+      if (value !== undefined) {
+        values[name] = value;
+      }
+    }
+    return values;
+  }
 }

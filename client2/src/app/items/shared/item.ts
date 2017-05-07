@@ -1,3 +1,5 @@
+import { Checkout } from "./checkout";
+import { ItemState } from "./item-state";
 /**
  * Represents an item (as stored in the database).
  */
@@ -16,5 +18,12 @@ export class Item {
   classification: string;
   isbn10: string;
   isbn13: string;
-  state: string;
+  state: ItemState;
+  checkout?: Checkout;
+
+  get status(): ItemState {
+    return this.state === ItemState.CIRCULATING
+        ? this.checkout ? ItemState.CHECKED_OUT : ItemState.AVAILABLE
+        : this.state;
+  }
 }

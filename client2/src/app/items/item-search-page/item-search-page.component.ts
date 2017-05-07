@@ -1,11 +1,16 @@
-import {Component, OnInit} from "@angular/core";
-import {ItemsService} from "../shared/items.service";
-import {ActivatedRoute, Params, Router} from "@angular/router";
-import {Item} from "../shared/item";
-import {TableFetchResult} from "../../core/table-fetcher";
-import {IPageChangeEvent, ITdDataTableColumn, ITdDataTableSortChangeEvent} from "@covalent/core";
-import {ParamsUtil} from "../../core/params-util";
-import {SortKey} from "../../core/sort-key";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ItemsService } from "../shared/items.service";
+import { ActivatedRoute, Params, Router } from "@angular/router";
+import { Item } from "../shared/item";
+import { TableFetchResult } from "../../core/table-fetcher";
+import {
+  IPageChangeEvent, ITdDataTableColumn, ITdDataTableSortChangeEvent,
+  TdPagingBarComponent
+} from "@covalent/core";
+import { ParamsUtil } from "../../core/params-util";
+import { SortKey } from "../../core/sort-key";
+import { Subscription } from "rxjs/Subscription";
+import { ItemState } from "../shared/item-state";
 
 /**
  * Item search page with search form and result table.
@@ -18,7 +23,7 @@ import {SortKey} from "../../core/sort-key";
   templateUrl: './item-search-page.component.html',
   styleUrls: ['./item-search-page.component.css']
 })
-export class ItemSearchPageComponent implements OnInit {
+export class ItemSearchPageComponent implements OnInit, OnDestroy {
   /** Current result being shown in the table. */
   result: TableFetchResult<Item>;
 
@@ -34,25 +39,49 @@ export class ItemSearchPageComponent implements OnInit {
   /** Current sort key. Set from the URL and table sort event. */
   sortKey = new SortKey('title', 'ASC');
 
+  @ViewChild('pagingBar')
+  pagingBar: TdPagingBarComponent;
+
   /** Meta-data for the items table. */
   columns: ITdDataTableColumn[] = [
     {name: 'barcode', label: 'Barcode', sortable: true},
+    {name: 'status', label: 'Status', format: value => ItemState[value]},
     {name: 'title', label: 'Title', sortable: true},
     {name: 'author', label: 'Author', sortable: true},
+    {name: 'subject', label: 'Subject', sortable: true},
     {name: 'description', label: 'Description', sortable: true},
   ];
+
+  /** Flag set while setting page in paging bar with navigateToPage. */
+  private navigating = false;
+
+  private routeSubscription: Subscription;
 
   constructor(private itemsService: ItemsService,
               private route: ActivatedRoute,
               private router: Router) {
-    route.queryParams.subscribe(
-      params => {
-        this.parseParams(params);
-        this.reload();
-      });
   }
 
   ngOnInit() {
+    this.routeSubscription =
+      this.route.queryParams.subscribe(this.onQueryParamsChanged.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.routeSubscription.unsubscribe();
+  }
+
+  onQueryParamsChanged(params: Params) {
+    this.parseParams(params);
+    // TdPagingBar's `page` property is read-only. It can only be changed by calling
+    // the navigateToPage method. We do that if the page differs, but temporarily set
+    // the `navigating` flag to that the page change event triggered by navigateToPage
+    // does not cause another navigation.
+    if (this.pagingBar && this.pagingBar.page !== this.page) {
+      this.navigating = true;
+      this.pagingBar.navigateToPage(this.page);
+    }
+    this.reload();
   }
 
   onSort(event: ITdDataTableSortChangeEvent) {
@@ -61,9 +90,13 @@ export class ItemSearchPageComponent implements OnInit {
   }
 
   onPage(event: IPageChangeEvent) {
-    this.page = event.page;
-    this.pageSize = event.pageSize;
-    this.navigate();
+    if (this.navigating) {
+      this.navigating = false;
+    } else {
+      this.page = event.page;
+      this.pageSize = event.pageSize;
+      this.navigate();
+    }
   }
 
   onSearch(event) {
@@ -81,7 +114,7 @@ export class ItemSearchPageComponent implements OnInit {
     this.sortKey = params['order']
       ? SortKey.fromString(params['order'])
       : new SortKey('title', 'ASC');
-    p.mergeInto(this.criteria, ['title', 'author']);
+    this.criteria = p.getValues(['title', 'author']);
   }
 
   /**
@@ -104,7 +137,7 @@ export class ItemSearchPageComponent implements OnInit {
       queryParams: this.toQueryParams(),
     }).catch(err => {
       console.log('navigation error', err);
-    })
+    });
   }
 
   /**
