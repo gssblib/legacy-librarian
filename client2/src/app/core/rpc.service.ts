@@ -1,21 +1,27 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Http, Response } from "@angular/http";
 import { Observable } from "rxjs";
 import { ConfigService } from "./config.service";
 import { FetchResult } from "./fetch-result";
+import { HttpResponse } from "selenium-webdriver/http";
+import { RpcError } from "./rpc-error";
 
 /**
  * Support for RPC (REST over HTTP) calls.
+ *
+ * All calls return an Observable with the JSON response. In case of an error,
+ * the Observable throws an RpcError.
  */
 @Injectable()
 export class RpcService {
+
   constructor(private config: ConfigService, private http: Http) {
   }
 
   /**
    * Returns the JSON object contained in the response.
    */
-  getData(response: Response) {
+  private getJson(response: Response) {
     const body = response.json() || {};
     return body.data || body;
   }
@@ -36,14 +42,45 @@ export class RpcService {
     return params;
   }
 
-  httpGet(path: string, params: object) {
-    return this.http.get(this.config.apiPath(path), {params: params}).map(this.getData);
+  /**
+   * Handles the HTTP response containing the JSON payload.
+   */
+  private handleHttpResult(observable: Observable<HttpResponse>): Observable<Object> {
+    return observable.map(this.getJson).catch(this.handleError.bind(this));
   }
 
-  httpPost(path: string, params: object) {
-    return this.http.post(this.config.apiPath(path), params).map(this.getData);
+  /**
+   * Sends a GET request to the API server.
+   *
+   * @param path Path relative to the API path.
+   * @param params Query parameters
+   * @returns {Observable<Object>} JSON result observable
+   */
+  httpGet(path: string, params?: object) {
+    return this.handleHttpResult(this.http.get(this.config.apiPath(path), {params: params}));
   }
 
+  /**
+   * Sends a POST request to the API server.
+   *
+   * @param path Path relative to the API path.
+   * @param body POST payload
+   * @returns {Observable<Object>} JSON result observable
+   */
+  httpPost(path: string, body?: any) {
+    return this.handleHttpResult(this.http.post(this.config.apiPath(path), body));
+  }
+
+  /**
+   * Fetches entities via HTTP GET.
+   *
+   * @param path Path of the entities relative to the API path, e.g., '/items'.
+   * @param criteria Object representing the query.
+   * @param offset Zero-based offset of the objects to return.
+   * @param limit Maximal number of objects to return.
+   * @param returnCount If true, the total number of objects will be returned.
+   * @returns {Observable<Object>} JSON result observable
+   */
   fetch(path: string, criteria: object, offset?: number, limit?: number, returnCount?: number):
       Observable<FetchResult> {
     return this.httpGet(path, this.createSearchParams(criteria, offset, limit, returnCount));
@@ -52,16 +89,14 @@ export class RpcService {
   /**
    * Handles an HTTP error response.
    */
-  handleError(error: Response | any) {
-    let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    console.error(errMsg);
-    return Observable.throw(errMsg);
+  private handleError(response: Response) {
+    console.log("error response: ", response);
+    //this.error.emit({message: errMsg});
+    return Observable.throw(this.toRpcError(response));
+  }
+
+  private toRpcError(response: Response) {
+    const error = response.json();
+    return new RpcError(response.status, error.code);
   }
 }

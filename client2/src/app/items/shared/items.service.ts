@@ -21,9 +21,7 @@ export class ItemsService {
    * Gets a single Item identified by barcode.
    */
   getItem(barcode: string): Observable<Item> {
-    return this.http.get(this.config.apiPath('items/' + barcode))
-      .map(this.rpc.getData)
-      .catch(this.rpc.handleError);
+    return this.rpc.httpGet('items/' + barcode);
   }
 
   getItems(criteria, offset, limit, returnCount): Observable<TableFetchResult<Item>> {
@@ -59,10 +57,8 @@ export class ItemsService {
     return new TableFetchResult(this.rowsToItems(result.rows), result.count);
   }
 
-  returnItem(barcode: string) {
-    return this.http.post(this.config.apiPath(`items/${barcode}/checkin`), 'foo')
-      .map(this.rpc.getData)
-      .catch(this.rpc.handleError);
+  returnItem(barcode: string): Observable<Item> {
+    return this.rpc.httpPost(`items/${barcode}/checkin`);
   }
 }
 

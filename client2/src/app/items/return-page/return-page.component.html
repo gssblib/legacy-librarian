@@ -1,6 +1,14 @@
 <md-card>
-  <gsl-barcode-field icon="check" (barcodeSubmit)="returnItem($event)"></gsl-barcode-field>
-</md-card>
-<md-card *ngIf="">
+  <gsl-barcode-field icon="check" (barcodeSubmit)="returnItem($event)" #barcode>
+  </gsl-barcode-field>
 
+  <div *ngIf="returnedItems">
+    <table>
+      <tr *ngFor="let item of returnedItems">
+        <td>{{item.barcode}}</td>
+        <td>{{item.title}}</td>
+      </tr>
+    </table>
+  </div>
 </md-card>
+

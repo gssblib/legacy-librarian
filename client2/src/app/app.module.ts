@@ -7,7 +7,7 @@ import { AppComponent } from "./app.component";
 import { CoreModule } from "./core/core.module";
 import { ItemsModule } from "./items/items.module";
 import { AppRoutingModule } from "./app-routing.module";
-import { MaterialModule } from "@angular/material";
+import { MaterialModule, MdSnackBarModule } from "@angular/material";
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { BorrowersModule } from "./borrowers/borrowers.module";
@@ -17,7 +17,7 @@ import { IsbnModule } from "./isbn/isbn.module";
   declarations: [
     AppComponent,
     HomeComponent,
-    NotFoundComponent
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,6 +29,7 @@ import { IsbnModule } from "./isbn/isbn.module";
     BorrowersModule,
     IsbnModule,
     AppRoutingModule,
+    MdSnackBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
