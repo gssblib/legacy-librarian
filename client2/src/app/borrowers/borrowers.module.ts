@@ -16,6 +16,8 @@ import { SharedModule } from "../shared/shared.module";
 import { BorrowerCheckoutsTableComponent } from './borrower-checkouts-table/borrower-checkouts-table.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BorrowerAutoCompleteComponent } from './borrower-auto-complete/borrower-auto-complete.component';
+import { BorrowerService } from './shared/borrower.service';
+import { BorrowerResolverService } from './shared/borrower.resolver.service';
 
 @NgModule({
   imports: [
@@ -39,6 +41,8 @@ import { BorrowerAutoCompleteComponent } from './borrower-auto-complete/borrower
     BorrowerAutoCompleteComponent
   ],
   providers: [
+    BorrowerService,
+    BorrowerResolverService,
     BorrowersService,
   ]
 })

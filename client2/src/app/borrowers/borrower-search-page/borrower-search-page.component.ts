@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Borrower} from "../shared/Borrower";
+import {Borrower} from "../shared/borrower";
 import {Router} from "@angular/router";
 
 @Component({
@@ -15,6 +15,6 @@ export class BorrowerSearchPageComponent implements OnInit {
   }
 
   showBorrower(borrower: Borrower) {
-    this.router.navigate(['/borrowers', borrower.borrowernumber]);
+    this.router.navigate(['/borrowers', borrower.borrowernumber, 'checkouts']);
   }
 }

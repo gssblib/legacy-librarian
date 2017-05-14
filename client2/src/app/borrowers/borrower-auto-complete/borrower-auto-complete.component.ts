@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Borrower } from '../shared/Borrower';
+import { Borrower } from '../shared/borrower';
 import { BorrowersService } from '../shared/borrowers.service';
 
 /**

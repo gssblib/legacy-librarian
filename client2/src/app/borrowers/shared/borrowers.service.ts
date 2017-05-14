@@ -3,7 +3,7 @@ import { ConfigService } from "../../core/config.service";
 import { Http } from "@angular/http";
 import { RpcService } from "../../core/rpc.service";
 import { Observable } from "rxjs";
-import { Borrower } from "./Borrower";
+import { Borrower } from "./borrower";
 import { FetchResult } from "../../core/fetch-result";
 
 @Injectable()

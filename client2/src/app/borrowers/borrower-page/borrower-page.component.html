@@ -1,7 +1,15 @@
+<h2>Borrower Page</h2>
 <md-card *ngIf="borrower">
   <h3>
     {{borrower.surname}}, {{borrower.firstname}}, {{borrower.contactname}}
   </h3>
+  <nav md-tab-nav-bar>
+    <a md-tab-link
+       *ngFor="let link of navLinks"
+       [routerLink]="link.link" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">{{link.label}}</a>
+  </nav>
+  <router-outlet></router-outlet>
+  <!--
   <md-tab-group>
     <md-tab label="Checkouts">
       <gsl-borrower-checkouts class="tab-content" [borrower]="borrower"
@@ -17,4 +25,5 @@
       <gsl-borrower-profile></gsl-borrower-profile>
     </md-tab>
   </md-tab-group>
+  -->
 </md-card>
