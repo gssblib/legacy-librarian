@@ -1,7 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import { RpcService } from "./core/rpc.service";
-import { MdSnackBar } from "@angular/material";
-import { ErrorService } from "./core/error-service";
+import { Component, OnInit } from '@angular/core';
+import { MdSnackBar } from '@angular/material';
+import { ErrorService } from './core/error-service';
 
 @Component({
   selector: 'gsl-root',
@@ -13,7 +12,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.errorService.error.subscribe(error => {
-      console.log('received error event: ', error);
       this.snackbar.open(error.message, 'Dismiss', {
         duration: 3000,
       });
