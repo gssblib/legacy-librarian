@@ -2,6 +2,7 @@
   <md-input-container>
     <input mdInput placeholder="Barcode" [formControl]="barcodeCtrl"
            [(ngModel)]="barcode" (keypress)="keyPress($event)" maxlength="9"
+           autocomplete="off"
            [autofocus]="focus">
   </md-input-container>
   <button md-fab [disabled]="!barcodeCtrl.valid"><md-icon>{{icon}}</md-icon></button>

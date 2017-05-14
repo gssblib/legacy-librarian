@@ -1,6 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, Validators } from "@angular/forms";
 
+/**
+ * Input field for digit-only barcodes of a fixed length.
+ *
+ * Restricts entered characters, defines the validators, and turns the form submission
+ * into a custom `barcodeSubmit` event.
+ */
 @Component({
   selector: 'gsl-barcode-field',
   templateUrl: './barcode-field.component.html',
@@ -8,14 +14,21 @@ import { FormControl, Validators } from "@angular/forms";
 })
 export class BarcodeFieldComponent implements OnInit {
   barcodeCtrl: FormControl;
+
+  /** Current barcode. */
   barcode: string = '';
 
+  /** Name of the icon for the action button. */
   @Input()
   icon = 'add';
 
   @Input()
   focus = true;
 
+  @Input()
+  length = 9;
+
+  /** Fired when the barcode form is submitted (by pressing the button or hitting Enter). */
   @Output()
   barcodeSubmit: EventEmitter<string> = new EventEmitter();
 
@@ -24,11 +37,14 @@ export class BarcodeFieldComponent implements OnInit {
   ngOnInit() {
     this.barcodeCtrl = new FormControl('', [
       Validators.required,
-      Validators.minLength(9),
-      Validators.maxLength(9)
-      ])
+      Validators.minLength(this.length),
+      Validators.maxLength(this.length)
+    ])
   }
 
+  /**
+   * Accepts only digits and Enter.
+   */
   keyPress(event: any) {
     const pattern = /[0-9]/;
     const c = String.fromCharCode(event.charCode);

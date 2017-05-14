@@ -43,9 +43,9 @@ export class ReturnPageComponent implements OnInit {
   private toErrorMessage(barcode: string, error: RpcError) {
     switch (error.errorCode) {
       case 'ENTITY_NOT_FOUND':
-        return `Item with ${barcode} does not exist`;
+        return `Item with barcode ${barcode} does not exist`;
       case 'ITEM_NOT_CHECKED_OUT':
-        return `Item with ${barcode} is not checked out`;
+        return `Item with barcode ${barcode} is not checked out`;
       default:
         return `Server error: ${error.errorCode}`;
     }
