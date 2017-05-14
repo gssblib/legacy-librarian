@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ItemsService } from "../shared/items.service";
-import {Item} from "../shared/item";
+import { Item } from "../shared/item";
 import { ErrorService } from "../../core/error-service";
 import { RpcError } from "../../core/rpc-error";
 import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.component";
@@ -11,15 +11,14 @@ import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.
   styleUrls: ['./return-page.component.css']
 })
 export class ReturnPageComponent implements OnInit {
-  returnedItems: Item[];
+  returnedItems: Item[] = [];
 
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
-  constructor(private itemsService: ItemsService, private errorService: ErrorService) { }
+  constructor(private itemsService: ItemsService, private errorService: ErrorService) {}
 
   ngOnInit() {
-    this.returnedItems = [];
   }
 
   returnItem(barcode: string) {

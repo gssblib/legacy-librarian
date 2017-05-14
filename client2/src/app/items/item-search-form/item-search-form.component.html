@@ -1,6 +1,6 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
   <md-input-container>
-    <input name="title" [(ngModel)]="criteria.title" mdInput
+    <input name="title" [(ngModel)]="criteria.title" mdInput autofocus
            placeholder="Title" autocomplete="off">
   </md-input-container>
   <md-input-container>

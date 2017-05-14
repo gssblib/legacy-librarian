@@ -24,8 +24,7 @@ export class IsbnFieldComponent implements OnInit {
   ngOnInit() {
     this.isbnCtrl = new FormControl('', [
       Validators.required,
-      ])
-
+    ]);
   }
 
   keyPress(event: any) {
@@ -39,5 +38,4 @@ export class IsbnFieldComponent implements OnInit {
   onSubmit(value) {
     this.isbnSubmit.emit(this.isbn);
   }
-
 }

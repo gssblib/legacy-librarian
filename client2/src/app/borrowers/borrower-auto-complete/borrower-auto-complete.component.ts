@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl} from "@angular/forms";
-import {Borrower} from "../shared/Borrower";
-import {BorrowersService} from "../shared/borrowers.service";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Borrower } from '../shared/Borrower';
+import { BorrowersService } from '../shared/borrowers.service';
 
 /**
  * Auto-complete component for borrowers using the borrower last name (or
@@ -12,7 +12,10 @@ import {BorrowersService} from "../shared/borrowers.service";
   templateUrl: './borrower-auto-complete.component.html',
   styleUrls: ['./borrower-auto-complete.component.css']
 })
-export class BorrowerAutoCompleteComponent implements OnInit {
+export class BorrowerAutoCompleteComponent implements OnInit, AfterViewInit {
+  @ViewChild('borrowerInput')
+  inputElementRef: ElementRef;
+
   /** FormControl for the borrower name input field. */
   input: FormControl;
 
@@ -31,6 +34,12 @@ export class BorrowerAutoCompleteComponent implements OnInit {
   ngOnInit() {
     this.input = new FormControl();
     this.input.valueChanges.subscribe(value => this.onChange(value));
+  }
+
+  ngAfterViewInit() {
+    // using the `autofocus` attribute in the template causes an exception in the
+    // autocomplete directive
+    this.inputElementRef.nativeElement.focus();
   }
 
   private onChange(value) {

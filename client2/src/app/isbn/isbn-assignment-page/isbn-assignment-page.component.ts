@@ -16,7 +16,6 @@ export class IsbnAssignmentPageComponent implements OnInit {
   focusOnIsbn = false;
 
   constructor(private itemsService: ItemsService) {
-    console.log(this.currentItem);
   }
 
   ngOnInit() {
@@ -29,6 +28,4 @@ export class IsbnAssignmentPageComponent implements OnInit {
           this.focusOnIsbn = true;
       });
   }
-
-
 }

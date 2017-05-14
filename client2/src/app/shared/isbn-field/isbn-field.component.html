@@ -3,7 +3,7 @@
     <input
        mdInput placeholder="Isbn" [formControl]="isbnCtrl"
        [(ngModel)]="isbn" (keypress)="keyPress($event)"
-       [autofocus]="focus">
+       [focus]="focus">
   </md-input-container>
   <button md-fab [disabled]="!isbnCtrl.valid"><md-icon>{{icon}}</md-icon></button>
 </form>
