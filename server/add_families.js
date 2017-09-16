@@ -28,7 +28,7 @@ const fs = require('fs'),
 /**
  * Transform that drops the first n objects of the stream (like Scala's drop).
  *
- * There must must be something in the stream API to do that, but I couldn't
+ * There must be something in the stream API to do that, but I couldn't
  * find it, and this may at least serve as a small example of a Transform.
  */
 function Drop(n) {
@@ -45,48 +45,24 @@ Drop.prototype._transform = function (data, encoding, done) {
   done();
 }
 
+/**
+ * Returns the borrower object for the row from the CSV input file.
+ *
+ * The row contains:
+ *   - contact name
+ *   - last name
+ *   - student first names (comma separated)
+ *   - phone number
+ *   - email addresses (comma separated)
+ */
 function csvFamilyToBorrower(row) {
-  var borrower = {};
-
-  // The borrower name is contained in a single field containing the last name,
-  // a comma, and the first names of the parents separated by an ampersand.
-  // In the database we store the name of the parents in the 'contactname'
-  // field containing the first names followed by the last name.
-  var name = row[0].split(', ');
-  borrower.contactname = name[1].replace(/&/g, 'and').trim() + ' ' + name[0];
-
-  borrower.streetaddress = row[1];
-  borrower.city = row[2];
-
-  // The leading zero is missing from the (New England) zip codes in the CSV file
-  // (they must be numbers in the spreadsheet).
-  borrower.zipcode = '00000' // sprintf("%05d", Number(row[3]))
-
-  // There may be three phone number columns in the CSV file for home, work,
-  // and cell phone. Each of these columns may contain multiple phone numbers
-  // separated by a pipe. We only take the first home phone number.
-  borrower.phone = row[4].split('|')[0].trim()
-
-  // The email address are separated by a pipe in the CSV Email column and by a
-  // comma in the database column.
-  borrower.emailaddress = row[7].replace(/ \| /g, ', ')
-
-  // Up to five students a provided in each CSV row with three columns (last name,
-  // first name, grade) for each student. In the library database, we have one
-  // column ('surname') for the last name of all students (that is, the students
-  // of a borrower cannot have different last names) and one column ('firstname')
-  // for all the first names of the students (separated by a comma or 'and').
-  offset = 8
-  borrower.surname = row[offset]
-  var firstNames = []
-  for (var i = 0; i < 5; ++i) {
-    var firstName = row[offset + 3*i + 1];
-    if (firstName) {
-      firstNames.push(firstName);
-    }
-  }
-  borrower.firstname = firstNames.join(', ');
-  return borrower;
+  return {
+    contactname: row[0],
+    surname: row[1],
+    firstname: row[2],
+    phone: row[3],
+    emailaddress: row[4]
+  };
 }
 
 /**
