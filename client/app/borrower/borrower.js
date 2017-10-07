@@ -64,6 +64,33 @@ angular.module("library")
     self.borrower = borrower;
   });
 
+  self.showCheckOutForm = function () {
+    return self.borrower.fees.total < 10;
+  };
+
+  feeLimit = 10;
+  itemLimit = 40;
+
+  self.checkoutMessage = function () {
+    if (self.borrower.fees.total >= feeLimit) {
+      return `Checkout disabled because outstanding fees of
+        $${self.borrower.fees.total} exceed $${feeLimit}`;
+    }
+    if (self.borrower.items.length >= itemLimit) {
+      return `Checkout disabled because ${itemLimit} or more items are checked out`;
+    }
+  }
+
+  function addDays(date, days) {
+    date.setDate(date.getDate() + days);
+    return date;
+  }
+
+  self.renewable = function(item) {
+    return item.description != 'DVD' ||
+      new Date(item.checkout_date) > addDays(new Date(), -21);
+  };
+
   self.returnItem = function (item) {
     library.returnItem(item.barcode)
       .then(function (data) {

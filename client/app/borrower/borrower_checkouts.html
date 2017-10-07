@@ -1,16 +1,25 @@
 <div ng-if="ctrl.borrower.items">
-  <form name="checkoutForm" class="form-inline" novalidate
-        ng-submit="ctrl.checkOutItem(ctrl.barcode)">
-    <div class="form-group">
-      <input id="checkoutBarcode" name="barcode" ng-model="ctrl.barcode"
-        required only-digits maxlength="9"
-        class="form-control" autofocus placeholder="barcode"/>
-    </div>
-    <button type="submit" class="btn btn-primary"
-      ng-disabled="checkoutForm.$invalid || ctrl.barcode.length < 9">
-      Check Out
-    </button>
-  </form>
+  <div ng-if="!ctrl.checkoutMessage()">
+    <form name="checkoutForm" class="form-inline" novalidate
+          ng-submit="ctrl.checkOutItem(ctrl.barcode)">
+      <div class="form-group">
+        <input id="checkoutBarcode" name="barcode" ng-model="ctrl.barcode"
+          required only-digits maxlength="9"
+          class="form-control" autofocus placeholder="barcode"/>
+      </div>
+      <button type="submit" class="btn btn-primary"
+        ng-disabled="checkoutForm.$invalid || ctrl.barcode.length < 9">
+        Check Out
+      </button>
+    </form>
+  </div>
+  <div ng-if="ctrl.checkoutMessage()">
+    <h4>
+    <span class="label label-baseline label-danger">
+      {{ctrl.checkoutMessage()}}
+    </span>
+    </h4>
+  </div>
   <div ng-hide="ctrl.borrower.items.length > 0">
     <h4>No items checked out.<h4>
   </div>
@@ -82,9 +91,11 @@
             </span>
           </td>
           <td>
-            <a class="btn btn-sm btn-success" ng-click="ctrl.renewItem(item)">
-              Renew
-            </a>
+            <div ng-if="ctrl.renewable(item)">
+              <a class="btn btn-sm btn-success" ng-click="ctrl.renewItem(item)">
+                Renew
+              </a>
+            </div>
           </td>
           <td>
             <a class="btn btn-sm btn-warning" ng-click="ctrl.returnItem(item)">

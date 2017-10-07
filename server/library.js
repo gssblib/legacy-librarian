@@ -156,11 +156,14 @@ module.exports = {
      * Renews all items of a borrower.
      */
     borrowers.renewAllItems = function (borrowerNumber) {
-      new_date_due = addDays(time.now(), config.renewalDays);
+      newDueDate = addDays(time.now(), config.renewalDays);
+      dvdCheckoutLimit = addDays(time.now(), -config.renewalDays);
       return db.query(
-        'update `out` ' +
-        'set date_due = ? ' +
-        'where borrowernumber = ?', [new_date_due, borrowerNumber]);
+        "update `out` a, items b " +
+        "set a.date_due = ? " +
+        "where borrowernumber = ? and a.barcode = b.barcode " +
+        "and (b.description != 'DVD' or a.checkout_date > ?)",
+        [newDueDate, borrowerNumber, dvdCheckoutLimit]);
     };
 
     /**
