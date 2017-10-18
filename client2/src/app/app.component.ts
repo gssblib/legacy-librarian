@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MdSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { ErrorService } from './core/error-service';
 
 @Component({
@@ -8,7 +8,7 @@ import { ErrorService } from './core/error-service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor(private snackbar: MdSnackBar, private errorService: ErrorService) {}
+  constructor(private snackbar: MatSnackBar, private errorService: ErrorService) {}
 
   ngOnInit(): void {
     this.errorService.error.subscribe(error => {

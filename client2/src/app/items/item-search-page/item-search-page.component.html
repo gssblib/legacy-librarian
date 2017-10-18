@@ -1,4 +1,4 @@
-<md-card>
+<mat-card>
   <gsl-item-search-form [criteria]="criteria" (search)="onSearch($event)">
   </gsl-item-search-form>
   <div *ngIf="result">
@@ -20,7 +20,6 @@
       </ng-template>
     </td-data-table>
     <td-paging-bar #pagingBar (change)="onPage($event)"
-                   [pageSizes]="[10,20,50,100]"
                    [initialPage]="page"
                    [pageSize]="pageSize"
                    [total]="result.count">
@@ -29,5 +28,5 @@
       <span hide-xs> of {{pagingBar.total}}</span>
     </td-paging-bar>
   </div>
-</md-card>
+</mat-card>
 

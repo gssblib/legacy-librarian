@@ -1,19 +1,19 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
-  <md-input-container>
-    <input name="title" [(ngModel)]="criteria.title" mdInput autofocus
+  <mat-form-field>
+    <input name="title" [(ngModel)]="criteria.title" matInput autofocus
            placeholder="Title" autocomplete="off">
-  </md-input-container>
-  <md-input-container>
-    <input name="author" [(ngModel)]="criteria.author" mdInput
+  </mat-form-field>
+  <mat-form-field>
+    <input name="author" [(ngModel)]="criteria.author" matInput
            placeholder="Author" autocomplete="off">
-  </md-input-container>
-  <md-input-container>
-    <input name="series" [(ngModel)]="criteria.series" mdInput
+  </mat-form-field>
+  <mat-form-field>
+    <input name="series" [(ngModel)]="criteria.series" matInput
            placeholder="Series Title" autocomplete="off">
-  </md-input-container>
-  <md-input-container>
-    <input name="subject" [(ngModel)]="criteria.subject" mdInput
+  </mat-form-field>
+  <mat-form-field>
+    <input name="subject" [(ngModel)]="criteria.subject" matInput
            placeholder="Subject" autocomplete="off">
-  </md-input-container>
-  <button md-fab><md-icon>search</md-icon></button>
+  </mat-form-field>
+  <button mat-fab><mat-icon>search</mat-icon></button>
 </form>

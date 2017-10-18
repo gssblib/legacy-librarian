@@ -1,6 +1,12 @@
 .flex {
   flex: 1 1 auto;
 }
+.title {
+  padding-left: 0.5em;
+}
+.gssb-logo {
+  padding-top: 8px;
+}
 .sidenav-container {
   min-height: 20em;
 }

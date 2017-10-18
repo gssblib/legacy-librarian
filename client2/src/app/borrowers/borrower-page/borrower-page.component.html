@@ -1,29 +1,29 @@
 <h2>Borrower Page</h2>
-<md-card *ngIf="borrower">
+<mat-card *ngIf="borrower">
   <h3>
     {{borrower.surname}}, {{borrower.firstname}}, {{borrower.contactname}}
   </h3>
-  <nav md-tab-nav-bar>
-    <a md-tab-link
+  <nav mat-tab-nav-bar>
+    <a mat-tab-link
        *ngFor="let link of navLinks"
        [routerLink]="link.link" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">{{link.label}}</a>
   </nav>
   <router-outlet></router-outlet>
   <!--
-  <md-tab-group>
-    <md-tab label="Checkouts">
+  <mat-tab-group>
+    <mat-tab label="Checkouts">
       <gsl-borrower-checkouts class="tab-content" [borrower]="borrower"
                               (borrowerChange)="reloadBorrower()"></gsl-borrower-checkouts>
-    </md-tab>
-    <md-tab label="Fees">
+    </mat-tab>
+    <mat-tab label="Fees">
       <gsl-borrower-fees></gsl-borrower-fees>
-    </md-tab>
-    <md-tab label="History">
+    </mat-tab>
+    <mat-tab label="History">
       <gsl-borrower-history></gsl-borrower-history>
-    </md-tab>
-    <md-tab label="Profile">
+    </mat-tab>
+    <mat-tab label="Profile">
       <gsl-borrower-profile></gsl-borrower-profile>
-    </md-tab>
-  </md-tab-group>
+    </mat-tab>
+  </mat-tab-group>
   -->
-</md-card>
+</mat-card>

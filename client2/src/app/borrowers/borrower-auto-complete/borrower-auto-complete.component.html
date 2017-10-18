@@ -1,12 +1,12 @@
-<md-input-container>
-  <input #borrowerInput mdInput size="50" placeholder="Borrower name"
+<mat-form-field class="borrower-autocomplete">
+  <input #borrowerInput matInput size="50" placeholder="Borrower name"
          [formControl]="input"
-         [mdAutocomplete]="borrowerAutoComplete">
-</md-input-container>
-<md-autocomplete #borrowerAutoComplete="mdAutocomplete"
+         [matAutocomplete]="borrowerAutoComplete">
+</mat-form-field>
+<mat-autocomplete #borrowerAutoComplete="matAutocomplete"
                  [displayWith]="displayName">
-  <md-option *ngFor="let suggestion of suggestions; let i = $index;"
+  <mat-option *ngFor="let suggestion of suggestions; let i = $index;"
              [value]="suggestion">
     {{displayName(suggestion)}}
-  </md-option>
-</md-autocomplete>
+  </mat-option>
+</mat-autocomplete>

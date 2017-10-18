@@ -1,9 +1,9 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
-  <md-input-container>
+  <mat-form-field>
     <input
-       mdInput placeholder="Isbn" [formControl]="isbnCtrl"
+       matInput placeholder="Isbn" [formControl]="isbnCtrl"
        [(ngModel)]="isbn" (keypress)="keyPress($event)"
        [focus]="focus">
-  </md-input-container>
-  <button md-fab [disabled]="!isbnCtrl.valid"><md-icon>{{icon}}</md-icon></button>
+  </mat-form-field>
+  <button mat-fab [disabled]="!isbnCtrl.valid"><mat-icon>{{icon}}</mat-icon></button>
 </form>

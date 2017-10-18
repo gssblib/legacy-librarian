@@ -1,7 +1,6 @@
 import { async, TestBed } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
-import { MaterialModule } from '@angular/material';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
@@ -21,7 +20,6 @@ describe('AppComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
-        MaterialModule,
         AppRoutingModule,
         ItemsModule,
         CoreModule,

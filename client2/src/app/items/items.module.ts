@@ -6,14 +6,17 @@ import { ItemPageComponent } from './item-page/item-page.component';
 import { ItemAutoCompleteComponent } from './item-auto-complete/item-auto-complete.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ItemSearchFormComponent } from './item-search-form/item-search-form.component';
-import { MaterialModule } from "@angular/material";
 import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
 import { ItemsTableComponent } from './items-table/items-table.component';
-import {CovalentDataTableModule, CovalentPagingModule} from "@covalent/core";
+import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 import { ReturnPageComponent } from './return-page/return-page.component';
 import { ItemsRoutingModule } from "./items-routing.module";
 import { SharedModule } from "../shared/shared.module";
 import { ItemSearchPageComponent } from './item-search-page/item-search-page.component';
+import {
+  MatAutocompleteModule, MatCardModule, MatIconModule, MatInputModule,
+  MatOptionModule
+} from '@angular/material';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -26,11 +29,15 @@ import { ItemSearchPageComponent } from './item-search-page/item-search-page.com
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule,
     CovalentDataTableModule,
     CovalentPagingModule,
     ItemsRoutingModule,
     SharedModule,
+    MatCardModule,
+    MatAutocompleteModule,
+    MatIconModule,
+    MatInputModule,
+    MatOptionModule,
   ],
   declarations: [
     ItemComponent,
