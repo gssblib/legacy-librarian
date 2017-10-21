@@ -14,7 +14,7 @@ import { ItemsRoutingModule } from "./items-routing.module";
 import { SharedModule } from "../shared/shared.module";
 import { ItemSearchPageComponent } from './item-search-page/item-search-page.component';
 import {
-  MatAutocompleteModule, MatCardModule, MatIconModule, MatInputModule,
+  MatAutocompleteModule, MatButtonModule, MatCardModule, MatIconModule, MatInputModule,
   MatOptionModule
 } from '@angular/material';
 
@@ -38,6 +38,7 @@ import {
     MatIconModule,
     MatInputModule,
     MatOptionModule,
+    MatButtonModule,
   ],
   declarations: [
     ItemComponent,

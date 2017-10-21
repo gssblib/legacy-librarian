@@ -82,7 +82,7 @@ export class RpcService {
    * @returns {Observable<Object>} JSON result observable
    */
   fetch(path: string, criteria: object, offset?: number, limit?: number, returnCount?: number):
-      Observable<FetchResult> {
+      Observable<any> {
     return this.httpGet(path, this.createSearchParams(criteria, offset, limit, returnCount));
   }
 

@@ -16,7 +16,8 @@ export class BorrowersService {
    * Gets a single Borrower identified by id (borrowernumber).
    */
   getBorrower(id: number, params?): Observable<Borrower> {
-    return this.rpc.httpGet('borrowers/' + id, params);
+    return this.rpc.httpGet('borrowers/' + id, params)
+        .map(obj => Object.assign(new Borrower(), obj));
   }
 
   getBorrowers(criteria, offset, limit, returnCount): Observable<FetchResult> {

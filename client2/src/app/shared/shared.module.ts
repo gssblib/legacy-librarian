@@ -6,7 +6,7 @@ import { IsbnFieldComponent } from './isbn-field/isbn-field.component';
 import { RouterModule } from '@angular/router';
 import { AutofocusDirective } from './focus/autofocus.directive';
 import { FocusDirective } from './focus/focus.directive';
-import { MatFormFieldModule, MatIconModule, MatInputModule } from '@angular/material';
+import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -17,6 +17,7 @@ import { MatFormFieldModule, MatIconModule, MatInputModule } from '@angular/mate
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatButtonModule,
   ],
   declarations: [
     BarcodeFieldComponent,

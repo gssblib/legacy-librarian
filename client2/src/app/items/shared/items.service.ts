@@ -21,7 +21,8 @@ export class ItemsService {
    * Gets a single Item identified by barcode.
    */
   getItem(barcode: string): Observable<Item> {
-    return this.rpc.httpGet('items/' + barcode);
+    return this.rpc.httpGet('items/' + barcode)
+      .map(obj => Object.assign(new Item(), obj));
   }
 
   getItems(criteria, offset, limit, returnCount): Observable<TableFetchResult<Item>> {
@@ -31,7 +32,7 @@ export class ItemsService {
 
   getItemsFetcher(criteria): TablePageFetcher<Item> {
     return (query: TablePageRequest) => {
-      const params = { ...criteria };
+      const params: any = { ...criteria };
       if (query.sortOrder) {
         params._order = query.sortOrder;
       }
@@ -57,7 +58,7 @@ export class ItemsService {
     return new TableFetchResult(this.rowsToItems(result.rows), result.count);
   }
 
-  returnItem(barcode: string): Observable<Item> {
+  returnItem(barcode: string): Observable<any> {
     return this.rpc.httpPost(`items/${barcode}/checkin`);
   }
 }

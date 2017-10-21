@@ -17,7 +17,7 @@ import { BorrowerAutoCompleteComponent } from './borrower-auto-complete/borrower
 import { BorrowerService } from './shared/borrower.service';
 import { BorrowerResolverService } from './shared/borrower.resolver.service';
 import {
-  MatAutocompleteModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+  MatAutocompleteModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule,
   MatTabsModule
 } from '@angular/material';
 
@@ -36,6 +36,7 @@ import {
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatIconModule,
   ],
   declarations: [
     BorrowerPageComponent,
