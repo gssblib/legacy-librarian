@@ -79,6 +79,10 @@ function Entity(db, config) {
   this.fromDb = createFromDb(this);
 }
 
+function capitalizeFirst(s) {
+  return s.charAt(0).toUpperCase() + s.substr(1);
+}
+
 function identity(x) {
   return x;
 }
@@ -96,14 +100,14 @@ function identity(x) {
  */
 function createFromDb(entity) {
   var fromDbColumns =
-    entity.columns.filter(column => column.type && column.type.fromDb);
+    entity.columns.filter(column => column.domain && column.domain.fromDb);
   if (fromDbColumns.length === 0) {
     return identity;
   }
   return function(data) {
     if (data !== undefined) {
       fromDbColumns.forEach(function(column) {
-        data[column.name] = column.type.fromDb(data[column.name]);
+        data[column.name] = column.domain.fromDb(data[column.name]);
       });
     }
     return data;
@@ -285,12 +289,14 @@ var entity = function (db, config) {
 };
 
 /**
- * Predefined column types.
+ * Predefined column domains (restricted types).
  *
- * These types can be used as values for the 'type' property of a column.
+ * These domains can be used as values for the 'domain' property of a column.
  */
-entity.types = {
-  'boolean': {
+entity.domains = {
+  'Boolean': {
+    name: 'Boolean',
+    type: 'boolean',
     fromDb: function(dbValue) {
       return dbValue === 1;
     }

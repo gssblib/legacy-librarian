@@ -1,3 +1,5 @@
+const Q = require('q');
+
 /**
  * Simple module simplifying the handling of promises in express
  * HTTP handlers.
@@ -138,6 +140,11 @@ module.exports = function(server, api_prefix) {
   function handleEntity(entity, methods) {
     var basePath = '/' + entity.name;
     var keyPath = basePath + '/:key';
+    handlePath({
+      get: basePath + '/fields',
+      fn: function (call) { return Q(entity.columns); },
+      action: {resource: entity.name, operation: 'read'}
+    });
     handlePath({
       get: keyPath,
       fn: function (call) { return entity.get(call.param('key'), call.flags('options')); },

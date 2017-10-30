@@ -72,6 +72,17 @@ export class RpcService {
   }
 
   /**
+   * Sends a PUT request to the API server.
+   *
+   * @param path Path relative to the API path.
+   * @param body PUT payload
+   * @returns {Observable<Object>} JSON result observable
+   */
+  httpPut(path: string, body?: any) {
+    return this.handleHttpResult(this.http.put(this.config.apiPath(path), body));
+  }
+
+  /**
    * Fetches entities via HTTP GET.
    *
    * @param path Path of the entities relative to the API path, e.g., '/items'.

@@ -21,6 +21,62 @@ module.exports = {
     config = merge({ borrowDays: 21, renewalDays: 21 }, config);
     time = time || { now: function() { return new Date(); }};
 
+    // custom column domains used for the library entities.
+    const domains = {}
+
+    function addDomain(domain) {
+      domains[domain.name] = domain;
+    }
+
+    addDomain({
+      name: 'Barcode',
+      type: 'string',
+      validation: { pattern: '\\d{9}', minLength: 9, maxLength: 9}
+    });
+    addDomain({
+      name: 'ItemState',
+      type: 'enum',
+      options: ['CIRCULATING', 'STORED', 'DELETED', 'LOST']
+    });
+    addDomain({
+      name: 'ItemDescriptions',
+      type: 'enum',
+      options: [
+        "Buch", "CD", "CD-ROM", "DVD", "Comic", "Multimedia", "Zeitschrift",
+        "Kassette", "Computer", "Projector", "DVD Player"
+      ]
+    });
+    addDomain({
+      name: 'ItemSubjects',
+      type: 'enum',
+      options: [
+        "CD", "CD-ROM", "DVD", "Bilderbuch B-gelb", "Comic C-orange",
+        "Erzaehlung E-d gruen", "Fasching", "Halloween", "Leseleiter LL-klar",
+        "Maerchen Mae-rot", "Multimedia MM-rosa", "Ostern", "Sachkunde S-blau",
+        "Sachkunde Sevie - h blau", "St. Martin", "Teen T - h gruen",
+        "Uebergroesse - lila", "Weihnachten", "Zeitschrift"
+      ]
+    });
+    addDomain({
+      name: 'ItemAges',
+      type: 'enum',
+      options: [
+        "na", "A", "All Ages", "K-1", "K-2", "T", "T-17",
+        "Leseleiter-1A", "Leseleiter-1B", "Leseleiter-1C", "Leseleiter-2",
+        "Leseleiter-3", "Leseleiter-4", "Leseleiter-5",  "Leseleiter-6",
+        "Leseleiter-7", "Leseleiter-8", "Leseleiter-9", "Leseleiter-10",
+        "Lehrer"
+      ]
+    });
+    addDomain({
+      name: 'MediaTypes',
+      type: 'enum',
+      options: [
+        "na", "DVD-Europa", "DVD-USA", "Software-Mac", "Software-Windows",
+        "Software-Windows/Mac"
+      ]
+    });
+
     // borrowers table/entity
     var borrowers = entity(db, {
       name: 'borrowers',
@@ -202,19 +258,36 @@ module.exports = {
         });
     };
 
+    const states = [
+      'CIRCULATING', 'STORED', 'DELETED', 'LOST'
+    ]
+
     // items table/entity
     var items = entity(db, {
       name: 'items',
       columns: [
-        'barcode', 'description', 'subject', 'added', 'itemlost',
+        { name: 'barcode', domain: domains.Barcode },
+        { name: 'description', domain: domains.ItemDescriptions },
+        { name: 'subject', domain: domains.ItemSubjects },
+        { name: 'added' },
+        { name: 'itemlost', domain: entity.domains.Boolean },
         {name: 'title', queryOp: 'contains'},
         {name: 'author', queryOp: 'contains'},
-        'publicationyear', 'publishercode', 'age', 'media', 'serial',
+        'publicationyear',
+        'publishercode',
+        { name: 'age', domain: domains.ItemAges },
+        { name: 'media', domain: domains.MediaTypes },
+        'serial',
         {name: 'seriestitle', queryOp: 'contains'},
-        'classification', 'country', 'itemnotes', 'replacementprice', 'issues',
-        'state',
-        {name: 'antolin_sticker', type: entity.types.boolean},
-        'isbn10', 'isbn13'],
+        'classification',
+        'country',
+        'itemnotes',
+        'replacementprice',
+        'issues',
+        {name: 'state', domain: domains.ItemState},
+        {name: 'antolin_sticker', domain: entity.domains.Boolean},
+        'isbn10',
+        'isbn13'],
       naturalKey: 'barcode'});
 
     var checkoutColumns = [

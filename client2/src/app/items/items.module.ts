@@ -1,5 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { FormlyModule } from "@ngx-formly/core";
+import { FormlyMaterialModule } from "@ngx-formly/material";
 import { ItemComponent } from "./item/item.component";
 import { ItemsService } from "./shared/items.service";
 import { ItemPageComponent } from './item-page/item-page.component';
@@ -13,6 +15,7 @@ import { ReturnPageComponent } from './return-page/return-page.component';
 import { ItemsRoutingModule } from "./items-routing.module";
 import { SharedModule } from "../shared/shared.module";
 import { ItemSearchPageComponent } from './item-search-page/item-search-page.component';
+import { ItemEditFormComponent } from "./item-edit-form/item-edit-form.component";
 import {
   MatAutocompleteModule, MatButtonModule, MatCardModule, MatIconModule, MatInputModule,
   MatOptionModule
@@ -39,6 +42,8 @@ import {
     MatInputModule,
     MatOptionModule,
     MatButtonModule,
+    FormlyModule.forRoot(),
+    FormlyMaterialModule,
   ],
   declarations: [
     ItemComponent,
@@ -49,6 +54,7 @@ import {
     ItemsTableComponent,
     ReturnPageComponent,
     ItemSearchPageComponent,
+    ItemEditFormComponent,
   ],
   providers: [
     ItemsService

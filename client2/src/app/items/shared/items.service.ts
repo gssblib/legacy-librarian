@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
-import { Http } from "@angular/http";
-import { ConfigService } from "../../core/config.service";
 import { Observable } from "rxjs";
 import { Item } from "./item";
 import { RpcService } from "../../core/rpc.service";
 import { FetchResult } from "../../core/fetch-result";
-import {TablePageFetcher, TablePageRequest, TableFetchResult} from "../../core/table-fetcher";
+import { TableFetchResult, TablePageFetcher, TablePageRequest } from "../../core/table-fetcher";
 import { ItemState } from "./item-state";
+import { FormService } from "../../core/form.service";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 /**
  * Service for fetching and manipulating items.
@@ -14,7 +14,12 @@ import { ItemState } from "./item-state";
 @Injectable()
 export class ItemsService {
 
-  constructor(private config: ConfigService, private http: Http, private rpc: RpcService) {
+  constructor(private rpc: RpcService, private formService: FormService) {
+  }
+
+  getItemFields(): Observable<Array<FormlyFieldConfig>> {
+    return this.rpc.httpGet('items/fields')
+      .map((cols: any) => this.formService.formlyFields(cols));
   }
 
   /**
@@ -60,6 +65,13 @@ export class ItemsService {
 
   returnItem(barcode: string): Observable<any> {
     return this.rpc.httpPost(`items/${barcode}/checkin`);
+  }
+
+  saveItem(item) {
+    console.log("storing item: ", item);
+    const storedItem = Object.assign({}, item);
+    storedItem.added = undefined; // datetime not handled yet
+    return this.rpc.httpPut('/items', storedItem);
   }
 }
 
