@@ -300,6 +300,10 @@ entity.domains = {
     fromDb: function(dbValue) {
       return dbValue === 1;
     }
+  },
+  'Integer': {
+    name: 'Integer',
+    type: 'int'
   }
 }
 

@@ -17,9 +17,13 @@ import { BorrowerAutoCompleteComponent } from './borrower-auto-complete/borrower
 import { BorrowerService } from './shared/borrower.service';
 import { BorrowerResolverService } from './shared/borrower.resolver.service';
 import {
-  MatAutocompleteModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule,
+  MatAutocompleteModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule,
+  MatSelectModule,
   MatTabsModule
 } from '@angular/material';
+import { BorrowerProfileEditComponent } from "./borrower-profile-edit/borrower-profile-edit.component";
+import { FormlyMaterialModule } from '@ngx-formly/material';
+import { FormlyModule } from '@ngx-formly/core';
 
 @NgModule({
   imports: [
@@ -37,6 +41,9 @@ import {
     MatFormFieldModule,
     MatSelectModule,
     MatIconModule,
+    MatButtonModule,
+    FormlyModule.forRoot(),
+    FormlyMaterialModule,
   ],
   declarations: [
     BorrowerPageComponent,
@@ -45,6 +52,7 @@ import {
     BorrowerFeesComponent,
     BorrowerHistoryComponent,
     BorrowerProfileComponent,
+    BorrowerProfileEditComponent,
     BorrowerCheckoutsTableComponent,
     BorrowerAutoCompleteComponent
   ],

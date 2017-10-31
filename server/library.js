@@ -39,7 +39,7 @@ module.exports = {
       options: ['CIRCULATING', 'STORED', 'DELETED', 'LOST']
     });
     addDomain({
-      name: 'ItemDescriptions',
+      name: 'ItemDescription',
       type: 'enum',
       options: [
         "Buch", "CD", "CD-ROM", "DVD", "Comic", "Multimedia", "Zeitschrift",
@@ -47,7 +47,7 @@ module.exports = {
       ]
     });
     addDomain({
-      name: 'ItemSubjects',
+      name: 'ItemSubject',
       type: 'enum',
       options: [
         "CD", "CD-ROM", "DVD", "Bilderbuch B-gelb", "Comic C-orange",
@@ -58,7 +58,7 @@ module.exports = {
       ]
     });
     addDomain({
-      name: 'ItemAges',
+      name: 'ItemAge',
       type: 'enum',
       options: [
         "na", "A", "All Ages", "K-1", "K-2", "T", "T-17",
@@ -69,25 +69,36 @@ module.exports = {
       ]
     });
     addDomain({
-      name: 'MediaTypes',
+      name: 'MediaType',
       type: 'enum',
       options: [
         "na", "DVD-Europa", "DVD-USA", "Software-Mac", "Software-Windows",
         "Software-Windows/Mac"
       ]
     });
+    addDomain({
+      name: 'BorrowerState',
+      type: 'enum',
+      options: ['ACTIVE', 'INACTIVE']
+    });
 
     // borrowers table/entity
     var borrowers = entity(db, {
       name: 'borrowers',
       columns: [
-        'borrowernumber', 'cardnumber',
+        {name: 'borrowernumber', domain: entity.domains.Integer},
+        'cardnumber',
         {name: 'firstname', queryOp: 'contains'},
         {name: 'contactname', queryOp: 'contains'},
         {name: 'surname', queryOp: 'contains'},
-        'streetaddress', 'city', 'zipcode', 'phone',
+        'streetaddress',
+        'city',
+        'zipcode',
+        'phone',
         {name: 'emailaddress', queryOp: 'contains'},
-        'emailaddress_2', 'state'],
+        'emailaddress_2',
+        {name: 'state', domain: domains.BorrowerState}
+      ],
       naturalKey: 'borrowernumber'});
 
     /**
@@ -267,16 +278,16 @@ module.exports = {
       name: 'items',
       columns: [
         { name: 'barcode', domain: domains.Barcode },
-        { name: 'description', domain: domains.ItemDescriptions },
-        { name: 'subject', domain: domains.ItemSubjects },
+        { name: 'description', domain: domains.ItemDescription },
+        { name: 'subject', domain: domains.ItemSubject },
         { name: 'added' },
         { name: 'itemlost', domain: entity.domains.Boolean },
         {name: 'title', queryOp: 'contains'},
         {name: 'author', queryOp: 'contains'},
         'publicationyear',
         'publishercode',
-        { name: 'age', domain: domains.ItemAges },
-        { name: 'media', domain: domains.MediaTypes },
+        { name: 'age', domain: domains.ItemAge },
+        { name: 'media', domain: domains.MediaType },
         'serial',
         {name: 'seriestitle', queryOp: 'contains'},
         'classification',

@@ -5,6 +5,7 @@ import { BorrowerSearchPageComponent } from './borrower-search-page/borrower-sea
 import { BorrowerCheckoutsComponent } from './borrower-checkouts/borrower-checkouts.component';
 import { BorrowerFeesComponent } from './borrower-fees/borrower-fees.component';
 import { BorrowerResolverService } from 'app/borrowers/shared/borrower.resolver.service';
+import { BorrowerProfileComponent } from "./borrower-profile/borrower-profile.component";
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { BorrowerResolverService } from 'app/borrowers/shared/borrower.resolver.
         children: [
           {path: 'checkouts', component: BorrowerCheckoutsComponent},
           {path: 'fees', component: BorrowerFeesComponent},
+          {path: 'profile', component: BorrowerProfileComponent},
         ]
       },
       {path: 'borrowers', component: BorrowerSearchPageComponent},

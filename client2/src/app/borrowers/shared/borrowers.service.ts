@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
-import { ConfigService } from "../../core/config.service";
-import { Http } from "@angular/http";
 import { RpcService } from "../../core/rpc.service";
 import { Observable } from "rxjs";
 import { Borrower } from "./borrower";
 import { FetchResult } from "../../core/fetch-result";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { FormService } from "../../core/form.service";
 
 @Injectable()
 export class BorrowersService {
 
-  constructor(private config: ConfigService, private http: Http, private rpc: RpcService) {
+  constructor(private rpc: RpcService, private formService: FormService) {
+  }
+
+  getBorrowerFields(): Observable<Array<FormlyFieldConfig>> {
+    return this.rpc.httpGet('borrowers/fields')
+      .map((cols: any) => this.formService.formlyFields(cols));
   }
 
   /**
