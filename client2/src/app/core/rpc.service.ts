@@ -1,10 +1,9 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
-import { Http, Response } from "@angular/http";
+import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
+import 'rxjs/add/operator/catch';
 import { ConfigService } from "./config.service";
-import { FetchResult } from "./fetch-result";
-import { HttpResponse } from "selenium-webdriver/http";
 import { RpcError } from "./rpc-error";
+import { HttpClient } from "@angular/common/http";
 
 /**
  * Support for RPC (REST over HTTP) calls.
@@ -15,15 +14,7 @@ import { RpcError } from "./rpc-error";
 @Injectable()
 export class RpcService {
 
-  constructor(private config: ConfigService, private http: Http) {
-  }
-
-  /**
-   * Returns the JSON object contained in the response.
-   */
-  private getJson(response: Response) {
-    const body = response.json() || {};
-    return body.data || body;
+  constructor(private config: ConfigService, private http: HttpClient) {
   }
 
   /**
@@ -45,8 +36,8 @@ export class RpcService {
   /**
    * Handles the HTTP response containing the JSON payload.
    */
-  private handleHttpResult(observable: Observable<HttpResponse>): Observable<Object> {
-    return observable.map(this.getJson).catch(this.handleError.bind(this));
+  private handleHttpResult(observable: Observable<Object>): Observable<Object> {
+    return observable.catch(this.handleError.bind(this));
   }
 
   /**
@@ -56,7 +47,7 @@ export class RpcService {
    * @param params Query parameters
    * @returns {Observable<Object>} JSON result observable
    */
-  httpGet(path: string, params?: object) {
+  httpGet(path: string, params?: {[param: string]: string}): Observable<Object> {
     return this.handleHttpResult(this.http.get(this.config.apiPath(path), {params: params}));
   }
 
@@ -67,7 +58,7 @@ export class RpcService {
    * @param body POST payload
    * @returns {Observable<Object>} JSON result observable
    */
-  httpPost(path: string, body?: any) {
+  httpPost(path: string, body?: any): Observable<Object> {
     return this.handleHttpResult(this.http.post(this.config.apiPath(path), body));
   }
 
@@ -78,7 +69,7 @@ export class RpcService {
    * @param body PUT payload
    * @returns {Observable<Object>} JSON result observable
    */
-  httpPut(path: string, body?: any) {
+  httpPut(path: string, body?: any): Observable<Object> {
     return this.handleHttpResult(this.http.put(this.config.apiPath(path), body));
   }
 
@@ -108,6 +99,6 @@ export class RpcService {
 
   private toRpcError(response: Response) {
     const error = response.json();
-    return new RpcError(response.status, error.code);
+    return new RpcError(response.status, "" + error);
   }
 }

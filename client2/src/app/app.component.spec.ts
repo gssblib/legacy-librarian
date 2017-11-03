@@ -6,9 +6,9 @@ import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ItemsModule } from './items/items.module';
 import { APP_BASE_HREF } from '@angular/common';
-import { HttpModule } from '@angular/http';
 import { CoreModule } from './core/core.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from "@angular/common/http";
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -23,7 +23,7 @@ describe('AppComponent', () => {
         AppRoutingModule,
         ItemsModule,
         CoreModule,
-        HttpModule,
+        HttpClientModule,
       ],
       providers: [
         {provide: APP_BASE_HREF, useValue: '/'},

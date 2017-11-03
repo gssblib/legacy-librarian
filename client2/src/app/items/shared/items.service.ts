@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import 'rxjs/add/operator/map';
 import { Item } from "./item";
 import { RpcService } from "../../core/rpc.service";
 import { FetchResult } from "../../core/fetch-result";
-import { TableFetchResult, TablePageFetcher, TablePageRequest } from "../../core/table-fetcher";
+import { TableFetchResult } from "../../core/table-fetcher";
 import { ItemState } from "./item-state";
 import { FormService } from "../../core/form.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -31,20 +32,7 @@ export class ItemsService {
   }
 
   getItems(criteria, offset, limit, returnCount): Observable<TableFetchResult<Item>> {
-    return this.rpc.fetch('items', criteria, offset, limit, returnCount)
-      .map(this.fetchResultToItemResult.bind(this));
-  }
-
-  getItemsFetcher(criteria): TablePageFetcher<Item> {
-    return (query: TablePageRequest) => {
-      const params: any = { ...criteria };
-      if (query.sortOrder) {
-        params._order = query.sortOrder;
-      }
-      return this.getItems(
-        criteria, query.offset, query.limit, true).map(
-        result => new TableFetchResult(result.rows, result.count));
-    };
+    return this.rpc.fetch('items', criteria, offset, limit, returnCount).map(this.fetchResultToItemResult.bind(this));
   }
 
   rowToItem(row: Object): Item {

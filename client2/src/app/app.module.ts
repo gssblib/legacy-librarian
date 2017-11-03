@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
@@ -12,6 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { BorrowersModule } from './borrowers/borrowers.module';
 import { IsbnModule } from './isbn/isbn.module';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -22,7 +22,7 @@ import { IsbnModule } from './isbn/isbn.module';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     CoreModule,
     ItemsModule,
     BorrowersModule,

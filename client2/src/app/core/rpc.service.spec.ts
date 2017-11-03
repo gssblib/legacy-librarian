@@ -1,15 +1,16 @@
 import { async, TestBed } from '@angular/core/testing';
 import { RpcService } from './rpc.service';
-import { Http, HttpModule, XHRBackend } from '@angular/http';
+import { XHRBackend } from '@angular/http';
 import { ConfigService } from './config.service';
 import { MockBackend } from '@angular/http/testing';
 import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 
 describe('RpcService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [HttpClientModule],
       providers: [
         RpcService,
         ConfigService,
@@ -23,7 +24,7 @@ describe('RpcService', () => {
       const rpcService = TestBed.get(RpcService);
 
       // Mock a successful JSON HTTP response.
-      const http = TestBed.get(Http);
+      const http = TestBed.get(HttpClient);
       spyOn(http, 'get').and.returnValue(Observable.of({
         json() {
           return {name: 'Homer'};
