@@ -72,7 +72,7 @@ function Entity(db, config) {
 
   function addColumn(column) {
     var col = typeof(column) === 'object' ? column : {name: column};
-    self.columns.push(col)
+    self.columns.push(col);
     self.columnsByName[col.name] = col;
   }
   config.columns.map(addColumn);

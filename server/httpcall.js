@@ -22,7 +22,7 @@ module.exports = function(server, api_prefix) {
     var value = this.req.param(name);
     converter = converter || String;
     return value === undefined ? defaultValue : converter(value);
-  }
+  };
 
   /**
    * Returns the named request parameters as an object.
@@ -45,8 +45,8 @@ module.exports = function(server, api_prefix) {
     for (var i = 0; i < names.length; ++i) {
       flags[names[i]] = true;
     }
-    return flags;    
-  }
+    return flags;
+  };
 
   /**
    * Returns the offset and limit request parameters as an object.
@@ -57,7 +57,7 @@ module.exports = function(server, api_prefix) {
       limit: this.param('limit', Number, 100),
       returnCount: this.param('returnCount')
     };
-  }
+  };
 
   /**
    * Translates the result of a service promise to an HTTP response.
@@ -83,7 +83,7 @@ module.exports = function(server, api_prefix) {
       if (action.resource === permission.resource
 	  && permission.operations.indexOf(action.operation) >= 0) {
 	return true;
-      }      
+      }
     }
     return false;
   };
@@ -182,4 +182,3 @@ module.exports = function(server, api_prefix) {
     handleEntity: handleEntity
   };
 };
-

@@ -141,11 +141,11 @@ module.exports = {
 
     borrowers.checkouts = function (borrowerNumber, feesOnly) {
       return getCheckouts('`out`', borrowerNumber, feesOnly);
-    }
+    };
 
     borrowers.history = function (borrowerNumber, feesOnly) {
       return getCheckouts('issue_history', borrowerNumber, feesOnly);
-    }
+    };
 
     /**
      * Returns the total amount due for the given items.
@@ -271,7 +271,7 @@ module.exports = {
 
     const states = [
       'CIRCULATING', 'STORED', 'DELETED', 'LOST'
-    ]
+    ];
 
     // items table/entity
     var items = entity(db, {
@@ -328,7 +328,7 @@ module.exports = {
 
     history.payFee = function (id) {
       return db.query('update issue_history set fine_paid = fine_due where id = ?', id);
-    }
+    };
 
     /**
      * Returns the promise of the issue_history entries for the item with the given
@@ -425,7 +425,7 @@ module.exports = {
             }))
             .then(function(checkouts) {
               for (i=0; i < result.rows.length; ++i) {
-                result.rows[i].checkout = checkouts[i]
+                result.rows[i].checkout = checkouts[i];
               }
               return result;
             });
