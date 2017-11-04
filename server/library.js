@@ -411,14 +411,14 @@ module.exports = {
     /**
      * Returns promise to result containing items and their checkout status.
      */
-    items.read = function (query, limit) {
+    items.read = function (query, op, limit) {
       /* Seems hacky, but better than other options. */
       if ('antolin' in query) {
         query['antolin'] = (query['antolin'] == 'true');
       }
       var self = this;
       var result;
-      return items.constructor.prototype.read.call(self, query, limit)
+      return items.constructor.prototype.read.call(self, query, op, limit)
         .then(function (items) {
           result = items;
           return Q.all(

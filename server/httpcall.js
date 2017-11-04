@@ -60,6 +60,13 @@ module.exports = function(server, api_prefix) {
   };
 
   /**
+   * Returns the query operator in case we have multiple criteria.
+   */
+  HttpCall.prototype.op = function paramOp() {
+    return this.param('op', String, 'and');
+  };
+
+  /**
    * Translates the result of a service promise to an HTTP response.
    */
   HttpCall.prototype.handlePromise = function (promise) {
@@ -152,7 +159,7 @@ module.exports = function(server, api_prefix) {
     });
     handlePath({
       get: basePath,
-      fn: function (call) { return entity.read(call.req.query, call.limit()); },
+      fn: function (call) { return entity.read(call.req.query, call.op(), call.limit()); },
       action: {resource: entity.name, operation: 'read'}
     });
     handlePath({

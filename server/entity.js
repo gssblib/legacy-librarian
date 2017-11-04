@@ -202,14 +202,15 @@ Entity.prototype.sqlTerms = function(query) {
 /**
  * Constructs the where clause and parameter array for the query.
  */
-Entity.prototype.sqlWhere = function(query) {
+Entity.prototype.sqlWhere = function(query, op) {
+  op = op === undefined ? 'and' : op;
   var terms = this.sqlTerms(query);
   var sql = '';
   var params = [];
   if (terms.length !== 0) {
     sql += ' where ';
     terms.forEach(function (clause, index) {
-      if (index > 0) sql += ' and ';
+      if (index > 0) sql += ' ' + op + ' ';
       sql += clause.field + ' ' + clause.op + ' ?';
       params.push(clause.value);
     });
@@ -244,9 +245,9 @@ Entity.prototype.get = function (query) {
 /**
  * Returns the promise of the objects (rows) identified by the query.
  */
-Entity.prototype.read = function (query, limit) {
+Entity.prototype.read = function (query, op, limit) {
   var self = this;
-  var whereClause = this.sqlWhere(query);
+  var whereClause = this.sqlWhere(query, op);
   var sql = 'select * from ' + this.table + whereClause.sql;
   return this.db.selectRows(sql, whereClause.params, limit, query._order).then(
       function(data) {
