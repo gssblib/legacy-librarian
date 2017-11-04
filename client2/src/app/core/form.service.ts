@@ -14,7 +14,7 @@ class Domain {
 class Column {
   name: string;
   domain?: Domain;
-  title?: string;
+  label?: string;
   required?: boolean;
   disabled?: boolean;
 }
