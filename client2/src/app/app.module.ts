@@ -10,7 +10,6 @@ import { MatIconModule, MatListModule, MatSidenavModule, MatSnackBarModule, MatT
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { BorrowersModule } from './borrowers/borrowers.module';
-import { IsbnModule } from './isbn/isbn.module';
 import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
@@ -26,7 +25,6 @@ import { HttpClientModule } from "@angular/common/http";
     CoreModule,
     ItemsModule,
     BorrowersModule,
-    IsbnModule,
     AppRoutingModule,
     MatSnackBarModule,
     MatSidenavModule,
