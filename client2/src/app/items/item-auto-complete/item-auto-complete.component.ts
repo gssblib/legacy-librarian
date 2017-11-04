@@ -58,7 +58,7 @@ export class ItemAutoCompleteComponent implements OnInit {
     if (title === '') {
       this.suggestions = [];
     } else {
-      this.itemsService.getItems({title: title}, 0, this.size, false).subscribe(
+      this.itemsService.getItems({title: title, barcode: title, op: 'or'}, 0, this.size, false).subscribe(
         items => {
           this.suggestions = items.rows;
         });
