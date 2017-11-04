@@ -142,7 +142,7 @@ module.exports = function(server, api_prefix) {
     var keyPath = basePath + '/:key';
     handlePath({
       get: basePath + '/fields',
-      fn: function (call) { return Q(entity.columns); },
+      fn: function (call) { return Q(entity.fields()); },
       action: {resource: entity.name, operation: 'read'}
     });
     handlePath({
