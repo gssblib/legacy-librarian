@@ -1,4 +1,4 @@
-<td-data-table [data]="checkouts" [columns]="columns">
+<td-data-table #table [data]="checkouts" [columns]="columns">
   <ng-template tdDataTableTemplate="barcode" let-value="value">
     <a [routerLink]="'/items/' + value">{{value}}</a>
   </ng-template>
@@ -10,5 +10,11 @@
   </ng-template>
   <ng-template tdDataTableTemplate="date_due" let-value="value">
     {{value | date:shortDate}}
+  </ng-template>
+  <ng-template tdDataTableTemplate="fine_due" let-value="value">
+    <span *ngIf="value">{{value | currency}}</span>
+  </ng-template>
+  <ng-template tdDataTableTemplate="renew" let-row="row">
+    <button mat-raised-button color="primary" (click)="onRenew(row)">Renew</button>
   </ng-template>
 </td-data-table>

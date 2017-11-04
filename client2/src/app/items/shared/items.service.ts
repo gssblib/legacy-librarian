@@ -56,6 +56,10 @@ export class ItemsService {
     return this.rpc.httpPost(`items/${barcode}/checkin`);
   }
 
+  renewItem(barcode: string): Observable<any> {
+    return this.rpc.httpPost(`items/${barcode}/renew`);
+  }
+
   saveItem(item) {
     console.log("storing item: ", item);
     const storedItem = Object.assign({}, item);

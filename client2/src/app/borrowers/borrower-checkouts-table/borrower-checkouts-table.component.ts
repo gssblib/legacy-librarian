@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ITdDataTableColumn } from "@covalent/core";
+import { ApplicationRef, ChangeDetectorRef, Component, Input, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ITdDataTableColumn, TdDataTableComponent } from "@covalent/core";
+import { ItemsService } from "../../items/shared/items.service";
 
 @Component({
   selector: 'gsl-borrower-checkouts-table',
@@ -10,17 +11,33 @@ export class BorrowerCheckoutsTableComponent implements OnInit {
   @Input()
   checkouts;
 
+  @ViewChild('table')
+  table: TdDataTableComponent;
+
   columns: ITdDataTableColumn[] = [
     { name: 'barcode', label: 'Barcode', sortable: true, width: 100 },
     { name: 'title', label: 'Title', sortable: true, width: { min: 250 } },
     { name: 'description', label: 'Description', sortable: true, width: { min: 100, max: 200 } },
     { name: 'checkout_date', label: 'Checkout Date', sortable: true, width: 140 },
     { name: 'date_due', label: 'Due Date', sortable: true, width: 140 },
-    { name: 'fine_due', label: 'Fine Due', sortable: true },
+    { name: 'fine_due', label: 'Fine Due', sortable: true, width: 80 },
+    { name: 'renew', label: 'Renewal', width: 120 },
   ];
 
-  constructor() { }
+  constructor(private itemsService: ItemsService,
+              private applicationRef: ApplicationRef) {}
 
   ngOnInit() {
+  }
+
+  onRenew(item) {
+    console.log('renew: ', item);
+    this.itemsService.renewItem(item.barcode).subscribe(
+      newItem => {
+        console.log('renewed: ', newItem);
+        item.date_due = newItem.checkout.date_due;
+        this.table.refresh();
+      }
+    );
   }
 }
