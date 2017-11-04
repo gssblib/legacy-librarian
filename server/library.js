@@ -141,11 +141,11 @@ module.exports = {
 
     borrowers.checkouts = function (borrowerNumber, feesOnly) {
       return getCheckouts('`out`', borrowerNumber, feesOnly);
-    }
+    };
 
     borrowers.history = function (borrowerNumber, feesOnly) {
       return getCheckouts('issue_history', borrowerNumber, feesOnly);
-    }
+    };
 
     /**
      * Returns the total amount due for the given items.
@@ -271,7 +271,7 @@ module.exports = {
 
     const states = [
       'CIRCULATING', 'STORED', 'DELETED', 'LOST'
-    ]
+    ];
 
     // items table/entity
     var items = entity(db, {
@@ -281,24 +281,26 @@ module.exports = {
         { name: 'description', domain: domains.ItemDescription },
         { name: 'subject', domain: domains.ItemSubject },
         { name: 'added' },
-        { name: 'itemlost', domain: entity.domains.Boolean },
-        {name: 'title', queryOp: 'contains'},
-        {name: 'author', queryOp: 'contains'},
-        'publicationyear',
-        'publishercode',
+        { name: 'itemlost', label: 'Is Item Lost',
+          domain: entity.domains.Boolean },
+        { name: 'title', queryOp: 'contains' },
+        { name: 'author', queryOp: 'contains' },
+        { name: 'publicationyear' },
+        { name: 'publishercode' },
         { name: 'age', domain: domains.ItemAge },
         { name: 'media', domain: domains.MediaType },
-        'serial',
-        {name: 'seriestitle', queryOp: 'contains'},
-        'classification',
-        'country',
-        'itemnotes',
-        'replacementprice',
-        'issues',
-        {name: 'state', domain: domains.ItemState},
-        {name: 'antolin_sticker', domain: entity.domains.Boolean},
-        'isbn10',
-        'isbn13'],
+        { name: 'serial' },
+        { name: 'seriestitle', queryOp: 'contains' },
+        { name: 'classification' },
+        { name: 'country' },
+        { name: 'itemnotes' },
+        { name: 'replacementprice' },
+        { name: 'issues' },
+        { name: 'state', domain: domains.ItemState },
+        { name: 'antolin_sticker', label: 'Has Antolin Sticker',
+          domain: entity.domains.Boolean },
+        { name: 'isbn10' },
+        { name: 'isbn13' }],
       naturalKey: 'barcode'});
 
     var checkoutColumns = [
@@ -328,7 +330,7 @@ module.exports = {
 
     history.payFee = function (id) {
       return db.query('update issue_history set fine_paid = fine_due where id = ?', id);
-    }
+    };
 
     /**
      * Returns the promise of the issue_history entries for the item with the given
@@ -409,14 +411,14 @@ module.exports = {
     /**
      * Returns promise to result containing items and their checkout status.
      */
-    items.read = function (query, limit) {
+    items.read = function (query, op, limit) {
       /* Seems hacky, but better than other options. */
       if ('antolin' in query) {
         query['antolin'] = (query['antolin'] == 'true');
       }
       var self = this;
       var result;
-      return items.constructor.prototype.read.call(self, query, limit)
+      return items.constructor.prototype.read.call(self, query, op, limit)
         .then(function (items) {
           result = items;
           return Q.all(
@@ -425,7 +427,7 @@ module.exports = {
             }))
             .then(function(checkouts) {
               for (i=0; i < result.rows.length; ++i) {
-                result.rows[i].checkout = checkouts[i]
+                result.rows[i].checkout = checkouts[i];
               }
               return result;
             });

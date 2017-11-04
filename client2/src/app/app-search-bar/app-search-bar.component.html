@@ -1,0 +1,11 @@
+<span class="search">
+  <mat-icon class="search-bar-icon">search</mat-icon>
+  <mat-form-field floatPlaceholder="never" class="search-type">
+    <mat-select [(ngModel)]="type" placeholder="Type">
+      <mat-option value="item" selected>Item</mat-option>
+      <mat-option value="borrower">Borrower</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <gsl-item-search-bar *ngIf="type === 'item'"></gsl-item-search-bar>
+  <gsl-borrower-search-bar *ngIf="type === 'borrower'"></gsl-borrower-search-bar>
+</span>

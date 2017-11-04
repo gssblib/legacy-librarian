@@ -24,6 +24,7 @@ import {
 import { BorrowerProfileEditComponent } from "./borrower-profile-edit/borrower-profile-edit.component";
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FormlyModule } from '@ngx-formly/core';
+import { BorrowerSearchBarComponent } from './borrower-search-bar/borrower-search-bar.component';
 
 @NgModule({
   imports: [
@@ -54,13 +55,17 @@ import { FormlyModule } from '@ngx-formly/core';
     BorrowerProfileComponent,
     BorrowerProfileEditComponent,
     BorrowerCheckoutsTableComponent,
-    BorrowerAutoCompleteComponent
+    BorrowerAutoCompleteComponent,
+    BorrowerSearchBarComponent,
   ],
   providers: [
     BorrowerService,
     BorrowerResolverService,
     BorrowersService,
-  ]
+  ],
+  exports: [
+    BorrowerSearchBarComponent,
+  ],
 })
 export class BorrowersModule {
 }

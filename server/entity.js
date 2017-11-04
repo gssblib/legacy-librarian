@@ -39,6 +39,7 @@
  *       // persons contains the array of JS objects, one for each row
  *     });
  */
+const clone = require('clone');
 
 function dbEscape(name) { return '`' + name + '`'; }
 
@@ -71,7 +72,7 @@ function Entity(db, config) {
 
   function addColumn(column) {
     var col = typeof(column) === 'object' ? column : {name: column};
-    self.columns.push(col)
+    self.columns.push(col);
     self.columnsByName[col.name] = col;
   }
   config.columns.map(addColumn);
@@ -201,14 +202,15 @@ Entity.prototype.sqlTerms = function(query) {
 /**
  * Constructs the where clause and parameter array for the query.
  */
-Entity.prototype.sqlWhere = function(query) {
+Entity.prototype.sqlWhere = function(query, op) {
+  op = op === undefined ? 'and' : op;
   var terms = this.sqlTerms(query);
   var sql = '';
   var params = [];
   if (terms.length !== 0) {
     sql += ' where ';
     terms.forEach(function (clause, index) {
-      if (index > 0) sql += ' and ';
+      if (index > 0) sql += ' ' + op + ' ';
       sql += clause.field + ' ' + clause.op + ' ?';
       params.push(clause.value);
     });
@@ -243,9 +245,9 @@ Entity.prototype.get = function (query) {
 /**
  * Returns the promise of the objects (rows) identified by the query.
  */
-Entity.prototype.read = function (query, limit) {
+Entity.prototype.read = function (query, op, limit) {
   var self = this;
-  var whereClause = this.sqlWhere(query);
+  var whereClause = this.sqlWhere(query, op);
   var sql = 'select * from ' + this.table + whereClause.sql;
   return this.db.selectRows(sql, whereClause.params, limit, query._order).then(
       function(data) {
@@ -282,6 +284,23 @@ Entity.prototype.update = function (obj) {
  */
 Entity.prototype.remove = function (id) {
   return this.db.query('delete from ' + this.table + ' where id = ?', id);
+};
+
+/**
+ * Return frontend field descriptions for the Entity component.
+ */
+Entity.prototype.fields = function () {
+  return this.columns
+    // Remove the id field, since it is used internally only.
+    .filter(field => field.name != 'id')
+    .map(origField => {
+      var field = clone(origField);
+      // Remove domain converters, since they are functions that cannot be serialized anyways.
+      if ('domain' in field) {
+        delete field.domain.fromDb;
+      }
+      return field;
+    });
 };
 
 var entity = function (db, config) {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 import { FormControl } from "@angular/forms";
@@ -47,19 +47,20 @@ export class ItemAutoCompleteComponent implements OnInit {
       this.itemCtrl.setValue('');
       this.itemSelected.emit(value);
     } else {
-      this.fetchSuggestions(value)
+      this.fetchSuggestions(value);
     }
   }
 
   /**
    * Sets the suggestions to the first matching items fetched from the server.
    */
-  private fetchSuggestions(title) {
-    if (title === '') {
+  private fetchSuggestions(query) {
+    if (query === '') {
       this.suggestions = [];
     } else {
-      this.itemsService.getItems({title: title}, 0, this.size, false).subscribe(
-        items => {
+      this.itemsService.getItems(
+        {title: query, barcode: query, op: 'or'}, 0, this.size, false)
+        .subscribe(items => {
           this.suggestions = items.rows;
         });
     }
@@ -69,6 +70,18 @@ export class ItemAutoCompleteComponent implements OnInit {
    * Returns the string shown for an Item in the widget.
    */
   displayWith(item: Item): string {
-    return item ? item.title : '';
+    return item ? `${item.title} - ${item.barcode}` : '';
+  }
+
+  /**
+   * Select the first child in the suggestions.
+   */
+  selectFirstItem() {
+    var value = this.suggestions[0];
+    if (value !== undefined) {
+      this.suggestions = [];
+      this.itemCtrl.setValue('');
+      this.itemSelected.emit(value);
+    }
   }
 }

@@ -22,7 +22,7 @@ module.exports = function(server, api_prefix) {
     var value = this.req.param(name);
     converter = converter || String;
     return value === undefined ? defaultValue : converter(value);
-  }
+  };
 
   /**
    * Returns the named request parameters as an object.
@@ -45,8 +45,8 @@ module.exports = function(server, api_prefix) {
     for (var i = 0; i < names.length; ++i) {
       flags[names[i]] = true;
     }
-    return flags;    
-  }
+    return flags;
+  };
 
   /**
    * Returns the offset and limit request parameters as an object.
@@ -57,7 +57,14 @@ module.exports = function(server, api_prefix) {
       limit: this.param('limit', Number, 100),
       returnCount: this.param('returnCount')
     };
-  }
+  };
+
+  /**
+   * Returns the query operator in case we have multiple criteria.
+   */
+  HttpCall.prototype.op = function paramOp() {
+    return this.param('op', String, 'and');
+  };
 
   /**
    * Translates the result of a service promise to an HTTP response.
@@ -83,7 +90,7 @@ module.exports = function(server, api_prefix) {
       if (action.resource === permission.resource
 	  && permission.operations.indexOf(action.operation) >= 0) {
 	return true;
-      }      
+      }
     }
     return false;
   };
@@ -142,7 +149,7 @@ module.exports = function(server, api_prefix) {
     var keyPath = basePath + '/:key';
     handlePath({
       get: basePath + '/fields',
-      fn: function (call) { return Q(entity.columns); },
+      fn: function (call) { return Q(entity.fields()); },
       action: {resource: entity.name, operation: 'read'}
     });
     handlePath({
@@ -152,7 +159,7 @@ module.exports = function(server, api_prefix) {
     });
     handlePath({
       get: basePath,
-      fn: function (call) { return entity.read(call.req.query, call.limit()); },
+      fn: function (call) { return entity.read(call.req.query, call.op(), call.limit()); },
       action: {resource: entity.name, operation: 'read'}
     });
     handlePath({
@@ -182,4 +189,3 @@ module.exports = function(server, api_prefix) {
     handleEntity: handleEntity
   };
 };
-

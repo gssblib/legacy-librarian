@@ -14,7 +14,7 @@ class Domain {
 class Column {
   name: string;
   domain?: Domain;
-  title?: string;
+  label?: string;
   required?: boolean;
   disabled?: boolean;
 }
@@ -53,7 +53,7 @@ export class FormService {
 
   static toFormlyField(col: Column): FormlyFieldConfig {
     const domain: Domain = col.domain || {type: 'string'};
-    const title = col.title || FormService.capitalizeFirst(col.name);
+    const title = col.label || FormService.capitalizeFirst(col.name);
     const required = col.required;
 
     const field: FormlyFieldConfig = {
