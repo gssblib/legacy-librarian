@@ -39,6 +39,7 @@
  *       // persons contains the array of JS objects, one for each row
  *     });
  */
+const clone = require('clone');
 
 function dbEscape(name) { return '`' + name + '`'; }
 
@@ -282,6 +283,23 @@ Entity.prototype.update = function (obj) {
  */
 Entity.prototype.remove = function (id) {
   return this.db.query('delete from ' + this.table + ' where id = ?', id);
+};
+
+/**
+ * Return frontend field descriptions for the Entity component.
+ */
+Entity.prototype.fields = function () {
+  return this.columns
+    // Remove the id field, since it is used internally only.
+    .filter(field => field.name != 'id')
+    .map(origField => {
+      var field = clone(origField);
+      // Remove domain converters, since they are functions that cannot be serialized anyways.
+      if ('domain' in field) {
+        delete field.domain.fromDb;
+      }
+      return field;
+    });
 };
 
 var entity = function (db, config) {
