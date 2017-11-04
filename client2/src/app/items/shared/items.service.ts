@@ -32,7 +32,8 @@ export class ItemsService {
   }
 
   getItems(criteria, offset, limit, returnCount): Observable<TableFetchResult<Item>> {
-    return this.rpc.fetch('items', criteria, offset, limit, returnCount).map(this.fetchResultToItemResult.bind(this));
+    return this.rpc.fetch('items', criteria, offset, limit, returnCount)
+      .map(this.fetchResultToItemResult.bind(this));
   }
 
   rowToItem(row: Object): Item {

@@ -10,10 +10,17 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav mode="side" opened="true">
     <mat-nav-list>
-      <a mat-list-item routerLink="/items">Items</a>
-      <a mat-list-item routerLink="/borrowers">Borrowers</a>
-      <a mat-list-item routerLink="/return">Returns</a>
-      <a mat-list-item routerLink="/isbn">ISBN Scan</a>
+      <a mat-list-item routerLink="/items" accesskey="i">
+        <span class="accesskey">I</span>tems
+      </a>
+      <a mat-list-item routerLink="/borrowers" accesskey="b">
+        <span class="accesskey">B</span>orrowers
+      </a>
+      <a mat-list-item routerLink="/return" accesskey="r">
+        <span class="accesskey">R</span>eturns
+      </a>
+      <a mat-list-item routerLink="/isbn" accesskey="s">
+        ISBN&nbsp;<span class="accesskey">S</span>can</a>
     </mat-nav-list>
   </mat-sidenav>
   <div class="content">
