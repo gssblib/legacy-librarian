@@ -1,9 +1,9 @@
-<mat-form-field floatPlaceholder="never" class="item-autocomplete">
+<mat-form-field floatPlaceholder="never" class="item-autocomplete" (keyup.enter)="selectFirstItem()">
   <input matInput size="50" placeholder="Search"
          [formControl]="itemCtrl" [matAutocomplete]="auto">
 </mat-form-field>
 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith">
   <mat-option *ngFor="let suggestion of suggestions" [value]="suggestion">
-    {{suggestion.title}}
+    {{ displayWith(suggestion) }}
   </mat-option>
 </mat-autocomplete>

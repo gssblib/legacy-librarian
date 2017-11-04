@@ -1,5 +1,5 @@
 .item-autocomplete {
-  width: 20em;
+  width: 100%;
 }
 :host /deep/ .mat-input-wrapper {
   margin: 0;
