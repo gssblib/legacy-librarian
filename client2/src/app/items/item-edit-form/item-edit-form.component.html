@@ -1,6 +1,3 @@
-<h1>
-  {{ item.barcode }}: {{ item.title }}
-</h1>
 <form [formGroup]="form" (ngSubmit)="submit(item)">
   <div class="fields">
     <formly-form [model]="item" [fields]="fields">

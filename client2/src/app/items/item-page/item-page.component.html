@@ -1,12 +1,18 @@
 <mat-card>
+  <h1 *ngIf="item">
+    {{ item.barcode }}: {{ item.title }}
+  </h1>
   <mat-tab-group>
     <mat-tab label="Details">
+      <br />
       <gsl-item-edit-form *ngIf="item" [item]="item"></gsl-item-edit-form>
     </mat-tab>
     <mat-tab label="History">
+      <br />
       <gsl-item-history *ngIf="item" [item]="item"></gsl-item-history>
     </mat-tab>
     <mat-tab label="Labels">
+      <br />
       <p>Labels</p>
     </mat-tab>
   </mat-tab-group>
