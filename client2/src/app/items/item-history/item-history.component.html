@@ -1,0 +1,31 @@
+<p *ngIf="item.history">
+  This item has been checked out
+  <span class="item-history-length">{{item.history.length}}</span>
+<span [ngPlural]="item.history.length">
+  <ng-template ngPluralCase="=1">time.</ng-template>
+  <ng-template ngPluralCase="other">times.</ng-template>
+</span>
+</p>
+<table td-data-table>
+  <tr>
+    <th td-data-table-column *ngFor="let column of columns"
+        (sortChange)="onSort($event)"
+        [sortOrder]="order"
+        [name]="column.name" [sortable]="column.sortable">
+      {{column.label}}
+    </th>
+  </tr>
+  <tr td-data-table-row *ngFor="let entry of item.history">
+    <td td-data-table-cell>
+      {{entry.checkout_date | date:'dd MMM yyyy'}}
+    </td>
+    <td td-data-table-cell>
+      {{entry.returndate | date:'dd MMM yyyy'}}
+    </td>
+    <td td-data-table-cell>
+      <a (onclick)="visitBorrower(entry.borrowernumber)">
+        {{entry.surname}},
+      </a>
+    </td>
+  </tr>
+</table>

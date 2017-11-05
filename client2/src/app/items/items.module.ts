@@ -1,5 +1,14 @@
 import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, NgPlural } from "@angular/common";
+import {
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatCardModule,
+  MatIconModule,
+  MatInputModule,
+  MatOptionModule,
+  MatTabsModule,
+} from '@angular/material';
 import { FormlyModule } from "@ngx-formly/core";
 import { FormlyMaterialModule } from "@ngx-formly/material";
 import { ItemComponent } from "./item/item.component";
@@ -16,16 +25,8 @@ import { ItemsRoutingModule } from "./items-routing.module";
 import { SharedModule } from "../shared/shared.module";
 import { ItemSearchPageComponent } from './item-search-page/item-search-page.component';
 import { ItemEditFormComponent } from "./item-edit-form/item-edit-form.component";
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatCardModule,
-  MatIconModule,
-  MatInputModule,
-  MatOptionModule,
-  MatTabsModule,
-} from '@angular/material';
 import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
+import { ItemHistoryComponent } from './item-history/item-history.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -63,6 +64,7 @@ import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
     ItemSearchPageComponent,
     ItemEditFormComponent,
     ItemAddPageComponent,
+    ItemHistoryComponent,
   ],
   providers: [
     ItemsService
