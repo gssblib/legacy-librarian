@@ -1,4 +1,5 @@
-<td-data-table [data]="checkouts" [columns]="columns">
+<td-data-table [data]="rows" [columns]="columns"
+    [sortBy]="sortBy" [sortOrder]="sortOrder" (sortChange)="onSort($event)">
   <ng-template tdDataTableTemplate="barcode" let-value="value">
     <a [routerLink]="'/items/' + value">{{value}}</a>
   </ng-template>
