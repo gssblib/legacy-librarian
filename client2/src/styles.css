@@ -1,3 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~font-awesome/css/font-awesome.min.css';
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.formly-checkbox .mat-form-field-infix {
+  border-top: 0.5em solid transparent;
+}

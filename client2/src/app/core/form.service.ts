@@ -71,6 +71,8 @@ export class FormService {
         break;
       case 'boolean':
         field.type = 'checkbox';
+        field.templateOptions.placeholder = undefined;
+        field.className = 'formly-checkbox';
         break;
       default:
         field.type = 'input';
