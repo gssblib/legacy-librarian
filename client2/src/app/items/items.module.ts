@@ -17,8 +17,13 @@ import { SharedModule } from "../shared/shared.module";
 import { ItemSearchPageComponent } from './item-search-page/item-search-page.component';
 import { ItemEditFormComponent } from "./item-edit-form/item-edit-form.component";
 import {
-  MatAutocompleteModule, MatButtonModule, MatCardModule, MatIconModule, MatInputModule,
-  MatOptionModule
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatCardModule,
+  MatIconModule,
+  MatInputModule,
+  MatOptionModule,
+  MatTabsModule,
 } from '@angular/material';
 import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
 
@@ -42,6 +47,7 @@ import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
     MatIconModule,
     MatInputModule,
     MatOptionModule,
+    MatTabsModule,
     MatButtonModule,
     FormlyModule.forRoot(),
     FormlyMaterialModule,

@@ -1,4 +1,14 @@
 <mat-card>
-  <gsl-item-edit-form *ngIf="item" [item]="item"></gsl-item-edit-form>
+  <mat-tab-group>
+    <mat-tab label="Details">
+      <gsl-item-edit-form *ngIf="item" [item]="item"></gsl-item-edit-form>
+    </mat-tab>
+    <mat-tab label="History">
+      <p>History</p>
+    </mat-tab>
+    <mat-tab label="Labels">
+      <p>Labels</p>
+    </mat-tab>
+  </mat-tab-group>
 </mat-card>
 
