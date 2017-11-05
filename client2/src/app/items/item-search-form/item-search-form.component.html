@@ -15,5 +15,13 @@
     <input name="subject" [(ngModel)]="criteria.subject" matInput
            placeholder="Subject" autocomplete="off">
   </mat-form-field>
-  <button mat-fab><mat-icon>search</mat-icon></button>
+  <span class="actions">
+    <button mat-fab>
+      <mat-icon>search</mat-icon>
+    </button>
+    <a mat-fab style="float: right" (click)="addItem($event)">
+      <mat-icon>add</mat-icon>
+    </a>
+  </span>
 </form>
+

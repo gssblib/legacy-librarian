@@ -20,6 +20,7 @@ import {
   MatAutocompleteModule, MatButtonModule, MatCardModule, MatIconModule, MatInputModule,
   MatOptionModule
 } from '@angular/material';
+import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -55,6 +56,7 @@ import {
     ReturnPageComponent,
     ItemSearchPageComponent,
     ItemEditFormComponent,
+    ItemAddPageComponent,
   ],
   providers: [
     ItemsService

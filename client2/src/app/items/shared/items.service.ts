@@ -60,6 +60,12 @@ export class ItemsService {
     return this.rpc.httpPost(`items/${barcode}/renew`);
   }
 
+  addItem(item) {
+    console.log("adding item: ", item);
+    const storedItem = Object.assign({}, item);
+    return this.rpc.httpPost('/items', storedItem);
+  }
+
   saveItem(item) {
     console.log("storing item: ", item);
     const storedItem = Object.assign({}, item);

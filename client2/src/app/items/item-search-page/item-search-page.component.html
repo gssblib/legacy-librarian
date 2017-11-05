@@ -1,5 +1,6 @@
 <mat-card>
   <gsl-item-search-form [criteria]="criteria" (search)="onSearch($event)">
+    <button mat-fab><mat-icon>+</mat-icon></button>
   </gsl-item-search-form>
   <div *ngIf="result">
     <td-data-table *ngIf="result"
