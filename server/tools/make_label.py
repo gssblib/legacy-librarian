@@ -163,6 +163,7 @@ class Labels(object):
             'templateOptions': {
                 'type': 'text',
                 'label': fld.title,
+                'placeholder': fld.title,
                 'required': fld.required
             }
         }
@@ -174,6 +175,7 @@ class Labels(object):
             'defaultValue': fld.default,
             'templateOptions': {
                 'label': fld.title,
+                'placeholder': fld.title,
                 'required': fld.required
             }
         }
@@ -185,6 +187,7 @@ class Labels(object):
             'defaultValue': fld.default,
             'templateOptions': {
                 'label': fld.title,
+                'placeholder': fld.title,
                 'required': fld.required
             }
         }
@@ -196,10 +199,11 @@ class Labels(object):
             'defaultValue': fld.default,
             'templateOptions': {
                 'options': [
-                    {'value': term.value, 'name': term.title}
+                    {'value': term.value, 'label': term.title}
                     for term in fld.vocabulary
                 ],
                 'label': fld.title,
+                'placeholder': fld.title,
                 'required': fld.required
             }
         }
