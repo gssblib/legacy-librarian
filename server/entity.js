@@ -291,8 +291,10 @@ Entity.prototype.remove = function (id) {
  */
 Entity.prototype.fields = function () {
   return this.columns
-    // Remove the id field, since it is used internally only.
+    // Remove id field, since it is used internally only.
     .filter(field => field.name != 'id')
+    // Remove all internal fields.
+    .filter(field => field.internal !== true)
     .map(origField => {
       var field = clone(origField);
       // Remove domain converters, since they are functions that cannot be serialized anyways.
