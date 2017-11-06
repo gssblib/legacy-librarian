@@ -7,7 +7,11 @@ import { CoreModule } from './core/core.module';
 import { ItemsModule } from './items/items.module';
 import { AppRoutingModule } from './app-routing.module';
 import {
+  MatButtonModule,
+  MatCardModule,
+  MatFormFieldModule,
   MatIconModule,
+  MatInputModule,
   MatListModule,
   MatSelectModule,
   MatSidenavModule,
@@ -19,6 +23,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { BorrowersModule } from './borrowers/borrowers.module';
 import { HttpClientModule } from "@angular/common/http";
 import { AppSearchBarComponent } from './app-search-bar/app-search-bar.component';
+import { FeesModule } from './fees/fees.module';
 
 @NgModule({
   declarations: [
@@ -34,7 +39,12 @@ import { AppSearchBarComponent } from './app-search-bar/app-search-bar.component
     CoreModule,
     ItemsModule,
     BorrowersModule,
+    FeesModule,
     AppRoutingModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
     MatSidenavModule,

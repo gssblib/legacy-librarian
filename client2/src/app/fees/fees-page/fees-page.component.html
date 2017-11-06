@@ -1,0 +1,30 @@
+<mat-card>
+  <h3>Compute Fees</h3>
+
+  <p>
+    The fees are computed as of the given date.  If the due date of a checked
+    out item is before this date, the fee will be set to 50ȼ.
+  </p>
+
+  <form #f="ngForm" (ngSubmit)="updateFees(date)">
+    <mat-form-field>
+      <input name="date" type="date" [(ngModel)]="date" matInput autofocus useValueAsDate
+             placeholder="Date" autocomplete="off">
+    </mat-form-field>
+    <span class="actions">
+      <button type="submit" mat-raised-button color="primary">Update Fees</button>
+    </span>
+  </form>
+
+  <td-data-table [data]="data"
+                 [columns]="columns"
+                 [sortable]="true"
+                 [sortBy]="sortKey.name"
+                 [sortOrder]="sortKey.order"
+                 (sortChange)="onSort($event)">
+    <ng-template tdDataTableTemplate="surname" let-row="row" let-value="value">
+      {{ row.surname }}, {{ row.contactname }}
+    </ng-template>
+  </td-data-table>
+
+</mat-card>
