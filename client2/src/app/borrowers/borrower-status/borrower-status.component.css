@@ -13,6 +13,14 @@ mat-chip {
   background: #888;
 }
 
+mat-chip.size-small {
+  font-size: 75%;
+}
+
+mat-chip.size-normal {
+  font-size: 100%;
+}
+
 mat-chip.active {
   background-color: #5cb85c;
 }

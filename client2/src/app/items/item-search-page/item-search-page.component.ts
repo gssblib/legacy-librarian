@@ -24,6 +24,8 @@ import { ItemState } from "../shared/item-state";
   styleUrls: ['./item-search-page.component.css']
 })
 export class ItemSearchPageComponent implements OnInit, OnDestroy {
+  ItemState = ItemState;
+
   /** Current result being shown in the table. */
   result: TableFetchResult<Item>;
 

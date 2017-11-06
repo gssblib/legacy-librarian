@@ -13,7 +13,7 @@
         <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
       </ng-template>
       <ng-template tdDataTableTemplate="state" let-row="row" let-value="value">
-        <gsl-borrower-status [status]="row.state"></gsl-borrower-status>
+        <gsl-borrower-status [status]="row.state" size="normal"></gsl-borrower-status>
       </ng-template>
       <ng-template tdDataTableTemplate="firstname" let-row="row" let-value="value">
         <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
