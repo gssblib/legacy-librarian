@@ -1,6 +1,7 @@
 <mat-card>
   <h3 *ngIf="item">
     Item {{ item.barcode }}: {{ item.title }}
+    <gsl-item-antolin [item]="item"></gsl-item-antolin>
     <gsl-item-status [item]="item"></gsl-item-status>
   </h3>
   <mat-tab-group>

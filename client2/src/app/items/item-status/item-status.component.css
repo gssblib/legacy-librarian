@@ -7,7 +7,7 @@ mat-chip {
   color: #fff;
   text-align: center;
   white-space: nowrap;
-  vertical-align: baseline;
+  vertical-align: 12.5%;
   border-radius: .25em;
   padding-bottom: 0.2em;
 }

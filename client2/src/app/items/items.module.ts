@@ -32,6 +32,7 @@ import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
 import { ItemHistoryComponent } from './item-history/item-history.component';
 import { ItemLabelsComponent } from './item-labels/item-labels.component';
 import { ItemStatusComponent } from './item-status/item-status.component';
+import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -75,6 +76,7 @@ import { ItemStatusComponent } from './item-status/item-status.component';
     ItemHistoryComponent,
     ItemLabelsComponent,
     ItemStatusComponent,
+    ItemAntolinComponent,
   ],
   providers: [
     ItemsService
