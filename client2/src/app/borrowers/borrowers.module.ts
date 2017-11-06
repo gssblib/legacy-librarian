@@ -32,6 +32,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { BorrowerSearchBarComponent } from './borrower-search-bar/borrower-search-bar.component';
 import { BorrowerSearchFormComponent } from './borrower-search-form/borrower-search-form.component';
 import { BorrowerAddPageComponent } from './borrower-add-page/borrower-add-page.component';
+import { BorrowerStatusComponent } from './borrower-status/borrower-status.component';
 
 @NgModule({
   imports: [
@@ -68,6 +69,7 @@ import { BorrowerAddPageComponent } from './borrower-add-page/borrower-add-page.
     BorrowerSearchBarComponent,
     BorrowerSearchFormComponent,
     BorrowerAddPageComponent,
+    BorrowerStatusComponent,
   ],
   providers: [
     BorrowerService,

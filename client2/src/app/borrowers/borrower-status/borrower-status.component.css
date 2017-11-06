@@ -1,0 +1,22 @@
+mat-chip {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: 12.5%;
+  border-radius: .25em;
+  padding-bottom: 0.2em;
+  background: #888;
+}
+
+mat-chip.active {
+  background-color: #5cb85c;
+}
+
+mat-chip.inactive {
+  background-color: #d9534f;
+}

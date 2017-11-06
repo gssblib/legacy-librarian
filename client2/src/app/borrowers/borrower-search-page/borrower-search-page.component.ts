@@ -10,7 +10,6 @@ import {
 import { ParamsUtil } from "../../core/params-util";
 import { SortKey } from "../../core/sort-key";
 import { Subscription } from "rxjs/Subscription";
-import { BorrowerState, BorrowerStateLabels } from "../shared/borrower-state";
 
 /**
  * Borrower search page with search form and result table.
@@ -45,7 +44,7 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
   /** Meta-data for the borrowers table. */
   columns: ITdDataTableColumn[] = [
     {name: 'surname', label: 'Last Name', sortable: true},
-    {name: 'state', label: 'State', format: value => {return BorrowerStateLabels[value]}},
+    {name: 'state', label: 'State'},
     {name: 'firstname', label: 'First Name', sortable: true},
     {name: 'emailaddress', label: 'E-Mail', sortable: true},
     {name: 'contactname', label: 'Contact Name', sortable: true},
