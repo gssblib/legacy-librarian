@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { Item } from "../shared/item";
 import { ItemState, ItemStateLabels } from "../shared/item-state";
 
 @Component({
