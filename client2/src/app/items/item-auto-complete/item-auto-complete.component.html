@@ -1,5 +1,5 @@
 <mat-form-field floatPlaceholder="never" class="item-autocomplete" (keyup.enter)="selectFirstItem()">
-  <input matInput size="50" placeholder="Search"
+  <input matInput size="50" placeholder="Item Title or Barcode"
          [formControl]="itemCtrl" [matAutocomplete]="auto">
 </mat-form-field>
 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith">
