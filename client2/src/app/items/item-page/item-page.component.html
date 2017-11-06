@@ -13,7 +13,7 @@
     </mat-tab>
     <mat-tab label="Labels">
       <br />
-      <p>Labels</p>
+      <gsl-item-labels *ngIf="item" [item]="item"></gsl-item-labels>
     </mat-tab>
   </mat-tab-group>
 </mat-card>

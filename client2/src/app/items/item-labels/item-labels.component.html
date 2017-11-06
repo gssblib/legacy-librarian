@@ -1,0 +1,39 @@
+<div class="status alert alert-{{ statusType }}" role="alert">
+  {{ status }}
+</div>
+
+<mat-grid-list cols="2" class="foo">
+  <mat-grid-tile>
+    <form (ngSubmit)="printLabel(item, category, data)">
+
+      <mat-form-field [style.width]="'100%'">
+        <mat-select name="category" placeholder="Label Categories"
+                    [(ngModel)]="category"
+                    (change)="onCategoryChange(item, category, data)">
+          <mat-option *ngFor="let cat of categories" [value]="cat">
+            {{ cat }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <fieldset [hidden]="categoryFields.length < 1">
+        <legend>Options</legend>
+        <div>
+          <formly-form [model]="data" [fields]="categoryFields">
+          </formly-form>
+        </div>
+      </fieldset>
+      <button type="print" mat-raised-button color="primary">Print</button>
+    </form>
+  </mat-grid-tile>
+  <mat-grid-tile>
+
+    <div id="item-label-preview" class="item-label-preview"
+         *ngIf="category">
+      <h2>Preview</h2>
+      <img src="data:image/png;base64,{{ previewImage }}"
+           *ngIf="previewImage" />
+    </div>
+
+  </mat-grid-tile>
+</mat-grid-list>

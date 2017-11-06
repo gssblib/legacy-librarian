@@ -20,6 +20,7 @@ export class Item {
   isbn13: string;
   state: ItemState;
   checkout?: Checkout;
+  history: Array<any>;
 
   get status(): ItemState {
     return this.state === ItemState.CIRCULATING

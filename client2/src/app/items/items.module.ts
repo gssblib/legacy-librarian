@@ -4,9 +4,11 @@ import {
   MatAutocompleteModule,
   MatButtonModule,
   MatCardModule,
+  MatGridListModule,
   MatIconModule,
   MatInputModule,
   MatOptionModule,
+  MatSelectModule,
   MatTabsModule,
 } from '@angular/material';
 import { FormlyModule } from "@ngx-formly/core";
@@ -27,6 +29,7 @@ import { ItemSearchPageComponent } from './item-search-page/item-search-page.com
 import { ItemEditFormComponent } from "./item-edit-form/item-edit-form.component";
 import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
 import { ItemHistoryComponent } from './item-history/item-history.component';
+import { ItemLabelsComponent } from './item-labels/item-labels.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -45,9 +48,11 @@ import { ItemHistoryComponent } from './item-history/item-history.component';
     SharedModule,
     MatCardModule,
     MatAutocompleteModule,
+    MatGridListModule,
     MatIconModule,
     MatInputModule,
     MatOptionModule,
+    MatSelectModule,
     MatTabsModule,
     MatButtonModule,
     FormlyModule.forRoot(),
@@ -65,6 +70,7 @@ import { ItemHistoryComponent } from './item-history/item-history.component';
     ItemEditFormComponent,
     ItemAddPageComponent,
     ItemHistoryComponent,
+    ItemLabelsComponent,
   ],
   providers: [
     ItemsService

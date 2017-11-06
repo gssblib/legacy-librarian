@@ -89,6 +89,30 @@ export class RpcService {
   }
 
   /**
+   * Sends a GET request to the Labels API server.
+   *
+   * @param path Path relative to the API path.
+   * @param params Query parameters
+   * @returns {Observable<Object>} JSON result observable
+   */
+  labelsHttpGet(path: string, params?: {[param: string]: string}): Observable<any> {
+    return this.handleHttpResult(
+      this.http.get(this.config.labelsApiPath(path), {params: params}));
+  }
+
+  /**
+   * Sends a POST request to Labels the API server.
+   *
+   * @param path Path relative to the API path.
+   * @param body POST payload
+   * @returns {Observable<Object>} JSON result observable
+   */
+  labelsHttpPost(path: string, body?: any, options?: any): Observable<any> {
+    return this.handleHttpResult(this.http.post(
+      this.config.labelsApiPath(path), body, options));
+  }
+
+  /**
    * Handles an HTTP error response.
    */
   private handleError(response: Response) {
