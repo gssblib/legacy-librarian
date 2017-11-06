@@ -10,9 +10,10 @@ mat-chip {
   vertical-align: 12.5%;
   border-radius: .25em;
   padding-bottom: 0.2em;
+  background: #888;
 }
 
-mat-chip.available {
+mat-chip.available, mat-chip.circulating {
   background-color: #5cb85c;
 }
 
@@ -20,6 +21,6 @@ mat-chip.checkedout {
   background-color: #f0ad4e;
 }
 
-mat-chip.unavailable {
+mat-chip.unavailable, mat-chip.lost, mat-chip.deleted {
   background-color: #d9534f;
 }

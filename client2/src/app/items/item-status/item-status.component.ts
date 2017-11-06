@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Item } from "../shared/item";
+import { ItemState, ItemStateLabels } from "../shared/item-state";
 
 @Component({
   selector: 'gsl-item-status',
@@ -7,39 +8,11 @@ import { Item } from "../shared/item";
   styleUrls: ['./item-status.component.css']
 })
 export class ItemStatusComponent {
-  @Input('item') item: Item;
-  status: string;
-  statusClass: string;
+  @Input('status') status: ItemState;
 
   constructor() { }
 
-  getStatus(state, checkout) {
-    if (state != 'CIRCULATING') {
-      this.status = 'Unavailable';
-      return 'unavailable';
-    }
-    if (state == 'CIRCULATING' && checkout) {
-      return 'checkedout';
-    }
-    if (state == 'CIRCULATING' && !checkout) {
-      return 'available';
-    }
-  }
-
-  getStatusClass(state, checkout) {
-    return this.getStatus(state, checkout);
-  }
-
-  getStatusTitle(state, checkout) {
-    var status = this.getStatus(state, checkout);
-    if (status == 'unavailable') {
-      return 'Unavailable';
-    }
-    if (status == 'checkedout') {
-      return 'Checked Out';
-    }
-    if (status == 'available') {
-      return 'Available';
-    }
+  getStatusLabel(status) {
+    return ItemStateLabels[status];
   }
 }
