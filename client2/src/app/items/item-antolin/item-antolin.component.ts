@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Item } from "../shared/item";
 
 @Component({
   selector: 'gsl-item-antolin',
