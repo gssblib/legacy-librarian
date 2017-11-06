@@ -1,7 +1,7 @@
 <mat-card>
-  <h1 *ngIf="item">
-    {{ item.barcode }}: {{ item.title }}
-  </h1>
+  <h3 *ngIf="item">
+    Item {{ item.barcode }}: {{ item.title }}
+  </h3>
   <mat-tab-group>
     <mat-tab label="Details">
       <br />
