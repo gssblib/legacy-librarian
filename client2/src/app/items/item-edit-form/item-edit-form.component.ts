@@ -25,6 +25,5 @@ export class ItemEditFormComponent implements OnInit {
       value => { console.log("saved item"); },
       error => { console.log("error saving item: " + error)}
     );
-    console.log(item);
   }
 }

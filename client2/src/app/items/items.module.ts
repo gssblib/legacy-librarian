@@ -4,6 +4,7 @@ import {
   MatAutocompleteModule,
   MatButtonModule,
   MatCardModule,
+  MatChipsModule,
   MatGridListModule,
   MatIconModule,
   MatInputModule,
@@ -30,6 +31,7 @@ import { ItemEditFormComponent } from "./item-edit-form/item-edit-form.component
 import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
 import { ItemHistoryComponent } from './item-history/item-history.component';
 import { ItemLabelsComponent } from './item-labels/item-labels.component';
+import { ItemStatusComponent } from './item-status/item-status.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -47,6 +49,7 @@ import { ItemLabelsComponent } from './item-labels/item-labels.component';
     ItemsRoutingModule,
     SharedModule,
     MatCardModule,
+    MatChipsModule,
     MatAutocompleteModule,
     MatGridListModule,
     MatIconModule,
@@ -71,6 +74,7 @@ import { ItemLabelsComponent } from './item-labels/item-labels.component';
     ItemAddPageComponent,
     ItemHistoryComponent,
     ItemLabelsComponent,
+    ItemStatusComponent,
   ],
   providers: [
     ItemsService
