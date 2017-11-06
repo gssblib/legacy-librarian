@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { BorrowerPageComponent } from './borrower-page/borrower-page.component';
+import { BorrowerAddPageComponent } from "./borrower-add-page/borrower-add-page.component";
 import { BorrowerSearchPageComponent } from './borrower-search-page/borrower-search-page.component';
 import { BorrowerCheckoutsComponent } from './borrower-checkouts/borrower-checkouts.component';
 import { BorrowerFeesComponent } from './borrower-fees/borrower-fees.component';
@@ -10,6 +11,7 @@ import { BorrowerProfileComponent } from "./borrower-profile/borrower-profile.co
 @NgModule({
   imports: [
     RouterModule.forChild([
+      {path: 'borrowers/add', component: BorrowerAddPageComponent},
       {
         path: 'borrowers/:id',
         component: BorrowerPageComponent,
