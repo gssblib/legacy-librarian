@@ -1,0 +1,26 @@
+<form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
+  <mat-form-field>
+    <input name="surname" [(ngModel)]="criteria.surname" matInput autofocus
+           placeholder="Surname" autocomplete="off">
+  </mat-form-field>
+  <mat-form-field>
+    <input name="firstname" [(ngModel)]="criteria.firstname" matInput autofocus
+           placeholder="First Name" autocomplete="off">
+  </mat-form-field>
+  <mat-form-field>
+    <input name="email" [(ngModel)]="criteria.email" matInput
+           placeholder="Email" autocomplete="off">
+  </mat-form-field>
+  <mat-form-field>
+    <input name="state" [(ngModel)]="criteria.state" matInput
+           placeholder="State" autocomplete="off">
+  </mat-form-field>
+  <span class="actions">
+    <button mat-fab>
+      <mat-icon>search</mat-icon>
+    </button>
+    <a mat-fab style="float: right" routerLink="add">
+      <mat-icon>add</mat-icon>
+    </a>
+  </span>
+</form>

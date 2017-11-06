@@ -9,7 +9,7 @@ import { BorrowerHistoryComponent } from './borrower-history/borrower-history.co
 import { BorrowerProfileComponent } from './borrower-profile/borrower-profile.component';
 import { BorrowersService } from './shared/borrowers.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CovalentDataTableModule } from '@covalent/core';
+import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 import { SharedModule } from '../shared/shared.module';
 import { BorrowerCheckoutsTableComponent } from './borrower-checkouts-table/borrower-checkouts-table.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,7 +17,12 @@ import { BorrowerAutoCompleteComponent } from './borrower-auto-complete/borrower
 import { BorrowerService } from './shared/borrower.service';
 import { BorrowerResolverService } from './shared/borrower.resolver.service';
 import {
-  MatAutocompleteModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule,
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatCardModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
   MatSelectModule,
   MatTabsModule
 } from '@angular/material';
@@ -25,6 +30,7 @@ import { BorrowerProfileEditComponent } from "./borrower-profile-edit/borrower-p
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FormlyModule } from '@ngx-formly/core';
 import { BorrowerSearchBarComponent } from './borrower-search-bar/borrower-search-bar.component';
+import { BorrowerSearchFormComponent } from './borrower-search-form/borrower-search-form.component';
 
 @NgModule({
   imports: [
@@ -33,11 +39,13 @@ import { BorrowerSearchBarComponent } from './borrower-search-bar/borrower-searc
     ReactiveFormsModule,
     BrowserAnimationsModule,
     CovalentDataTableModule,
+    CovalentPagingModule,
     BorrowersRoutingModule,
     SharedModule,
     MatCardModule,
     MatTabsModule,
     MatAutocompleteModule,
+    MatIconModule,
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -57,6 +65,7 @@ import { BorrowerSearchBarComponent } from './borrower-search-bar/borrower-searc
     BorrowerCheckoutsTableComponent,
     BorrowerAutoCompleteComponent,
     BorrowerSearchBarComponent,
+    BorrowerSearchFormComponent,
   ],
   providers: [
     BorrowerService,

@@ -1,3 +1,34 @@
 <mat-card>
-  <gsl-borrower-search-bar></gsl-borrower-search-bar>
+  <gsl-borrower-search-form [criteria]="criteria" (search)="onSearch($event)">
+  </gsl-borrower-search-form>
+  <div *ngIf="result">
+    <td-data-table *ngIf="result"
+                   [data]="result.rows"
+                   [columns]="columns"
+                   [sortable]="true"
+                   [sortBy]="sortKey.name"
+                   [sortOrder]="sortKey.order"
+                   (sortChange)="onSort($event)">
+      <ng-template tdDataTableTemplate="surname" let-row="row" let-value="value">
+        <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
+      </ng-template>
+      <ng-template tdDataTableTemplate="firstname" let-row="row" let-value="value">
+        <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
+      </ng-template>
+      <ng-template tdDataTableTemplate="emailaddress" let-row="row" let-value="value">
+        <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
+      </ng-template>
+      <ng-template tdDataTableTemplate="contactname" let-row="row" let-value="value">
+        <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
+      </ng-template>
+    </td-data-table>
+    <td-paging-bar #pagingBar (change)="onPage($event)"
+                   [initialPage]="page"
+                   [pageSize]="pageSize"
+                   [total]="result.count">
+      <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
+      <span>Borrowers {{pagingBar.range}}</span>
+      <span hide-xs> of {{pagingBar.total}}</span>
+    </td-paging-bar>
+  </div>
 </mat-card>
