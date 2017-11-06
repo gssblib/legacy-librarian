@@ -22,4 +22,11 @@ export class BorrowerProfileEditComponent {
   ngOnInit(): void {
     this.borrowersService.getBorrowerFields().subscribe(fields => this.fields = fields);
   }
+
+  submit(borrower) {
+    this.borrowersService.saveBorrower(this.borrower).subscribe(
+      value => { console.log("saved borrower"); },
+      error => { console.log("error saving borrower: " + error)}
+    );
+  }
 }
