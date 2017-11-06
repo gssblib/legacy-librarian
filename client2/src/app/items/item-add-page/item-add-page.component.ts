@@ -3,6 +3,7 @@ import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ItemsService } from "../shared/items.service";
+import { Item } from "../shared/item";
 
 @Component({
   selector: 'gsl-item-add-page',
@@ -22,7 +23,7 @@ export class ItemAddPageComponent implements OnInit {
     this.itemsService.getItemFields().subscribe(fields => this.fields = fields);
   }
 
-  submit(item) {
+  submitForm(item) {
     this.itemsService.addItem(item).subscribe(
       value => {
         this.router.navigate(['/items', value.barcode]);

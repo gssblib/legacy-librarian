@@ -2,7 +2,7 @@
   <h1>
     Add Item
   </h1>
-  <form [formGroup]="form" (ngSubmit)="submit(item)">
+  <form [formGroup]="form" (ngSubmit)="submitForm(item)">
     <div class="fields">
       <formly-form [model]="item" [fields]="fields">
       </formly-form>
