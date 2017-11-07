@@ -19,3 +19,7 @@
 .active {
   background: #f5f5f5;
 }
+
+mat-icon {
+  padding-right: 0.5em;
+}
