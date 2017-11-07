@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
+import {
+  ITdDataTableColumn,
+} from "@covalent/core";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 import { ErrorService } from "../../core/error-service";
@@ -12,11 +15,21 @@ import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.
 })
 export class ReturnPageComponent implements OnInit {
   returnedItems: Item[] = [];
-
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
-  constructor(private itemsService: ItemsService, private errorService: ErrorService) {}
+  columns: ITdDataTableColumn[] = [
+    {name: 'barcode', label: 'Barcode'},
+    {name: 'title', label: 'Title'}
+    {name: 'author', label: 'Author'}
+    {name: 'subject', label: 'Subject'}
+    {name: 'description', label: 'Description'}
+  ]
+
+  constructor(
+    private itemsService: ItemsService,
+    private errorService: ErrorService
+  ) {}
 
   ngOnInit() {
   }
@@ -31,6 +44,8 @@ export class ReturnPageComponent implements OnInit {
   private onSuccess(item: Item) {
     this.returnedItems.push(item);
     this.barcode.barcode = '';
+    this.returnedItems = Array.from(this.returnedItems);
+    console.log(this.returnedItems);
   }
 
   private onError(barcode: string, error: RpcError) {

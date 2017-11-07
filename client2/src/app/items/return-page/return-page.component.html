@@ -1,14 +1,24 @@
 <mat-card>
   <gsl-barcode-field icon="check" (barcodeSubmit)="returnItem($event)" #barcode>
   </gsl-barcode-field>
-
-  <div *ngIf="returnedItems">
-    <table>
-      <tr *ngFor="let item of returnedItems">
-        <td>{{item.barcode}}</td>
-        <td>{{item.title}}</td>
-      </tr>
-    </table>
-  </div>
+  <h3>
+    <button mat-fab color="accent">
+      <b>{{ returnedItems.length }}</b>
+    </button>
+    items returned
+  </h3>
+  <td-data-table [data]="returnedItems"
+                 [columns]="columns">
+    <ng-template tdDataTableTemplate="barcode" let-row="row" let-value="value">
+      <a [routerLink]="'items/'+row.barcode">
+        {{ value }}
+      </a>
+    </ng-template>
+    <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
+      <a [routerLink]="'items/'+row.barcode">
+        {{ value }}
+      </a>
+    </ng-template>
+  </td-data-table>
 </mat-card>
 
