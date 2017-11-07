@@ -1,0 +1,38 @@
+<div>
+  <form [formGroup]="form" (ngSubmit)="updateReport(criteria)">
+    <div class="fields">
+      <formly-form [model]="criteria" [fields]="criteriaFields">
+      </formly-form>
+    </div>
+    <div class="actions">
+      <button type="submit" mat-raised-button color="primary">Update Report</button>
+    </div>
+  </form>
+  <div *ngIf="result">
+    <td-data-table *ngIf="result"
+                   [data]="result"
+                   [columns]="columns"
+                   [sortable]="true"
+                   [sortBy]="sortKey.name"
+                   [sortOrder]="sortKey.order"
+                   (sortChange)="onSort($event)">
+      <ng-template tdDataTableTemplate="barcode" let-value="value">
+        <a [routerLink]="'/items/'+value">{{value}}</a>
+      </ng-template>
+      <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
+        <a [routerLink]="'/items/'+row.barcode">{{value}}</a>
+      </ng-template>
+      <ng-template tdDataTableTemplate="author" let-row="row" let-value="value">
+        <a routerLink="/items" [queryParams]="{author: value}">{{value}}</a>
+      </ng-template>
+    </td-data-table>
+    <td-paging-bar #pagingBar (change)="onPage($event)"
+                   [initialPage]="page"
+                   [pageSize]="pageSize"
+                   [total]="total">
+      <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
+      <span>Items {{pagingBar.range}}</span>
+      <span hide-xs> of {{pagingBar.total}}</span>
+    </td-paging-bar>
+  </div>
+</div>

@@ -24,6 +24,7 @@ import { BorrowersModule } from './borrowers/borrowers.module';
 import { HttpClientModule } from "@angular/common/http";
 import { AppSearchBarComponent } from './app-search-bar/app-search-bar.component';
 import { FeesModule } from './fees/fees.module';
+import { ReportsModule } from './reports/reports.module';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { FeesModule } from './fees/fees.module';
     ItemsModule,
     BorrowersModule,
     FeesModule,
+    ReportsModule,
     AppRoutingModule,
     MatButtonModule,
     MatCardModule,
