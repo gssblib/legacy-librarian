@@ -20,10 +20,10 @@ export class ReturnPageComponent implements OnInit {
 
   columns: ITdDataTableColumn[] = [
     {name: 'barcode', label: 'Barcode'},
-    {name: 'title', label: 'Title'}
-    {name: 'author', label: 'Author'}
-    {name: 'subject', label: 'Subject'}
-    {name: 'description', label: 'Description'}
+    {name: 'title', label: 'Title'},
+    {name: 'author', label: 'Author'},
+    {name: 'subject', label: 'Subject'},
+    {name: 'description', label: 'Description'},
   ]
 
   constructor(

@@ -11,11 +11,8 @@ export class ReportsPageComponent implements OnInit {
     { link: 'item-usage', label: 'Item Usage'},
   ];
 
-  constructor(
-    private route: ActivatedRoute,
-  ) { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
   }
-
 }
