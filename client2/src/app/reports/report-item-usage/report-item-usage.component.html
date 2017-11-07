@@ -1,4 +1,8 @@
 <div>
+  <p>
+    This report shows the items which have not been checked out since the
+    given date.
+  </p>
   <form [formGroup]="form" (ngSubmit)="updateReport(criteria)">
     <div class="fields">
       <formly-form [model]="criteria" [fields]="criteriaFields">
@@ -9,6 +13,10 @@
     </div>
   </form>
   <div *ngIf="result">
+    <p>
+      Items found: <b>{{ total }}</b>
+    </p>
+    <a mat-raised-button color="basic" (click)="downloadCsv()">CSV</a>
     <td-data-table *ngIf="result"
                    [data]="result"
                    [columns]="columns"

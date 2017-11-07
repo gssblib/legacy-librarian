@@ -8,6 +8,7 @@ import {
   TdDataTableSortingOrder,
   TdPagingBarComponent,
 } from "@covalent/core";
+import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 import { SortKey } from "../../core/sort-key";
 import { RpcService } from "../../core/rpc.service";
 import { ItemState } from "../../items/shared/item-state";
@@ -104,4 +105,14 @@ export class ReportItemUsageComponent implements OnInit {
     );
   }
 
+  downloadCsv() {
+    new Angular2Csv(
+      this.data, 'item_usage_report.csv',
+      {
+        showTitle: true,
+        showLabels: true,
+        title: 'Item Usage Report',
+      }
+    );
+  }
 }
