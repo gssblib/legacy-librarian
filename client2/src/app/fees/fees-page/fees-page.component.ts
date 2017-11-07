@@ -26,9 +26,6 @@ export class FeesPageComponent implements OnInit {
 
   /** Meta-data for the fees table. */
   columns: ITdDataTableColumn[] = [
-    {name: 'borrowernumber',
-     label: 'Borrower #',
-     width: 100},
     {name: 'surname',
      label: 'Borrower Name',
      sortable: true},

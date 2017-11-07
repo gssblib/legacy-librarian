@@ -4,4 +4,5 @@ export class Borrower {
   surname: string;
   contactname: string;
   items: any;
+  fees: any;
 }

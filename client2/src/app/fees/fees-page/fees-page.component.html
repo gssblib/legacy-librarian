@@ -23,7 +23,9 @@
                  [sortOrder]="sortKey.order"
                  (sortChange)="onSort($event)">
     <ng-template tdDataTableTemplate="surname" let-row="row" let-value="value">
-      {{ row.surname }}, {{ row.contactname }}
+      <a [routerLink]="'/borrowers/'+row.borrowernumber+'/checkouts'">
+        {{ row.surname }}, {{ row.contactname }}
+      </a>
     </ng-template>
   </td-data-table>
 

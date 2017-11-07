@@ -1,3 +1,48 @@
-<p>
-  borrower-fees works!
-</p>
+<div *ngIf="borrower">
+  <br />
+
+  <p *ngIf="borrower.fees.total == 0">
+    No fees due.
+  </p>
+
+  <div *ngIf="borrower.fees.total > 0">
+    <form name="fineForm" class="form-inline" (ngSubmit)="payAllFees()">
+      <button type="submit" mat-raised-button color="primary">
+        Pay All Fees
+      </button>
+      <span class="fee">Late fees of {{ borrower.fees.total | currency }}
+        are due for the following {{ items.length }} items:
+      </span>
+    </form>
+
+    <td-data-table [data]="items"
+                   [columns]="columns"
+                   [sortable]="true"
+                   [sortBy]="sortKey.name"
+                   [sortOrder]="sortKey.order"
+                   (sortChange)="onSort($event)">
+      <ng-template tdDataTableTemplate="barcode" let-row="row" let-value="value">
+        <a [routerLink]="'/items/'+value">
+          {{ value }}
+        </a>
+      </ng-template>
+      <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
+        <a [routerLink]="'/items/'+row.barcode">
+          {{ value }}
+        </a>
+      </ng-template>
+      <ng-template tdDataTableTemplate="fine" let-row="row" let-value="value">
+        {{ row.fine_due - row.fine_paid | currency }}
+      </ng-template>
+      <ng-template tdDataTableTemplate="actions" let-row="row">
+        <button type="submit" mat-raised-button color="basic" (click)="payFee(row)">
+          Pay Fee
+        </button>
+        <button type="submit" mat-raised-button color="basic" (click)="waiveFee(row)">
+          Waive Fee
+        </button>
+      </ng-template>
+    </td-data-table>
+
+  </div>
+</div>
