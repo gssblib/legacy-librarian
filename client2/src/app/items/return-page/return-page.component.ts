@@ -49,7 +49,6 @@ export class ReturnPageComponent implements OnInit {
   }
 
   private onError(barcode: string, error: RpcError) {
-    console.log(error);
     this.errorService.showError(this.toErrorMessage(barcode, error));
     this.barcode.barcode = '';
     return null;
