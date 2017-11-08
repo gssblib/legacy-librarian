@@ -74,6 +74,17 @@ export class RpcService {
   }
 
   /**
+   * Sends a DELETE request to the API server.
+   *
+   * @param path Path relative to the API path.
+   * @param body DELETE payload
+   * @returns {Observable<Object>} JSON result observable
+   */
+  httpDelete(path: string, body?: any): Observable<Object> {
+    return this.handleHttpResult(this.http.delete(this.config.apiPath(path), body));
+  }
+
+  /**
    * Fetches entities via HTTP GET.
    *
    * @param path Path of the entities relative to the API path, e.g., '/items'.
