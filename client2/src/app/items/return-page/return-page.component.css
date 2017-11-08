@@ -6,3 +6,7 @@ a {
 /deep/ tbody .td-data-table-row:hover {
   background-color: #eee;
 }
+
+.number-returned {
+  font-size: 120%;
+}
