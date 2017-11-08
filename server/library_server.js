@@ -21,7 +21,8 @@ const config = require('config'),
       library = require('./library').create(db),
       auth = require('./auth')(db),
       server = express(),
-      httpcall = require('./httpcall')(server, api_prefix);
+      httpcall = require('./httpcall')(server, api_prefix),
+      multer = require('multer');
 
 server.use(logger('combined', {
   stream: fs.createWriteStream(__dirname + '/requests.log', {flags: 'a'})}));
@@ -37,15 +38,19 @@ server.use(require('express-session')({
 // Serve the client web application as static content.
 server.use(express.static(__dirname + '/../client/app'));
 
+var upload = multer();
+
 httpcall.handlePaths([
   { get: '/borrowers/fees',
     fn: function (call) {
       return library.borrowers.allFees();
-    }},
+    }
+  },
   { post: '/history/:id/payFee',
     fn: function (call) {
       return library.history.payFee(call.param('id'));
-    }},
+    }
+  },
   { post: '/checkouts/:barcode/payFee',
     fn: function (call) {
       return library.checkouts.payFee(call.param('barcode'));
@@ -54,14 +59,49 @@ httpcall.handlePaths([
     fn: function (call) {
       return library.checkouts.updateFees(call.req.body.date);
     },
-    action: {resource: 'checkouts', operation: 'update'
-    }},
+    action: {resource: 'checkouts', operation: 'update'}
+  },
   { get: '/reports/itemUsage',
     fn: function (call) {
         return library.reports.getItemUsage(call.req.query);
     },
-    action: {resource: 'reports', operation: 'read'
-    }}
+    action: {resource: 'reports', operation: 'read'}
+  },
+  { get: '/items/:key/cover',
+    fn: function (call) {
+      var img_path = config['resources']['covers'] +
+            '/' + call.param('key') + '.jpg';
+      if (!fs.existsSync(img_path)) {
+        return Q(call.res.status(404).send('Not found'));
+      }
+      var img = fs.readFileSync(img_path, {'encoding': null});
+      call.res.writeHead(200, {'Content-Type': 'image/jpg'});
+      call.res.end(img, 'binary');
+      return Q();
+    },
+    action: {resource: 'items', operation: 'read'}
+  },
+  { post: '/items/:key/cover',
+    fn: function (call) {
+      var img_path = config['resources']['covers'] +
+            '/' + call.param('key') + '.jpg';
+      fs.writeFileSync(img_path, call.req.files['file'][0].buffer);
+      return Q('{"status": "Ok"}');
+    },
+    middleware: upload.fields([{name: 'file'}]),
+    action: {resource: 'items', operation: 'update'}
+  },
+  { delete: '/items/:key/cover',
+    fn: function (call) {
+      var img_path = config['resources']['covers'] +
+            '/' + call.param('key') + '.jpg';
+      if (fs.existsSync(img_path)) {
+        fs.unlinkSync(img_path);
+      }
+      return Q('{"status": "Ok"}');
+    },
+    action: {resource: 'items', operation: 'update'}
+  }
 ]);
 
 
