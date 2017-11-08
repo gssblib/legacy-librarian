@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ItemQuery } from "../shared/item-query";
-import { Router } from "@angular/router";
 
 @Component({
   selector: 'gsl-item-search-form',
@@ -14,7 +13,7 @@ export class ItemSearchFormComponent implements OnInit {
   @Output()
   search: EventEmitter<ItemQuery> = new EventEmitter();
 
-  constructor(private router: Router) { }
+  constructor() { }
 
   ngOnInit() {
   }
@@ -34,7 +33,4 @@ export class ItemSearchFormComponent implements OnInit {
     return criteria;
   }
 
-  addItem(event) {
-    this.router.navigate(['/items/add']);
-  }
 }
