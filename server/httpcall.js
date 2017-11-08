@@ -122,12 +122,15 @@ module.exports = function(server, api_prefix) {
   }
 
   function handlePath(handler) {
+    var mw = (handler.middleware !== undefined) ? handler.middleware : function() {};
     if (handler.get) {
       server.get(api_prefix + handler.get, httpHandler(handler));
     } else if (handler.put) {
       server.put(api_prefix + handler.put, httpHandler(handler));
     } else if (handler.post) {
-      server.post(api_prefix + handler.post, httpHandler(handler));
+      server.post(api_prefix + handler.post, mw, httpHandler(handler));
+    } else if (handler.delete) {
+      server.delete(api_prefix + handler.delete, httpHandler(handler));
     }
   }
 
