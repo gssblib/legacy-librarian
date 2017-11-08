@@ -1,6 +1,15 @@
 <mat-card>
-  <gsl-borrower-search-form [criteria]="criteria" (search)="onSearch($event)">
-  </gsl-borrower-search-form>
+  <div class="containerX">
+    <div [fxFlex]="grow">
+      <gsl-borrower-search-form [criteria]="criteria" (search)="onSearch($event)">
+      </gsl-borrower-search-form>
+    </div>
+    <div>
+      <a mat-fab style="float: right" routerLink="add">
+        <mat-icon>add</mat-icon>
+      </a>
+    </div>
+  </div>
   <div *ngIf="result">
     <td-data-table *ngIf="result"
                    [data]="result.rows"

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from "@angular/flex-layout";
 import { BorrowerPageComponent } from './borrower-page/borrower-page.component';
 import { BorrowerSearchPageComponent } from './borrower-search-page/borrower-search-page.component';
 import { BorrowersRoutingModule } from './borrowers-routing.module';
@@ -37,6 +38,7 @@ import { BorrowerStatusComponent } from './borrower-status/borrower-status.compo
 @NgModule({
   imports: [
     CommonModule,
+    FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
