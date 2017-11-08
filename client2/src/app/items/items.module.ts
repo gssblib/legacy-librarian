@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { CommonModule, NgPlural } from "@angular/common";
+import { FlexLayoutModule } from "@angular/flex-layout";
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -33,6 +34,7 @@ import { ItemHistoryComponent } from './item-history/item-history.component';
 import { ItemLabelsComponent } from './item-labels/item-labels.component';
 import { ItemStatusComponent } from './item-status/item-status.component';
 import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -42,8 +44,10 @@ import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
  */
 @NgModule({
   imports: [
+    FileUploadModule,
     CommonModule,
     FormsModule,
+    FlexLayoutModule,
     ReactiveFormsModule,
     CovalentDataTableModule,
     CovalentPagingModule,

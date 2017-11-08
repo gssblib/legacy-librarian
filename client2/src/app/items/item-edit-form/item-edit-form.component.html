@@ -1,9 +1,34 @@
-<form [formGroup]="form" (ngSubmit)="submit(item)">
-  <div class="fields">
-    <formly-form [model]="item" [fields]="fields">
-    </formly-form>
+ <div class="containerX" fxLayoutGap="30px">
+  <div [fxFlex]="calc3Cols" class="col3 form">
+
+    <form [formGroup]="form" (ngSubmit)="submit(item)">
+      <div class="fields">
+        <formly-form [model]="item" [fields]="fields">
+        </formly-form>
+      </div>
+      <div class="actions">
+        <button type="submit" mat-raised-button color="primary">Submit</button>
+      </div>
+    </form>
+
   </div>
-  <div class="actions">
-    <button type="submit" mat-raised-button color="primary">Submit</button>
+  <div class="cover">
+    <div ng2FileDrop
+         [ngClass]="{'file-over': hasDropZoneOver}"
+         (fileOver)="fileOver($event)"
+         [uploader]="uploader"
+         class="cover-drop-zone">
+
+      <img *ngIf="hasCover"
+           [src]="coverUrlShown"
+           (error)="handleMissingImage()" />
+
+      <div *ngIf="!hasCover" class="missing-cover-image">
+        <mat-icon>broken_image</mat-icon>
+      </div>
+    </div>
+    <div [hidden]="!hasCover" class="cover-image-actions">
+      <a mat-raised-button color="primary" (click)="deleteCover()">Delete Cover</a>
+    </div>
   </div>
-</form>
+</div>
