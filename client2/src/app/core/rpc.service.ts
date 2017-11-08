@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from "rxjs";
 import 'rxjs/add/operator/catch';
 import { ConfigService } from "./config.service";
@@ -126,12 +127,11 @@ export class RpcService {
   /**
    * Handles an HTTP error response.
    */
-  private handleError(response: Response) {
-    console.log("error response: ", response);
+  private handleError(response: HttpErrorResponse) {
     return Observable.throw(this.toRpcError(response));
   }
 
-  private toRpcError(response: Response) {
+  private toRpcError(response: HttpErrorResponse) {
     const error = response.error;
     return new RpcError(response.status, error.code, "" + error);
   }
