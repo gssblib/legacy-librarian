@@ -15,6 +15,7 @@ import {
 } from '@angular/material';
 import { FormlyModule } from "@ngx-formly/core";
 import { FormlyMaterialModule } from "@ngx-formly/material";
+import { FileUploadModule } from 'ng2-file-upload';
 import { ItemComponent } from "./item/item.component";
 import { ItemService } from "./shared/item.service";
 import { ItemsService } from "./shared/items.service";
@@ -36,7 +37,6 @@ import { ItemHistoryComponent } from './item-history/item-history.component';
 import { ItemLabelsComponent } from './item-labels/item-labels.component';
 import { ItemStatusComponent } from './item-status/item-status.component';
 import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
-import { FileUploadModule } from 'ng2-file-upload';
 import { ItemEditCoverComponent } from './item-edit-cover/item-edit-cover.component';
 
 /**
