@@ -85,6 +85,10 @@ export class ItemsService {
       .map(obj => Object.assign(new Item(), obj));
   }
 
+  deleteCover(item) {
+    return this.rpc.httpDelete(`items/${item.barcode}/cover`);
+  }
+
   getLabelCategories(item): Observable<any> {
     return this.rpc.labelsHttpGet(item.barcode + '/categories')
       .map(obj => obj.categories);
