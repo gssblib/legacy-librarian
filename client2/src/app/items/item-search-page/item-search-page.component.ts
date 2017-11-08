@@ -49,8 +49,8 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
     {name: 'barcode', label: 'Barcode', width: 100, sortable: true},
     {name: 'status', label: 'Status', width: 100, format: value => ItemState[value]},
     {name: 'title', label: 'Title', sortable: true},
-    {name: 'author', label: 'Author', width: 250, sortable: true},
-    {name: 'subject', label: 'Subject', width: 100, sortable: true},
+    {name: 'author', label: 'Author', width: 220, sortable: true},
+    {name: 'subject', label: 'Subject', width: 180, sortable: true},
     {name: 'description', label: 'Description', width: 100, sortable: true},
   ];
 
