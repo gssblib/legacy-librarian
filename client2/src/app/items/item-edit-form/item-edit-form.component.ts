@@ -10,7 +10,7 @@ class CoverUploader extends FileUploader {
 
   public onSuccessItem(item:any, response:any, status:any, headers:any):any {
     // Force image reload.
-    this.form.coverUrlShown = this.form.coverUrl + '?random=' + Math.random());
+    this.form.coverUrlShown = this.form.coverUrl + '?random=' + Math.random();
     this.form.hasCover = true;
     return {item, response, status, headers};
   }
@@ -27,7 +27,8 @@ export class ItemEditFormComponent implements OnInit {
   item = null;
   hasCover:boolean = true;
   fields: Array<FormlyFieldConfig> = [];
-  coverUrl:string;
+  coverUrl: string;
+  coverUrlShown: string;
 
   public uploader:CoverUploader;
   public hasDropZoneOver:boolean = false;
