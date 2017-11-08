@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import {
-  ITdDataTableColumn,
-} from "@covalent/core";
+import { Observable } from 'rxjs/Observable';
+import { ITdDataTableColumn } from "@covalent/core";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 import { ErrorService } from "../../core/error-service";
@@ -51,7 +50,8 @@ export class ReturnPageComponent implements OnInit {
   private onError(barcode: string, error: RpcError) {
     this.errorService.showError(this.toErrorMessage(barcode, error));
     this.barcode.barcode = '';
-    return null;
+    // Resolve the error.
+    return Observable.create(() => {});
   }
 
   private toErrorMessage(barcode: string, error: RpcError) {
