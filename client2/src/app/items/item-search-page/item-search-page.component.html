@@ -26,6 +26,7 @@
       </ng-template>
       <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
         <a [routerLink]="row.barcode+'/details'">{{value}}</a>
+        <gsl-item-antolin [antolin]="row.antolin"></gsl-item-antolin>
       </ng-template>
       <ng-template tdDataTableTemplate="author" let-row="row" let-value="value">
         <a routerLink="/items" [queryParams]="{author: value}">{{value}}</a>
