@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 import { Borrower } from "../shared/borrower";
 import { BorrowersService } from "../shared/borrowers.service";
 import { ActivatedRoute } from "@angular/router";
@@ -21,9 +22,11 @@ export class BorrowerPageComponent implements OnInit {
 
   borrower: Borrower;
 
-  constructor(private borrowersService: BorrowersService,
-              private borrowerService: BorrowerService,
-              private route: ActivatedRoute) {
+  constructor(
+    private currencyPipe: CurrencyPipe,
+    private borrowersService: BorrowersService,
+    private borrowerService: BorrowerService,
+    private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -33,5 +36,8 @@ export class BorrowerPageComponent implements OnInit {
   private setBorrower(borrower: Borrower) {
     this.borrower = borrower;
     this.borrowerService.borrower = borrower;
+    // Update the fee tab title tot reflect the total fee amount due.
+    var fees = this.currencyPipe.transform(borrower.fees.total);
+    this.navLinks[1]['label'] = `Fees (${fees})`;
   }
 }
