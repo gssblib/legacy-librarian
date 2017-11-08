@@ -1,5 +1,7 @@
 bs4
+captcha-solver
 fuzzywuzzy
+lxml
 requests
 pymysql
 python-Levenshtein
