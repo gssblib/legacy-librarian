@@ -1,0 +1,36 @@
+.cover img {
+  max-width: 200px;
+  max-height: 500px;
+}
+
+.missing-cover-image {
+  display: inline-block;
+  padding: 10px 10px 5px 10px;
+  margin: 5x;
+  border: 2px dashed #bbb;
+  border-radius: 20px;
+  text-align: center;
+}
+
+/deep/ .missing-cover-image mat-icon {
+  font-size: 180px;
+  width: 180px;
+  color: #eee;
+  display: inline-block;
+}
+
+.cover-image-actions {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.cover-drop-zone {
+}
+
+.file-over img {
+  opacity: 0.5;
+}
+
+/deep/ .file-over .missing-cover-image mat-icon {
+  opacity: 0.5;
+}

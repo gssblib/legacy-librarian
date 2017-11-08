@@ -35,6 +35,7 @@ import { ItemLabelsComponent } from './item-labels/item-labels.component';
 import { ItemStatusComponent } from './item-status/item-status.component';
 import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { ItemEditCoverComponent } from './item-edit-cover/item-edit-cover.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -81,6 +82,7 @@ import { FileUploadModule } from 'ng2-file-upload';
     ItemLabelsComponent,
     ItemStatusComponent,
     ItemAntolinComponent,
+    ItemEditCoverComponent,
   ],
   providers: [
     ItemsService

@@ -12,23 +12,7 @@
     </form>
 
   </div>
-  <div class="cover">
-    <div ng2FileDrop
-         [ngClass]="{'file-over': hasDropZoneOver}"
-         (fileOver)="fileOver($event)"
-         [uploader]="uploader"
-         class="cover-drop-zone">
-
-      <img *ngIf="hasCover"
-           [src]="coverUrlShown"
-           (error)="handleMissingImage()" />
-
-      <div *ngIf="!hasCover" class="missing-cover-image">
-        <mat-icon>broken_image</mat-icon>
-      </div>
-    </div>
-    <div [hidden]="!hasCover" class="cover-image-actions">
-      <a mat-raised-button color="primary" (click)="deleteCover()">Delete Cover</a>
-    </div>
+  <div>
+    <gsl-item-edit-cover [item]="item"></gsl-item-edit-cover>
   </div>
 </div>
