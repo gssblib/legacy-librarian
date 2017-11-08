@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
+import { ConfigService } from "../../core/config.service";
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
 
@@ -27,17 +28,19 @@ class CoverUploader extends FileUploader {
 })
 export class ItemEditCoverComponent implements OnInit {
   @Input('item') item: Item;
-  hasCover:boolean = true;
-  coverUrl: string;
-  coverUrlShown: string;
+  public hasCover:boolean = true;
+  private coverUrl: string;
+  public coverUrlShown: string;
 
   public uploader: CoverUploader;
   public hasDropZoneOver:boolean = false;
 
-  constructor(private itemsService: ItemsService) { }
+  constructor(
+    private itemsService: ItemsService,
+    private config: ConfigService) { }
 
   ngOnInit() {
-    this.coverUrl = this.coverUrlShown = '/api/items/' + this.item.barcode + '/cover';
+    this.coverUrl = this.coverUrlShown = this.config.apiPath('items/' + this.item.barcode + '/cover');
     this.uploader = new CoverUploader(
       this, {
       url: this.coverUrl,
@@ -48,15 +51,16 @@ export class ItemEditCoverComponent implements OnInit {
     });
   }
 
-
   handleMissingImage() {
     this.hasCover = false;
   }
 
+  /* Hover and Drop state management */
   public fileOver(e:any):void {
     this.hasDropZoneOver = e;
   }
 
+  /* Actions */
   deleteCover() {
     console.log('DELETE');
     this.itemsService.deleteCover(this.item).subscribe(
