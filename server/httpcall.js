@@ -6,6 +6,10 @@ const Q = require('q');
  */
 module.exports = function(server, api_prefix) {
 
+  function nullMiddleware(req, es, next) {
+    next();
+  }
+
   /**
    * Class wrapping a node HTTP request and response and adding some
    * convenience methods.
@@ -122,7 +126,7 @@ module.exports = function(server, api_prefix) {
   }
 
   function handlePath(handler) {
-    var mw = (handler.middleware !== undefined) ? handler.middleware : function() {};
+    var mw = (handler.middleware !== undefined) ? handler.middleware : nullMiddleware;
     if (handler.get) {
       server.get(api_prefix + handler.get, httpHandler(handler));
     } else if (handler.put) {
