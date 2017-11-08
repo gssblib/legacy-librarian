@@ -128,12 +128,11 @@ export class RpcService {
    */
   private handleError(response: Response) {
     console.log("error response: ", response);
-    //this.error.emit({message: errMsg});
     return Observable.throw(this.toRpcError(response));
   }
 
   private toRpcError(response: Response) {
-    const error = response.json();
-    return new RpcError(response.status, "" + error);
+    const error = response.error;
+    return new RpcError(response.status, error.code, "" + error);
   }
 }
