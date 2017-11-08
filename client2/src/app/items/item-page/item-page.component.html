@@ -4,19 +4,15 @@
     <gsl-item-antolin [antolin]="item.antolin"></gsl-item-antolin>
     <gsl-item-status [status]="item.status"></gsl-item-status>
   </h3>
-  <mat-tab-group>
-    <mat-tab label="Details">
-      <br />
-      <gsl-item-edit-form *ngIf="item" [item]="item"></gsl-item-edit-form>
-    </mat-tab>
-    <mat-tab label="History">
-      <br />
-      <gsl-item-history *ngIf="item" [item]="item"></gsl-item-history>
-    </mat-tab>
-    <mat-tab label="Labels">
-      <br />
-      <gsl-item-labels *ngIf="item" [item]="item"></gsl-item-labels>
-    </mat-tab>
-  </mat-tab-group>
+  <nav mat-tab-nav-bar>
+    <a mat-tab-link
+       *ngFor="let link of navLinks"
+       [routerLink]="link.link"
+       routerLinkActive #rla="routerLinkActive"
+       [active]="rla.isActive">{{link.label}}</a>
+  </nav>
+  <div class="tab-body">
+    <router-outlet></router-outlet>
+  </div>
 </mat-card>
 

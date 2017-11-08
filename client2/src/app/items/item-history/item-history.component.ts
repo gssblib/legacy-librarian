@@ -3,6 +3,7 @@ import {
   IPageChangeEvent, ITdDataTableColumn, ITdDataTableSortChangeEvent,
   TdDataTableSortingOrder
 } from "@covalent/core";
+import { ItemService } from "../shared/item.service";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 
@@ -10,7 +11,6 @@ import { Item } from "../shared/item";
   selector: 'gsl-item-history',
   templateUrl: './item-history.component.html',
   styleUrls: ['./item-history.component.css'],
-  inputs: ['item'],
 })
 export class ItemHistoryComponent implements OnInit {
   item: Item;
@@ -24,7 +24,19 @@ export class ItemHistoryComponent implements OnInit {
     { name: 'surname', label: 'Borrower', sortable: true },
   ];
 
-  constructor(private itemsService: ItemsService) { }
+  constructor(
+    private itemService: ItemService,
+    private itemsService: ItemsService) { }
+
+  ngOnInit() {
+    this.item = this.itemService.item;
+    this.itemsService.getItem(this.item.barcode, {options: 'history'})
+      .subscribe(item => {
+        var history = item.history;
+        this.item.history = history;
+      }
+    );
+  }
 
   private toggleOrder(order: TdDataTableSortingOrder) {
     return TdDataTableSortingOrder.Ascending === order
@@ -43,15 +55,6 @@ export class ItemHistoryComponent implements OnInit {
     const sign = this.order == TdDataTableSortingOrder.Descending ? '-' : '';
     this.sortOrder = sign + sortChange.name;
     console.log(this.sortOrder)
-  }
-
-  ngOnInit() {
-    this.itemsService.getItem(this.item.barcode, {options: 'history'})
-      .subscribe(item => {
-        var history = item.history;
-        this.item.history = history;
-      }
-    );
   }
 
 }

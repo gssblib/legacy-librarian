@@ -16,6 +16,7 @@ import {
 import { FormlyModule } from "@ngx-formly/core";
 import { FormlyMaterialModule } from "@ngx-formly/material";
 import { ItemComponent } from "./item/item.component";
+import { ItemService } from "./shared/item.service";
 import { ItemsService } from "./shared/items.service";
 import { ItemPageComponent } from './item-page/item-page.component';
 import { ItemAutoCompleteComponent } from './item-auto-complete/item-auto-complete.component';
@@ -24,6 +25,7 @@ import { ItemSearchFormComponent } from './item-search-form/item-search-form.com
 import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
 import { ItemsTableComponent } from './items-table/items-table.component';
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
+import { ItemResolverService } from './shared/item.resolver.service';
 import { ReturnPageComponent } from './return-page/return-page.component';
 import { ItemsRoutingModule } from "./items-routing.module";
 import { SharedModule } from "../shared/shared.module";
@@ -85,6 +87,8 @@ import { ItemEditCoverComponent } from './item-edit-cover/item-edit-cover.compon
     ItemEditCoverComponent,
   ],
   providers: [
+    ItemResolverService,
+    ItemService,
     ItemsService
   ],
   exports: [

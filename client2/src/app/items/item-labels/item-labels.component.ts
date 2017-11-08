@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ItemsService } from "../shared/items.service";
-import { Item } from "../shared/item";
 import {MatSnackBar} from '@angular/material';
+import { Item } from "../shared/item";
+import { ItemService } from "../shared/item.service";
+import { ItemsService } from "../shared/items.service";
 
 @Component({
   selector: 'gsl-item-labels',
@@ -19,9 +20,13 @@ export class ItemLabelsComponent implements OnInit {
   data: Object;
   previewImage;
 
-  constructor(private snackbar: MatSnackBar, private itemsService: ItemsService) { }
+  constructor(
+    private snackbar: MatSnackBar,
+    private itemService: ItemService,
+    private itemsService: ItemsService) { }
 
   ngOnInit() {
+    this.item = this.itemService.item;
     this.loadCategories(this.item);
   }
 

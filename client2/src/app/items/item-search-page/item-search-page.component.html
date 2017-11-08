@@ -10,13 +10,13 @@
                    [sortOrder]="sortKey.order"
                    (sortChange)="onSort($event)">
       <ng-template tdDataTableTemplate="barcode" let-value="value">
-        <a [routerLink]="value">{{value}}</a>
+        <a [routerLink]="value+'/details'">{{value}}</a>
       </ng-template>
       <ng-template tdDataTableTemplate="status" let-value="value">
         <gsl-item-status [status]="ItemState[value]" size="normal"></gsl-item-status>
       </ng-template>
       <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
-        <a [routerLink]="row.barcode">{{value}}</a>
+        <a [routerLink]="row.barcode+'/details'">{{value}}</a>
       </ng-template>
       <ng-template tdDataTableTemplate="author" let-row="row" let-value="value">
         <a routerLink="/items" [queryParams]="{author: value}">{{value}}</a>

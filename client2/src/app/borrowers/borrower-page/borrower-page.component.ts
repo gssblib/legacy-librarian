@@ -34,17 +34,4 @@ export class BorrowerPageComponent implements OnInit {
     this.borrower = borrower;
     this.borrowerService.borrower = borrower;
   }
-
-  private reloadBorrower() {
-    if (this.borrower) {
-      this.loadBorrower(this.borrower.borrowernumber);
-    }
-  }
-
-  private loadBorrower(id: number) {
-    this.borrowersService.getBorrower(id, {options: 'items,fees'}).subscribe(borrower => {
-      this.borrower = borrower;
-      this.borrowerService.borrower = borrower;
-    });
-  }
 }
