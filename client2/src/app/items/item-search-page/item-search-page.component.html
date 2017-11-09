@@ -1,10 +1,11 @@
 <mat-card>
   <div class="containerX">
     <div [fxFlex]="grow">
-      <gsl-item-search-form [criteria]="criteria" (search)="onSearch($event)">
+      <gsl-item-search-form
+         [criteria]="criteria" [fields]="searchFields" (search)="onSearch($event)">
       </gsl-item-search-form>
     </div>
-    <div>
+    <div class="add">
       <a mat-fab style="float: right" routerLink="add">
         <mat-icon>add</mat-icon>
       </a>

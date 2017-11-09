@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { ItemsService } from "../shared/items.service";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { Item } from "../shared/item";
 import { TableFetchResult } from "../../core/table-fetcher";
@@ -11,6 +10,7 @@ import { ParamsUtil } from "../../core/params-util";
 import { SortKey } from "../../core/sort-key";
 import { Subscription } from "rxjs/Subscription";
 import { ItemState } from "../shared/item-state";
+import { ItemsService } from "../shared/items.service";
 
 /**
  * Item search page with search form and result table.
@@ -26,11 +26,16 @@ import { ItemState } from "../shared/item-state";
 export class ItemSearchPageComponent implements OnInit, OnDestroy {
   ItemState = ItemState;
 
+  searchFields: string[] = ['title', 'author', 'description', 'subject'];
+
   /** Current result being shown in the table. */
   result: TableFetchResult<Item>;
 
   /** Current criteria for the item search. Set from the URL parameters. */
   criteria: Object = {};
+
+  /** Additional criteria to apply before the search is executed. */
+  extraCriteria: Object = {};
 
   /** Current page number. Set from the URL and the pagination bar. */
   page: number = 1;
@@ -59,9 +64,10 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
 
   private routeSubscription: Subscription;
 
-  constructor(private itemsService: ItemsService,
-              private route: ActivatedRoute,
-              private router: Router) {
+  constructor(
+    private itemsService: ItemsService,
+    private route: ActivatedRoute,
+    private router: Router) {
   }
 
   ngOnInit() {
@@ -116,7 +122,7 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
     this.sortKey = params['order']
       ? SortKey.fromString(params['order'])
       : new SortKey('title', 'ASC');
-    this.criteria = p.getValues(['title', 'author']);
+    this.criteria = p.getValues(this.searchFields);
   }
 
   /**
@@ -148,7 +154,8 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
   private reload() {
     const offset = (this.page - 1) * this.pageSize;
     const criteria = Object.assign(
-      {}, this.criteria, {'_order': this.sortKey.toString()});
+      {}, this.criteria, this.extraCriteria, {'_order': this.sortKey.toString()});
+    console.log(criteria);
     this.itemsService.getItems(criteria, offset, this.pageSize, true).subscribe(
       result => {
         this.result = result;
