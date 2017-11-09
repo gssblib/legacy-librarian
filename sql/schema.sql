@@ -59,11 +59,8 @@ CREATE TABLE `items` (
   `issues` int(11) DEFAULT NULL,
   `added` datetime DEFAULT NULL,
   `itemlost` varchar(25) DEFAULT NULL,
-  `antolin` boolean DEFAULT false,
-  `antolin_book_id` int,
-  `antolin_sticker` boolean DEFAULT false,
+  `antolin` int DEFAULT NULL,
   `state` enum('CIRCULATING', 'STORED', 'DELETED', 'LOST') NOT NULL DEFAULT 'CIRCULATING',
-  `cover` blob,
   PRIMARY KEY (`id`),
   UNIQUE KEY `barcode` (`barcode`),
   KEY `barcode_2` (`barcode`)

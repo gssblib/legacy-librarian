@@ -303,8 +303,7 @@ module.exports = {
         { name: 'replacementprice', label: 'Replacement Price' },
         { name: 'issues' },
         { name: 'state', domain: domains.ItemState },
-        { name: 'antolin_sticker', label: 'Has Antolin Sticker',
-          domain: entity.domains.Boolean },
+        { name: 'antolin', label: 'Antolin Book ID' },
         { name: 'isbn10', label: 'ISBN-10' },
         { name: 'isbn13', label: 'ISBN-13' }],
       naturalKey: 'barcode'});
@@ -381,36 +380,6 @@ module.exports = {
           } else {
             return result;
           }
-        })
-        .then(function () {
-          // Try and look up antolin information by ISBN13 or ISBN10.
-          if (result.isbn13) {
-            return antolin.get(result.isbn13).then(
-                function (entry) {
-                  result.antolin = entry;
-                  return result;
-                },
-                function (err) {
-                  if (err.code !== 'ENTITY_NOT_FOUND') {
-                    console.log("antolin lookup failed", err);
-                  }
-                  return result;
-                });
-          } else if (result.isbn10) {
-            return antolin.read({isbn10: result.isbn10}).then(
-                function (data) {
-                  if (data.rows && data.rows.length > 0) {
-                    result.antolin = data.rows[0];
-                  }
-                  return result;
-                },
-                function (err) {
-                  console.log("isbn10 antolin lookup error", err);
-                  return result;
-                });
-          } else {
-            return result;
-          }
         });
     };
 
@@ -418,10 +387,6 @@ module.exports = {
      * Returns promise to result containing items and their checkout status.
      */
     items.read = function (query, op, limit) {
-      /* Seems hacky, but better than other options. */
-      if ('antolin' in query) {
-        query['antolin'] = (query['antolin'] == 'true');
-      }
       var self = this;
       var result;
       return items.constructor.prototype.read.call(self, query, op, limit)
