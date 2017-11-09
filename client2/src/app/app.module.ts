@@ -25,6 +25,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { AppSearchBarComponent } from './app-search-bar/app-search-bar.component';
 import { FeesModule } from './fees/fees.module';
 import { ReportsModule } from './reports/reports.module';
+import { ItemsRoutingModule } from "./items/items-routing.module";
+import { BorrowersRoutingModule } from './borrowers/borrowers-routing.module';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,6 @@ import { ReportsModule } from './reports/reports.module';
     BorrowersModule,
     FeesModule,
     ReportsModule,
-    AppRoutingModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
@@ -53,6 +54,10 @@ import { ReportsModule } from './reports/reports.module';
     MatToolbarModule,
     MatIconModule,
     MatListModule,
+    /* List routers in the right order. */
+    ItemsRoutingModule,
+    BorrowersRoutingModule,
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

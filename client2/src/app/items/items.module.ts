@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule, NgPlural } from "@angular/common";
 import { FlexLayoutModule } from "@angular/flex-layout";
+import { RouterModule } from "@angular/router";
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -28,7 +29,6 @@ import { ItemsTableComponent } from './items-table/items-table.component';
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 import { ItemResolverService } from './shared/item.resolver.service';
 import { ReturnPageComponent } from './return-page/return-page.component';
-import { ItemsRoutingModule } from "./items-routing.module";
 import { SharedModule } from "../shared/shared.module";
 import { ItemSearchPageComponent } from './item-search-page/item-search-page.component';
 import { ItemEditFormComponent } from "./item-edit-form/item-edit-form.component";
@@ -55,7 +55,6 @@ import { ItemCardComponent } from './item-card/item-card.component';
     ReactiveFormsModule,
     CovalentDataTableModule,
     CovalentPagingModule,
-    ItemsRoutingModule,
     SharedModule,
     MatCardModule,
     MatChipsModule,
@@ -69,6 +68,7 @@ import { ItemCardComponent } from './item-card/item-card.component';
     MatButtonModule,
     FormlyModule.forRoot(),
     FormlyMaterialModule,
+    RouterModule,
   ],
   declarations: [
     ItemComponent,
