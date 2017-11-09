@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from "@angular/router";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { BorrowerPageComponent } from './borrower-page/borrower-page.component';
 import { BorrowerSearchPageComponent } from './borrower-search-page/borrower-search-page.component';
-import { BorrowersRoutingModule } from './borrowers-routing.module';
 import { BorrowerCheckoutsComponent } from './borrower-checkouts/borrower-checkouts.component';
 import { BorrowerFeesComponent } from './borrower-fees/borrower-fees.component';
 import { BorrowerHistoryComponent } from './borrower-history/borrower-history.component';
@@ -44,7 +44,6 @@ import { BorrowerStatusComponent } from './borrower-status/borrower-status.compo
     BrowserAnimationsModule,
     CovalentDataTableModule,
     CovalentPagingModule,
-    BorrowersRoutingModule,
     SharedModule,
     MatCardModule,
     MatTabsModule,
@@ -57,6 +56,7 @@ import { BorrowerStatusComponent } from './borrower-status/borrower-status.compo
     MatButtonModule,
     FormlyModule.forRoot(),
     FormlyMaterialModule,
+    RouterModule,
   ],
   declarations: [
     BorrowerPageComponent,
@@ -80,6 +80,7 @@ import { BorrowerStatusComponent } from './borrower-status/borrower-status.compo
   ],
   exports: [
     BorrowerSearchBarComponent,
+    BorrowerCheckoutsTableComponent
   ],
 })
 export class BorrowersModule {
