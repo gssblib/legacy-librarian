@@ -1,0 +1,25 @@
+.flex {
+  flex: 1 1 auto;
+}
+.accesskey {
+  text-decoration: underline;
+}
+.title {
+  padding-left: 0.5em;
+}
+.gssb-logo {
+  padding-top: 8px;
+}
+.sidenav-container {
+  min-height: 20em;
+}
+.content {
+  padding: 1em;
+}
+.active {
+  background: #f5f5f5;
+}
+
+mat-icon {
+  padding-right: 0.5em;
+}

@@ -1,0 +1,29 @@
+<mat-toolbar>
+  <button mat-icon-button (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span class="title">GSSB Library</span>
+  <gsl-app-search-bar></gsl-app-search-bar>
+  <span class="flex"></span>
+  <a href="http://gssb.org/">
+    <img class="gssb-logo" src="/assets/images/gssb_logo_transparent_small.png">
+  </a>
+</mat-toolbar>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" opened="true">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/items" accesskey="i" routerLinkActive="active">
+        <mat-icon>book</mat-icon>
+        <span class="accesskey">I</span>tems
+      </a>
+      <a mat-list-item routerLink="/checkedout" accesskey="c" routerLinkActive="active">
+        <mat-icon>person</mat-icon>
+        <span class="accesskey">C</span>hecked Out
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</mat-sidenav-container>
+

@@ -1,0 +1,11 @@
+<mat-card *ngIf="borrower">
+  <mat-card-title>
+    {{ borrower.surname }}, {{ borrower.firstname }}, {{ borrower.contactname }}
+  </mat-card-title>
+  <div>
+    <gsl-borrower-checkouts-table
+       [checkouts]="borrower.items"
+       [showActions]="false">
+    </gsl-borrower-checkouts-table>
+  </div>
+</mat-card>

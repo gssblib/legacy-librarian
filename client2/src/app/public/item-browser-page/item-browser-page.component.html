@@ -1,0 +1,18 @@
+<mat-card>
+  <gsl-item-search-form [criteria]="criteria" [fields]="searchFields" (search)="onSearch($event)">
+  </gsl-item-search-form>
+
+  <div *ngIf="result">
+    <gsl-item-card *ngFor="let item of result.rows" [item]="item"></gsl-item-card>
+
+    <td-paging-bar #pagingBar (change)="onPage($event)"
+                   [initialPage]="page"
+                   [pageSize]="pageSize"
+                   [total]="result.count">
+      <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
+      <span>Items {{pagingBar.range}}</span>
+      <span hide-xs> of {{pagingBar.total}}</span>
+    </td-paging-bar>
+  </div>
+
+</mat-card>
