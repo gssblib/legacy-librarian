@@ -291,7 +291,7 @@ module.exports = {
       name: 'items',
       columns: [
         { name: 'barcode', domain: domains.Barcode },
-        { name: 'description', domain: domains.ItemDescription },
+        { name: 'description', label: 'Category', domain: domains.ItemDescription },
         { name: 'subject', domain: domains.ItemSubject },
         { name: 'added', label: 'Date Added', internal: true },
         { name: 'itemlost', label: 'Is Item Lost',
@@ -301,7 +301,7 @@ module.exports = {
         { name: 'publicationyear', label: 'Publication Year' },
         { name: 'publishercode', label: 'Publisher Code' },
         { name: 'country', label: 'Publication Country' },
-        { name: 'age', domain: domains.ItemAge },
+        { name: 'age', label: 'Reading Age', domain: domains.ItemAge },
         { name: 'media', domain: domains.MediaType },
         { name: 'serial', label: 'Number in Series' },
         { name: 'seriestitle', label: 'Series Title', queryOp: 'contains' },
