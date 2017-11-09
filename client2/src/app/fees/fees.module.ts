@@ -11,6 +11,7 @@ import { DateValueAccessorModule } from 'angular-date-value-accessor';
 import { FeesService } from "./fees.service";
 import { FeesRoutingModule } from "./fees-routing.module";
 import { FeesPageComponent } from './fees-page/fees-page.component';
+import { FeesTableComponent } from './fees-table/fees-table.component';
 
 /**
  * Angular module for the fees owed to the library.
@@ -33,6 +34,7 @@ import { FeesPageComponent } from './fees-page/fees-page.component';
   ],
   declarations: [
     FeesPageComponent,
+    FeesTableComponent,
   ],
   providers: [
     DatePipe,

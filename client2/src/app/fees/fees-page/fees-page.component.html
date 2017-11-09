@@ -16,17 +16,5 @@
     </span>
   </form>
 
-  <td-data-table [data]="data"
-                 [columns]="columns"
-                 [sortable]="true"
-                 [sortBy]="sortKey.name"
-                 [sortOrder]="sortKey.order"
-                 (sortChange)="onSort($event)">
-    <ng-template tdDataTableTemplate="surname" let-row="row" let-value="value">
-      <a [routerLink]="'/borrowers/'+row.borrowernumber+'/checkouts'">
-        {{ row.surname }}, {{ row.contactname }}
-      </a>
-    </ng-template>
-  </td-data-table>
-
+  <gsl-fees-table></gsl-fees-table>
 </mat-card>

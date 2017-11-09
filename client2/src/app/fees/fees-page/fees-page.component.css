@@ -1,8 +1,1 @@
-a {
-  text-decoration: none;
-  color: inherit;
-}
 
-/deep/ tbody .td-data-table-row:hover {
-  background-color: #eee;
-}
