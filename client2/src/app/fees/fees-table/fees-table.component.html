@@ -1,13 +1,24 @@
-<td-data-table [data]="data"
-               [columns]="columns"
-               [sortable]="true"
-               [sortBy]="sortKey.name"
-               [sortOrder]="sortKey.order"
-               (sortChange)="onSort($event)">
-  <ng-template tdDataTableTemplate="surname" let-row="row" let-value="value">
-    <a [routerLink]="'/borrowers/'+row.borrowernumber+'/checkouts'">
-      {{ row.surname }}, {{ row.contactname }}
-    </a>
-  </ng-template>
-</td-data-table>
-
+<div *ngIf="result">
+  <td-data-table *ngIf="result"
+                 [data]="result.rows"
+                 [columns]="columns"
+                 [sortable]="true"
+                 [sortBy]="sortKey.name"
+                 [sortOrder]="sortKey.order"
+                 (sortChange)="onSort($event)">
+    <ng-template tdDataTableTemplate="surname" let-row="row" let-value="value">
+      <a [routerLink]="'/borrowers/' + row.borrowernumber + '/fees'">{{value}}</a>
+    </ng-template>
+    <ng-template tdDataTableTemplate="fee" let-value="value">
+      {{value | currency}}
+    </ng-template>
+  </td-data-table>
+  <td-paging-bar #pagingBar (change)="onPage($event)"
+                 [initialPage]="page"
+                 [pageSize]="pageSize"
+                 [total]="result.count">
+    <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
+    <span>Items {{pagingBar.range}}</span>
+    <span hide-xs> of {{pagingBar.total}}</span>
+  </td-paging-bar>
+</div>

@@ -239,17 +239,18 @@ module.exports = {
         [newDueDate, borrowerNumber, dvdCheckoutLimit]);
     };
 
+    function feeQuery(table) {
+      return 'select * from (' +
+        'select a.borrowernumber, a.surname, a.contactname, a.firstname, ' +
+        'sum(if(b.fine_paid > b.fine_due, 0, b.fine_due - b.fine_paid)) as fee ' +
+        'from borrowers a join ' + table + ' b on a.borrowernumber = b.borrowernumber ' +
+        'group by a.borrowernumber) fees where fee > 0';
+    }
+
     /**
      * Returns promise of the list of borrowers with fees due.
      */
     borrowers.allFees = function () {
-      function feeQuery(table) {
-        return 'select * from (' +
-          'select a.borrowernumber, a.surname, a.contactname, a.firstname, ' +
-          'sum(if(b.fine_paid > b.fine_due, 0, b.fine_due - b.fine_paid)) as fee ' +
-          'from borrowers a join ' + table + ' b on a.borrowernumber = b.borrowernumber ' +
-          'group by a.borrowernumber) fees where fee > 0';
-      }
       return Q.all([db.selectRows(feeQuery('`out`')),
                     db.selectRows(feeQuery('issue_history'))])
         .then(function (data) {
@@ -273,6 +274,12 @@ module.exports = {
           });
           return Object.keys(borrowers).map(function (key) { return borrowers[key]; });
         });
+    };
+
+    const getFees = function (query, limit) {
+      const sql = 'select * from (' +
+        feeQuery('`out`') + ' union ' + feeQuery('issue_history') + ') fees';
+      return db.selectRows(sql, [], limit, query._order);
     };
 
     const states = [
@@ -585,6 +592,7 @@ module.exports = {
 
     return {
       borrowers: borrowers,
+      getFees: getFees,
       items: items,
       checkouts: checkouts,
       history: history,

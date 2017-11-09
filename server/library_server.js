@@ -41,6 +41,9 @@ server.use(express.static(__dirname + '/../client/app'));
 var upload = multer();
 
 httpcall.handlePaths([
+  { get: '/fees',
+    fn: call => library.getFees(call.req.query, call.limit())
+  },
   { get: '/borrowers/fees',
     fn: function (call) {
       return library.borrowers.allFees();
