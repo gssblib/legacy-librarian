@@ -99,6 +99,12 @@ import { ItemCardComponent } from './item-card/item-card.component';
     ItemSearchBarComponent,
     ItemPageComponent,
     ItemsTableComponent,
+    ItemSearchFormComponent,
+    ItemEditCoverComponent,
+    ItemStatusComponent,
+    ItemAntolinComponent,
+    ItemCardComponent,
+    ItemSearchPageComponent,
   ]
 })
 export class ItemsModule { }
