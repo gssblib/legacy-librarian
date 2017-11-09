@@ -1,24 +1,14 @@
-<form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
-  <mat-form-field>
-    <input name="title" [(ngModel)]="criteria.title" matInput autofocus
-           placeholder="Title" autocomplete="off">
-  </mat-form-field>
-  <mat-form-field>
-    <input name="author" [(ngModel)]="criteria.author" matInput
-           placeholder="Author" autocomplete="off">
-  </mat-form-field>
-  <mat-form-field>
-    <input name="series" [(ngModel)]="criteria.series" matInput
-           placeholder="Series Title" autocomplete="off">
-  </mat-form-field>
-  <mat-form-field>
-    <input name="subject" [(ngModel)]="criteria.subject" matInput
-           placeholder="Subject" autocomplete="off">
-  </mat-form-field>
+<form #f="ngForm" (ngSubmit)="onSubmit(criteria)" class="containerX">
+  <div class="fields" [fxFlex]="grow">
+    <formly-form [model]="criteria" [fields]="fields" [ngClass]="'width'+fields.length">
+    </formly-form>
+  </div>
   <span class="actions">
+    <button mat-mini-fab (click)="onReset()">
+      <mat-icon>close</mat-icon>
+    </button>
     <button mat-fab>
       <mat-icon>search</mat-icon>
     </button>
   </span>
 </form>
-
