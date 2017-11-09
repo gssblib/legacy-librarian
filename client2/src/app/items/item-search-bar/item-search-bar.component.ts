@@ -14,6 +14,6 @@ export class ItemSearchBarComponent implements OnInit {
   }
 
   showItem(item) {
-    this.router.navigate(['/items', item.barcode]);
+    this.router.navigate(['/items', item.barcode, 'details']);
   }
 }
