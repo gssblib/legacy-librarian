@@ -38,6 +38,7 @@ import { ItemLabelsComponent } from './item-labels/item-labels.component';
 import { ItemStatusComponent } from './item-status/item-status.component';
 import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
 import { ItemEditCoverComponent } from './item-edit-cover/item-edit-cover.component';
+import { ItemCardComponent } from './item-card/item-card.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -85,11 +86,12 @@ import { ItemEditCoverComponent } from './item-edit-cover/item-edit-cover.compon
     ItemStatusComponent,
     ItemAntolinComponent,
     ItemEditCoverComponent,
+    ItemCardComponent,
   ],
   providers: [
     ItemResolverService,
     ItemService,
-    ItemsService
+    ItemsService,
   ],
   exports: [
     ItemComponent,
