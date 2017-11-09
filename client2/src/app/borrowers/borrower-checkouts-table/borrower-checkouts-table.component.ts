@@ -10,7 +10,9 @@ import { ItemsService } from '../../items/shared/items.service';
   templateUrl: './borrower-checkouts-table.component.html',
   styleUrls: ['./borrower-checkouts-table.component.css']
 })
-export class BorrowerCheckoutsTableComponent {
+export class BorrowerCheckoutsTableComponent implements OnInit {
+  @Input()
+  showActions: boolean = true;
 
   /** Checkout data set as input. */
   data: any[] = [];
@@ -47,6 +49,12 @@ export class BorrowerCheckoutsTableComponent {
     this.sortBy = event.name;
     this.sortOrder = event.order;
     this.updateRows();
+  }
+
+  ngOnInit() {
+    if (!this.showActions) {
+      this.columns.pop()
+    }
   }
 
   private prepareCheckout(checkout: any): any {
