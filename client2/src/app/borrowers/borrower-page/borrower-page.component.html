@@ -6,7 +6,10 @@
   <nav mat-tab-nav-bar>
     <a mat-tab-link
        *ngFor="let link of navLinks"
-       [routerLink]="link.link" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">{{link.label}}</a>
+       [ngClass]="link['class']"
+       [routerLink]="link.link"
+       routerLinkActive #rla="routerLinkActive"
+       [active]="rla.isActive">{{link.label}}</a>
   </nav>
   <router-outlet></router-outlet>
 </mat-card>

@@ -39,5 +39,9 @@ export class BorrowerPageComponent implements OnInit {
     // Update the fee tab title tot reflect the total fee amount due.
     var fees = this.currencyPipe.transform(borrower.fees.total);
     this.navLinks[1]['label'] = `Fees (${fees})`;
+    delete this.navLinks[1]['class']
+    if (borrower.fees.total > 3.0) {
+      this.navLinks[1]['class'] = 'warn';
+    }
   }
 }
