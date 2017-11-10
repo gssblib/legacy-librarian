@@ -35,7 +35,6 @@ export class ItemSearchFormComponent implements OnInit {
   }
 
   onSubmit(query) {
-    console.log('query: ' + JSON.stringify(query));
     this.search.emit(this.toCriteria(query));
   }
 
