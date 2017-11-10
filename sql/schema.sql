@@ -14,6 +14,7 @@ CREATE TABLE `borrowers` (
   `contactname` text,
   `debarred` int(11) DEFAULT NULL,
   `state` enum('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+  `sycamoreid` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `borrowernumber` (`borrowernumber`),
   UNIQUE KEY `cardnumber` (`cardnumber`),

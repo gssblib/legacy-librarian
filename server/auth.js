@@ -3,6 +3,7 @@
  */
 const config = require('config'),
       crypto = require('crypto'),
+      http = require('request-promise'),
       Q = require('q');
 
 var crud = ['create', 'read', 'update', 'delete'];
@@ -90,11 +91,47 @@ module.exports = function (db) {
       });
   }
 
+  function authenticateSycamore(user, password) {
+    var options = {
+      method: 'POST',
+      uri: config['sycamore-auth']['url'],
+      form: {
+        'entered_schid' : config['sycamore-auth']['school-id'],
+        'entered_login': user,
+        'entered_password': password
+      },
+      headers: {
+      }
+    };
+    return http(options)
+      .then(function (body) {
+        if (body.indexOf(config['sycamore-auth']['success-text']) >= 0) {
+          return db.selectRow('select * from borrowers where sycamoreid = ?', user, true)
+            .then(function(borrower) {
+              return {
+                authenticated: true,
+                user: {
+                  'id': borrower.borrowernumber,
+                  'user': user,
+                  'surname': borrower.surname
+                }
+              };
+            });
+        } else {
+          return {
+            authenticated: false,
+            message: 'Authentication failed.'
+          };
+        }
+      });
+  }
+
   function logout() {
     return Q(true);
   }
 
   return {
+    authenticateSycamore: authenticateSycamore,
     authenticate: authenticate,
     logout: logout,
     hashPassword: saltedHash

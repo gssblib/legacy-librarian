@@ -22,6 +22,8 @@ const config = require('config'),
       auth = require('./auth')(db),
       server = express(),
       httpcall = require('./httpcall')(server, api_prefix),
+      jwt = require('jsonwebtoken'),
+      expressJwt = require('express-jwt'),
       multer = require('multer');
 
 server.use(logger('combined', {
@@ -39,6 +41,12 @@ server.use(require('express-session')({
 server.use(express.static(__dirname + '/../client/app'));
 
 var upload = multer();
+
+// Middleware that authentication JWT requests.
+var jwtAuthentication = expressJwt(
+  {secret: config['jwt']['secret'],
+   credentialsRequired: true});
+
 
 httpcall.handlePaths([
   { get: '/fees',
@@ -139,6 +147,46 @@ httpcall.handlePaths([
 httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew']);
 httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
 httpcall.handleEntity(library.antolin);
+
+
+/* Public App Routes */
+
+httpcall.handlePaths([
+  { post: '/authenticate',
+    fn: function(call)  {
+      return auth.authenticateSycamore(
+        call.req.body.username, call.req.body.password)
+          .then(function (auth) {
+            if (auth && auth.authenticated) {
+              // authentication successful
+              call.res.send({
+                'id': auth.user.id,
+                'user': auth.user.user,
+                'surname': auth.user.surname,
+                'token': jwt.sign({'id': auth.user.id}, config['jwt']['secret']),
+              });
+            } else {
+              // authentication failed
+              call.res.status(400).send(
+                {'message': 'Username or password is incorrect.'});
+            }
+          },
+          function(err) {
+            call.res.status(400).send(err);
+          })
+          .catch(function (err) {
+            call.res.status(400).send(err);
+          });
+    },
+  },
+  { get: '/me',
+    fn: call => {
+      var token = call.req.headers.authorization.split(' ')[1];
+      return library.borrowers.get(call.req.user.id, {items: true, fees: true});
+    },
+    middleware: jwtAuthentication,
+  },
+]);
 
 // Start server.
 const port = config.get('server').port;

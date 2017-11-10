@@ -23,6 +23,16 @@
     "covers": "./covers"
   },
 
+  "jwt": {
+    "secret": "SECRET"
+  },
+
+  "sycamore-auth": {
+    "school-id": "2132",
+    "url": "http://app.sycamoreeducation.com/index.php",
+    "success-text": "schoolhome.php"
+  },
+
   "label-server": {
     "port": 3001
   },
