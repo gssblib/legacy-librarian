@@ -11,8 +11,8 @@ import { AuthenticationService } from '../core/auth.service';
 export class AppPublicComponent implements OnInit {
   constructor(
     private snackbar: MatSnackBar,
-    private errorService: ErrorService
-    private authenticationService: AuthenticationService
+    private errorService: ErrorService,
+    private authenticationService: AuthenticationService,
   ) {}
 
   ngOnInit(): void {
