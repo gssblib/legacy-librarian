@@ -47,4 +47,8 @@ export class BorrowersService {
       .map(obj => Object.assign(new Borrower(), obj));
   }
 
+  getMyBorrower() {
+    return this.rpc.httpGet('me')
+        .map(obj => Object.assign(new Borrower(), obj));
+  }
 }
