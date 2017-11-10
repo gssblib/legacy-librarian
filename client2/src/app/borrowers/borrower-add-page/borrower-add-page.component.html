@@ -2,8 +2,8 @@
   <h1>
     Add Borrower
   </h1>
-  <form [formGroup]="form" (ngSubmit)="submitForm(borrower)" class="borrower-details">
-    <div class="borrwoer-fields">
+  <form [formGroup]="form" (ngSubmit)="submitForm(borrower)">
+    <div class="fields">
       <formly-form [model]="borrower" [fields]="fields">
       </formly-form>
     </div>
