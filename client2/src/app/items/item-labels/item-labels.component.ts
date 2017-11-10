@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MatSnackBar} from '@angular/material';
+import { NotificationService } from "../../core/notification-service";
 import { Item } from "../shared/item";
 import { ItemService } from "../shared/item.service";
 import { ItemsService } from "../shared/items.service";
@@ -21,7 +21,7 @@ export class ItemLabelsComponent implements OnInit {
   previewImage;
 
   constructor(
-    private snackbar: MatSnackBar,
+    private notificationService: NotificationService,
     private itemService: ItemService,
     private itemsService: ItemsService) { }
 
@@ -43,8 +43,7 @@ export class ItemLabelsComponent implements OnInit {
           this.data = {};
         },
         error => {
-          this.snackbar.open(
-            error.data.status, 'Dismiss', {'extraClasses': ['error']});
+          this.notificationService.showError(error.data.status);
         }
       );
   };
@@ -59,7 +58,6 @@ export class ItemLabelsComponent implements OnInit {
   };
 
   onCategoryChange(item, category) {
-    console.log(item, category);
     this.updateFields(item, category);
     this.updatePreview(item, category, this.data);
   };
@@ -73,8 +71,7 @@ export class ItemLabelsComponent implements OnInit {
           this.onCategoryChange(this.item, this.category);
         },
         error => {
-          this.snackbar.open(
-            error.data.status, 'Dismiss', {'extraClasses': ['error']});
+          this.notificationService.showError(error.data.status);
         }
       );
   };
@@ -83,12 +80,10 @@ export class ItemLabelsComponent implements OnInit {
     this.itemsService.printLabel(item, category, data)
       .subscribe(
         data => {
-          this.snackbar.open(
-            data.status, 'Dismiss', {'extraClasses': ['success']});
+          this.notificationService.show(data.status);
         },
         error => {
-          this.snackbar.open(
-            error.data.status, 'Dismiss', {'extraClasses': ['error']});
+          this.notificationService.showError(error.data.status);
         }
       );
   };

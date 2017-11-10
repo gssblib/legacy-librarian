@@ -2,6 +2,7 @@ import { Component, Input } from "@angular/core";
 import { Borrower } from "../shared/borrower";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { NotificationService } from "../../core/notification-service";
 import { BorrowersService } from "../shared/borrowers.service";
 
 @Component({
@@ -16,8 +17,10 @@ export class BorrowerProfileEditComponent {
   @Input()
   borrower: Borrower;
 
-  constructor(private borrowersService: BorrowersService) {
-  }
+  constructor(
+    private notificationService: NotificationService,
+    private borrowersService: BorrowersService,
+  ) { }
 
   ngOnInit(): void {
     this.borrowersService.getBorrowerFields().subscribe(fields => this.fields = fields);
@@ -25,8 +28,8 @@ export class BorrowerProfileEditComponent {
 
   submit(borrower) {
     this.borrowersService.saveBorrower(this.borrower).subscribe(
-      value => { console.log("saved borrower"); },
-      error => { console.log("error saving borrower: " + error)}
+      value => { this.notificationService.show("Borrower saved."); },
+      error => { this.notificationService.showError("Failed saving borrower.", error)}
     );
   }
 }

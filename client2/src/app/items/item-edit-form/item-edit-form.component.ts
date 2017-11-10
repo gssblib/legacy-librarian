@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { NotificationService } from "../../core/notification-service";
 import { ItemService } from "../shared/item.service";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
@@ -17,6 +18,7 @@ export class ItemEditFormComponent implements OnInit {
   fields: Array<FormlyFieldConfig> = [];
 
   constructor(
+    private notificationService: NotificationService,
     private itemsService: ItemsService,
     private itemService: ItemService) {}
 
@@ -27,8 +29,8 @@ export class ItemEditFormComponent implements OnInit {
 
   submit(item) {
     this.itemsService.saveItem(this.item).subscribe(
-      value => { console.log("saved item"); },
-      error => { console.log("error saving item: " + error)}
+      value => { this.notificationService.show("Item saved."); },
+      error => { this.notificationService.showError("Failed saving item.", error)}
     );
   }
 }

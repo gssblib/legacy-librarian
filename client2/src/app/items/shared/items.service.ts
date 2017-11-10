@@ -80,14 +80,12 @@ export class ItemsService {
   }
 
   addItem(item): Observable<Item> {
-    console.log("adding item: ", item);
     const storedItem = Object.assign({}, item);
     return this.rpc.httpPost('/items', storedItem)
       .map(obj => Object.assign(new Item(), obj));
   }
 
   saveItem(item) {
-    console.log("storing item: ", item);
     const storedItem = Object.assign({}, item);
     storedItem.added = undefined; // datetime not handled yet
     return this.rpc.httpPut('/items', storedItem)

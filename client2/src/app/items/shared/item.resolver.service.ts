@@ -10,7 +10,6 @@ export class ItemResolverService implements Resolve<Item> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Item> {
     const id = route.params['id'];
-    console.log('loading item', id);
     return this.itemsService.getItem(id);
   }
 }

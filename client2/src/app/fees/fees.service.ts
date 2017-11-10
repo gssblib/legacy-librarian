@@ -35,7 +35,6 @@ export class FeesService {
   }
 
   rowsToFees(rows: Object[]): Fee[] {
-    console.log('rows: ', rows);
     return rows.map(this.rowToFee);
   }
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { NotificationService } from "../../core/notification-service";
 import { BorrowersService } from "../shared/borrowers.service";
 import { Borrower } from "../shared/borrower";
 
@@ -16,6 +17,7 @@ export class BorrowerAddPageComponent implements OnInit {
   fields: Array<FormlyFieldConfig> = [];
 
   constructor(
+    private notificationService: NotificationService,
     private borrowersService: BorrowersService,
     private router: Router) { }
 
@@ -28,7 +30,9 @@ export class BorrowerAddPageComponent implements OnInit {
       value => {
         this.router.navigate(['/borrowers/checkouts', value.borrowernumber]);
       },
-      error => { console.log("error saving borrower: " + error)}
+      error => {
+        this.notificationService.showError('Saving borrower failed', error);
+      }
     );
   }
 

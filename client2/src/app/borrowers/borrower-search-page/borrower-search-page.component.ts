@@ -9,6 +9,7 @@ import {
 } from "@covalent/core";
 import { ParamsUtil } from "../../core/params-util";
 import { SortKey } from "../../core/sort-key";
+import { NotificationService } from "../../core/notification-service";
 import { Subscription } from "rxjs/Subscription";
 
 /**
@@ -58,6 +59,7 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(
+    private notificationService: NotificationService,
     private borrowersService: BorrowersService,
     private route: ActivatedRoute,
     private router: Router) {
@@ -141,7 +143,7 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
       relativeTo: this.route,
       queryParams: this.toQueryParams(),
     }).catch(err => {
-      console.log('navigation error', err);
+      this.notificationService.showError('navigation error', err);
     });
   }
 

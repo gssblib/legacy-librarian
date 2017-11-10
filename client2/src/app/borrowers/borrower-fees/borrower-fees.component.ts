@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { MatSnackBar } from '@angular/material';
 import {
   ITdDataTableColumn,
   TdDataTableService,
@@ -8,6 +7,7 @@ import {
   ITdDataTableSortChangeEvent
 } from "@covalent/core";
 import { SortKey } from "../../core/sort-key";
+import { NotificationService } from "../../core/notification-service";
 import { Borrower } from '../shared/borrower';
 import { BorrowersService } from '../shared/borrowers.service';
 import { BorrowerService } from '../shared/borrower.service';
@@ -58,7 +58,7 @@ export class BorrowerFeesComponent implements OnInit {
   constructor(
     private datePipe: DatePipe,
     private dataTableService: TdDataTableService,
-    private snackbar: MatSnackBar,
+    private notificationService: NotificationService,
     private borrowersService: BorrowersService,
     private borrowerService: BorrowerService) { }
 
@@ -98,14 +98,11 @@ export class BorrowerFeesComponent implements OnInit {
     this.borrowerService.payFees()
       .subscribe(
         data => {
-          console.log(data)
           this.updateBorrowerFees();
-          this.snackbar.open(
-            'Feea paid!', 'Dismiss', {'extraClasses': ['success']});
+          this.notificationService.show('Fees paid!!');
         },
         error => {
-          this.snackbar.open(
-            error.data.status, 'Dismiss', {'extraClasses': ['error']});
+          this.notificationService.showError(error.data.status);
         }
       );
   }
@@ -114,14 +111,11 @@ export class BorrowerFeesComponent implements OnInit {
     this.borrowerService.payFee(item)
       .subscribe(
         data => {
-          console.log(data)
           this.updateBorrowerFees();
-          this.snackbar.open(
-            'Fee paid!', 'Dismiss', {'extraClasses': ['success']});
+          this.notificationService.show('Fees paid!!');
         },
         error => {
-          this.snackbar.open(
-            error.data.status, 'Dismiss', {'extraClasses': ['error']});
+          this.notificationService.showError(error.data.status);
         }
       );
   }
@@ -131,12 +125,10 @@ export class BorrowerFeesComponent implements OnInit {
       .subscribe(
         data => {
           this.updateBorrowerFees();
-          this.snackbar.open(
-            'Fee waived!', 'Dismiss', {'extraClasses': ['success']});
+          this.notificationService.show('Fee waived!');
         },
         error => {
-          this.snackbar.open(
-            error.data.status, 'Dismiss', {'extraClasses': ['error']});
+          this.notificationService.showError(error.data.status);
         }
       );
   }
