@@ -16,8 +16,8 @@ export class CheckedOutPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.borrowersService.getBorrower(747, {options: 'items,fees'})
-      .subscribe(borrower => {this.borrower = borrower});
+    this.borrowersService.getMyBorrower().subscribe(
+      borrower => {this.borrower = borrower});
   }
 
 }
