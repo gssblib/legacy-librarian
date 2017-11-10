@@ -37,6 +37,7 @@
     "mysql": "^2.5.3",
     "node-range": "^0.1.0",
     "q": "^1.1.2",
+    "request-promise": "^4.2.2",
     "sprintf-js": "^1.0.3",
     "winston": "^0.8.3"
   },
