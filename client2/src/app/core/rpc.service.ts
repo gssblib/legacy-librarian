@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { RequestOptionsArgs, RequestOptions } from "@angular/http";
 import { Observable } from "rxjs";
 import 'rxjs/add/operator/catch';
 import { ConfigService } from "./config.service";
 import { RpcError } from "./rpc-error";
-import { HttpClient } from "@angular/common/http";
 
 /**
  * Support for RPC (REST over HTTP) calls.
@@ -16,6 +16,20 @@ import { HttpClient } from "@angular/common/http";
 export class RpcService {
 
   constructor(private config: ConfigService, private http: HttpClient) {
+  }
+
+  private addJwt(options?) {
+    // ensure request options and headers are not null
+    options = options || new RequestOptions();
+    options.headers = options.headers || new HttpHeaders();
+
+    // add authorization header with jwt token
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser && currentUser.token) {
+      options.headers = options.headers.append('Authorization', 'Bearer ' + currentUser.token);
+    }
+
+    return options;
   }
 
   /**
@@ -49,7 +63,8 @@ export class RpcService {
    * @returns {Observable<Object>} JSON result observable
    */
   httpGet(path: string, params?: {[param: string]: string}): Observable<Object> {
-    return this.handleHttpResult(this.http.get(this.config.apiPath(path), {params: params}));
+    return this.handleHttpResult(
+      this.http.get(this.config.apiPath(path), this.addJwt({params: params || {}})));
   }
 
   /**
@@ -60,7 +75,8 @@ export class RpcService {
    * @returns {Observable<Object>} JSON result observable
    */
   httpPost(path: string, body?: any): Observable<Object> {
-    return this.handleHttpResult(this.http.post(this.config.apiPath(path), body));
+    return this.handleHttpResult(
+      this.http.post(this.config.apiPath(path), body, this.addJwt()));
   }
 
   /**
@@ -71,7 +87,8 @@ export class RpcService {
    * @returns {Observable<Object>} JSON result observable
    */
   httpPut(path: string, body?: any): Observable<Object> {
-    return this.handleHttpResult(this.http.put(this.config.apiPath(path), body));
+    return this.handleHttpResult(
+      this.http.put(this.config.apiPath(path), body, this.addJwt()));
   }
 
   /**
@@ -81,8 +98,9 @@ export class RpcService {
    * @param body DELETE payload
    * @returns {Observable<Object>} JSON result observable
    */
-  httpDelete(path: string, body?: any): Observable<Object> {
-    return this.handleHttpResult(this.http.delete(this.config.apiPath(path), body));
+  httpDelete(path: string): Observable<Object> {
+    return this.handleHttpResult(
+      this.http.delete(this.config.apiPath(path), this.addJwt()));
   }
 
   /**
@@ -128,6 +146,10 @@ export class RpcService {
    * Handles an HTTP error response.
    */
   private handleError(response: HttpErrorResponse) {
+    if (response.status === 401) {
+      // 401 unauthorized response so log user out of client
+      window.location.href = '/login';
+    }
     return Observable.throw(this.toRpcError(response));
   }
 
