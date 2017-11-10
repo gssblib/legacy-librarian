@@ -21,7 +21,7 @@ const config = require('config'),
       library = require('./library').create(db),
       auth = require('./auth')(db),
       server = express(),
-      httpcall = require('./httpcall')(server, api_prefix),
+      httpcall = require('./httpcall')(server, api_prefix, auth),
       jwt = require('jsonwebtoken'),
       expressJwt = require('express-jwt'),
       multer = require('multer');
@@ -43,12 +43,44 @@ server.use(express.static(__dirname + '/../client/app'));
 var upload = multer();
 
 // Middleware that authentication JWT requests.
-var jwtAuthentication = expressJwt(
-  {secret: config['jwt']['secret'],
-   credentialsRequired: true});
-
+server.use(expressJwt(
+    {secret: config['jwt']['secret'], credentialsRequired: false}));
 
 httpcall.handlePaths([
+  { post: '/authenticate',
+    fn: function(call)  {
+      var login = call.req.body;
+      return auth.authenticate(login)
+          .then(function (auth) {
+            if (auth && auth.authenticated) {
+              // authentication successful
+              var payload = auth.user;
+              var token = jwt.sign(payload, config['jwt']['secret']);
+              payload.token = token;
+              call.res.send(payload);
+            } else {
+              // authentication failed
+              call.res.status(400).send(auth);
+            }
+          },
+          function(err) {
+            console.log('1', err);
+            call.res.status(400).send({
+              authenticated: false,
+              message: 'INTERNAL_ERROR',
+              error: err.toString()
+            });
+          })
+          .catch(function (err) {
+            console.log('2', err);
+            call.res.status(400).send({
+              authenticated: false,
+              message: 'INTERNAL_ERROR',
+              error: err.toString()
+            });
+          });
+    },
+  },
   { get: '/fees',
     fn: call => library.getFees(call.req.query, call.limit())
   },
@@ -112,61 +144,19 @@ httpcall.handlePaths([
       return Q('{"status": "Ok"}');
     },
     action: {resource: 'items', operation: 'update'}
-  }
+  },
+  { get: '/me',
+    fn: call => {
+      return library.borrowers.get(call.req.user.id, {items: true, fees: true});
+    },
+    action: {resource: 'profile', operation: 'read'},
+  },
 ]);
-
 
 httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew']);
 httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
 httpcall.handleEntity(library.antolin);
 
-
-/* Public App Routes */
-
-httpcall.handlePaths([
-  { post: '/authenticate',
-    fn: function(call)  {
-      var login = call.req.body;
-      return auth.authenticate(login)
-          .then(function (auth) {
-            if (auth && auth.authenticated) {
-              // authentication successful
-              var payload = auth.user;
-              var token = jwt.sign(payload, config['jwt']['secret']);
-              payload.token = token;
-              call.res.send(payload);
-            } else {
-              // authentication failed
-              call.res.status(400).send(auth);
-            }
-          },
-          function(err) {
-            console.log('1', err);
-            call.res.status(400).send({
-              authenticated: false,
-              message: 'INTERNAL_ERROR',
-              error: err.toString()
-            });
-          })
-          .catch(function (err) {
-            console.log('2', err);
-            call.res.status(400).send({
-              authenticated: false,
-              message: 'INTERNAL_ERROR',
-              error: err.toString()
-            });
-          });
-    },
-  },
-  { get: '/me',
-    fn: call => {
-      var token = call.req.headers.authorization.split(' ')[1];
-      return library.borrowers.get(call.req.user.id, {items: true, fees: true});
-    },
-    action: {resource: 'profile', operation: 'read'},
-    middleware: jwtAuthentication,
-  },
-]);
 
 // Start server.
 const port = config.get('server').port;

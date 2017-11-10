@@ -140,8 +140,23 @@ module.exports = function (db) {
     return AuthenticationMethods[login.type](login);
   }
 
+  /**
+   * Returns true if the action is authorized by the permissions.
+   */
+  function isAuthorized(permissions, action) {
+    for (var i = 0; i < permissions.length; ++i) {
+      var permission = permissions[i];
+      if (action.resource === permission.resource
+	  && permission.operations.indexOf(action.operation) >= 0) {
+	return true;
+      }
+    }
+    return false;
+  };
+
   return {
     authenticate: authenticate,
-    hashPassword: saltedHash
+    hashPassword: saltedHash,
+    isAuthorized: isAuthorized,
   };
 };

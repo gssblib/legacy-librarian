@@ -4,10 +4,26 @@ const Q = require('q');
  * Simple module simplifying the handling of promises in express
  * HTTP handlers.
  */
-module.exports = function(server, api_prefix) {
+module.exports = function(server, api_prefix, auth) {
 
   function nullMiddleware(req, es, next) {
     next();
+  }
+
+  function authorize(action) {
+    if (action === undefined)
+        return nullMiddleware;
+
+    var authz = function(req, res, next) {
+      if (req.user === undefined)
+        return res.status(401).send('NO_USER');
+      if (req.user.permissions === undefined)
+        return res.status(401).send('NO_PERMISSIONS');
+      if (!auth.isAuthorized(req.user.permissions, action))
+        return res.status(401).send('NOT_AUTHORIZED');
+      return next();
+    };
+    return authz;
   }
 
   /**
@@ -86,55 +102,27 @@ module.exports = function(server, api_prefix) {
   };
 
   /**
-   * Returns true if the action is authorized by the permissions.
-   */
-  function authorized(permissions, action) {
-    for (var i = 0; i < permissions.length; ++i) {
-      var permission = permissions[i];
-      if (action.resource === permission.resource
-	  && permission.operations.indexOf(action.operation) >= 0) {
-	return true;
-      }
-    }
-    return false;
-  };
-
-  HttpCall.prototype.isAuthorized = function (action) {
-    var self = this;
-    var user = self.req.session.user;
-    var result = user && user.permissions && authorized(user.permissions, action);
-    if (!result) {
-      console.log('authorization failed: user=', user, ', action=', action);
-    }
-    return true;
-  };
-
-  /**
    * Returns a node HTTP callback wrapping a function that takes an HttpCall
    * and returns a promise (a "call handler").
    */
   function httpHandler(handler) {
     return function (req, res) {
       var call = new HttpCall(req, res);
-      if (handler.action && !call.isAuthorized(handler.action)) {
-        call.res.status(401).json({});
-      } else {
-        var promise = handler.fn(call);
-        call.handlePromise(promise);
-      }
+      var promise = handler.fn(call);
+      call.handlePromise(promise);
     };
   }
 
   function handlePath(handler) {
     var mw = (handler.middleware !== undefined) ? handler.middleware : nullMiddleware;
     if (handler.get) {
-      server.get(api_prefix + handler.get, mw, httpHandler(handler));
+      server.get(api_prefix + handler.get, mw, authorize(handler.action), httpHandler(handler));
     } else if (handler.put) {
-      server.put(api_prefix + handler.put, mw, httpHandler(handler));
+      server.put(api_prefix + handler.put, mw, authorize(handler.action), httpHandler(handler));
     } else if (handler.post) {
-      server.post(api_prefix + handler.post, mw, httpHandler(handler));
+      server.post(api_prefix + handler.post, mw, authorize(handler.action), httpHandler(handler));
     } else if (handler.delete) {
-      server.delete(api_prefix + handler.delete, mw, httpHandler(handler));
+      server.delete(api_prefix + handler.delete, mw, authorize(handler.action), httpHandler(handler));
     }
   }
 
