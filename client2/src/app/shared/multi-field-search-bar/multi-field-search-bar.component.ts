@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
+import { FormBuilder, FormGroup} from '@angular/forms';
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Observable } from "rxjs";
 
@@ -19,7 +20,11 @@ export class MultiFieldSearchBarComponent implements OnInit {
   @Output()
   search: EventEmitter<Object> = new EventEmitter();
 
-  constructor( ) { }
+  form: FormGroup;
+
+  constructor(fb: FormBuilder) {
+    this.form = fb.group({});
+  }
 
   ngOnInit() {
     this.fieldsObservable.subscribe(fields => this.fields = fields);
@@ -30,7 +35,8 @@ export class MultiFieldSearchBarComponent implements OnInit {
   }
 
   onReset() {
-    this.criteria = {};
+    this.form.reset({});
+    this.search.emit(this.toCriteria({}));
   }
 
   private toCriteria(query) {
