@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../core/auth.service';
 
@@ -8,6 +8,9 @@ import { AuthenticationService } from '../../core/auth.service';
   styleUrls: ['./login-page.component.css']
 })
 export class LoginPageComponent implements OnInit {
+  /** Authentication type sent to the server with the credentials. */
+  @Input() type: string;
+
   model: any = {};
   loading = false;
   error = '';
@@ -24,7 +27,8 @@ export class LoginPageComponent implements OnInit {
 
   login() {
     this.loading = true;
-    this.authenticationService.login(this.model.username, this.model.password).subscribe(
+    this.authenticationService.login(
+      this.model.username, this.model.password, this.type).subscribe(
       result => {
         if (result === true) {
           this.router.navigate(['/']);

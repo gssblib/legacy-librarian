@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { ErrorService } from '../core/error-service';
 import { AuthenticationService } from '../core/auth.service';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'gsl-root',
@@ -13,6 +14,7 @@ export class AppPublicComponent implements OnInit {
     private snackBar: MatSnackBar,
     private errorService: ErrorService,
     private authenticationService: AuthenticationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +32,7 @@ export class AppPublicComponent implements OnInit {
 
   logout() {
     this.authenticationService.logout();
+    this.router.navigate(['/login']);
   }
 }
 
