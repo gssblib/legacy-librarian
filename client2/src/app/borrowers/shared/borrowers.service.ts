@@ -12,9 +12,18 @@ export class BorrowersService {
   constructor(private rpc: RpcService, private formService: FormService) {
   }
 
-  getBorrowerFields(): Observable<Array<FormlyFieldConfig>> {
+  getBorrowerFields(selected?:Array<string>): Observable<Array<FormlyFieldConfig>> {
     return this.rpc.httpGet('borrowers/fields')
-      .map((cols: any) => this.formService.formlyFields(cols));
+      .map((cols: any) => {
+        var fields = this.formService.formlyFields(cols);
+        if (selected !== undefined) {
+          return fields
+            .filter(field => selected.includes(field.key))
+            .sort((f1, f2) => selected.indexOf(f1.key) -
+                  selected.indexOf(f2.key));
+        }
+        return fields;
+      });
   }
 
   /**
