@@ -112,7 +112,7 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
     this.sortKey = params['order']
       ? SortKey.fromString(params['order'])
       : new SortKey('surname', 'ASC');
-    this.criteria = p.getValues(['surname', 'email']);
+    this.criteria = p.getValues(['surname', 'firstname', 'emailaddress', 'state']);
   }
 
   /**

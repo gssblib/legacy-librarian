@@ -1,0 +1,23 @@
+.actions button {
+  margin-left: 5px;
+}
+
+/deep/ .search-fields formly-form mat-form-field.mat-form-field {
+  width: 25% !important;
+}
+
+/deep/ .search-fields formly-form.width1 mat-form-field.mat-form-field {
+  width: 100% !important;
+}
+
+/deep/ .search-fields formly-form.width2 mat-form-field.mat-form-field {
+  width: 50% !important;
+}
+
+/deep/ .search-fields formly-form.width3 mat-form-field.mat-form-field {
+  width: 33% !important;
+}
+
+/deep/ .search-fields formly-form.width4 mat-form-field.mat-form-field {
+  width: 24% !important;
+}

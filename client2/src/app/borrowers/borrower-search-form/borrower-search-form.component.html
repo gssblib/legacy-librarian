@@ -1,21 +1,12 @@
-<form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
-  <mat-form-field>
-    <input name="surname" [(ngModel)]="criteria.surname" matInput autofocus
-           placeholder="Surname" autocomplete="off">
-  </mat-form-field>
-  <mat-form-field>
-    <input name="firstname" [(ngModel)]="criteria.firstname" matInput autofocus
-           placeholder="First Name" autocomplete="off">
-  </mat-form-field>
-  <mat-form-field>
-    <input name="email" [(ngModel)]="criteria.email" matInput
-           placeholder="Email" autocomplete="off">
-  </mat-form-field>
-  <mat-form-field>
-    <input name="state" [(ngModel)]="criteria.state" matInput
-           placeholder="State" autocomplete="off">
-  </mat-form-field>
+<form #f="ngForm" (ngSubmit)="onSubmit(criteria)" class="containerX">
+  <div class="search-fields" [fxFlex]="grow">
+    <formly-form [model]="criteria" [fields]="fields" [ngClass]="'width'+fields.length">
+    </formly-form>
+  </div>
   <span class="actions">
+    <a mat-mini-fab (click)="onReset()">
+      <mat-icon>close</mat-icon>
+    </a>
     <button mat-fab>
       <mat-icon>search</mat-icon>
     </button>
