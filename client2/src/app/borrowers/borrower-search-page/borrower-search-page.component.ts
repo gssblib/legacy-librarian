@@ -23,6 +23,8 @@ import { Subscription } from "rxjs/Subscription";
   styleUrls: ['./borrower-search-page.component.css']
 })
 export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
+  private searchFields = ['surname', 'firstname', 'emailaddress', 'state'];
+
   /** Current result being shown in the table. */
   result: TableFetchResult<Borrower>;
 
@@ -55,9 +57,10 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
 
   private routeSubscription: Subscription;
 
-  constructor(private borrowersService: BorrowersService,
-              private route: ActivatedRoute,
-              private router: Router) {
+  constructor(
+    private borrowersService: BorrowersService,
+    private route: ActivatedRoute,
+    private router: Router) {
   }
 
   ngOnInit() {
@@ -102,6 +105,10 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
     this.navigate();
   }
 
+  private getSearchFields() {
+    return this.borrowersService.getBorrowerFields(this.searchFields)
+  }
+
   /**
    * Sets the properties from the route's query parameters.
    */
@@ -112,7 +119,7 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
     this.sortKey = params['order']
       ? SortKey.fromString(params['order'])
       : new SortKey('surname', 'ASC');
-    this.criteria = p.getValues(['surname', 'firstname', 'emailaddress', 'state']);
+    this.criteria = p.getValues(this.searchFields);
   }
 
   /**

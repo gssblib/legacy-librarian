@@ -31,7 +31,6 @@ import { BorrowerProfileEditComponent } from "./borrower-profile-edit/borrower-p
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FormlyModule } from '@ngx-formly/core';
 import { BorrowerSearchBarComponent } from './borrower-search-bar/borrower-search-bar.component';
-import { BorrowerSearchFormComponent } from './borrower-search-form/borrower-search-form.component';
 import { BorrowerAddPageComponent } from './borrower-add-page/borrower-add-page.component';
 import { BorrowerStatusComponent } from './borrower-status/borrower-status.component';
 
@@ -69,7 +68,6 @@ import { BorrowerStatusComponent } from './borrower-status/borrower-status.compo
     BorrowerCheckoutsTableComponent,
     BorrowerAutoCompleteComponent,
     BorrowerSearchBarComponent,
-    BorrowerSearchFormComponent,
     BorrowerAddPageComponent,
     BorrowerStatusComponent,
   ],
