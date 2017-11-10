@@ -1,0 +1,14 @@
+<form #f="ngForm" (ngSubmit)="onSubmit(criteria)" class="containerX">
+  <div class="search-fields" [fxFlex]="grow">
+    <formly-form [model]="criteria" [fields]="fields" [ngClass]="'width'+fields.length">
+    </formly-form>
+  </div>
+  <span class="actions">
+    <a mat-mini-fab (click)="onReset()">
+      <mat-icon>close</mat-icon>
+    </a>
+    <button mat-fab>
+      <mat-icon>search</mat-icon>
+    </button>
+  </span>
+</form>
