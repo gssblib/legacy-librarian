@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { NotificationService } from "../../core/notification-service";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 
@@ -16,6 +17,7 @@ export class ItemAddPageComponent implements OnInit {
   fields: Array<FormlyFieldConfig> = [];
 
   constructor(
+    private notificationService: NotificationService,
     private itemsService: ItemsService,
     private router: Router) { }
 
@@ -28,7 +30,9 @@ export class ItemAddPageComponent implements OnInit {
       value => {
         this.router.navigate(['/items', value.barcode]);
       },
-      error => { console.log("error saving item: " + error)}
+      error => {
+        this.notificationService.showError('Failed to add item.', error)
+      }
     );
   }
 

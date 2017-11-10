@@ -45,7 +45,6 @@ export class ItemHistoryComponent implements OnInit {
   }
 
   onSort(sortChange: ITdDataTableSortChangeEvent) {
-    console.log(sortChange.name);
     if (this.sortOrder === sortChange.name) {
       this.order = this.toggleOrder(this.order);
     } else {
@@ -54,7 +53,6 @@ export class ItemHistoryComponent implements OnInit {
     }
     const sign = this.order == TdDataTableSortingOrder.Descending ? '-' : '';
     this.sortOrder = sign + sortChange.name;
-    console.log(this.sortOrder)
   }
 
 }

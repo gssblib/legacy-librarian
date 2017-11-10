@@ -35,14 +35,12 @@ export class BorrowerCheckoutsComponent implements OnInit {
   }
 
   checkout(barcode) {
-    console.log('checkout ' + JSON.stringify(barcode));
     this.borrowersService.checkOutItem(barcode, this.borrower.borrowernumber)
       .catch((error: RpcError) => this.onError(barcode, error))
         .subscribe((barcode: string) => this.onSuccess(barcode));
   }
 
   private onSuccess(result) {
-    console.log('success', result);
     this.borrowerChange.emit(null);
     this.barcode.barcode = '';
   }

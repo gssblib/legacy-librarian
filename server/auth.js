@@ -14,7 +14,8 @@ var roles = {
   },
   borrower: {
     permissions: [
-      {resource: "items", operations: ['read']}
+      {resource: "items", operations: ['read']},
+      {resource: "profile", operations: ['read']}
     ]
   },
   clerk: {
@@ -57,7 +58,7 @@ module.exports = function (db) {
    * 'password' against the database. If authenticated, returns the user
    * with his/her roles and permissions.
    */
-  function authenticate(login) {
+  function authenticateInternal(login) {
     return db.selectRow('select * from users where username = ?',
                         login.username, true)
       .then(function (user) {
@@ -83,6 +84,7 @@ module.exports = function (db) {
         return {
           authenticated: true,
           user: {
+            type: 'internal',
             username: user.username,
             roles: user.roles,
             permissions: permissions
@@ -91,14 +93,14 @@ module.exports = function (db) {
       });
   }
 
-  function authenticateSycamore(user, password) {
+  function authenticateSycamore(login) {
     var options = {
       method: 'POST',
       uri: config['sycamore-auth']['url'],
       form: {
         'entered_schid' : config['sycamore-auth']['school-id'],
-        'entered_login': user,
-        'entered_password': password
+        'entered_login': login.username,
+        'entered_password': login.password
       },
       headers: {
       }
@@ -106,34 +108,40 @@ module.exports = function (db) {
     return http(options)
       .then(function (body) {
         if (body.indexOf(config['sycamore-auth']['success-text']) >= 0) {
-          return db.selectRow('select * from borrowers where sycamoreid = ?', user, true)
+          return db.selectRow('select * from borrowers where sycamoreid = ?', login.username, true)
             .then(function(borrower) {
               return {
                 authenticated: true,
                 user: {
-                  'id': borrower.borrowernumber,
-                  'user': user,
-                  'surname': borrower.surname
+                  type: 'sycamore',
+                  id: borrower.borrowernumber,
+                  user: login.username,
+                  surname: borrower.surname,
+                  roles: 'borrower',
+                  permissions: roles['borrower'].permissions,
                 }
               };
             });
         } else {
           return {
             authenticated: false,
-            message: 'Authentication failed.'
+            message: 'AUTHENTICATION_FAILED'
           };
         }
       });
   }
 
-  function logout() {
-    return Q(true);
+  var AuthenticationMethods = {
+    'internal': authenticateInternal,
+    'sycamore': authenticateSycamore
+  };
+
+  function authenticate(login) {
+    return AuthenticationMethods[login.type](login);
   }
 
   return {
-    authenticateSycamore: authenticateSycamore,
     authenticate: authenticate,
-    logout: logout,
     hashPassword: saltedHash
   };
 };

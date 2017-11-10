@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { NotificationService } from "../../core/notification-service";
 import { FeesService } from '../fees.service';
 
 @Component({
@@ -11,7 +11,7 @@ export class FeesPageComponent implements OnInit {
   date: Date;
 
   constructor(
-    private snackbar: MatSnackBar,
+    private notificationService: NotificationService,
     private feesService: FeesService) { }
 
   ngOnInit() {
@@ -22,12 +22,10 @@ export class FeesPageComponent implements OnInit {
     this.feesService.updateFees(date)
       .subscribe(
         data => {
-          this.snackbar.open(
-            'Fees updated!', 'Dismiss', {'extraClasses': ['success']});
+          this.notificationService.show('Fees updated!');
         },
         error => {
-          this.snackbar.open(
-            error.data.status, 'Dismiss', {'extraClasses': ['error']});
+          this.notificationService.showError(error.data.status);
         }
       );
   }

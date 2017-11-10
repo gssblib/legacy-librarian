@@ -6,6 +6,7 @@ import {
   ITdDataTableSortChangeEvent,
   TdPagingBarComponent
 } from '@covalent/core';
+import { NotificationService } from "../../core/notification-service";
 import { Fee, FeesService } from '../fees.service';
 import { TableFetchResult } from '../../core/table-fetcher';
 import { Subscription } from 'rxjs/Subscription';
@@ -48,10 +49,12 @@ export class FeesTableComponent implements OnInit {
 
   private routeSubscription: Subscription;
 
-  constructor(private feesService: FeesService,
-              private route: ActivatedRoute,
-              private router: Router) {
-  }
+  constructor(
+    private notificationService: NotificationService,
+    private feesService: FeesService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) { }
 
   ngOnInit() {
     this.routeSubscription =
@@ -127,7 +130,7 @@ export class FeesTableComponent implements OnInit {
       relativeTo: this.route,
       queryParams: this.toQueryParams(),
     }).catch(err => {
-      console.log('navigation error', err);
+      this.notificationService.showError('navigation error', err);
     });
   }
 

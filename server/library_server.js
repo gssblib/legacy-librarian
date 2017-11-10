@@ -116,34 +116,6 @@ httpcall.handlePaths([
 ]);
 
 
-httpcall.handlePaths([
-  { get: '/users/current',
-    fn: function (call) {
-      return Q(call.req.session.user);
-    }},
-  { post: '/users/authenticate',
-    fn: function (call) {
-      return auth.authenticate(call.req.body).tap(function (result) {
-        console.log('authenticate', result);
-	if (result.authenticated) {
-	  call.req.session.user = result.user;
-	}
-      });
-    }},
-  { post: '/users/logout',
-    fn: function (call) {
-      return auth.logout().then(function () {
-        var loggedIn = !!call.req.session.user;
-        if (loggedIn) {
-          delete call.req.session.user;
-          return {success: true};
-        } else {
-          return {success: false, reason: 'NOT_LOGGED_IN'};
-        }
-      });
-    }}
-]);
-
 httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew']);
 httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
 httpcall.handleEntity(library.antolin);
@@ -154,28 +126,35 @@ httpcall.handleEntity(library.antolin);
 httpcall.handlePaths([
   { post: '/authenticate',
     fn: function(call)  {
-      return auth.authenticateSycamore(
-        call.req.body.username, call.req.body.password)
+      var login = call.req.body;
+      return auth.authenticate(login)
           .then(function (auth) {
             if (auth && auth.authenticated) {
               // authentication successful
-              call.res.send({
-                'id': auth.user.id,
-                'user': auth.user.user,
-                'surname': auth.user.surname,
-                'token': jwt.sign({'id': auth.user.id}, config['jwt']['secret']),
-              });
+              var payload = auth.user;
+              var token = jwt.sign(payload, config['jwt']['secret']);
+              payload.token = token;
+              call.res.send(payload);
             } else {
               // authentication failed
-              call.res.status(400).send(
-                {'message': 'Username or password is incorrect.'});
+              call.res.status(400).send(auth);
             }
           },
           function(err) {
-            call.res.status(400).send(err);
+            console.log('1', err);
+            call.res.status(400).send({
+              authenticated: false,
+              message: 'INTERNAL_ERROR',
+              error: err.toString()
+            });
           })
           .catch(function (err) {
-            call.res.status(400).send(err);
+            console.log('2', err);
+            call.res.status(400).send({
+              authenticated: false,
+              message: 'INTERNAL_ERROR',
+              error: err.toString()
+            });
           });
     },
   },
@@ -184,6 +163,7 @@ httpcall.handlePaths([
       var token = call.req.headers.authorization.split(' ')[1];
       return library.borrowers.get(call.req.user.id, {items: true, fees: true});
     },
+    action: {resource: 'profile', operation: 'read'},
     middleware: jwtAuthentication,
   },
 ]);

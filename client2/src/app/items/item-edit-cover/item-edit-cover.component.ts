@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { ConfigService } from "../../core/config.service";
+import { NotificationService } from "../../core/notification-service";
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
 
@@ -36,8 +37,10 @@ export class ItemEditCoverComponent implements OnInit {
   public hasDropZoneOver:boolean = false;
 
   constructor(
+    private notificationService: NotificationService,
     private itemsService: ItemsService,
-    private config: ConfigService) { }
+    private config: ConfigService
+  ) { }
 
   ngOnInit() {
     this.coverUrl = this.coverUrlShown = this.config.apiPath('items/' + this.item.barcode + '/cover');
@@ -62,14 +65,13 @@ export class ItemEditCoverComponent implements OnInit {
 
   /* Actions */
   deleteCover() {
-    console.log('DELETE');
     this.itemsService.deleteCover(this.item).subscribe(
       () => {
-        console.log("deleted cover");
+        this.notificationService.show('Cover deleted.');
         this.handleMissingImage();
       },
       error => {
-        console.log(error);
+        this.notificationService.showError(error.data.status);
       }
     );
   }

@@ -34,7 +34,6 @@ export class ReturnPageComponent implements OnInit {
   }
 
   returnItem(barcode: string) {
-    console.log('return item: ' + barcode);
     this.itemsService.returnItem(barcode)
       .catch((error: RpcError) => this.onError(barcode, error))
       .subscribe((item: Item) => this.onSuccess(item));
@@ -44,7 +43,6 @@ export class ReturnPageComponent implements OnInit {
     this.returnedItems.push(item);
     this.barcode.barcode = '';
     this.returnedItems = Array.from(this.returnedItems);
-    console.log(this.returnedItems);
   }
 
   private onError(barcode: string, error: RpcError) {

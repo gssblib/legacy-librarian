@@ -11,7 +11,6 @@ export class BorrowerResolverService implements Resolve<Borrower> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Borrower> {
     const id = route.params['id'];
-    console.log('loading borrower', id);
     return this.borrowersService.getBorrower(id, {options: 'items,fees'});
   }
 }
