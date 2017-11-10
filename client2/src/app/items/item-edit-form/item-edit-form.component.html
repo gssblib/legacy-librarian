@@ -1,12 +1,12 @@
 <div class="containerX" fxLayoutGap="30px">
   <div [fxFlex]="calc3Cols" class="col3 form">
 
-    <form [formGroup]="form" (ngSubmit)="submit(item)">
-      <div class="fields">
+    <form [formGroup]="form" (ngSubmit)="submit(item)" class="item-details">
+      <div class="item-fields">
         <formly-form [model]="item" [fields]="fields">
         </formly-form>
       </div>
-      <div class="actions">
+      <div class="item-actions">
         <button type="submit" mat-raised-button color="primary">Submit</button>
       </div>
     </form>
