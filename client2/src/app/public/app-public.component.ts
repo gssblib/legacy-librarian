@@ -10,14 +10,14 @@ import { AuthenticationService } from '../core/auth.service';
 })
 export class AppPublicComponent implements OnInit {
   constructor(
-    private snackbar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private errorService: ErrorService,
     private authenticationService: AuthenticationService,
   ) {}
 
   ngOnInit(): void {
     this.errorService.error.subscribe(error => {
-      this.snackbar.open(error.message, 'Dismiss', {
+      this.snackBar.open(error.message, 'Dismiss', {
         duration: 3000,
       });
     });

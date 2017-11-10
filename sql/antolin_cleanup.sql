@@ -1,5 +1,3 @@
-ALTER TABLE items DROP COLUMN antolin;
-ALTER TABLE items DROP COLUMN antolin_book_id;
 ALTER TABLE items DROP COLUMN antolin_sticker;
 ALTER TABLE items DROP COLUMN cover;
 ALTER TABLE items ADD COLUMN antolin int DEFAULT NULL;
