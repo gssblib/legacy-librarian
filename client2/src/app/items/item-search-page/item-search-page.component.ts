@@ -155,7 +155,6 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
     const offset = (this.page - 1) * this.pageSize;
     const criteria = Object.assign(
       {}, this.criteria, this.extraCriteria, {'_order': this.sortKey.toString()});
-    console.log(criteria);
     this.itemsService.getItems(criteria, offset, this.pageSize, true).subscribe(
       result => {
         this.result = result;
