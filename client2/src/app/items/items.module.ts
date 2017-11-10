@@ -23,7 +23,6 @@ import { ItemsService } from "./shared/items.service";
 import { ItemPageComponent } from './item-page/item-page.component';
 import { ItemAutoCompleteComponent } from './item-auto-complete/item-auto-complete.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { ItemSearchFormComponent } from './item-search-form/item-search-form.component';
 import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
 import { ItemsTableComponent } from './items-table/items-table.component';
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
@@ -74,7 +73,6 @@ import { ItemCardComponent } from './item-card/item-card.component';
     ItemComponent,
     ItemPageComponent,
     ItemAutoCompleteComponent,
-    ItemSearchFormComponent,
     ItemSearchBarComponent,
     ItemsTableComponent,
     ReturnPageComponent,
@@ -99,7 +97,6 @@ import { ItemCardComponent } from './item-card/item-card.component';
     ItemSearchBarComponent,
     ItemPageComponent,
     ItemsTableComponent,
-    ItemSearchFormComponent,
     ItemEditCoverComponent,
     ItemStatusComponent,
     ItemAntolinComponent,

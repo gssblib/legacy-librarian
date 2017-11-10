@@ -29,6 +29,7 @@ import { AppPublicComponent } from './app-public.component';
 import { ItemBrowserPageComponent } from './item-browser-page/item-browser-page.component';
 import { RouterModule } from "@angular/router";
 import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.component';
+import { SharedModule } from "../shared/shared.module";
 
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -56,6 +57,7 @@ import { LoginPageComponent } from './login-page/login-page.component';
     MatListModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    SharedModule,
     AppRoutingModule,
     ItemsModule,
     BorrowersModule,

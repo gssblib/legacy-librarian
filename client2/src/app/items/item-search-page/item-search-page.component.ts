@@ -112,6 +112,10 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
     this.navigate();
   }
 
+  private getSearchFields() {
+    return this.itemsService.getItemFields(this.searchFields)
+  }
+
   /**
    * Sets the properties from the route's query parameters.
    */

@@ -1,6 +1,7 @@
 <mat-card>
-  <gsl-item-search-form [criteria]="criteria" [fields]="searchFields" (search)="onSearch($event)">
-  </gsl-item-search-form>
+  <gsl-multi-field-search-bar
+     [criteria]="criteria" [fields]="getSearchFields()" (search)="onSearch($event)">
+  </gsl-multi-field-search-bar>
 
   <div *ngIf="result">
     <gsl-item-card *ngFor="let item of result.rows" [item]="item"></gsl-item-card>

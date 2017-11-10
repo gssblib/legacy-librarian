@@ -1,9 +1,9 @@
 <mat-card>
   <div class="containerX">
     <div [fxFlex]="grow">
-      <gsl-item-search-form
-         [criteria]="criteria" [fields]="searchFields" (search)="onSearch($event)">
-      </gsl-item-search-form>
+      <gsl-multi-field-search-bar
+         [criteria]="criteria" [fields]="getSearchFields()" (search)="onSearch($event)">
+      </gsl-multi-field-search-bar>
     </div>
     <div class="add">
       <a mat-fab style="float: right" routerLink="add">
