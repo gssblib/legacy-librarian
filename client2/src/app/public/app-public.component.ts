@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { ErrorService } from '../core/error-service';
+import { AuthenticationService } from '../core/auth.service';
 
 @Component({
   selector: 'gsl-root',
@@ -8,7 +9,11 @@ import { ErrorService } from '../core/error-service';
   styleUrls: ['./app-public.component.css']
 })
 export class AppPublicComponent implements OnInit {
-  constructor(private snackbar: MatSnackBar, private errorService: ErrorService) {}
+  constructor(
+    private snackbar: MatSnackBar,
+    private errorService: ErrorService
+    private authenticationService: AuthenticationService
+  ) {}
 
   ngOnInit(): void {
     this.errorService.error.subscribe(error => {
@@ -16,6 +21,15 @@ export class AppPublicComponent implements OnInit {
         duration: 3000,
       });
     });
+  }
+
+  get user() {
+    var user = this.authenticationService.getUser();
+    return this.authenticationService.getUser();
+  }
+
+  logout() {
+    this.authenticationService.logout();
   }
 }
 

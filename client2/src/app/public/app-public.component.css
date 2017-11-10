@@ -23,3 +23,12 @@
 mat-icon {
   padding-right: 0.5em;
 }
+
+.menu {
+  width: 200px;
+}
+.profile-info .welcome {
+  display: inline-block;
+  font-size: 75%;
+  margin-right: 10px;
+}

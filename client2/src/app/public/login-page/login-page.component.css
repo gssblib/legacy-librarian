@@ -1,0 +1,34 @@
+mat-form-field {
+  max-width: 340px;
+  width: 100%;
+  display: block;
+}
+
+.error {
+  color: red;
+  margin-left: 20px;
+  padding: 10px;
+}
+
+.loading {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 15px;
+}
+
+.loading mat-icon {
+  -webkit-animation: spin 1.3s infinite linear;
+}
+
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}

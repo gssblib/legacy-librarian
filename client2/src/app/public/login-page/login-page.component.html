@@ -1,0 +1,23 @@
+<mat-card>
+  <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
+    <h2>Login</h2>
+    <p>Please use your Sycamore credentials to log in.</p>
+    <p *ngIf="error" class="error">
+      {{error}}
+    </p>
+    <mat-form-field>
+      <input matInput required [(ngModel)]="model.username" name="username" placeholder="Login" />
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput required [(ngModel)]="model.password" type="password"
+             name="password"
+             placeholder="Password" />
+    </mat-form-field>
+    <div class="containerX">
+      <button mat-raised-button color="primary" [disabled]="loading">Login</button>
+      <div *ngIf="loading" class="loading">
+        <mat-icon>refresh</mat-icon>
+      </div>
+    </div>
+  </form>
+</mat-card>

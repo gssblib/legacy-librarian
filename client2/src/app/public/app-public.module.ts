@@ -16,6 +16,7 @@ import {
   MatSnackBarModule,
   MatToolbarModule,
   MatPaginatorModule,
+  MatProgressSpinnerModule,
 } from '@angular/material';
 import { CoreModule } from '../core/core.module';
 import { HomeComponent } from '../home/home.component';
@@ -30,6 +31,7 @@ import { RouterModule } from "@angular/router";
 import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.component';
 
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
+import { LoginPageComponent } from './login-page/login-page.component';
 
 @NgModule({
   imports: [
@@ -53,6 +55,7 @@ import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
     MatIconModule,
     MatListModule,
     MatPaginatorModule,
+    MatProgressSpinnerModule,
     AppRoutingModule,
     ItemsModule,
     BorrowersModule,
@@ -64,6 +67,7 @@ import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
     ItemBrowserPageComponent,
     AppSearchBarComponent,
     CheckedOutPageComponent,
+    LoginPageComponent,
   ],
   providers: [
   ],
