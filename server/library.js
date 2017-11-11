@@ -88,16 +88,10 @@ module.exports = {
       columns: [
         {name: 'borrowernumber', label: 'Borrower Number',
          internal: true, domain: entity.domains.Integer},
-        {name: 'cardnumber', label: 'Card Number', internal: true},
         {name: 'surname', label: 'Last Name', queryOp: 'contains'},
         {name: 'firstname', label: 'First Name', queryOp: 'contains'},
         {name: 'contactname', label: 'Contact Name', queryOp: 'contains'},
-        {name: 'streetaddress', label: 'Address'},
-        {name: 'city', label: 'City'},
-        {name: 'zipcode', label: 'ZIP Code'},
-        {name: 'phone', label: 'Phone Number'},
         {name: 'emailaddress', label: 'E-mail', queryOp: 'contains'},
-        {name: 'emailaddress_2', label: 'Email 2', internal: true},
         {name: 'sycamoreid', label: 'Sycamore ID'},
         {name: 'state', domain: domains.BorrowerState}
       ],
