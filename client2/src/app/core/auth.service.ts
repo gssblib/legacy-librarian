@@ -91,6 +91,7 @@ export class AuthenticationService {
 
   logout(): void {
     AuthenticationService.removeLocalUser();
+    this.userSubject.next(null);
   }
 
   getUser(): User {
