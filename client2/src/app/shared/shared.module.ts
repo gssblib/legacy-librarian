@@ -9,7 +9,13 @@ import { BarcodeFieldComponent } from './barcode-field/barcode-field.component';
 import { IsbnFieldComponent } from './isbn-field/isbn-field.component';
 import { AutofocusDirective } from './focus/autofocus.directive';
 import { FocusDirective } from './focus/focus.directive';
-import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule } from '@angular/material';
+import {
+  MatCardModule,
+  MatButtonModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule
+} from '@angular/material';
 import { MultiFieldSearchBarComponent } from './multi-field-search-bar/multi-field-search-bar.component';
 import {
   LoginPageComponent,
@@ -24,6 +30,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    MatCardModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,

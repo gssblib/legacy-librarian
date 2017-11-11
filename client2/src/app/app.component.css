@@ -19,7 +19,14 @@
 .active {
   background: #f5f5f5;
 }
-
 mat-icon {
   padding-right: 0.5em;
+}
+.menu {
+  width: 185px;
+}
+.profile-info .welcome {
+  display: inline-block;
+  font-size: 75%;
+  margin-right: 10px;
 }

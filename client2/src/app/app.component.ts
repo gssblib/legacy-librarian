@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
+import { AuthenticationService } from './core/auth.service';
 import { ErrorService } from './core/error-service';
 import { NotificationService } from "./core/notification-service";
 
@@ -11,6 +12,7 @@ import { NotificationService } from "./core/notification-service";
 export class AppComponent implements OnInit {
 
   constructor(
+    private authenticationService: AuthenticationService,
     private snackbar: MatSnackBar,
     private errorService: ErrorService,
     private notificationService: NotificationService,
@@ -28,5 +30,16 @@ export class AppComponent implements OnInit {
       });
     });
   }
+
+  get user() {
+    var user = this.authenticationService.getUser();
+    return this.authenticationService.getUser();
+  }
+
+  logout() {
+    this.authenticationService.logout();
+    this.router.navigate(['/login']);
+  }
+
 }
 
