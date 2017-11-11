@@ -19,7 +19,8 @@ export class ItemAddPageComponent implements OnInit {
   constructor(
     private notificationService: NotificationService,
     private itemsService: ItemsService,
-    private router: Router) { }
+    private router: Router,
+  ) { }
 
   ngOnInit() {
     this.itemsService.getItemFields().subscribe(fields => this.fields = fields);
