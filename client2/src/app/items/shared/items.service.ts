@@ -15,6 +15,7 @@ import { Subject } from "rxjs/Subject";
  */
 @Injectable()
 export class ItemsService {
+  /** Cached field fetched from server. */
   private fields: Array<FormlyFieldConfig>;
 
   constructor(private rpc: RpcService, private formService: FormService) {

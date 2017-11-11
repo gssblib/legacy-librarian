@@ -4,10 +4,16 @@ import { Borrower } from './borrower';
 import { Subject } from "rxjs/Subject";
 import { BorrowersService } from "./borrowers.service";
 
+/**
+ * Manages the single borrower whose information is shown in the borrower views.
+ *
+ * All borrower views watch the observable in this service, and changes to the borrower
+ * (reloading the data from the server) are published to this service.
+ */
 @Injectable()
 export class BorrowerService {
   /** Current borrower. */
-  private borrower: Borrower;
+  private borrower?: Borrower = null;
 
   /** Subject tracking the current borrower. */
   private borrowerSubject = new Subject<Borrower>();
@@ -26,7 +32,7 @@ export class BorrowerService {
     this.borrowerSubject.next(borrower);
   }
 
-  getBorrower(): Borrower {
+  getBorrower(): Borrower|null {
     return this.borrower;
   }
 

@@ -48,7 +48,7 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
   columns: ITdDataTableColumn[] = [
     {name: 'surname', label: 'Last Name', width: 150, sortable: true},
     {name: 'firstname', label: 'First Name', width: 175, sortable: true},
-    {name: 'state', label: 'State', width: 100, sortable: true},
+    {name: 'state', label: 'State', width: 120, sortable: true},
     {name: 'emailaddress', label: 'E-Mail', sortable: true},
     {name: 'contactname', label: 'Contact Name', sortable: true},
   ];
