@@ -16,7 +16,7 @@ class CoverUploader extends FileUploader {
 
   public onSuccessItem(item:any, response:any, status:any, headers:any):any {
     // Force image reload.
-    this.itemCoverEdit.urlHash = Math.random();
+    this.itemCoverEdit.urlHash = Math.random().toString();
     this.itemCoverEdit.hasCover = true;
     return {item, response, status, headers};
   }
@@ -30,11 +30,9 @@ class CoverUploader extends FileUploader {
 export class ItemEditCoverComponent implements OnInit {
   @Input('item')
   item: Item;
-  urlHash: string = Math.random();
+  urlHash: string = Math.random().toString();
 
   public hasCover:boolean = true;
-  private coverUrl: string;
-  public coverUrlShown: string;
 
   public uploader: CoverUploader;
   public hasDropZoneOver:boolean = false;
