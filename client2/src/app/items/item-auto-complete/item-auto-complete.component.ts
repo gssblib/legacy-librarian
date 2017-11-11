@@ -95,7 +95,7 @@ export class ItemAutoCompleteComponent implements OnInit {
       );
     }
     var value = this.suggestions ? this.suggestions[0] : undefined;
-    if (value !== undefined and ) {
+    if (value !== undefined) {
       this.suggestions = [];
       this.itemCtrl.setValue('');
       this.itemSelected.emit(value);
