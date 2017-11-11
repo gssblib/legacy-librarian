@@ -137,7 +137,14 @@ module.exports = function (db) {
   };
 
   function authenticate(login) {
-    return AuthenticationMethods[login.type](login);
+    var auth = AuthenticationMethods[login.type];
+    if (auth === undefined)
+      return Q({
+        authenticated: false,
+        message: 'UNKNOWN_SCHEME',
+        scheme: login.type
+      });
+    return auth(login);
   }
 
   /**
