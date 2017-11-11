@@ -2,22 +2,15 @@ DROP TABLE IF EXISTS `borrowers`;
 CREATE TABLE `borrowers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `borrowernumber` int(11) NOT NULL,
-  `cardnumber` varchar(16) NOT NULL,
   `surname` text NOT NULL,
   `firstname` text,
-  `streetaddress` text,
-  `city` text,
-  `zipcode` varchar(25) DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
   `emailaddress` text,
-  `emailaddress_2` text,
   `contactname` text,
-  `debarred` int(11) DEFAULT NULL,
   `state` enum('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
   `sycamoreid` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `borrowernumber` (`borrowernumber`),
-  UNIQUE KEY `cardnumber` (`cardnumber`),
   KEY `borrowernumber_2` (`borrowernumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
