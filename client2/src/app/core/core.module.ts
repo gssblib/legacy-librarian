@@ -6,6 +6,8 @@ import { ErrorService } from "./error-service";
 import { NotificationService } from "./notification-service";
 import { FormService } from "./form.service";
 import { AuthenticationService } from "./auth.service";
+import { Action, AuthorizationService } from "./authorization.service";
+import { AuthorizedDirective } from './authorized.directive';
 
 /**
  * Angular module for the shared services.
@@ -19,6 +21,14 @@ import { AuthenticationService } from "./auth.service";
     NotificationService,
     FormService,
     AuthenticationService,
+    AuthorizationService,
+    Action,
+  ],
+  declarations: [
+    AuthorizedDirective,
+  ],
+  exports: [
+    AuthorizedDirective,
   ]
 })
 export class CoreModule { }
