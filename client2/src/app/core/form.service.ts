@@ -29,8 +29,24 @@ class Column {
 @Injectable()
 export class FormService {
 
+  /**
+   * Converts the column meta data obtained from the server to the FormlyFieldConfigs
+   * controlling the dynamic forms.
+   */
   formlyFields(cols: Array<Column>): Array<FormlyFieldConfig> {
     return FormService.toFormlyFields(cols);
+  }
+
+  /**
+   * Returns the list of selected fields in the correct order.
+   */
+  selectFields(fields: FormlyFieldConfig[], selected?: string[]):
+      FormlyFieldConfig[] {
+    return selected === undefined
+      ? fields
+      : fields
+        .filter(field => selected.includes(field.key))
+        .sort((f1, f2) => selected.indexOf(f1.key) - selected.indexOf(f2.key));
   }
 
   /**

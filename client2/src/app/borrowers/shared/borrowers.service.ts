@@ -12,29 +12,24 @@ import { FormService } from "../../core/form.service";
 @Injectable()
 export class BorrowersService {
   /** Cached field fetched from server. */
-  private fields: Array<FormlyFieldConfig>;
+  private fields: FormlyFieldConfig[];
 
   constructor(private rpc: RpcService, private formService: FormService) {
   }
 
   /**
    * Returns the formly form fields for the borrower details page.
+   *
+   * @param selected Keys of the fields to return (in this order)
    */
-  getBorrowerFields(selected?: Array<string>): Observable<Array<FormlyFieldConfig>> {
+  getBorrowerFields(selected?: string[]): Observable<FormlyFieldConfig[]> {
     if (this.fields) {
-      return Observable.of(this.fields);
+      return Observable.of(this.formService.selectFields(this.fields, selected));
     }
     return this.rpc.httpGet('borrowers/fields')
       .map((cols: any) => {
-        var fields = this.formService.formlyFields(cols);
-        if (selected !== undefined) {
-          fields = fields
-            .filter(field => selected.includes(field.key))
-            .sort((f1, f2) => selected.indexOf(f1.key) -
-                  selected.indexOf(f2.key));
-        }
-        this.fields = fields;
-        return fields;
+        this.fields = this.formService.formlyFields(cols);
+        return this.formService.selectFields(this.fields, selected);
       });
   }
 

@@ -8,7 +8,6 @@ import { TableFetchResult } from "../../core/table-fetcher";
 import { ItemState } from "./item-state";
 import { FormService } from "../../core/form.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Subject } from "rxjs/Subject";
 
 /**
  * Service for fetching and manipulating items.
@@ -31,23 +30,20 @@ export class ItemsService {
     return window.btoa(binary);
   }
 
+  /**
+   * Returns the formly form fields for the borrower details page.
+   *
+   * @param selected Keys of the fields to return (in this order)
+   */
   getItemFields(selected?: string[]): Observable<FormlyFieldConfig[]> {
     if (this.fields) {
-      return Observable.of(this.selectFields(selected));
+      return Observable.of(this.formService.selectFields(this.fields, selected));
     }
     return this.rpc.httpGet('items/fields')
       .map((cols: any) => {
         this.fields = this.formService.formlyFields(cols);
-        return this.selectFields(selected);
+        return this.formService.selectFields(this.fields, selected);
       });
-  }
-
-  private selectFields(selected?: string[]): FormlyFieldConfig[] {
-    return selected === undefined
-      ? this.fields
-      : this.fields
-        .filter(field => selected.includes(field.key))
-        .sort((f1, f2) => selected.indexOf(f1.key) - selected.indexOf(f2.key));
   }
 
   /**
