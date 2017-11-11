@@ -19,14 +19,18 @@
 .active {
   background: #f5f5f5;
 }
-mat-icon {
+.profile-info {
+  display: inline-block;
+  font-size: 65%;
+  margin-right: 10px;
+  text-align: center;
+}
+.menu mat-icon {
   padding-right: 0.5em;
 }
 .menu {
-  width: 185px;
+  width: 160px;
 }
-.profile-info .welcome {
-  display: inline-block;
-  font-size: 75%;
-  margin-right: 10px;
+.sandwich {
+  width: 160px;
 }
