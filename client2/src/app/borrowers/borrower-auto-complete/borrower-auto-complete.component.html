@@ -1,4 +1,4 @@
-<mat-form-field floatPlaceholder="never" class="borrower-autocomplete">
+<mat-form-field floatPlaceholder="never" class="borrower-autocomplete" (keyup.enter)="selectFirstBorrower()">
   <input #borrowerInput matInput size="50" placeholder="Borrower Last Name"
          [formControl]="input"
          [matAutocomplete]="borrowerAutoComplete">

@@ -69,4 +69,16 @@ export class BorrowerAutoCompleteComponent implements OnInit, AfterViewInit {
       ? `${borrower.surname}, ${borrower.firstname}, ${borrower.contactname}`
       : '';
   }
+
+  /**
+   * Select the first child in the suggestions.
+   */
+  selectFirstBorrower() {
+    var value = this.suggestions[0];
+    if (value !== undefined) {
+      this.suggestions = [];
+      this.borrowerSelected.emit(value);
+    }
+  }
+
 }
