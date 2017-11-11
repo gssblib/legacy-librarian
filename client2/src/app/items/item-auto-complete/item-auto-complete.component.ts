@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ItemsService } from "../shared/items.service";
-import { Item } from "../shared/item";
 import { FormControl } from "@angular/forms";
+import { Item } from "../shared/item";
+import { ItemsService } from "../shared/items.service";
 
 /**
  * Auto-complete component for items using the item title (or parts of it) for the
@@ -13,6 +13,8 @@ import { FormControl } from "@angular/forms";
   styleUrls: ['./item-auto-complete.component.css']
 })
 export class ItemAutoCompleteComponent implements OnInit {
+  private isBarcode = new RegExp('^[0-9]{9}$');
+
   /** FormControl for the input field. */
   itemCtrl: FormControl;
 
@@ -25,7 +27,9 @@ export class ItemAutoCompleteComponent implements OnInit {
   @Input()
   size: number = 20;
 
-  constructor(private itemsService: ItemsService) { }
+  constructor(
+    private itemsService: ItemsService,
+  ) { }
 
   ngOnInit() {
     this.itemCtrl = new FormControl();
@@ -77,11 +81,24 @@ export class ItemAutoCompleteComponent implements OnInit {
    * Select the first child in the suggestions.
    */
   selectFirstItem() {
-    var value = this.suggestions[0];
+    var value = this.suggestions ? this.suggestions[0] : undefined;
     if (value !== undefined) {
       this.suggestions = [];
       this.itemCtrl.setValue('');
       this.itemSelected.emit(value);
+    }
+    // If we have a barcode, let's not even wait for suggestions, so
+    // that the barcode scanner works on top as well.
+    var barcode = this.itemCtrl.value;
+    if (barcode !== undefined && this.isBarcode.test(barcode)) {
+      this.itemsService.getItem(barcode).subscribe(
+        item => {
+          this.itemSelected.emit(item);
+          this.suggestions = [];
+          this.itemCtrl.setValue('');
+        },
+        error => {console.log('Item not found: ', barcode);}
+      );
     }
   }
 }
