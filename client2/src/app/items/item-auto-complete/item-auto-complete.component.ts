@@ -81,12 +81,6 @@ export class ItemAutoCompleteComponent implements OnInit {
    * Select the first child in the suggestions.
    */
   selectFirstItem() {
-    var value = this.suggestions ? this.suggestions[0] : undefined;
-    if (value !== undefined) {
-      this.suggestions = [];
-      this.itemCtrl.setValue('');
-      this.itemSelected.emit(value);
-    }
     // If we have a barcode, let's not even wait for suggestions, so
     // that the barcode scanner works on top as well.
     var barcode = this.itemCtrl.value;
@@ -99,6 +93,12 @@ export class ItemAutoCompleteComponent implements OnInit {
         },
         error => {console.log('Item not found: ', barcode);}
       );
+    }
+    var value = this.suggestions ? this.suggestions[0] : undefined;
+    if (value !== undefined and ) {
+      this.suggestions = [];
+      this.itemCtrl.setValue('');
+      this.itemSelected.emit(value);
     }
   }
 }
