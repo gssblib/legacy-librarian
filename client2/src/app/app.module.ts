@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
+import { FlexLayoutModule } from "@angular/flex-layout";
 import {
   MatButtonModule,
   MatCardModule,
@@ -40,6 +41,7 @@ import { CheckoutsModule } from "./checkouts/checkouts.module";
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    FlexLayoutModule,
     CoreModule,
     ItemsModule,
     BorrowersModule,
