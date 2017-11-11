@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup} from '@angular/forms';
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Observable } from "rxjs";
 
+/**
+ * Search bar with formly form fields.
+ */
 @Component({
   selector: 'gsl-multi-field-search-bar',
   templateUrl: './multi-field-search-bar.component.html',
@@ -39,6 +42,9 @@ export class MultiFieldSearchBarComponent implements OnInit {
     this.search.emit(this.toCriteria({}));
   }
 
+  /**
+   * Translates the search form fields to the search criteria sent to the server.
+   */
   private toCriteria(query) {
     const criteria: any = {};
     for (let field of this.fields) {
@@ -48,5 +54,4 @@ export class MultiFieldSearchBarComponent implements OnInit {
     }
     return criteria;
   }
-
 }

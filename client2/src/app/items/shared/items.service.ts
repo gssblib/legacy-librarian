@@ -16,7 +16,7 @@ import { Subject } from "rxjs/Subject";
 @Injectable()
 export class ItemsService {
   /** Cached field fetched from server. */
-  private fields: Array<FormlyFieldConfig>;
+  private fields: FormlyFieldConfig[];
 
   constructor(private rpc: RpcService, private formService: FormService) {
   }
@@ -31,22 +31,23 @@ export class ItemsService {
     return window.btoa(binary);
   }
 
-  getItemFields(selected?:Array<string>): Observable<Array<FormlyFieldConfig>> {
+  getItemFields(selected?: string[]): Observable<FormlyFieldConfig[]> {
     if (this.fields) {
-      return Observable.of(this.fields);
+      return Observable.of(this.selectFields(selected));
     }
     return this.rpc.httpGet('items/fields')
       .map((cols: any) => {
-        let fields = this.formService.formlyFields(cols);
-        if (selected !== undefined) {
-          fields = fields
-            .filter(field => selected.includes(field.key))
-            .sort((f1, f2) => selected.indexOf(f1.key) -
-                  selected.indexOf(f2.key));
-        }
-        this.fields = fields;
-        return fields;
+        this.fields = this.formService.formlyFields(cols);
+        return this.selectFields(selected);
       });
+  }
+
+  private selectFields(selected?: string[]): FormlyFieldConfig[] {
+    return selected === undefined
+      ? this.fields
+      : this.fields
+        .filter(field => selected.includes(field.key))
+        .sort((f1, f2) => selected.indexOf(f1.key) - selected.indexOf(f2.key));
   }
 
   /**
