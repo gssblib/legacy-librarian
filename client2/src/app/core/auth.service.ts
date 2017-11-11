@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Subject } from "rxjs/Subject";
 import 'rxjs/add/operator/map'
 
 /**
  * JWT JSON object returned by the server.
  */
 class JwtResponse {
-  id: string;
-  surname?: string;
+  username: string;
   token: string;
+  roles: string;
+  permissions: any;
+  // Sycamore user specified
+  id?: string;  // borrower number
+  surname?: string; // Surname as stored on borrower
 }
 
 /**
@@ -17,9 +22,12 @@ class JwtResponse {
  */
 class User {
   username: string;
-  id: string;
-  surname?: string;
   token: string;
+  roles: string;
+  permissions: any;
+  // Sycamore user specified
+  id?: string;  // borrower number
+  surname?: string; // Surname as stored on borrower
 }
 
 /**
@@ -30,13 +38,23 @@ export class AuthenticationService {
   /** Local storage key for the current user. */
   private static USER_KEY = 'currentUser';
 
+  user: User;
+
+  /** Subject tracking the current user. */
+  private userSubject = new Subject<User>();
+
+  /** Observable that any page accessing the user can listen to. */
+  userObservable = this.userSubject.asObservable();
+
   /** JWT token obtained from the server. */
-  public token: string;
+  public get token(): string {
+    return this.user.token;
+  }
 
   constructor(private httpClient: HttpClient) {
-    // set token if saved in local storage
-    var currentUser = AuthenticationService.getLocalUser();
-    this.token = currentUser && currentUser.token;
+    this.user = this.getUser();
+    this.userSubject.next(this.user);
+    this.userObservable.subscribe(user => this.user = user);
   }
 
   /**
@@ -50,8 +68,9 @@ export class AuthenticationService {
         // login successful if there's a jwt token in the response
         const token = response.token;
         if (token) {
-          this.token = response.token;
-          AuthenticationService.setLocalUser(this.toUser(username, response));
+          var user = this.toUser(username, response);
+          AuthenticationService.setLocalUser(user);
+          this.userSubject.next(user);
           return true;
         } else {
           return false;
@@ -60,16 +79,17 @@ export class AuthenticationService {
   }
 
   private toUser(username: string, response: JwtResponse): User {
-    return {
+    return Object.assign(new User(), {
       username: username,
       token: response.token,
+      roles: response.roles,
+      permissions: response.permissions,
       surname: response.surname,
-      id: response.id
-    };
+      id: response.id,
+    });
   }
 
   logout(): void {
-    this.token = null;
     AuthenticationService.removeLocalUser();
   }
 
