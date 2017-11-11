@@ -26,7 +26,7 @@ export class ItemLabelsComponent implements OnInit {
     private itemsService: ItemsService) { }
 
   ngOnInit() {
-    this.item = this.itemService.item;
+    this.item = this.itemService.getItem();
     this.loadCategories(this.item);
   }
 

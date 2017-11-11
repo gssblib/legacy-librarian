@@ -20,17 +20,24 @@ export class ItemEditFormComponent implements OnInit {
   constructor(
     private notificationService: NotificationService,
     private itemsService: ItemsService,
-    private itemService: ItemService) {}
+    private itemService: ItemService) {
+    this.itemsService.getItemFields().subscribe(fields => this.fields = fields);
+    this.itemService.itemObservable.subscribe(item => this.item = item);
+  }
 
   ngOnInit(): void {
-    this.itemsService.getItemFields().subscribe(fields => this.fields = fields);
-    this.item = this.itemService.item;
+    this.item = this.itemService.getItem();
   }
 
   submit(item) {
     this.itemsService.saveItem(this.item).subscribe(
-      value => { this.notificationService.show("Item saved."); },
+      item => this.onSaved(item),
       error => { this.notificationService.showError("Failed saving item.", error)}
     );
+  }
+
+  private onSaved(item: Item) {
+    this.notificationService.show("Item save.");
+    this.itemService.reloadItem();
   }
 }

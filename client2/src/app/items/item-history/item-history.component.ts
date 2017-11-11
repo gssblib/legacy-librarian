@@ -29,13 +29,18 @@ export class ItemHistoryComponent implements OnInit {
     private itemsService: ItemsService) { }
 
   ngOnInit() {
-    this.item = this.itemService.item;
-    this.itemsService.getItem(this.item.barcode, {options: 'history'})
-      .subscribe(item => {
-        var history = item.history;
-        this.item.history = history;
-      }
-    );
+    this.setItem(this.itemService.getItem());
+    this.itemService.itemObservable.subscribe(item => this.setItem(item));
+  }
+
+  private setItem(item: Item) {
+    if (item) {
+      this.itemsService.getItem(item.barcode, {options: 'history'})
+        .subscribe(item => {
+          console.log('history item: ', item);
+          this.item = item;
+        });
+    }
   }
 
   private toggleOrder(order: TdDataTableSortingOrder) {

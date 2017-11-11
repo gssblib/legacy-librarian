@@ -28,7 +28,9 @@ class CoverUploader extends FileUploader {
   styleUrls: ['./item-edit-cover.component.css'],
 })
 export class ItemEditCoverComponent implements OnInit {
-  @Input('item') item: Item;
+  @Input('item')
+  item: Item;
+
   public hasCover:boolean = true;
   private coverUrl: string;
   public coverUrlShown: string;
@@ -40,7 +42,7 @@ export class ItemEditCoverComponent implements OnInit {
     private notificationService: NotificationService,
     private itemsService: ItemsService,
     private config: ConfigService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.coverUrl = this.coverUrlShown = this.config.apiPath('items/' + this.item.barcode + '/cover');
@@ -75,5 +77,4 @@ export class ItemEditCoverComponent implements OnInit {
       }
     );
   }
-
 }
