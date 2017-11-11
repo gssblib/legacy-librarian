@@ -27,6 +27,7 @@ import { FeesModule } from './fees/fees.module';
 import { ReportsModule } from './reports/reports.module';
 import { ItemsRoutingModule } from "./items/items-routing.module";
 import { BorrowersRoutingModule } from './borrowers/borrowers-routing.module';
+import { CheckoutsModule } from "./checkouts/checkouts.module";
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { BorrowersRoutingModule } from './borrowers/borrowers-routing.module';
     BorrowersModule,
     FeesModule,
     ReportsModule,
+    CheckoutsModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

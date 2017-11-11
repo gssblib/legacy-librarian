@@ -19,6 +19,16 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav mode="side" opened="true" class="menu">
     <mat-nav-list>
+      <a mat-list-item routerLink="/checkout" accesskey="c" routerLinkActive="active"
+         *gslAuthorized="'items.checkout'">
+        <mat-icon>add_shpping_cart</mat-icon>
+        <span class="accesskey">C</span>heck Out
+      </a>
+      <a mat-list-item routerLink="/return" accesskey="r" routerLinkActive="active"
+         *gslAuthorized="'items.checkin'">
+        <mat-icon>keyboard_return</mat-icon>
+        <span class="accesskey">R</span>eturns
+      </a>
       <a mat-list-item routerLink="/items" accesskey="i" routerLinkActive="active"
          *gslAuthorized="'items.read'">
         <mat-icon>book</mat-icon>
@@ -29,15 +39,10 @@
         <mat-icon>people</mat-icon>
         <span class="accesskey">B</span>orrowers
       </a>
-      <a mat-list-item routerLink="/return" accesskey="r" routerLinkActive="active"
-         *gslAuthorized="'items.checkin'">
-        <mat-icon>keyboard_return</mat-icon>
-        <span class="accesskey">R</span>eturns
-      </a>
-      <a mat-list-item routerLink="/fees" accesskey="f" routerLinkActive="active"
+      <a mat-list-item routerLink="/fees" accesskey="s" routerLinkActive="active"
          *gslAuthorized="'fees.read'">
         <mat-icon>local_atm</mat-icon>
-        <span class="accesskey">F</span>ees
+        Fee<span class="accesskey">s</span>
       </a>
       <a mat-list-item routerLink="/reports/item-usage" accesskey="o" routerLinkActive="active"
          *gslAuthorized="'reports.read'">
