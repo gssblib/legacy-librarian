@@ -16,7 +16,7 @@ class CoverUploader extends FileUploader {
 
   public onSuccessItem(item:any, response:any, status:any, headers:any):any {
     // Force image reload.
-    this.itemCoverEdit.coverUrlShown = this.itemCoverEdit.coverUrl + '?random=' + Math.random();
+    this.itemCoverEdit.urlHash = Math.random();
     this.itemCoverEdit.hasCover = true;
     return {item, response, status, headers};
   }
@@ -30,6 +30,7 @@ class CoverUploader extends FileUploader {
 export class ItemEditCoverComponent implements OnInit {
   @Input('item')
   item: Item;
+  urlHash: string = Math.random();
 
   public hasCover:boolean = true;
   private coverUrl: string;
@@ -38,6 +39,14 @@ export class ItemEditCoverComponent implements OnInit {
   public uploader: CoverUploader;
   public hasDropZoneOver:boolean = false;
 
+  get coverUrl(): string {
+    return this.config.apiPath('items/' + this.item.barcode + '/cover');
+  }
+
+  get coverUrlShown(): string {
+    return this.coverUrl + '?random=' + this.urlHash;
+  }
+
   constructor(
     private notificationService: NotificationService,
     private itemsService: ItemsService,
@@ -45,7 +54,6 @@ export class ItemEditCoverComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.coverUrl = this.coverUrlShown = this.config.apiPath('items/' + this.item.barcode + '/cover');
     this.uploader = new CoverUploader(
       this, {
       url: this.coverUrl,
