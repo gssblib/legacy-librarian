@@ -122,7 +122,6 @@ httpcall.handlePaths([
       call.res.end(img, 'binary');
       return Q();
     },
-    action: {resource: 'items', operation: 'read'}
   },
   { post: '/items/:key/cover',
     fn: function (call) {
