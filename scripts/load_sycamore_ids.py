@@ -32,10 +32,12 @@ def load_code(csv_row, conn):
         print '              %s' % row[4]
 
     update_qry = (
-        "update borrowers set sycamoreid = %s where borrowernumber = %s")
+        "update borrowers set sycamoreid = '%s' where borrowernumber = %s" % (
+            code, result[0][3])
+        )
     cur = conn.cursor()
     # Only update the first found borrower, otherwise we will have a problem.
-    cur.execute(update_qry, (code, result[0][3]));
+    cur.execute(update_qry);
 
 
 def load_codes(csv_path):
@@ -44,6 +46,7 @@ def load_codes(csv_path):
         reader = csv.reader(csvfile)
         for row in reader:
             load_code(row, conn)
+    conn.commit()
 
 if __name__ == '__main__':
     load_codes(sys.argv[1])
