@@ -8,8 +8,9 @@ import { AuthenticationService } from '../../core/auth.service';
   styleUrls: ['./login-page.component.css']
 })
 export class LoginPageComponent implements OnInit {
+
   /** Authentication type sent to the server with the credentials. */
-  @Input() type: string;
+  type: string;
 
   model: any = {};
   loading = false;
@@ -43,4 +44,14 @@ export class LoginPageComponent implements OnInit {
       }
     );
   }
+}
+
+
+export class SycamoreLoginPageComponent extends LoginPageComponent {
+  type = 'sycamore';
+}
+
+
+export class InternalLoginPageComponent extends LoginPageComponent {
+  type = 'internal';
 }

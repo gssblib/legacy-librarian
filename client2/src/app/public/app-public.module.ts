@@ -32,7 +32,11 @@ import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.com
 import { SharedModule } from "../shared/shared.module";
 
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
-import { LoginPageComponent } from './login-page/login-page.component';
+import {
+  LoginPageComponent,
+  SycamoreLoginPageComponent,
+  InternalLoginPageComponent,
+} from './login-page/login-page.component';
 
 @NgModule({
   imports: [
@@ -70,6 +74,8 @@ import { LoginPageComponent } from './login-page/login-page.component';
     AppSearchBarComponent,
     CheckedOutPageComponent,
     LoginPageComponent,
+    SycamoreLoginPageComponent,
+    InternalLoginPageComponent,
   ],
   providers: [
   ],
