@@ -5,7 +5,7 @@
          [criteria]="criteria" [fields]="getSearchFields()" (search)="onSearch($event)">
       </gsl-multi-field-search-bar>
     </div>
-    <div class="add">
+    <div class="add" *gslAuthorized="'items.create'">
       <a mat-fab style="float: right" routerLink="add">
         <mat-icon>add</mat-icon>
       </a>

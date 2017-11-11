@@ -4,6 +4,9 @@
     </formly-form>
   </div>
   <div>
-    <button type="submit" mat-raised-button color="primary">Submit</button>
+    <button type="submit" mat-raised-button color="primary"
+            *gslAuthorized="'borrowers.update'">
+      Submit
+    </button>
   </div>
 </form>

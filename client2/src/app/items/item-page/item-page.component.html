@@ -5,11 +5,13 @@
     <gsl-item-status [status]="item.status"></gsl-item-status>
   </h3>
   <nav mat-tab-nav-bar>
-    <a mat-tab-link
-       *ngFor="let link of navLinks"
-       [routerLink]="link.link"
-       routerLinkActive #rla="routerLinkActive"
-       [active]="rla.isActive">{{link.label}}</a>
+    <ng-container *ngFor="let link of navLinks">
+      <a mat-tab-link
+         [routerLink]="link.link"
+         routerLinkActive #rla="routerLinkActive"
+         [active]="rla.isActive"
+         *gslAuthorized="link.action">{{link.label}}</a>
+    </ng-container>
   </nav>
   <div class="tab-body">
     <router-outlet></router-outlet>

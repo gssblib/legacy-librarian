@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
+import { Router } from "@angular/router";
 import { AuthenticationService } from './core/auth.service';
 import { ErrorService } from './core/error-service';
 import { NotificationService } from "./core/notification-service";
@@ -7,13 +8,14 @@ import { NotificationService } from "./core/notification-service";
 @Component({
   selector: 'gsl-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
 
   constructor(
-    private authenticationService: AuthenticationService,
+    private router: Router,
     private snackbar: MatSnackBar,
+    private authenticationService: AuthenticationService,
     private errorService: ErrorService,
     private notificationService: NotificationService,
   ) {}

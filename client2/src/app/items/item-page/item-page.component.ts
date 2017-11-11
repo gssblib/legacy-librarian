@@ -14,9 +14,9 @@ import { ActivatedRoute } from "@angular/router";
 })
 export class ItemPageComponent implements OnInit {
   navLinks = [
-    { link: 'details', label: 'Details'},
-    { link: 'history', label: 'History'},
-    { link: 'labels', label: 'Labels'}
+    { link: 'details', label: 'Details', action: 'items.read'},
+    { link: 'history', label: 'History', action: 'items.read'},
+    { link: 'labels', label: 'Labels', action: 'items.update'}
   ];
 
   item: Item;

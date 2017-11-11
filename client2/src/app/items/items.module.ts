@@ -17,6 +17,7 @@ import {
 import { FormlyModule } from "@ngx-formly/core";
 import { FormlyMaterialModule } from "@ngx-formly/material";
 import { FileUploadModule } from 'ng2-file-upload';
+import { CoreModule } from '../core/core.module';
 import { ItemComponent } from "./item/item.component";
 import { ItemService } from "./shared/item.service";
 import { ItemsService } from "./shared/items.service";
@@ -54,6 +55,7 @@ import { ItemCardComponent } from './item-card/item-card.component';
     ReactiveFormsModule,
     CovalentDataTableModule,
     CovalentPagingModule,
+    CoreModule,
     SharedModule,
     MatCardModule,
     MatChipsModule,

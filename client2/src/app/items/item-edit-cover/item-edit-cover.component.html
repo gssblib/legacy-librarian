@@ -13,7 +13,7 @@
       <mat-icon>broken_image</mat-icon>
     </div>
   </div>
-  <div [hidden]="!hasCover" class="cover-image-actions">
+  <div [hidden]="!hasCover" class="cover-image-actions" *gslAuthorized="'items.update'">
     <a mat-raised-button color="primary" (click)="deleteCover()">Delete Cover</a>
   </div>
 </div>
