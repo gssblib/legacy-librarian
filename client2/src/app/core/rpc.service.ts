@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from "@angular/router";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { RequestOptionsArgs, RequestOptions } from "@angular/http";
 import { Observable } from "rxjs";
@@ -15,8 +16,11 @@ import { RpcError } from "./rpc-error";
 @Injectable()
 export class RpcService {
 
-  constructor(private config: ConfigService, private http: HttpClient) {
-  }
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private config: ConfigService,
+  ) { }
 
   private addJwt(options?) {
     // ensure request options and headers are not null
@@ -148,7 +152,7 @@ export class RpcService {
   private handleError(response: HttpErrorResponse) {
     if (response.status === 401) {
       // 401 unauthorized response so log user out of client
-      window.location.href = '/login';
+      this.router.navigate(['/login']);
     }
     return Observable.throw(this.toRpcError(response));
   }
