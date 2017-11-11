@@ -82,22 +82,27 @@ httpcall.handlePaths([
     },
   },
   { get: '/fees',
-    fn: call => library.getFees(call.req.query, call.limit())
+    fn: call => library.getFees(call.req.query, call.limit()),
+    action: {resource: 'fees', operation: 'read'}
   },
   { get: '/borrowers/fees',
     fn: function (call) {
       return library.borrowers.allFees();
-    }
+    },
+    action: {resource: 'fees', operation: 'read'}
   },
   { post: '/history/:id/payFee',
     fn: function (call) {
       return library.history.payFee(call.param('id'));
-    }
+    },
+    action: {resource: 'fees', operation: 'update'}
   },
   { post: '/checkouts/:barcode/payFee',
     fn: function (call) {
       return library.checkouts.payFee(call.param('barcode'));
-    }},
+    },
+    action: {resource: 'fees', operation: 'update'}
+  },
   { post: '/checkouts/updateFees',
     fn: function (call) {
       return library.checkouts.updateFees(call.req.body.date);
