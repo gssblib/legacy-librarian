@@ -8,12 +8,14 @@ import { TableFetchResult } from "../../core/table-fetcher";
 import { ItemState } from "./item-state";
 import { FormService } from "../../core/form.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { Subject } from "rxjs/Subject";
 
 /**
  * Service for fetching and manipulating items.
  */
 @Injectable()
 export class ItemsService {
+  private fields: Array<FormlyFieldConfig>;
 
   constructor(private rpc: RpcService, private formService: FormService) {
   }
@@ -29,15 +31,19 @@ export class ItemsService {
   }
 
   getItemFields(selected?:Array<string>): Observable<Array<FormlyFieldConfig>> {
+    if (this.fields) {
+      return Observable.of(this.fields);
+    }
     return this.rpc.httpGet('items/fields')
       .map((cols: any) => {
-        var fields = this.formService.formlyFields(cols);
+        let fields = this.formService.formlyFields(cols);
         if (selected !== undefined) {
-          return fields
+          fields = fields
             .filter(field => selected.includes(field.key))
             .sort((f1, f2) => selected.indexOf(f1.key) -
                   selected.indexOf(f2.key));
         }
+        this.fields = fields;
         return fields;
       });
   }
