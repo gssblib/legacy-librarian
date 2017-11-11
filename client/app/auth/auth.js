@@ -78,6 +78,7 @@ angular.module('lbAuth', [])
    * a successful authentication.
    */
   function authenticate(login) {
+    login.type = 'internal';
     return $http.post('/api/users/authenticate', login).then(
       function (response) {
 	var result = response.data;

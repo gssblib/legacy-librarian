@@ -15,11 +15,14 @@ module.exports = function(server, api_prefix, auth) {
         return nullMiddleware;
 
     var authz = function(req, res, next) {
-      if (req.user === undefined)
+      /* Look at either the JWT stored user or the session user. The latter is
+         for BBB. */
+      var user = req.user || req.session.user;
+      if (user === undefined)
         return res.status(401).send('NO_USER');
-      if (req.user.permissions === undefined)
+      if (user.permissions === undefined)
         return res.status(401).send('NO_PERMISSIONS');
-      if (!auth.isAuthorized(req.user.permissions, action))
+      if (!auth.isAuthorized(user.permissions, action))
         return res.status(401).send('NOT_AUTHORIZED');
       return next();
     };

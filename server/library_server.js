@@ -156,6 +156,35 @@ httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew']);
 httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
 httpcall.handleEntity(library.antolin);
 
+// BBB: for client version 1
+httpcall.handlePaths([
+  { get: '/users/current',
+    fn: function (call) {
+      return Q(call.req.session.user);
+    }},
+  { post: '/users/authenticate',
+    fn: function (call) {
+      return auth.authenticate(call.req.body).tap(function (result) {
+        console.log('authenticate', result);
+	if (result.authenticated) {
+	  call.req.session.user = result.user;
+	}
+      });
+    }},
+  { post: '/users/logout',
+    fn: function (call) {
+      return Q(true).then(function () {
+        var loggedIn = !!call.req.session.user;
+        if (loggedIn) {
+          delete call.req.session.user;
+          return {success: true};
+        } else {
+          return {success: false, reason: 'NOT_LOGGED_IN'};
+        }
+      });
+    }}
+]);
+
 
 // Start server.
 const port = config.get('server').port;
