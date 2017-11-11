@@ -114,11 +114,12 @@ module.exports = function (db) {
                 authenticated: true,
                 user: {
                   type: 'sycamore',
-                  id: borrower.borrowernumber,
-                  user: login.username,
-                  surname: borrower.surname,
+                  username: login.username,
                   roles: 'borrower',
                   permissions: roles['borrower'].permissions,
+                  // Sycamore user specific.
+                  id: borrower.borrowernumber,
+                  surname: borrower.surname,
                 }
               };
             });
