@@ -55,15 +55,16 @@ export class BorrowerFeesComponent implements OnInit {
     {name: 'actions', label: 'Actions'},
   ];
 
-  constructor(
-    private datePipe: DatePipe,
-    private dataTableService: TdDataTableService,
-    private notificationService: NotificationService,
-    private borrowersService: BorrowersService,
-    private borrowerService: BorrowerService) { }
+  constructor(private datePipe: DatePipe,
+              private dataTableService: TdDataTableService,
+              private notificationService: NotificationService,
+              private borrowersService: BorrowersService,
+              private borrowerService: BorrowerService) {
+    borrowerService.borrowerObservable.subscribe(borrower => this.borrower = borrower);
+  }
 
   ngOnInit() {
-    this.borrower = this.borrowerService.borrower;
+    this.borrower = this.borrowerService.getBorrower();
     this.items = this.allItems();
     this.sortItems()
   }

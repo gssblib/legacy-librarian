@@ -2,7 +2,7 @@
   <gsl-barcode-field icon="check" (barcodeSubmit)="returnItem($event)" #barcode>
   </gsl-barcode-field>
   <h3>
-    <button mat-fab class="number-returned" color="accent">
+    <button mat-fab class="number-returned" color="accent" (click)="resetItems()">
       <b>{{ returnedItems.length }}</b>
     </button>
     items returned
@@ -10,12 +10,12 @@
   <td-data-table [data]="returnedItems"
                  [columns]="columns">
     <ng-template tdDataTableTemplate="barcode" let-row="row" let-value="value">
-      <a [routerLink]="'items/'+row.barcode+'/details'">
+      <a [routerLink]="['items', row.barcode, 'details']">
         {{ value }}
       </a>
     </ng-template>
     <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
-      <a [routerLink]="'items/'+row.barcode+'/details'">
+      <a [routerLink]="['items', row.barcode, 'details']">
         {{ value }}
       </a>
     </ng-template>

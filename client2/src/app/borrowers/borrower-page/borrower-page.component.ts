@@ -24,18 +24,18 @@ export class BorrowerPageComponent implements OnInit {
 
   constructor(
     private currencyPipe: CurrencyPipe,
-    private borrowersService: BorrowersService,
     private borrowerService: BorrowerService,
     private route: ActivatedRoute) {
+    borrowerService.borrowerObservable.subscribe(this.setBorrower.bind(this));
   }
 
   ngOnInit(): void {
-    this.route.data.subscribe(data => this.setBorrower(data['borrower']));
+    this.route.data.subscribe(
+      data => this.borrowerService.setBorrower(data['borrower']));
   }
 
   private setBorrower(borrower: Borrower) {
     this.borrower = borrower;
-    this.borrowerService.borrower = borrower;
     // Update the fee tab title tot reflect the total fee amount due.
     var fees = this.currencyPipe.transform(borrower.fees.total);
     this.navLinks[1]['label'] = `Fees (${fees})`;

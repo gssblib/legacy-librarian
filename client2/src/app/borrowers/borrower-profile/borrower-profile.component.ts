@@ -14,9 +14,12 @@ export class BorrowerProfileComponent implements OnInit {
   borrower: Borrower = null;
 
   constructor(private borrowerService: BorrowerService) {
+    this.borrowerService.borrowerObservable.subscribe(
+      borrower => this.borrower = borrower
+    );
   }
 
   ngOnInit() {
-    this.borrower = this.borrowerService.borrower;
+    this.borrower = this.borrowerService.getBorrower();
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Observable } from 'rxjs/Observable';
-import { ITdDataTableColumn } from "@covalent/core";
+import { ITdDataTableColumn, TdDataTableComponent } from "@covalent/core";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 import { ErrorService } from "../../core/error-service";
@@ -17,6 +17,9 @@ export class ReturnPageComponent implements OnInit {
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
+  @ViewChild(TdDataTableComponent)
+  dataTable: TdDataTableComponent;
+
   columns: ITdDataTableColumn[] = [
     {name: 'barcode', label: 'Barcode'},
     {name: 'title', label: 'Title'},
@@ -31,6 +34,12 @@ export class ReturnPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.returnedItems = this.getItems();
+  }
+
+  resetItems() {
+    this.returnedItems = [];
+    this.dataTable.refresh();
   }
 
   returnItem(barcode: string) {
@@ -41,8 +50,9 @@ export class ReturnPageComponent implements OnInit {
 
   private onSuccess(item: Item) {
     this.returnedItems.push(item);
+    this.storeItems(this.returnedItems);
     this.barcode.barcode = '';
-    this.returnedItems = Array.from(this.returnedItems);
+    this.dataTable.refresh();
   }
 
   private onError(barcode: string, error: RpcError) {
@@ -61,5 +71,14 @@ export class ReturnPageComponent implements OnInit {
       default:
         return `Server error: ${error.errorCode}`;
     }
+  }
+
+  private storeItems(items: Item[]) {
+    localStorage.setItem('returnedItems', JSON.stringify(items));
+  }
+
+  private getItems(): any {
+    const value = localStorage.getItem('returnedItems');
+    return value ? JSON.parse(value) : [];
   }
 }

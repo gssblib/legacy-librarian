@@ -1,10 +1,10 @@
 <td-data-table [data]="rows" [columns]="columns"
     [sortBy]="sortBy" [sortOrder]="sortOrder" (sortChange)="onSort($event)">
   <ng-template tdDataTableTemplate="barcode" let-value="value">
-    <a [routerLink]="'/items/' + value">{{value}}</a>
+    <a [routerLink]="['/items', value, 'details']">{{value}}</a>
   </ng-template>
   <ng-template tdDataTableTemplate="title" let-value="value" let-row="row">
-    <a [routerLink]="'/items/' + row.barcode">{{value}}</a>
+    <a [routerLink]="['/items', row.barcode, 'details']">{{value}}</a>
   </ng-template>
   <ng-template tdDataTableTemplate="checkout_date" let-value="value">
     {{value | date:shortDate}}

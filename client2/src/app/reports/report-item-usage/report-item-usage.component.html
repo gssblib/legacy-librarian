@@ -25,10 +25,10 @@
                    [sortOrder]="sortKey.order"
                    (sortChange)="onSort($event)">
       <ng-template tdDataTableTemplate="barcode" let-value="value">
-        <a [routerLink]="'/items/'+value">{{value}}</a>
+        <a [routerLink]="['/items', value]">{{value}}</a>
       </ng-template>
       <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
-        <a [routerLink]="'/items/'+row.barcode">{{value}}</a>
+        <a [routerLink]="['/items', row.barcode]">{{value}}</a>
       </ng-template>
       <ng-template tdDataTableTemplate="author" let-row="row" let-value="value">
         <a routerLink="/items" [queryParams]="{author: value}">{{value}}</a>

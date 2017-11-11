@@ -28,20 +28,26 @@ export class BorrowerCheckoutsComponent implements OnInit {
     private errorService: ErrorService,
     private borrowerService: BorrowerService,
     private borrowersService: BorrowersService
-  ) { }
+  ) {
+    this.borrowerService.borrowerObservable.subscribe(borrower => {
+      this.borrower = borrower;
+    });
+  }
 
   ngOnInit() {
-    this.borrower = this.borrowerService.borrower;
+    this.borrower = this.borrowerService.getBorrower();
   }
 
   checkout(barcode) {
     this.borrowersService.checkOutItem(barcode, this.borrower.borrowernumber)
-      .catch((error: RpcError) => this.onError(barcode, error))
-        .subscribe((barcode: string) => this.onSuccess(barcode));
+      .subscribe(
+        (barcode: string) => this.onSuccess(barcode),
+        (error: RpcError) => this.onError(barcode, error));
   }
 
   private onSuccess(result) {
     this.borrowerChange.emit(null);
+    this.borrowerService.reloadBorrower();
     this.barcode.barcode = '';
   }
 

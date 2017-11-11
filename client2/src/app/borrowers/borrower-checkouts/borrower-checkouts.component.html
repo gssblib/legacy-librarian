@@ -1,7 +1,25 @@
 <div class="checkout">
   <div *ngIf="borrower">
-    <gsl-barcode-field icon="add" (barcodeSubmit)="checkout($event)" #barcode></gsl-barcode-field>
-    <gsl-borrower-checkouts-table [checkouts]="borrower.items"></gsl-borrower-checkouts-table>
+    <div>
+      <gsl-barcode-field icon="add" #barcode [focus]="true"
+                         (barcodeSubmit)="checkout($event)"></gsl-barcode-field>
+    </div>
+    <div *ngIf="borrower.items.length == 0">
+      No items checked out.
+    </div>
+    <div *ngIf="borrower.items.length > 0">
+      <h3>
+        <button mat-fab class="number-checked-out" color="accent">
+          <b>{{ borrower.items.length }}</b>
+        </button>
+        <span [ngPlural]="borrower.items.length">
+          <ng-template ngPluralCase="=1">item</ng-template>
+          <ng-template ngPluralCase="other">items</ng-template>
+        </span>
+        checked out:
+      </h3>
+      <gsl-borrower-checkouts-table [checkouts]="borrower.items"></gsl-borrower-checkouts-table>
+    </div>
   </div>
 </div>
 

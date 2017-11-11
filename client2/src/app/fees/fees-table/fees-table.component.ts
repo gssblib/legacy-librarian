@@ -32,7 +32,7 @@ export class FeesTableComponent implements OnInit {
   pageSize: number = 10;
 
   /** Current sort key. Set from the URL and table sort event. */
-  sortKey = new SortKey('fee', 'ASC');
+  sortKey = new SortKey('fee', 'DESC');
 
   @ViewChild('pagingBar')
   pagingBar: TdPagingBarComponent;
@@ -107,7 +107,7 @@ export class FeesTableComponent implements OnInit {
     this.pageSize = p.getNumber('pageSize', 10);
     this.sortKey = params['order']
       ? SortKey.fromString(params['order'])
-      : new SortKey('fee', 'ASC');
+      : new SortKey('fee', 'DESC');
     this.criteria = p.getValues([]);
   }
 

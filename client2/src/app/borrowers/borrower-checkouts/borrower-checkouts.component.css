@@ -1,3 +1,6 @@
 .checkout {
   margin-top: 1em;
 }
+.number-checked-out {
+  font-size: 120%;
+}
