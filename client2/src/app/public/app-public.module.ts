@@ -30,13 +30,7 @@ import { ItemBrowserPageComponent } from './item-browser-page/item-browser-page.
 import { RouterModule } from "@angular/router";
 import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.component';
 import { SharedModule } from "../shared/shared.module";
-
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
-import {
-  LoginPageComponent,
-  SycamoreLoginPageComponent,
-  InternalLoginPageComponent,
-} from './login-page/login-page.component';
 
 @NgModule({
   imports: [
@@ -73,9 +67,6 @@ import {
     ItemBrowserPageComponent,
     AppSearchBarComponent,
     CheckedOutPageComponent,
-    LoginPageComponent,
-    SycamoreLoginPageComponent,
-    InternalLoginPageComponent,
   ],
   providers: [
   ],
