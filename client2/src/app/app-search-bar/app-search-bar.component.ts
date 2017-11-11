@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app-search-bar.component.css']
 })
 export class AppSearchBarComponent implements OnInit {
-  type = 'item';
 
   constructor() {
 
