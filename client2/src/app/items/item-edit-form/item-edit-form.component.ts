@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { NotificationService } from "../../core/notification-service";
 import { ItemService } from "../shared/item.service";
 import { ItemsService } from "../shared/items.service";

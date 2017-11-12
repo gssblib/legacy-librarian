@@ -1,7 +1,8 @@
 import { Component, Input } from "@angular/core";
-import { Borrower } from "../shared/borrower";
+import { Router } from "@angular/router";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { Borrower } from "../shared/borrower";
 import { NotificationService } from "../../core/notification-service";
 import { BorrowersService } from "../shared/borrowers.service";
 
@@ -18,6 +19,7 @@ export class BorrowerProfileEditComponent {
   borrower: Borrower;
 
   constructor(
+    private router: Router,
     private notificationService: NotificationService,
     private borrowersService: BorrowersService,
   ) { }
@@ -26,10 +28,20 @@ export class BorrowerProfileEditComponent {
     this.borrowersService.getBorrowerFields().subscribe(fields => this.fields = fields);
   }
 
-  submit(borrower) {
+  submit() {
     this.borrowersService.saveBorrower(this.borrower).subscribe(
       value => { this.notificationService.show("Borrower saved."); },
       error => { this.notificationService.showError("Failed saving borrower.", error)}
     );
   }
+
+  delete() {
+    const num = this.borrower.borrowernumber;
+    this.borrowersService.deleteBorrower(this.borrower).subscribe(
+      borrower => { this.notificationService.show(`Borrower ${num} deleted.`) },
+      error => { this.notificationService.showError("Failed to delete borrower..", error) }
+    );
+    this.router.navigate(['/borrowers']);
+  }
+
 }

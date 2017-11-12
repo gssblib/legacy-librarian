@@ -61,6 +61,10 @@ export class BorrowersService {
       .map(obj => Object.assign(new Borrower(), obj));
   }
 
+  deleteBorrower(borrower) {
+    return this.rpc.httpDelete(`borrowers/${borrower.borrowernumber}`);
+  }
+
   getMyBorrower() {
     return this.rpc.httpGet('me')
         .map(obj => Object.assign(new Borrower(), obj));

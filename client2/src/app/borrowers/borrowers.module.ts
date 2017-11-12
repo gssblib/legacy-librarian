@@ -19,6 +19,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 import { CoreModule } from '../core/core.module';
 import { SharedModule } from '../shared/shared.module';
+import { ConfirmationDialogModule } from "../shared/confirmation-dialog/confirmation-dialog.module";
 import { BorrowersService } from './shared/borrowers.service';
 import { BorrowerService } from './shared/borrower.service';
 import { BorrowerResolverService } from './shared/borrower.resolver.service';
@@ -46,6 +47,7 @@ import { BorrowerStatusComponent } from './borrower-status/borrower-status.compo
     CovalentDataTableModule,
     CovalentPagingModule,
     SharedModule,
+    ConfirmationDialogModule,
     MatCardModule,
     MatTabsModule,
     MatAutocompleteModule,
