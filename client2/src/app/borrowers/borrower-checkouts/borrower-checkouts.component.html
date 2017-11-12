@@ -9,7 +9,7 @@
     </div>
     <div *ngIf="borrower.items.length > 0">
       <h3>
-        <button mat-fab class="number-checked-out" color="accent">
+        <button mat-fab class="number-checked-out" color="accent" [ngClass]="itemCountClass">
           <b>{{ borrower.items.length }}</b>
         </button>
         <span [ngPlural]="borrower.items.length">
