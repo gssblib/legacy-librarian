@@ -27,7 +27,7 @@ import { ItemsService } from "../shared/items.service";
 export class ItemSearchPageComponent implements OnInit, OnDestroy {
   ItemState = ItemState;
 
-  searchFields: string[] = ['title', 'author', 'description', 'subject'];
+  searchFields: string[] = ['title', 'author', 'description', 'subject', 'state'];
 
   /** Current result being shown in the table. */
   result: TableFetchResult<Item>;
@@ -53,7 +53,7 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
   /** Meta-data for the items table. */
   columns: ITdDataTableColumn[] = [
     {name: 'barcode', label: 'Barcode', width: 100, sortable: true},
-    {name: 'status', label: 'Status', width: 130, format: value => ItemState[value]},
+    {name: 'status', label: 'Status', width: 130, sortable: false, format: value => ItemState[value]},
     {name: 'title', label: 'Title', sortable: true},
     {name: 'author', label: 'Author', width: 220, sortable: true},
     {name: 'subject', label: 'Subject', width: 180, sortable: true},
@@ -69,8 +69,8 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private itemsService: ItemsService,
     private route: ActivatedRoute,
-    private router: Router) {
-  }
+    private router: Router,
+  ) { }
 
   ngOnInit() {
     this.routeSubscription =
