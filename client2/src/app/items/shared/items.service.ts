@@ -96,6 +96,10 @@ export class ItemsService {
       .map(obj => Object.assign(new Item(), obj));
   }
 
+  deleteItem(item) {
+    return this.rpc.httpDelete(`items/${item.barcode}`);
+  }
+
   deleteCover(item) {
     return this.rpc.httpDelete(`items/${item.barcode}/cover`);
   }
