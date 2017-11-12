@@ -22,6 +22,13 @@ export class RpcService {
     private config: ConfigService,
   ) { }
 
+  public getJWTAuthToken() {
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser && currentUser.token) {
+      return 'Bearer ' + currentUser.token;
+    }
+  }
+
   private addJwt(options?) {
     // ensure request options and headers are not null
     options = options || new RequestOptions();
