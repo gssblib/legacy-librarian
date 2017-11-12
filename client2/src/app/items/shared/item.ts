@@ -4,6 +4,7 @@ import { ItemState } from "./item-state";
  * Represents an item (as stored in the database).
  */
 export class Item {
+  id: number;
   barcode: string;
   author: string;
   title: string;

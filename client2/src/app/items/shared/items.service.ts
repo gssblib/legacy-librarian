@@ -6,7 +6,7 @@ import { RpcService } from "../../core/rpc.service";
 import { FetchResult } from "../../core/fetch-result";
 import { TableFetchResult } from "../../core/table-fetcher";
 import { ItemState } from "./item-state";
-import { FormService } from "../../core/form.service";
+import { Column, FormService } from "../../core/form.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 
 /**
@@ -14,8 +14,8 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
  */
 @Injectable()
 export class ItemsService {
-  /** Cached field fetched from server. */
-  private fields: FormlyFieldConfig[];
+  /** Cached columns fetched from server. */
+  private cols: Column[];
 
   constructor(private rpc: RpcService, private formService: FormService) {
   }
@@ -36,13 +36,13 @@ export class ItemsService {
    * @param selected Keys of the fields to return (in this order)
    */
   getItemFields(selected?: string[]): Observable<FormlyFieldConfig[]> {
-    if (this.fields) {
-      return Observable.of(this.formService.selectFields(this.fields, selected));
+    if (this.cols) {
+      return Observable.of(this.formService.formlyFields(this.cols, selected));
     }
     return this.rpc.httpGet('items/fields')
       .map((cols: any) => {
-        this.fields = this.formService.formlyFields(cols);
-        return this.formService.selectFields(this.fields, selected);
+        this.cols = cols;
+        return this.formService.formlyFields(cols, selected);
       });
   }
 

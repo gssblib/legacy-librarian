@@ -1,19 +1,18 @@
 <div class="containerX" fxLayoutGap="30px">
   <div [fxFlex]="calc3Cols" class="col3 form">
-
     <form [formGroup]="form" (ngSubmit)="submit(item)">
       <div class="fields">
-        <formly-form [model]="item" [fields]="fields">
+        <formly-form [model]="item" [fields]="fields" [form]="form">
         </formly-form>
       </div>
       <div class="actions">
         <button type="submit" mat-raised-button color="primary"
+                [disabled]="form.invalid"
                 *gslAuthorized="'items.update'">
           Submit
         </button>
       </div>
     </form>
-
   </div>
   <div>
     <gsl-item-edit-cover [item]="item"></gsl-item-edit-cover>

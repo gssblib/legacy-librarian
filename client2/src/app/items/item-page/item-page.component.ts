@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
 import { ItemService } from "../shared/item.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 
 /**
  * Presents a single Item with its details and history.
@@ -23,12 +23,22 @@ export class ItemPageComponent implements OnInit {
 
   constructor(private itemsService: ItemsService,
               private itemService: ItemService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router: Router) {
     this.item = this.itemService.getItem();
     this.itemService.itemObservable.subscribe(item => this.item = item );
   }
 
   ngOnInit(): void {
     this.route.data.subscribe(data => this.itemService.setItem(data['item']));
+  }
+
+  copyItem() {
+    console.log('copy item');
+    const newItem = Object.assign(new Item(), this.item);
+    newItem.barcode = '';
+    newItem.id = undefined;
+    this.itemService.newItem = newItem;
+    this.router.navigate(['items', 'add']);
   }
 }

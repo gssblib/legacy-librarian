@@ -18,6 +18,8 @@ export class ItemService {
   private itemSubject = new Subject<Item>();
   itemObservable = this.itemSubject.asObservable();
 
+  newItem: Item = new Item();
+
   constructor(private itemsService: ItemsService) {
     this.itemObservable.subscribe(item => this.item = item);
   }

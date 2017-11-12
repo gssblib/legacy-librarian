@@ -28,7 +28,7 @@ export class BorrowerAddPageComponent implements OnInit {
   submitForm(borrower) {
     this.borrowersService.addBorrower(borrower).subscribe(
       value => {
-        this.router.navigate(['/borrowers/checkouts', value.borrowernumber]);
+        this.router.navigate(['/borrowers', value.borrowernumber, 'checkouts']);
       },
       error => {
         this.notificationService.showError('Saving borrower failed', error);

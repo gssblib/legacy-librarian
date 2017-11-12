@@ -2,13 +2,13 @@
   <h1>
     Add Item
   </h1>
-  <form [formGroup]="form" (ngSubmit)="submitForm(item)">
+  <form [formGroup]="form" novalidate (ngSubmit)="submitForm(item)">
     <div class="fields">
-      <formly-form [model]="item" [fields]="fields">
-      </formly-form>
+      <formly-form [model]="item" [form]="form" [fields]="fields"></formly-form>
     </div>
     <div class="actions">
-      <button type="submit" mat-raised-button color="primary">Add</button>
+      <button type="submit" mat-raised-button color="primary"
+              [disabled]="form.invalid">Add</button>
     </div>
   </form>
 </mat-card>

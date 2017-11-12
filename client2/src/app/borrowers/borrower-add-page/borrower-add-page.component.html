@@ -4,11 +4,12 @@
   </h1>
   <form [formGroup]="form" (ngSubmit)="submitForm(borrower)">
     <div class="fields">
-      <formly-form [model]="borrower" [fields]="fields">
+      <formly-form [model]="borrower" [fields]="fields" [form]="form">
       </formly-form>
     </div>
     <div class="actions">
-      <button type="submit" mat-raised-button color="primary">Add</button>
+      <button type="submit" mat-raised-button color="primary"
+              [disabled]="form.invalid">Add</button>
     </div>
   </form>
 </mat-card>

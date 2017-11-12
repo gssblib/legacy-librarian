@@ -14,7 +14,6 @@ import { ItemLabelsComponent } from "./item-labels/item-labels.component";
   imports: [
     RouterModule.forChild([
       {path: 'return', component: ReturnPageComponent},
-      {path: 'items', component: ItemSearchPageComponent},
       {path: 'items/add', component: ItemAddPageComponent},
       {path: 'items/:id', component: ItemPageComponent,
        resolve: {
@@ -26,6 +25,7 @@ import { ItemLabelsComponent } from "./item-labels/item-labels.component";
           {path: 'labels', component: ItemLabelsComponent},
         ]
       },
+      {path: 'items', component: ItemSearchPageComponent},
     ])
   ],
   exports: [

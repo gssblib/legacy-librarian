@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { Borrower } from "./borrower";
 import { FetchResult } from "../../core/fetch-result";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { FormService } from "../../core/form.service";
+import { Column, FormService } from "../../core/form.service";
 
 /**
  * Borrower functions talking to the server.
@@ -12,7 +12,7 @@ import { FormService } from "../../core/form.service";
 @Injectable()
 export class BorrowersService {
   /** Cached field fetched from server. */
-  private fields: FormlyFieldConfig[];
+  private cols: Column[];
 
   constructor(private rpc: RpcService, private formService: FormService) {
   }
@@ -23,13 +23,13 @@ export class BorrowersService {
    * @param selected Keys of the fields to return (in this order)
    */
   getBorrowerFields(selected?: string[]): Observable<FormlyFieldConfig[]> {
-    if (this.fields) {
-      return Observable.of(this.formService.selectFields(this.fields, selected));
+    if (this.cols) {
+      return Observable.of(this.formService.formlyFields(this.cols, selected));
     }
     return this.rpc.httpGet('borrowers/fields')
       .map((cols: any) => {
-        this.fields = this.formService.formlyFields(cols);
-        return this.formService.selectFields(this.fields, selected);
+        this.cols = cols;
+        return this.formService.formlyFields(this.cols, selected);
       });
   }
 

@@ -23,6 +23,7 @@ export class ItemEditFormComponent implements OnInit {
     private itemService: ItemService) {
     this.itemsService.getItemFields().subscribe(fields => this.fields = fields);
     this.itemService.itemObservable.subscribe(item => this.item = item);
+    this.item = this.itemService.getItem();
   }
 
   ngOnInit(): void {

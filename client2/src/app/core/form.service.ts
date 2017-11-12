@@ -1,4 +1,3 @@
-
 import { Injectable } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 
@@ -11,7 +10,7 @@ class Domain {
 /**
  * Column metadata as returned by the server.
  */
-class Column {
+export class Column {
   name: string;
   domain?: Domain;
   label?: string;
@@ -33,15 +32,8 @@ export class FormService {
    * Converts the column meta data obtained from the server to the FormlyFieldConfigs
    * controlling the dynamic forms.
    */
-  formlyFields(cols: Array<Column>): Array<FormlyFieldConfig> {
-    return FormService.toFormlyFields(cols);
-  }
-
-  /**
-   * Returns the list of selected fields in the correct order.
-   */
-  selectFields(fields: FormlyFieldConfig[], selected?: string[]):
-      FormlyFieldConfig[] {
+  formlyFields(cols: Column[], selected?: string[]): FormlyFieldConfig[] {
+    const fields = FormService.toFormlyFields(cols);
     return selected === undefined
       ? fields
       : fields
