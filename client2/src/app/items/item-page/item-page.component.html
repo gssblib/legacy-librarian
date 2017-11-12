@@ -3,9 +3,6 @@
     Item {{ item.barcode }}: {{ item.title }}
     <gsl-item-antolin [antolin]="item.antolin"></gsl-item-antolin>
     <gsl-item-status [status]="item.status"></gsl-item-status>
-    <button title="Copy item" (click)="copyItem()">
-      <mat-icon>content_copy</mat-icon>
-    </button>
   </h3>
   <nav mat-tab-nav-bar>
     <ng-container *ngFor="let link of navLinks">

@@ -33,12 +33,4 @@ export class ItemPageComponent implements OnInit {
     this.route.data.subscribe(data => this.itemService.setItem(data['item']));
   }
 
-  copyItem() {
-    console.log('copy item');
-    const newItem = Object.assign(new Item(), this.item);
-    newItem.barcode = '';
-    newItem.id = undefined;
-    this.itemService.newItem = newItem;
-    this.router.navigate(['items', 'add']);
-  }
 }

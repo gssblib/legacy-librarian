@@ -39,6 +39,14 @@ export class ItemEditFormComponent implements OnInit {
     );
   }
 
+  copy() {
+    const newItem = Object.assign(new Item(), this.item);
+    newItem.barcode = '';
+    newItem.id = undefined;
+    this.itemService.newItem = newItem;
+    this.router.navigate(['items', 'add']);
+  }
+
   delete() {
     const barcode = this.item.barcode;
     this.itemsService.deleteItem(this.item).subscribe(
@@ -52,4 +60,5 @@ export class ItemEditFormComponent implements OnInit {
     this.notificationService.show("Item save.");
     this.itemService.reloadItem();
   }
+
 }

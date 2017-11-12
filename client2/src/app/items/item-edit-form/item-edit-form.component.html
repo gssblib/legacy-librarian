@@ -11,6 +11,11 @@
                 *gslAuthorized="'items.update'">
           Submit
         </button>
+        <button type="submit" mat-raised-button color="primary"
+                (click)="copy()"
+                *gslAuthorized="'items.create'">
+          Copy Item
+        </button>
         <button
            color="primary" type="submit" color="warn"
            mat-raised-button
