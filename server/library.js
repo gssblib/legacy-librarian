@@ -91,6 +91,7 @@ module.exports = {
         {name: 'surname', required: true, label: 'Last Name', queryOp: 'contains'},
         {name: 'firstname', label: 'First Name', queryOp: 'contains'},
         {name: 'contactname', label: 'Contact Name', queryOp: 'contains'},
+        {name: 'phone', label: 'Phone Number'},
         {name: 'emailaddress', required: true, label: 'E-mail',
          queryOp: 'contains'},
         {name: 'sycamoreid', label: 'Sycamore ID'},
