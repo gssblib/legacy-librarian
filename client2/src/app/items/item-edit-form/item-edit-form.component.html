@@ -1,6 +1,6 @@
 <div class="containerX" fxLayoutGap="30px">
   <div [fxFlex]="calc3Cols" class="col3 form">
-    <form [formGroup]="form" (ngSubmit)="submit(item)">
+    <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="fields">
         <formly-form [model]="item" [fields]="fields" [form]="form">
         </formly-form>
@@ -10,6 +10,16 @@
                 [disabled]="form.invalid"
                 *gslAuthorized="'items.update'">
           Submit
+        </button>
+        <button
+           color="primary" type="submit" color="warn"
+           mat-raised-button
+           gslConfirmationDialog
+           title="Confirm Deletion"
+           message="Are you sure you want to delete the item?"
+           (confirm)="delete()"
+           *gslAuthorized="'items.delete'">
+          Delete
         </button>
       </div>
     </form>

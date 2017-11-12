@@ -30,6 +30,7 @@ import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 import { ItemResolverService } from './shared/item.resolver.service';
 import { ReturnPageComponent } from './return-page/return-page.component';
 import { SharedModule } from "../shared/shared.module";
+import { ConfirmationDialogModule } from "../shared/confirmation-dialog/confirmation-dialog.module";
 import { ItemSearchPageComponent } from './item-search-page/item-search-page.component';
 import { ItemEditFormComponent } from "./item-edit-form/item-edit-form.component";
 import { ItemAddPageComponent } from './item-add-page/item-add-page.component';
@@ -70,6 +71,7 @@ import { ItemCardComponent } from './item-card/item-card.component';
     FormlyModule.forRoot(),
     FormlyMaterialModule,
     RouterModule,
+    ConfirmationDialogModule,
   ],
   declarations: [
     ItemComponent,
