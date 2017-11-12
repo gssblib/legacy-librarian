@@ -170,6 +170,11 @@ module.exports = function(server, api_prefix, auth) {
       fn: function (call) { return entity.create(call.req.body); },
       action: {resource: entity.name, operation: 'create'}
     });
+    handlePath({
+      delete: keyPath,
+      fn: function (call) { return entity.remove(call.param('key')); },
+      action: {resource: entity.name, operation: 'delete'}
+    });
     if (methods) {
       methods.forEach(function (method) {
         handlePath({

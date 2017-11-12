@@ -283,7 +283,8 @@ Entity.prototype.update = function (obj) {
  * Returns the promise of deleting an object identified by id.
  */
 Entity.prototype.remove = function (id) {
-  return this.db.query('delete from ' + this.table + ' where id = ?', id);
+  var keyCol = this.naturalKey || 'id';
+  return this.db.query('delete from ' + this.table + ' where ' + keyCol + ' = ?', id);
 };
 
 /**
