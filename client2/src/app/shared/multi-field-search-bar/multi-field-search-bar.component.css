@@ -3,7 +3,7 @@
 }
 
 /deep/ .search-fields formly-form mat-form-field.mat-form-field {
-  width: 25% !important;
+  width: 24% !important;
 }
 
 /deep/ .search-fields formly-form.width1 mat-form-field.mat-form-field {
@@ -20,4 +20,8 @@
 
 /deep/ .search-fields formly-form.width4 mat-form-field.mat-form-field {
   width: 24% !important;
+}
+
+/deep/ .search-fields formly-form.width5 mat-form-field.mat-form-field {
+  width: 19% !important;
 }
