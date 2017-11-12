@@ -14,6 +14,8 @@ import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.
 })
 export class ReturnPageComponent implements OnInit {
   returnedItems: Item[] = [];
+  itemCountClass: string = '';
+
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
@@ -37,6 +39,11 @@ export class ReturnPageComponent implements OnInit {
     this.returnedItems = this.getItems();
   }
 
+  pulseCount() {
+    this.itemCountClass = 'pulse';
+    setTimeout(() => { this.itemCountClass = ''; }, 1000);
+  }
+
   resetItems() {
     this.returnedItems = [];
     this.dataTable.refresh();
@@ -52,6 +59,7 @@ export class ReturnPageComponent implements OnInit {
     this.returnedItems.push(item);
     this.storeItems(this.returnedItems);
     this.barcode.barcode = '';
+    this.pulseCount();
     this.dataTable.refresh();
   }
 

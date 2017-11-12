@@ -2,7 +2,8 @@
   <gsl-barcode-field icon="check" (barcodeSubmit)="returnItem($event)" #barcode>
   </gsl-barcode-field>
   <h3>
-    <button mat-fab class="number-returned" color="accent" (click)="resetItems()">
+    <button mat-fab class="number-returned" color="accent"
+            (click)="resetItems()" [ngClass]="itemCountClass">
       <b>{{ returnedItems.length }}</b>
     </button>
     items returned

@@ -17,6 +17,7 @@ import { BorrowerService } from '../shared/borrower.service';
 })
 export class BorrowerCheckoutsComponent implements OnInit {
   borrower: Borrower;
+  itemCountClass: string = '';
 
   @Output()
   borrowerChange: EventEmitter<any> = new EventEmitter();
@@ -38,6 +39,11 @@ export class BorrowerCheckoutsComponent implements OnInit {
     this.borrower = this.borrowerService.getBorrower();
   }
 
+  pulseCount() {
+    this.itemCountClass = 'pulse';
+    setTimeout(() => { this.itemCountClass = ''; }, 1000);
+  }
+
   checkout(barcode) {
     this.borrowersService.checkOutItem(barcode, this.borrower.borrowernumber)
       .subscribe(
@@ -49,6 +55,7 @@ export class BorrowerCheckoutsComponent implements OnInit {
     this.borrowerChange.emit(null);
     this.borrowerService.reloadBorrower();
     this.barcode.barcode = '';
+    this.pulseCount();
   }
 
   private onError(barcode: string, error: RpcError) {
