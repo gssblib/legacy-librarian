@@ -23,11 +23,11 @@ export class ReturnPageComponent implements OnInit {
   dataTable: TdDataTableComponent;
 
   columns: ITdDataTableColumn[] = [
-    {name: 'barcode', label: 'Barcode'},
+    {name: 'barcode', label: 'Barcode', width: 100},
     {name: 'title', label: 'Title'},
-    {name: 'author', label: 'Author'},
-    {name: 'subject', label: 'Subject'},
-    {name: 'description', label: 'Description'},
+    {name: 'author', label: 'Author', width: 220},
+    {name: 'subject', label: 'Subject', width: 180},
+    {name: 'description', label: 'Category', width: 100},
   ]
 
   constructor(
