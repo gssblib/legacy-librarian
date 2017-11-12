@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { ConfigService } from "../../core/config.service";
+import { RpcService } from "../../core/rpc.service";
 import { NotificationService } from "../../core/notification-service";
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
@@ -46,6 +47,7 @@ export class ItemEditCoverComponent implements OnInit {
   }
 
   constructor(
+    private rpc: RpcService,
     private notificationService: NotificationService,
     private itemsService: ItemsService,
     private config: ConfigService
@@ -54,11 +56,12 @@ export class ItemEditCoverComponent implements OnInit {
   ngOnInit() {
     this.uploader = new CoverUploader(
       this, {
-      url: this.coverUrl,
-      isHTML5: true,
-      disableMultipart: false,
-      removeAfterUpload: true,
-      autoUpload: true,
+        url: this.coverUrl,
+        authToken: this.rpc.getJWTAuthToken(),
+        isHTML5: true,
+        disableMultipart: false,
+        removeAfterUpload: true,
+        autoUpload: true,
     });
   }
 
