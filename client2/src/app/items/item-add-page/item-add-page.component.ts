@@ -33,14 +33,13 @@ export class ItemAddPageComponent implements OnInit {
   }
 
   submitForm(item) {
-    console.log('add item: ', item);
-    // this.itemsService.addItem(item).subscribe(
-    //   value => {
-    //     this.router.navigate(['/items', value.barcode]);
-    //   },
-    //   error => {
-    //     this.notificationService.showError('Failed to add item.', error)
-    //   }
-    // );
+    this.itemsService.addItem(item).subscribe(
+      value => {
+        this.router.navigate(['/items', value.barcode, 'details']);
+      },
+      error => {
+        this.notificationService.showError('Failed to add item.', error)
+      }
+    );
   }
 }
