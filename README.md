@@ -1,28 +1,39 @@
 # GSSB Library App
 
-This directory contains the web app for the library of the GSSB.
+This project contains the web app for the library of the GSSB.
 
 The application consists of an AngularJS client talking to a node.js server
 backed by a mysql database (using the schema of the previous version of the
 library application which was based on MS WebMatrix).
 
+
 ## Directory Structure
 
-- client: client web application (angular)
+- client: old client web application (angular 1.x)
+- client2: new client web application (angular 5+)
 - server: node.js server
-- node_modules: local npm installation directory
-- bower_modules: bower installation directory
+- labels: A label printer server written in Python
+- scripts: A directory with operational scripts, such as backups and E-mail
+  notifications.
+- sql: SQL schema and migration scripts for the DB
+- config: contains the config for the server and tools
 - doc: project documentation
-- Gruntfile.js: grunt makefile for the web app (copying libraries)
-- bower.json: bower configuration for re-installing the web app libs
 
-## How did we get here?
 
-With `npm` and `bower` available, all one needs to do is call their `install`
-commands with the `--save` option (`npm` for the server modules, `bower` for
-the client modules).  This adds the modules to the `package.json` and
-`bower.json` files so that everything can be installed again with `npm install`
-and `bower install`, respectively.
+## Basic Setup
+
+All commands needed to build and run the application are maintained in a
+Makefile. You can see the list of available commands using `make help`.
+
+```
+$ make
+$ cp config/template.json config/prod.json
+$ <edit config/prod.json>
+$ make run-server
+$ make client-dev
+
+You can now access the application via `http://localhost:4200`.
+
 
 ### Installing node modules (with npm)
 
