@@ -9,7 +9,6 @@ import time
 from bs4 import BeautifulSoup
 from captcha_solver import CaptchaSolver
 from collections import OrderedDict
-from fuzzywuzzy import fuzz
 
 session = requests.Session()
 session.headers.update(

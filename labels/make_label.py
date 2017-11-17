@@ -10,6 +10,7 @@ import lxml.etree
 import mysql.connector
 import os
 import pprint
+import re
 import shutil
 import subprocess
 import sys
@@ -17,8 +18,6 @@ import tempfile
 import z3c.rml.document
 import zope.interface
 import zope.schema
-
-import common
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'label-templates')
 
@@ -65,7 +64,12 @@ class Labels(object):
 
     @lazy.lazy
     def config(self):
-        return common.get_json_config(os.environ['NODE_ENV'])
+        config_filename = os.path.join(
+            os.environ['NODE_CONFIG_DIR'], os.environ['NODE_ENV'] + '.json')
+        with open(config_filename, 'r') as cf:
+            config_str = cf.read()
+        config_str = re.sub(r'(?m)^ *?\/\/.*\n?', '', config_str)
+        return json.loads(config_str)
 
     @lazy.lazy
     def connection(self):

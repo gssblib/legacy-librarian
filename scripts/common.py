@@ -13,6 +13,9 @@ import json
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 
+CONFIG_DIR = os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], 'config')
+
 def get_json_config(env):
     """
     Returns the configuration for the environment 'env' as a dictionary.
@@ -24,7 +27,7 @@ def get_json_config(env):
     def isComment(line):
         return line.strip().startswith('//')
 
-    configFilename = '../config/%s.json' % env
+    configFilename = os.path.join(CONFIG_DIR, '%s.json' % env)
     configFile = open(configFilename)
     config = "".join([
         line for line in configFile.readlines() if not isComment(line)])
@@ -36,8 +39,9 @@ def _ascii(text):
 
 class Email(object):
     """Simple text email that knows how to create the MIME message."""
-    def __init__(self, subject=None, recipient=None, sender=None, text=None, html=None):
-        self.recipient = recipient
+    def __init__(self, subject=None, recipients=None, sender=None,
+                 text=None, html=None):
+        self.recipients = recipients
         self.subject = subject
         self.sender = sender
         self.text = text
@@ -45,19 +49,19 @@ class Email(object):
 
     def merge(self, template):
         """Fills missing data from the template email."""
-        self.recipient = self.recipient or template.recipient
+        self.recipients = self.recipients or template.recipients
         self.subject = self.subject or template.subject
         self.sender = self.sender or template.sender
         self.text = self.text or template.text
 
     def is_complete(self):
-        return self.sender and self.recipient and self.subject and self.text
+        return self.sender and self.recipients and self.subject and self.text
 
     def _init_message(self, message):
         assert self.is_complete()
         message["Subject"] = self.subject
         message["From"] = self.sender
-        message["To"] = self.recipient
+        message["To"] = ', '.join(self.recipients)
         return message
 
     def get_text_message(self):
@@ -99,5 +103,5 @@ class SmtpClient(object):
         logging.info("sending email to %s", email.recipient)
         message = email.get_message()
         self.smtp_client.sendmail(
-            email.sender, [email.recipient], message.as_string())
+            email.sender, email.recipients, message.as_string())
 

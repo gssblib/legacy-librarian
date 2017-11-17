@@ -95,7 +95,7 @@ $ cp template.json prod.json
 $ nano prod.json
 ```
 
-### Add users
+### Add usersq
 
 Users are added with the `add_user.js` node script which takes the username,
 password, and list of roles as arguments.

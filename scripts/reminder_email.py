@@ -10,6 +10,8 @@ import sys
 
 import common
 
+HERE = os.path.dirname(__file__)
+
 # Jinja Setup
 
 def _create_jinja_environment():
@@ -33,8 +35,10 @@ def _create_jinja_environment():
 _jinja_environment = _create_jinja_environment()
 
 _reminder_templates = {
-    'text': _jinja_environment.get_template('reminder_email_tmpl.txt'),
-    'html': _jinja_environment.get_template('reminder_email_tmpl.html')
+    'text': _jinja_environment.get_template(
+        os.path.join(HERE, 'reminder_email_tmpl.txt')),
+    'html': _jinja_environment.get_template(
+        os.path.join(HERE, 'reminder_email_tmpl.html'))
     }
 
 
@@ -96,7 +100,7 @@ class LibraryStore(object):
     get_loans_sql = """
     select
       b.borrowernumber, b.firstname, b.surname,
-      b.emailaddress, b.emailaddress_2,
+      b.emailaddress,
       i.barcode, i.title, i.description, i.author, i.media,
       o.checkout_date, o.date_due, o.fine_due, o.fine_paid
     from `out` o
@@ -130,11 +134,11 @@ class LibraryStore(object):
             borrower_number = data[0]
             if borrower is None or borrower.number != borrower_number:
                 assert borrower_number not in borrowers
-                emails = [email for email in data[3:5] if email]
+                emails = [email.strip() for email in data[3].split(',')]
                 borrower = Borrower(
                     borrower_number, data[1], data[2], emails)
                 borrowers[borrower_number] = borrower
-            borrower.add_loan(Loan(*data[5:]))
+            borrower.add_loan(Loan(*data[4:]))
 
         # add outstanding fees for returned items
         cursor.execute(self.get_fees_sql)
@@ -185,16 +189,16 @@ class Reminder(object):
                 recipient = borrower.emails[0]
                 if '@' in recipient and not recipient in self.excluded_recipients:
                     yield self.generate_email(
-                        borrower, borrower.emails[0], test=test)
+                        borrower, borrower.emails, test=test)
 
-    def generate_email(self, borrower, recipient, test=False):
+    def generate_email(self, borrower, recipients, test=False):
         """Generates a single reminder email for a borrower with the given
         recipient. If 'test' is true, the email will contain a test disclaimer
         message.
         """
         text = self.render_email(self.templates['text'], borrower, test)
         html = self.render_email(self.templates['html'], borrower, test)
-        return common.Email(recipient=recipient, text=text, html=html)
+        return common.Email(recipients=recipients, text=text, html=html)
 
     def render_email(self, template, borrower, test):
         return template.render(
@@ -210,7 +214,8 @@ class Reminder(object):
             file.write(email.get_message().as_string())
             file.write('\n')
             if recipient_file:
-                recipient_file.write(email.recipient + "\n")
+                for recipient in email.recipients:
+                    recipient_file.write(recipient + "\n")
         file.write("borrowers: %d\n" % len(borrowers))
         file.write("loans: %d\n" % sum(
             len(borrower.loans) for borrower in borrowers))
@@ -274,7 +279,7 @@ if __name__ == '__main__':
 
     connection = _open_db_connection(config['db'])
     library = LibraryStore(connection)
-    smtp_client = _open_smtp(config['smtp'])
+    smtp_client = _open_smtp(config['smtp']) if 'smtp' in config else None
 
     reminder_config = ReminderConfig(
             email_config['sender'],

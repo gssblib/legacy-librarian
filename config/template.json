@@ -12,6 +12,24 @@
     "password": "<passwd>"
   },
 
+  "clients": [
+    {
+      "name": "volunteers",
+      "endpoint": "/volunteers",
+      "path": "../../client2/dist"
+    },
+    {
+      "name": "parents",
+      "endpoint": "/public",
+      "path": "../../client2/dist-public"
+    },
+    {
+      "name": "volunteers-old",
+      "endpoint": "",
+      "path": "../../client/app"
+    }
+  ],
+
   "auth": {
     // generate with 'openssl rand -base64 32'
     "salt": "sJt4w7r9O8FgQ/T8kaX6SZq2gtUm8axZYgzxeh3xTUs=",
@@ -67,5 +85,12 @@
         "InputSlot": "Right"
       }
     }
-  ]
+  ],
+
+  "email": {
+    "sender": "GSSB Library <library-reminder@gssb.org>",
+    "subject": "German Saturday School Library Status",
+    "reply_to": "library-reminder@gssb.org",
+    "test_recipients": [],
+  }
 }

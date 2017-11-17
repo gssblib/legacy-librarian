@@ -38,9 +38,14 @@ server.use(require('express-session')({
 }));
 
 // Serve the client web application as static content.
-server.use(express.static(__dirname + '/../client/app'));
-
-var upload = multer();
+config['clients'].forEach(function(clientConfig) {
+  if (clientConfig.endpoint === '') {
+    server.use(express.static(__dirname + '/' + clientConfig.path));
+  } else {
+    server.use(clientConfig.endpoint,
+               express.static(__dirname + '/' + clientConfig.path));
+  }
+});
 
 // Middleware that authentication JWT requests.
 server.use(expressJwt(
@@ -117,7 +122,7 @@ httpcall.handlePaths([
   },
   { get: '/items/:key/cover',
     fn: function (call) {
-      var img_path = config['resources']['covers'] +
+      var img_path = __dirname + '/' + config['resources']['covers'] +
             '/' + call.param('key') + '.jpg';
       if (!fs.existsSync(img_path)) {
         return Q(call.res.status(404).send('Not found'));
@@ -130,17 +135,17 @@ httpcall.handlePaths([
   },
   { post: '/items/:key/cover',
     fn: function (call) {
-      var img_path = config['resources']['covers'] +
+      var img_path = __dirname + '/' + config['resources']['covers'] +
             '/' + call.param('key') + '.jpg';
       fs.writeFileSync(img_path, call.req.files['file'][0].buffer);
       return Q('{"status": "Ok"}');
     },
-    middleware: upload.fields([{name: 'file'}]),
+    middleware: multer().fields([{name: 'file'}]),
     action: {resource: 'items', operation: 'update'}
   },
   { delete: '/items/:key/cover',
     fn: function (call) {
-      var img_path = config['resources']['covers'] +
+      var img_path = __dirname + '/' + config['resources']['covers'] +
             '/' + call.param('key') + '.jpg';
       if (fs.existsSync(img_path)) {
         fs.unlinkSync(img_path);

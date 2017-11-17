@@ -1,9 +1,14 @@
 node_modules
 bower_components
+package-lock.json
 tags
 *.pyc
 *.sql.gz
 
-scripts/ve
-server/tools/ve
-server/tools/*.pdf
+backups/
+python-ve/
+
+labels/*.pdf
+
+client2/dist
+client2/dist-public

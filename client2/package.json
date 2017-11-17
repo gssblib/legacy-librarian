@@ -32,6 +32,7 @@
     "angular2-csv": "^0.2.5",
     "core-js": "^2.5.1",
     "font-awesome": "^4.7.0",
+    "ng": "0.0.0-rc6",
     "ng2-file-upload": "^1.2.1",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.18"
