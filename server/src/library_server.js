@@ -88,19 +88,19 @@ httpcall.handlePaths([
   },
   { get: '/fees',
     fn: call => library.getFees(call.req.query, call.limit()),
-    action: {resource: 'fees', operation: 'read'}
+    action: {resource: 'fees', operation: 'read'},
   },
   { get: '/borrowers/fees',
     fn: function (call) {
       return library.borrowers.allFees();
     },
-    action: {resource: 'fees', operation: 'read'}
+    action: {resource: 'fees', operation: 'read'},
   },
   { post: '/history/:id/payFee',
     fn: function (call) {
       return library.history.payFee(call.param('id'));
     },
-    action: {resource: 'fees', operation: 'update'}
+    action: {resource: 'fees', operation: 'update'},
   },
   { post: '/checkouts/:barcode/payFee',
     fn: function (call) {
@@ -118,7 +118,7 @@ httpcall.handlePaths([
     fn: function (call) {
         return library.reports.getItemUsage(call.req.query);
     },
-    action: {resource: 'reports', operation: 'read'}
+    action: {resource: 'reports', operation: 'read'},
   },
   { get: '/items/:key/cover',
     fn: function (call) {
@@ -141,7 +141,7 @@ httpcall.handlePaths([
       return Q('{"status": "Ok"}');
     },
     middleware: multer().fields([{name: 'file'}]),
-    action: {resource: 'items', operation: 'update'}
+    action: {resource: 'items', operation: 'update'},
   },
   { delete: '/items/:key/cover',
     fn: function (call) {
@@ -152,7 +152,7 @@ httpcall.handlePaths([
       }
       return Q('{"status": "Ok"}');
     },
-    action: {resource: 'items', operation: 'update'}
+    action: {resource: 'items', operation: 'update'},
   },
   { get: '/me',
     fn: call => {
@@ -164,14 +164,14 @@ httpcall.handlePaths([
 
 httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew']);
 httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
-httpcall.handleEntity(library.antolin);
 
 // BBB: for client version 1
 httpcall.handlePaths([
   { get: '/users/current',
     fn: function (call) {
       return Q(call.req.session.user);
-    }},
+    },
+  },
   { post: '/users/authenticate',
     fn: function (call) {
       return auth.authenticate(call.req.body).tap(function (result) {

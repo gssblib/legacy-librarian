@@ -530,25 +530,6 @@ module.exports = {
       return db.selectRows(sql, itemsWhere.params);
     };
 
-    // antolin table/entity
-    var antolin = entity(db, {
-      name: 'antolin',
-      columns: [
-        'author', 'title', 'publisher',
-        'isbn10', 'isbn10_formatted', 'isbn13', 'isbn13_formatted',
-        'book_id', 'available_since', 'grade', 'num_read'
-      ],
-      naturalKey: 'isbn13'});
-
-    antolin.get = function (isbn) {
-      var self = this;
-      return antolin.constructor.prototype.get.call(self, isbn)
-        .then(function (entry) {
-          entry.link = 'https://www.antolin.de/all/bookdetail.jsp?book_id=' + entry.book_id;
-          return entry;
-        });
-    };
-
     return {
       borrowers: borrowers,
       getFees: getFees,
@@ -556,7 +537,6 @@ module.exports = {
       checkouts: checkouts,
       history: history,
       reports: reports,
-      antolin: antolin
     };
   }
 };
