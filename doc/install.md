@@ -3,6 +3,13 @@
 This page describes the installation of the gssblib server on
 a new Ubuntu Linux machine.
 
+## Installation Steps
+
+```
+make ubuntu-env
+make
+```
+
 ## Ubuntu packages
 
 - aptitude

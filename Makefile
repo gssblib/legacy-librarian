@@ -1,7 +1,8 @@
 CONFIG_DIR = $(shell pwd)/config
 BACKUPS_DIR = $(shell pwd)/backups
-PYTHON = `pwd`/python-ve/bin/python
-PIP = `pwd`/python-ve/bin/pip
+PYTHON = $(shell pwd)/python-ve/bin/python
+PIP = $(shell pwd)/python-ve/bin/pip
+NODE_DEB_URL = https://deb.nodesource.com/setup_9.x
 
 ##> all : Build all components
 all: server labels scripts client
@@ -14,6 +15,28 @@ help:
 python-ve:
 	virtualenv python-ve
 
+/usr/bin/node:
+	curl -sL $(NODE_DEB_URL) | sudo -E bash -
+	sudo apt-get install -y nodejs
+	sudo npm install npm --global
+
+##> ubuntu-env : Installs all necessary Ubuntu packages.
+.PHONY: ubuntu-env
+ubuntu-env: /usr/bin/node
+	sudo apt-get install \
+	    mysql-server \
+	    virtualenv \
+	    python-dev \
+	    npm \
+	    curl
+
+##> database : Configures the database
+.PHONY: database
+database:
+	cat sql/bootstrap.sql | mysql -p -u root
+	cat sql/schema.sql | mysql -u gssb --password=gssblib spils
+
+##> clean : Cleans the build from any generated files.
 clean:
 	rm -rf python-ve
 	rm -rf client2/dist
@@ -25,7 +48,6 @@ clean:
 ##> server : Install/build the node server.
 server: server/package.json
 	cd server; \
-	nvm install stable; \
 	npm install
 
 ##> test-server : Run server tests.
@@ -44,7 +66,7 @@ run-server:
 ####> Library Label Server <###################################################
 
 ##> labels : Install/build the label server/cli environment.
-labels: python-ve labels/requirements.txt
+labels: labels/requirements.txt | python-ve
 	$(PIP) install -r labels/requirements.txt
 
 ##> run-labels-server : Run labels server.
@@ -59,6 +81,7 @@ run-labels-server:
 old-client: client/Gruntfile.js client/bower.json client/package.json
 	cd client; \
 	npm install; \
+	sudo npm install grunt -g; \
 	grunt bower:install
 
 
@@ -94,7 +117,7 @@ public-client-dev:
 ####> Scripts <###############################################################
 
 ##> scripts : Install/build the scripts environment.
-scripts: python-ve scripts/requirements.txt
+scripts: scripts/requirements.txt | python-ve
 	$(PIP) install -r scripts/requirements.txt
 
 ##> backup : Create a backup of the database.
@@ -102,6 +125,11 @@ scripts: python-ve scripts/requirements.txt
 backup:
 	mkdir -p $(BACKUPS_DIR)
 	NODE_ENV=prod $(PYTHON) scripts/backup_db.py --backup_dir $(BACKUPS_DIR)
+
+##> restore FILE=<path>: Load the specified backup file into database.
+.PHONY: restore
+restore:
+	zcat $(FILE) | mysql -u gssb --password=gssblib spils
 
 ##> reminder-emails-file : Create a file with reminder E-mails
 .PHONY: reminder-emails
