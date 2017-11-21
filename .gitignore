@@ -4,6 +4,7 @@ package-lock.json
 tags
 *.pyc
 *.sql.gz
+*.*~
 
 backups/
 python-ve/
