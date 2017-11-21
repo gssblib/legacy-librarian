@@ -48,12 +48,10 @@ nginx:
     - watch_in:
       - service: run nginx
 
-
 /etc/nginx/ssl-conf:
   file.directory:
     - mode: 755
     - makedirs: True
-
 
 ssl-certificates:
   cmd.run:
