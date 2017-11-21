@@ -2,7 +2,7 @@ CONFIG_DIR = $(shell pwd)/config
 BACKUPS_DIR = $(shell pwd)/backups
 PYTHON = $(shell pwd)/python-ve/bin/python
 PIP = $(shell pwd)/python-ve/bin/pip
-NODE_DEB_URL = https://deb.nodesource.com/setup_9.x
+NODE_DEB_URL = https://deb.nodesource.com/setup_8.x
 
 ##> all : Build all components
 all: server labels scripts client
