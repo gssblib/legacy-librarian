@@ -27,7 +27,6 @@ ubuntu-env: /usr/bin/node
 	    mysql-server \
 	    virtualenv \
 	    python-dev \
-	    npm \
 	    curl
 
 ##> database : Configures the database
