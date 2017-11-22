@@ -89,7 +89,7 @@ old-client: client/Gruntfile.js client/bower.json client/package.json
 ##> client : Install client components.
 client: client2/package.json
 	cd client2; \
-	npm install -g @angular/cli; \
+	sudo npm install -g @angular/cli; \
 	npm install
 
 ##> client-dist : Build volunteer client distribution
