@@ -5,6 +5,7 @@ tags
 *.pyc
 *.sql.gz
 *.*~
+.md5sums
 
 backups/
 python-ve/
