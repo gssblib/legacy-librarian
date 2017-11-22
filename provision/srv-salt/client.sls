@@ -1,16 +1,28 @@
 {% set app_path = '/opt/gssblib/librarian/client2' %}
 
+include:
+  - node
+
+# We cannot use npm.installed here since it does
+# not handle package names with @ signs properly.
 angular/cli:
-  npm.installed:
-    - name: "@angular/cli"
+  cmd.run:
+    - name: "npm install --global @angular/cli"
     - require:
       - node
+    - unless: "npm list --global --depth 0|grep -q @angular/cli" 
 
+# We cannot use npm.bootstrap, since it will always run. :-(
 client:
-  npm.bootstrap:
-    - name: {{ app_path }}
-    - user: gssblib
+  cmd.run:
+    - name: |
+        npm install && \
+        md5sum package.json > .md5sums
+    - cwd: {{ app_path }}
+    - runas: gssblib
     - require:
       - npm
       - angular/cli
-    - onlyif: 'test ! -e {{ app_path }}/node_modules'
+    - unless: |
+        test -e node_modules && \
+        test -e .md5sums && md5sum --strict --status -c .md5sums
