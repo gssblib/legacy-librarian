@@ -1,14 +1,24 @@
-{% set app_path = '/opt/gssblib/librarian' %}
+{% set app_path = '/opt/gssblib/librarian/server' %}
+{% set config_path = '/opt/gssblib/librarian/config' %}
+
+include:
+  - node
 
 server install:
-  npm.bootstrap:
-    - name: {{ app_path }}/server
-    - user: gssblib
+  cmd.run:
+    - name: |
+        npm install && \
+        md5sum package.json > .md5sums
+    - cwd: {{ app_path }}
+    - runas: gssblib
     - require:
       - npm
-    - onlyif: 'test ! -e {{ app_path }}/server/node_modules'
+    - unless: |
+        test -e node_modules && \
+        test -e .md5sums && md5sum --strict --status -c .md5sums
+
   file.recurse:
-    - name: {{ app_path }}/config
+    - name: {{ config_path }}
     - source: salt://server/files/
     - user: gssblib
     - template: jinja
