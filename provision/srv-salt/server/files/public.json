@@ -1,0 +1,43 @@
+{
+  // node/express server
+  "server": {
+    "port": 3000
+  },
+
+  // Library database
+  "db": {
+    "database": "spils",
+    "host": "localhost",
+    "user": "gssb",
+    "password": "gssblib"
+  },
+
+  "clients": [
+    {
+      "name": "parents",
+      "endpoint": "/",
+      "path": "../../client2/dist-public"
+    },
+  ],
+
+  "auth": {
+    "salt": "{{ salt['grains.get_or_set_hash']('public.auth.salt', 42) }}",
+    "cookie": "{{ salt['grains.get_or_set_hash']('public.auth.cookie', 42) }}",
+    "session": "{{ salt['grains.get_or_set_hash']('public.auth.session', 42) }}"
+  },
+
+  "resources": {
+    "covers": "./covers"
+  },
+
+  "jwt": {
+    "secret": "{{ salt['grains.get_or_set_hash']('public.jwt.secret', 42) }}"
+  },
+
+  "sycamore-auth": {
+    "school-id": "2132",
+    "url": "http://app.sycamoreeducation.com/index.php",
+    "success-text": "schoolhome.php"
+  },
+
+}

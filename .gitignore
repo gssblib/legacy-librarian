@@ -15,3 +15,5 @@ labels/*.pdf
 
 client2/dist
 client2/dist-public
+
+provision/grains
