@@ -9,6 +9,8 @@ tags
 backups/
 python-ve/
 
+config/*.json
+
 labels/*.pdf
 
 client2/dist
