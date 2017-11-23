@@ -1,0 +1,95 @@
+{
+  // node/express server
+  "server": {
+    "port": 3000
+  },
+
+  // Library database
+  "db": {
+    "database": "spils",
+    "host": "localhost",
+    "user": "gssb",
+    "password": "gssblib"
+  },
+
+  "clients": [
+    {
+      "name": "volunteers",
+      "endpoint": "/volunteers",
+      "path": "{{ root_path }}/client2/dist"
+    },
+    {
+      "name": "parents",
+      "endpoint": "/public",
+      "path": "{{ root_path }}/client2/dist-public"
+    },
+    {
+      "name": "volunteers-old",
+      "endpoint": "",
+      "path": "{{ root_path }}/client/app"
+    }
+  ],
+
+  "auth": {
+    "salt": "{{ salt['grains.get_or_set_hash']('public.auth.salt', 42) }}",
+    "cookie": "{{ salt['grains.get_or_set_hash']('public.auth.cookie', 42) }}",
+    "session": "{{ salt['grains.get_or_set_hash']('public.auth.session', 42) }}"
+  },
+
+  "resources": {
+    "covers": "./covers"
+  },
+
+  "jwt": {
+    "secret": "{{ salt['grains.get_or_set_hash']('public.jwt.secret', 42) }}"
+  },
+
+  "sycamore-auth": {
+    "school-id": "2132",
+    "url": "http://app.sycamoreeducation.com/index.php",
+    "success-text": "schoolhome.php"
+  },
+
+  "label-server": {
+    "port": 3001
+  },
+
+  "printers": [
+    {
+      "title": "Single Dymo LabelWriter 450",
+      "printer": "LabelWriter-450-Turbo",
+      "papersize": [3.5, 1.125],
+      "code": "Dymo 30252",
+      "options": {
+        "PageSize": "w79h252"
+      }
+    },
+    {
+      "title": "Twin Dymo LabelWriter 450 - Left",
+      "printer": "LabelWriter-450-Twin-Turbo",
+      "papersize": [2.5, 0.75],
+      "code": "Dymo 1738595",
+      "options": {
+        "PageSize": "w54h180",
+        "InputSlot": "Left"
+      }
+    },
+    {
+      "title": "Twin Dymo LabelWriter 450 - Right",
+      "printer": "LabelWriter-450-Twin-Turbo",
+      "papersize": [2.125, 1.0],
+      "code": "Dymo 30336",
+      "options": {
+        "PageSize": "w72h154.1",
+        "InputSlot": "Right"
+      }
+    }
+  ],
+
+  "email": {
+    "sender": "GSSB Library <library-reminder@gssb.org>",
+    "subject": "German Saturday School Library Status",
+    "reply_to": "library-reminder@gssb.org",
+    "test_recipients": []
+  }
+}

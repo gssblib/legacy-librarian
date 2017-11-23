@@ -1,5 +1,6 @@
-{% set app_path = '/opt/gssblib/librarian/server' %}
-{% set config_path = '/opt/gssblib/librarian/config' %}
+{% set root_path = '/opt/gssblib/librarian' %}
+{% set app_path = root_path + '/server' %}
+{% set config_path = root_path + '/config' %}
 
 include:
   - node
@@ -17,7 +18,7 @@ server install:
         test -e node_modules && \
         test -e .md5sums && md5sum --strict --status -c .md5sums
 
-labels daemon:
+server daemon:
   file.managed:
     - name: /etc/supervisor/conf.d/app-server.conf
     - source: salt://server/supervisor.conf
@@ -48,4 +49,6 @@ server config:
     - user: gssblib
     - template: jinja
     - file_mode: 0644
+    - context:
+      root_path: {{ root_path }}
 {% endif %}
