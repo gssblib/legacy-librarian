@@ -11,6 +11,7 @@ base:
     - python
     - labels
     - scripts
+    - old-client
 
   'server_type:public':
     - match: grain
