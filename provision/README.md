@@ -10,6 +10,6 @@ sudo sh bootstrap_salt.sh
 ## Apply Salt State
 
 ```
-sudo salt-call -c . --local state.apply
+sudo NODE_ENV=public|prod salt-call -c . --local state.apply
 ```
 
