@@ -29,8 +29,10 @@ spils db schema:
 
 gssb user:
   mysql_user.present:
+    - name: gssb
     - host: localhost
-    - password: gssblib
+    # Obtained using: mysql> select password('gssblib');
+    - password_hash: "*2C7BF760C7D399A11AE5146CF10D4B55C570F386"
     - require:
       - service: mysql run
   mysql_grants.present:
