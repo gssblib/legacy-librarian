@@ -26,3 +26,28 @@ client:
     - unless: |
         test -e node_modules && \
         test -e .md5sums && md5sum --strict --status -c .md5sums
+
+{% if salt['grains.get']('server_type') == 'public' %}
+client public:
+  cmd.run:
+    - name: ng build --app public --base-href "/"
+    - cwd: {{ app_path }}
+    - creates:
+      - {{ app_path }}/dist-public
+{% endif %}
+
+{% if salt['grains.get']('server_type') == 'prod' %}
+client public:
+  cmd.run:
+    - name: ng build --app public --base-href "/public"
+    - cwd: {{ app_path }}
+    - creates:
+      - {{ app_path }}/dist-public
+
+client prod:
+  cmd.run:
+    - name: ng build --base-href "/prod"
+    - cwd: {{ app_path }}
+    - creates:
+      - {{ app_path }}/dist
+{% endif %}
