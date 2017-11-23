@@ -39,11 +39,14 @@ server.use(require('express-session')({
 
 // Serve the client web application as static content.
 config['clients'].forEach(function(clientConfig) {
+  var path = clientConfig.path;
+  if (path[0] != '/') {
+    path = __dirname + '/' + path;
+  }
   if (clientConfig.endpoint === '') {
-    server.use(express.static(__dirname + '/' + clientConfig.path));
+    server.use(express.static(path));
   } else {
-    server.use(clientConfig.endpoint,
-               express.static(__dirname + '/' + clientConfig.path));
+    server.use(clientConfig.endpoint, express.static(path));
   }
 });
 
