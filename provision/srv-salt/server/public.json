@@ -16,7 +16,7 @@
     {
       "name": "parents",
       "endpoint": "/",
-      "path": "{{ app_path }}/client2/dist-public"
+      "path": "../../client2/dist-public"
     }
   ],
 
