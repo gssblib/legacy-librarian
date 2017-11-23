@@ -32,6 +32,7 @@ client public:
   cmd.run:
     - name: ng build --app public --base-href "/"
     - cwd: {{ app_path }}
+    - runas: gssblib
     - creates:
       - {{ app_path }}/dist-public
 {% endif %}
@@ -39,15 +40,17 @@ client public:
 {% if salt['grains.get']('server_type') == 'prod' %}
 client public:
   cmd.run:
-    - name: ng build --app public --base-href "/public"
+    - name: ng build --app public --base-href "/public/"
     - cwd: {{ app_path }}
+    - runas: gssblib
     - creates:
       - {{ app_path }}/dist-public
 
 client prod:
   cmd.run:
-    - name: ng build --base-href "/prod"
+    - name: ng build --base-href "/volunteers/"
     - cwd: {{ app_path }}
+    - runas: gssblib
     - creates:
       - {{ app_path }}/dist
 {% endif %}
