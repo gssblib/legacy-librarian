@@ -50,6 +50,11 @@ config['clients'].forEach(function(clientConfig) {
   }
 });
 
+var img_root_path = config['resources']['covers']
+if (img_root_path[0] != '/') {
+  img_root_path = __dirname + '/' + img_root_path;
+}
+
 // Middleware that authentication JWT requests.
 server.use(expressJwt(
     {secret: config['jwt']['secret'], credentialsRequired: false}));
@@ -125,8 +130,7 @@ httpcall.handlePaths([
   },
   { get: '/items/:key/cover',
     fn: function (call) {
-      var img_path = __dirname + '/' + config['resources']['covers'] +
-            '/' + call.param('key') + '.jpg';
+      var img_path = img_root_path + '/' + call.param('key') + '.jpg';
       if (!fs.existsSync(img_path)) {
         return Q(call.res.status(404).send('Not found'));
       }
@@ -138,8 +142,7 @@ httpcall.handlePaths([
   },
   { post: '/items/:key/cover',
     fn: function (call) {
-      var img_path = __dirname + '/' + config['resources']['covers'] +
-            '/' + call.param('key') + '.jpg';
+      var img_path = img_root_path + '/' + call.param('key') + '.jpg';
       fs.writeFileSync(img_path, call.req.files['file'][0].buffer);
       return Q('{"status": "Ok"}');
     },
