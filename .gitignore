@@ -9,6 +9,7 @@ tags
 
 backups/
 python-ve/
+covers/
 
 config/*.json
 
