@@ -86,10 +86,17 @@
     }
   ],
 
+  "smtp": {
+    "host": "smtpout.secureserver.net",
+    "port": 465,
+    "user": "{{ salt['grains.get']('smtp.user') }}", 
+    "password": "{{ salt['grains.get']('smtp.password') }}" 
+  },
+
   "email": {
     "sender": "GSSB Library <library-reminder@gssb.org>",
     "subject": "German Saturday School Library Status",
-    "reply_to": "library-reminder@gssb.org",
+    "reply_to": "library-reminder@gssb.org",  
     "test_recipients": []
   }
 }
