@@ -9,7 +9,7 @@
     "database": "spils",
     "host": "localhost",
     "user": "gssb",
-    "password": "gssblib"
+    "password": "{{ salt['grains.get']('mysql.gssb.password') }}"
   },
 
   "clients": [
