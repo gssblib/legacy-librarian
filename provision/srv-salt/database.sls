@@ -1,11 +1,20 @@
 {% set app_path = '/opt/gssblib/librarian' %}
 
+mysql password:
+  debconf.set:
+    - name: mysql-server
+    - data:
+        'mysql-server/root_password': {'type': string', 'value': '{{ grains['mysql.root.password'] }}'}
+        'mysql-server/root_password_again': {'type': string', 'value': '{{ grains['mysql.root.password'] }}'}
+
 mysql install:
   pkg.installed:
     - pkgs:
       - mysql-server
       - python-mysqldb
     - refresh: false
+    - require:
+      - mysql password
 
 mysql run:
   service.running:
