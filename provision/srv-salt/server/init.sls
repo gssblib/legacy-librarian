@@ -4,6 +4,7 @@
 
 include:
   - node
+  - supervisor
 
 server install:
   cmd.run:
