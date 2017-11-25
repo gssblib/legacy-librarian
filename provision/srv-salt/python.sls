@@ -15,3 +15,5 @@ python-ve:
     - runas: gssblib
     - creates:
       - {{ app_path }}/python-ve
+    - require:
+      - python-ve deps
