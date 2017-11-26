@@ -66,3 +66,11 @@ gssb user:
     - require:
       - service: mysql run
       - spils db
+
+mysql default options:
+  file.managed:
+    - name: ~/.my.cnf
+    - source: salt://database/my.cnf
+    - user: gssblib
+    - template: jinja
+    - file_mode: 0644
