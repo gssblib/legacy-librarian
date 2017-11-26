@@ -1,4 +1,4 @@
-{% set app_path = '/opt/gssblib/librarian' %}
+{% set app_dir = salt['grains.get']('app_dir') %}
 
 mysql password:
   debconf.set:
@@ -38,7 +38,7 @@ spils db:
 spils db schema:
   mysql_query.run_file:
     - database: spils
-    - query_file: {{ app_path }}/sql/schema.sql
+    - query_file: {{ app_dir }}/sql/schema.sql
     - connection_user: root
     - connection_pass: {{ salt['grains.get_or_set_hash']('mysql.root.password') }}
     - onchanges:

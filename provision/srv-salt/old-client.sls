@@ -1,4 +1,5 @@
-{% set app_path = '/opt/gssblib/librarian/client' %}
+{% set app_dir = salt['grains.get']('app_dir') %}
+{% set client_dir = app_dir + '/client' %}
 
 include:
   - node
@@ -13,7 +14,7 @@ old-client:
         npm install && \
         grunt bower:install && \
         md5sum package.json Gruntfile.js bower.json > .md5sums
-    - cwd: {{ app_path }}
+    - cwd: {{ client_dir }}
     - runas: gssblib
     - require:
       - npm

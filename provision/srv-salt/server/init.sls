@@ -1,6 +1,6 @@
-{% set root_path = '/opt/gssblib/librarian' %}
-{% set app_path = root_path + '/server' %}
-{% set config_path = root_path + '/config' %}
+{% set app_dir = salt['grains.get']('app_dir') %}
+{% set server_dir = app_dir + '/server' %}
+{% set config_dir = app_dir + '/config' %}
 
 include:
   - node
@@ -11,7 +11,7 @@ server install:
     - name: |
         npm install && \
         md5sum package.json > .md5sums
-    - cwd: {{ app_path }}
+    - cwd: {{ server_dir }}
     - runas: gssblib
     - require:
       - npm
@@ -26,7 +26,7 @@ server daemon:
     - template: jinja
     - file_mode: 0644
     - context:
-      app_path: /opt/gssblib/librarian
+      app_path: {{ app_dir }}
     - watch_in:
       - service: supervisor
     - require:
@@ -35,7 +35,7 @@ server daemon:
 {% if salt['grains.get']('server_type') == 'public' %}
 server config:
   file.managed:
-    - name: {{ config_path }}/public.json
+    - name: {{ config_dir }}/public.json
     - source: salt://server/public.json
     - user: gssblib
     - template: jinja
@@ -45,11 +45,11 @@ server config:
 {% if salt['grains.get']('server_type') == 'prod' %}
 server config:
   file.managed:
-    - name: {{ config_path }}/prod.json
+    - name: {{ config_dir }}/prod.json
     - source: salt://server/prod.json
     - user: gssblib
     - template: jinja
     - file_mode: 0644
     - context:
-      root_path: {{ root_path }}
+      root_path: {{ app_dir }}
 {% endif %}

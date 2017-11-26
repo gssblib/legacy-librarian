@@ -33,7 +33,7 @@ smtp.user: <username|BLANK>
 smtp:password: <password|BLANK>
 ```
 
-### Apply Salt State
+## Apply Salt State
 
 ```
 cd <app-path>/provision

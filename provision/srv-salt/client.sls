@@ -1,4 +1,5 @@
-{% set app_path = '/opt/gssblib/librarian/client2' %}
+{% set app_dir = salt['grains.get']('app_dir') %}
+{% set client_dir = app_dir + '/client2' %}
 
 include:
   - node
@@ -18,7 +19,7 @@ client:
     - name: |
         npm install && \
         md5sum package.json > .md5sums
-    - cwd: {{ app_path }}
+    - cwd: {{ client_dir }}
     - runas: gssblib
     - require:
       - npm
@@ -31,26 +32,26 @@ client:
 client public:
   cmd.run:
     - name: ng build --app public --base-href "/"
-    - cwd: {{ app_path }}
+    - cwd: {{ client_dir }}
     - runas: gssblib
     - creates:
-      - {{ app_path }}/dist-public
+      - {{ client_dir }}/dist-public
 {% endif %}
 
 {% if salt['grains.get']('server_type') == 'prod' %}
 client public:
   cmd.run:
     - name: ng build --app public --base-href "/public/"
-    - cwd: {{ app_path }}
+    - cwd: {{ client_dir }}
     - runas: gssblib
     - creates:
-      - {{ app_path }}/dist-public
+      - {{ client_dir }}/dist-public
 
 client prod:
   cmd.run:
     - name: ng build --base-href "/volunteers/"
-    - cwd: {{ app_path }}
+    - cwd: {{ client_dir }}
     - runas: gssblib
     - creates:
-      - {{ app_path }}/dist
+      - {{ client_dir }}/dist
 {% endif %}
