@@ -4,7 +4,6 @@
 
 include:
   - python
-  - supervisor
 
 labels install:
   cmd.run:
@@ -15,16 +14,3 @@ labels install:
     - require:
       - python-ve
     - unless: 'test -e .md5sums && md5sum --strict --status -c .md5sums'
-
-labels daemon:
-  file.managed:
-    - name: /etc/supervisor/conf.d/labels.conf
-    - source: salt://labels/supervisor.conf
-    - template: jinja
-    - file_mode: 0644
-    - context:
-      app_path: {{ app_dir }}
-    - watch_in:
-      - service: supervisor
-    - require:
-      - labels install
