@@ -4,8 +4,12 @@ mysql password:
   debconf.set:
     - name: mysql-server
     - data:
-        'mysql-server/root_password': {'type': string', 'value': '{{ salt['grains.get_or_set_hash']('mysql.root.password') }}'}
-        'mysql-server/root_password_again': {'type': string', 'value': '{{ salt['grains.get_or_set_hash']('mysql.root.password') }}'}
+        mysql-server/root_password:
+          type: string
+          value: {{ salt['grains.get_or_set_hash']('mysql.root.password') }}
+        mysql-server/root_password_again:
+          type: string
+          value: {{ salt['grains.get_or_set_hash']('mysql.root.password') }}
 
 mysql install:
   pkg.installed:
