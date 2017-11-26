@@ -79,8 +79,8 @@ def show_salt_instructions():
 
 
 def main():
-    #install_packages()
-    #install_salt()
+    install_packages()
+    install_salt()
     clone_repos()
     get_server_type()
     get_smtp_creds()

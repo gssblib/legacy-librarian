@@ -3,8 +3,8 @@
 ## Fast Way: Bootstrap
 
 ```
-curl -L https://raw.githubusercontent.com/gssblib/librarian/master/provision/bootstrap.py
-sudo python3 bootstrap.py
+curl -L https://raw.githubusercontent.com/gssblib/librarian/master/provision/bootstrap.py -o bs_librarian.py
+sudo python3 bs_librarian.py
 ```
 
 ## Manual Way
