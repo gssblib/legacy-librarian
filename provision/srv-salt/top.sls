@@ -7,6 +7,7 @@ base:
 
   'server_type:prod':
     - match: grain
+    - git
     - supervisor
     - server/supervisor
     - python
