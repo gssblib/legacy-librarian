@@ -9,6 +9,7 @@ base:
   'server_type:prod':
     - match: grain
     - python
+    - printers
     - labels
     - scripts
     - old-client
