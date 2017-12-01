@@ -48,10 +48,12 @@ real-clean:
 
 ####> Library Application Server <#############################################
 
-##> server : Install/build the node server.
-server: server/package.json
+server/node_modules: server/package.json
 	cd server; \
 	npm install
+
+##> server : Install/build the node server.
+server: | server/node_modules
 
 ##> test-server : Run server tests.
 .PHONY: test-server
