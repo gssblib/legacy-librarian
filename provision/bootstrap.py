@@ -20,8 +20,8 @@ def install_packages():
 
 def install_salt():
     print('Installing Saltstack. That may take a while...')
-    if not os.path.exists('bootstrap_salt.sh'): 
-        cmd(['curl' ,'-L', SALT_BOOTSTRAP_URL, '-o', 'bootstrap_salt.sh'])
+    if not os.path.exists('bootstrap_salt.sh'):
+        cmd(['wget' , SALT_BOOTSTRAP_URL, '-O', 'bootstrap_salt.sh'])
     cmd(['sudo', 'sh', 'bootstrap_salt.sh'])
 
 

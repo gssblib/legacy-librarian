@@ -19,6 +19,7 @@ base:
 
   'server_type:public':
     - match: grain
+    - git
     - supervisor
     - server/supervisor
     - nginx
