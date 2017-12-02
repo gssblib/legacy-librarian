@@ -1,3 +1,8 @@
+apache remove:
+  pkg.purge:
+    - pkgs:
+      - apache2
+
 nginx install:
   pkg.installed:
     - pkgs:
@@ -5,6 +10,8 @@ nginx install:
       - nginx-extras
       - logrotate
     - refresh: false
+    - require:
+      - apache remove
 
   file.recurse:
     - name: /etc/nginx
