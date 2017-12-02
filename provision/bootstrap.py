@@ -34,7 +34,7 @@ def clone_repos():
         cmd(['sudo', 'mkdir', '-p', root_dir])
         cmd(['sudo', 'chown',
              '%s:%s' % (os.getlogin(), os.getgroups()[0]),
-             '-p', root_dir])
+             root_dir])
     grains['app_dir'] = app_dir = os.path.join(root_dir, 'librarian')
     if not os.path.exists(app_dir):
         cmd(['git', 'clone', GITHUB_URL, app_dir])
