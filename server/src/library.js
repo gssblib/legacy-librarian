@@ -53,7 +53,7 @@ module.exports = {
         "CD", "CD-ROM", "DVD", "Bilderbuch B-gelb", "Comic C-orange",
         "Erzaehlung E-d gruen", "Fasching", "Halloween", "Leseleiter LL-klar",
         "Maerchen Mae-rot", "Multimedia MM-rosa", "Ostern", "Sachkunde S-blau",
-        "Sachkunde Sevie - h blau", "St. Martin", "Teen T - h gruen",
+        "Sachkunde Serie - h blau", "St. Martin", "Teen T - h gruen",
         "Uebergroesse - lila", "Weihnachten", "Zeitschrift"
       ]
     });
