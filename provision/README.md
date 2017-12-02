@@ -27,7 +27,7 @@ sudo sh bootstrap_salt.sh
 Create the file `<app-path>/provision/grains` and add the following contents:
 
 ```
-app_dir: <app-path>/provision/grains
+app_dir: <app-path>
 server_type: prod|public
 smtp.user: <username|BLANK>
 smtp:password: <password|BLANK>
