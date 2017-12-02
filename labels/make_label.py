@@ -295,6 +295,48 @@ class LeseleiterLabelMaker(LabelMaker):
 
 
 @Labels.register
+class SachkundeLabelMaker(LabelMaker):
+
+    category = 'main'
+    template = os.path.join(TEMPLATES_DIR, 'sachkunde.rml')
+
+    classifications = {
+        'Ba': ('Basteln -', 'Handarbeit'),
+        'Be': ('Beschäftigung /', 'Spielen'),
+        'Ber': ('Berufe', ''),
+        'De': ('Deutsche -', 'Geschichte'),
+        'Es': ('Essen /', 'Kochen'),
+        'G': ('Geschichte', 'Kulturen'),
+        'Geo': ('Geographie -', 'Atlanten'),
+        'KL': ('Klassik', ''),
+        'Kö': ('Körper', ''),
+        'Ku': ('Kunst /', 'Architektur'),
+        'Le': ('Lernen /', 'Lexikon'),
+        'M': ('Musik /', 'Liederbuch'),
+        'N': ('Natur / Umwelt /', 'Jahreszeiten'),
+        'Sp': ('Sport', ''),
+        'Te': ('Technik', ''),
+        'Ti': ('Tiere', ''),
+        'Ve': ('Verkehr /', 'Fahrzeuge'),
+        'Wir': ('Wirtschaft', ''),
+        'Wo': ('Wohnen', ''),
+    }
+
+    @classmethod
+    def is_applicable(cls, item):
+        return item.subject.startswith('Sachkunde')
+
+    def prepare(self):
+        self.data['classification_abbr'] = abbr = \
+            self.item.classification.split(' ')[0]
+        if abbr in self.classifications:
+            self.data['classification1'], self.data['classification2'] = \
+              self.classifications[abbr]
+        else:
+            self.data['classification1'], self.data['classification2'] = '', ''
+
+
+@Labels.register
 class ErzaehlungLabelMaker(LabelMaker):
 
     category = 'main'

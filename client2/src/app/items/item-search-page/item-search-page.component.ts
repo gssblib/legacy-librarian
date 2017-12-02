@@ -53,7 +53,7 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
   /** Meta-data for the items table. */
   columns: ITdDataTableColumn[] = [
     {name: 'barcode', label: 'Barcode', width: 100, sortable: true},
-    {name: 'status', label: 'Status', width: 130, sortable: false, format: value => ItemState[value]},
+    {name: 'status', label: 'Status', width: 140, sortable: false, format: value => ItemState[value]},
     {name: 'title', label: 'Title', sortable: true},
     {name: 'author', label: 'Author', width: 220, sortable: true},
     {name: 'subject', label: 'Subject', width: 180, sortable: true},

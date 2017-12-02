@@ -42,12 +42,18 @@ clean:
 	rm -rf client2/dist-public
 	rm -rf client2/node_modules
 
+##> clean : Remove all untracked files. Be careful using this!
+real-clean:
+	git clean -d -x -f
+
 ####> Library Application Server <#############################################
 
-##> server : Install/build the node server.
-server: server/package.json
+server/node_modules: server/package.json
 	cd server; \
 	npm install
+
+##> server : Install/build the node server.
+server: | server/node_modules
 
 ##> test-server : Run server tests.
 .PHONY: test-server
