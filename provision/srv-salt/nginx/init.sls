@@ -6,6 +6,7 @@ apache remove:
 nginx install:
   pkg.installed:
     - pkgs:
+      - systemd
       - nginx
       - nginx-extras
       - logrotate
