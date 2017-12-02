@@ -15,7 +15,7 @@ def cmd(cmd):
 
 def install_packages():
     print('Installing bootstrap Ubuntu packages...')
-    cmd(['sudo', 'apt-get', 'install', 'curl', 'git'])
+    cmd(['sudo', 'apt-get', 'install', 'git'])
 
 
 def install_salt():
