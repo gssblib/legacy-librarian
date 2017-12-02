@@ -18,9 +18,9 @@ import {
   MatPaginatorModule,
   MatProgressSpinnerModule,
 } from '@angular/material';
+import { NotFoundModule } from '../../not-found/not-found.module';
+import { HomeModule } from '../../home/home.module';
 import { CoreModule } from '../core/core.module';
-import { HomeComponent } from '../home/home.component';
-import { NotFoundComponent } from '../not-found/not-found.component';
 import { AppSearchBarComponent } from './app-search-bar/app-search-bar.component';
 import { ItemsModule } from '../items/items.module';
 import { BorrowersModule } from '../borrowers/borrowers.module';
@@ -55,6 +55,8 @@ import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
     MatListModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    NotFoundModule,
+    HomeModule,
     SharedModule,
     AppRoutingModule,
     ItemsModule,
@@ -62,8 +64,6 @@ import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
   ],
   declarations: [
     AppPublicComponent,
-    HomeComponent,
-    NotFoundComponent,
     ItemBrowserPageComponent,
     AppSearchBarComponent,
     CheckedOutPageComponent,

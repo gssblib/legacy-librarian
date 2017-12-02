@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { NotFoundComponent } from "../not-found/not-found.component";
 import { AuthGuard } from "../core/auth.guard";
-import { HomeComponent } from "../home/home.component";
+import { NotFoundComponent } from "../../not-found/not-found.component";
+import { HomeComponent } from "../../home/home.component";
 import { SycamoreLoginPageComponent } from "../shared/login-page/login-page.component";
 import { ItemBrowserPageComponent } from './item-browser-page/item-browser-page.component';
 import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.component';

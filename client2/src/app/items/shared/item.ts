@@ -6,6 +6,7 @@ import { ItemState } from "./item-state";
 export class Item {
   id: number;
   barcode: string;
+  antolin: string;
   author: string;
   title: string;
   description: string;

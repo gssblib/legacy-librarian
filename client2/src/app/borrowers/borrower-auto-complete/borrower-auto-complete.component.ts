@@ -64,7 +64,7 @@ export class BorrowerAutoCompleteComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private displayName(borrower: Borrower): string {
+  public displayName(borrower: Borrower): string {
     return borrower
       ? `${borrower.surname}, ${borrower.firstname}, ${borrower.contactname}`
       : '';

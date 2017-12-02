@@ -107,7 +107,7 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
     this.navigate();
   }
 
-  private getSearchFields() {
+  public getSearchFields() {
     return this.borrowersService.getBorrowerFields(this.searchFields)
   }
 

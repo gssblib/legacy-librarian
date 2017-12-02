@@ -1,7 +1,3 @@
-<div class="status alert alert-{{ statusType }}" role="alert">
-  {{ status }}
-</div>
-
 <mat-grid-list cols="2" class="foo">
   <mat-grid-tile>
     <form (ngSubmit)="printLabel(item, category, data)">
@@ -9,7 +5,7 @@
       <mat-form-field [style.width]="'100%'">
         <mat-select name="category" placeholder="Label Categories"
                     [(ngModel)]="category"
-                    (change)="onCategoryChange(item, category, data)">
+                    (change)="onCategoryChange(item, category)">
           <mat-option *ngFor="let cat of categories" [value]="cat">
             {{ cat }}
           </mat-option>

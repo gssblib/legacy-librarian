@@ -1,6 +1,6 @@
 <mat-card>
   <div class="containerX">
-    <div [fxFlex]="grow">
+    <div fxFlex="">
       <gsl-multi-field-search-bar
          [criteria]="criteria" [fields]="getSearchFields()" (search)="onSearch($event)">
       </gsl-multi-field-search-bar>

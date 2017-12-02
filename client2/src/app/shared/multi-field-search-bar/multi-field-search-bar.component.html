@@ -1,5 +1,5 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(criteria)" class="containerX">
-  <div class="search-fields" [fxFlex]="grow">
+  <div class="search-fields" fxFlex="">
     <formly-form [model]="criteria" [fields]="fields" [form]="form"
                  [ngClass]="'width'+fields.length">
     </formly-form>

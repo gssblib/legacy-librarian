@@ -15,13 +15,12 @@ import {
   MatSnackBarModule,
   MatToolbarModule
 } from '@angular/material';
-
+import { NotFoundModule } from '../not-found/not-found.module';
+import { HomeModule } from '../home/home.module';
 import { CoreModule } from './core/core.module';
 import { AppComponent } from './app.component';
 import { ItemsModule } from './items/items.module';
 import { AppRoutingModule } from './app-routing.module';
-import { HomeComponent } from './home/home.component';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { BorrowersModule } from './borrowers/borrowers.module';
 import { AppSearchBarComponent } from './app-search-bar/app-search-bar.component';
 import { FeesModule } from './fees/fees.module';
@@ -33,8 +32,6 @@ import { CheckoutsModule } from "./checkouts/checkouts.module";
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    NotFoundComponent,
     AppSearchBarComponent,
   ],
   imports: [
@@ -58,6 +55,8 @@ import { CheckoutsModule } from "./checkouts/checkouts.module";
     MatToolbarModule,
     MatIconModule,
     MatListModule,
+    NotFoundModule,
+    HomeModule,
     /* List routers in the right order. */
     ItemsRoutingModule,
     BorrowersRoutingModule,
