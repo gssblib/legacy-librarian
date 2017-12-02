@@ -1,5 +1,5 @@
 apache remove:
-  pkg.purge:
+  pkg.purged:
     - pkgs:
       - apache2
 
