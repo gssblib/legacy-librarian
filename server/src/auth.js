@@ -107,6 +107,12 @@ module.exports = function (db) {
     };
     return http(options)
       .then(function (body) {
+        if (body == '') {
+          return {
+            authenticated: false,
+            message: 'SYCAMORE_UNAVAILABLE'
+          };
+        }
         if (body.indexOf(config['sycamore-auth']['success-text']) >= 0) {
           return db.selectRow('select * from borrowers where sycamoreid = ?', login.username, true)
             .then(function(borrower) {
