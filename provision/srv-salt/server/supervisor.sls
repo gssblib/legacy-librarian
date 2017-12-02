@@ -2,6 +2,7 @@
 
 include:
   - server
+  - supervisor
 
 server daemon:
   file.managed:
