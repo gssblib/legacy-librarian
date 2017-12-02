@@ -3,16 +3,28 @@ apache remove:
     - pkgs:
       - apache2
 
-nginx install:
+systemd install:
   pkg.installed:
     - pkgs:
       - systemd
+
+run systemd:
+  service.running:
+    - name: systemd
+    - enable: True
+    - require:
+      - systemd install
+
+nginx install:
+  pkg.installed:
+    - pkgs:
       - nginx
       - nginx-extras
       - logrotate
     - refresh: false
     - require:
       - apache remove
+      - run systemd
 
   file.recurse:
     - name: /etc/nginx
