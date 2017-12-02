@@ -100,7 +100,7 @@ class SmtpClient(object):
 
     def send(self, email):
         """Sends the Email object using the SMTP client."""
-        logging.info("sending email to %s", email.recipient)
+        logging.info("sending email to %s", email.recipients)
         message = email.get_message()
         self.smtp_client.sendmail(
             email.sender, email.recipients, message.as_string())
