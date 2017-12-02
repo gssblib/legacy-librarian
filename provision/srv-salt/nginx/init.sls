@@ -8,13 +8,6 @@ systemd install:
     - pkgs:
       - systemd
 
-run systemd:
-  service.running:
-    - name: systemd
-    - enable: True
-    - require:
-      - systemd install
-
 nginx install:
   pkg.installed:
     - pkgs:
@@ -24,7 +17,7 @@ nginx install:
     - refresh: false
     - require:
       - apache remove
-      - run systemd
+      - systemd install
 
   file.recurse:
     - name: /etc/nginx
