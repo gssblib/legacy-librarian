@@ -185,11 +185,12 @@ class Reminder(object):
         """
         for borrower in borrowers:
             if borrower.emails:
-                # Generate email only for first address for now.
-                recipient = borrower.emails[0]
-                if '@' in recipient and not recipient in self.excluded_recipients:
-                    yield self.generate_email(
-                        borrower, [recipient], test=test)
+                recipients = [
+                    recipient for recipient in borrower.emails
+                    if ('@' in recipient and
+                        recipient not in self.excluded_recipients)]
+                if recipients:
+                    yield self.generate_email(borrower, recipients, test=test)
 
     def generate_email(self, borrower, recipients, test=False):
         """Generates a single reminder email for a borrower with the given
@@ -227,7 +228,8 @@ class Reminder(object):
             email.merge(self.template_email)
             self.smtp_client.send(email)
             if recipient_file:
-                recipient_file.write(email.recipients[0] + "\n")
+                for recipient in email.recipients:
+                    recipient_file.write(recipient + "\n")
 
     def send_test_email(self, recipients):
         """Sends a test email to the given recipients instead of the real
