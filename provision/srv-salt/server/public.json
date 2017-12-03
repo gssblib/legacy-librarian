@@ -9,14 +9,14 @@
     "database": "spils",
     "host": "localhost",
     "user": "gssb",
-    "password": "gssblib"
+    "password": "{{ salt['grains.get']('mysql.gssb.password') }}"
   },
 
   "clients": [
     {
       "name": "parents",
       "endpoint": "/",
-      "path": "../../client2/dist-public"
+      "path": "{{ root_path }}/client2/dist-public"
     }
   ],
 
@@ -27,7 +27,7 @@
   },
 
   "resources": {
-    "covers": "./covers"
+    "covers": "{{ root_path }}/covers"
   },
 
   "jwt": {
@@ -36,7 +36,7 @@
 
   "sycamore-auth": {
     "school-id": "2132",
-    "url": "http://app.sycamoreeducation.com/index.php",
+    "url": "https://app.sycamoreeducation.com/index.php",
     "success-text": "schoolhome.php"
   }
 
