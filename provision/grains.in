@@ -1,0 +1,8 @@
+app_dir: /opt/gssblib
+server_type: prod|public
+smtp.user: <username|BLANK>
+smtp.password: <password|BLANK>
+public.server: library.gssb.org
+public.app_dir: /opt/gssblib
+public.user: gssblib
+public.password: <password>
