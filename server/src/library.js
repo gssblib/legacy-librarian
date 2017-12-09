@@ -440,7 +440,7 @@ module.exports = {
         })
         .then(function () {
           // If successfully copied to history, remove from checkouts.
-          return checkouts.remove(checkoutId);
+          return checkouts.remove(barcode);
         })
         .then(function () { return result; });
     };
