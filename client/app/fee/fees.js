@@ -1,7 +1,7 @@
 angular.module('library')
 .controller('feesCtrl',
-            ['$scope', '$location', 'library', 'util',
-              function($scope, $location, library, util) {
+            ['$scope', '$location', '$filter', 'library', 'util',
+              function($scope, $location, $filter, library, util) {
   var self = this;
   self.feeDate = new Date();
   $scope.$emit('nav-item-changed', 'fees');
@@ -15,8 +15,9 @@ angular.module('library')
   getFees();
 
   self.updateFees = function (date) {
-    console.log(date);
-    library.updateFees(date).then(function () { getFees(); });
+    const localDate = $filter('date')(date, 'yyyy-MM-dd');
+    console.log(localDate);
+    library.updateFees(localDate).then(function () { getFees(); });
   };
 
   self.sortKey = 'surname';
