@@ -39,3 +39,59 @@ smtp.password: <password|BLANK>
 cd <app-path>/provision
 sudo salt-call -c . --local state.apply
 ```
+
+## Debug Output
+
+```
+sudo salt-call -c . --local -l debug ...
+```
+
+
+# Update Public Server
+
+## Update software
+
+```
+$ ssh gssblib@library.gssb.org
+$ bash
+$ cd <app-path>
+$ git pull -r
+$ cd provision
+$ sudo salt-call -c . --local saltutil.sync_all
+$ sudo salt-call -c . --local state.apply
+```
+
+By convention `app-path` is `/opt/gssblib/librarian` on the public server.
+
+## Update data
+
+This needs to be written when I have access to our server.
+
+
+# Managing Servers
+
+All our servers are run using `supervisor`.
+
+- To see the status of all running servers:
+
+  ```
+  supervisorctl status
+  ```
+
+- Manage a particular server:
+
+  ```
+  supervisorctl [start|stop|restart] <server-name>
+  ```
+
+  So for example, to restart the app server:
+
+  ```
+  supervisorctl restart app-server
+  ```
+
+- Manage all servers at once:
+
+  ```
+  supervisorctl [start|stop|restart] all
+  ```
