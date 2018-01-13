@@ -2,3 +2,6 @@ a {
   text-decoration: none;
   color: inherit;
 }
+button:first-of-type {
+  margin-right: 1em;
+}

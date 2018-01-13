@@ -6,6 +6,7 @@ import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.
 import { Borrower } from '../shared/borrower';
 import { BorrowersService } from '../shared/borrowers.service';
 import { BorrowerService } from '../shared/borrower.service';
+import { ItemsService } from "../../items/shared/items.service";
 
 /**
  * Presents the items that a borrower has currently checked out.
@@ -28,7 +29,8 @@ export class BorrowerCheckoutsComponent implements OnInit {
   constructor(
     private errorService: ErrorService,
     private borrowerService: BorrowerService,
-    private borrowersService: BorrowersService
+    private borrowersService: BorrowersService,
+    private itemsService: ItemsService
   ) {
     this.borrowerService.borrowerObservable.subscribe(borrower => {
       this.borrower = borrower;
