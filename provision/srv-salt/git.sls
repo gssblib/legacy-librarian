@@ -55,11 +55,10 @@ gssblib ssh key github creation:
 gssblib clone:
   git.latest:
     - target: {{ salt['grains.get']('app_dir') }}
-    - name: git@github.com:gssblib/librarian.git
-    - identity: ~/.ssh/id_rsa.pub
+    - name: https://github.com/gssblib/librarian.git
     - user: gssblib
-    - force: True
+    - force_clone: True
     - force_checkout: True
     - force_reset: True
     - require:
-      - gssblib ssh key
+      - git install

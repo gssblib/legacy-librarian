@@ -35,8 +35,8 @@ client public:
     - name: ng build --app public --base-href "/" --progress false
     - cwd: {{ client_dir }}
     - runas: gssblib
-    - creates:
-      - {{ client_dir }}/dist-public
+    #- creates:
+    #  - {{ client_dir }}/dist-public
     - onchanges:
       - git: gssblib clone
 {% endif %}
