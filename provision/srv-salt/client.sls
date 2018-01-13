@@ -2,6 +2,7 @@
 {% set client_dir = app_dir + '/client2' %}
 
 include:
+  - git
   - node
 
 # We cannot use npm.installed here since it does
@@ -11,7 +12,7 @@ angular/cli:
     - name: "npm install --global @angular/cli"
     - require:
       - node
-    - unless: "npm list --global --depth 0|grep -q @angular/cli" 
+    - unless: "npm list --global --depth 0|grep -q @angular/cli"
 
 # We cannot use npm.bootstrap, since it will always run. :-(
 client:
@@ -36,6 +37,8 @@ client public:
     - runas: gssblib
     - creates:
       - {{ client_dir }}/dist-public
+    - onchanges:
+      - git: gssblib clone
 {% endif %}
 
 {% if salt['grains.get']('server_type') == 'prod' %}
@@ -46,6 +49,8 @@ client public:
     - runas: gssblib
     - creates:
       - {{ client_dir }}/dist-public
+    - onchanges:
+      - git: gssblib clone
 
 client prod:
   cmd.run:
@@ -54,4 +59,6 @@ client prod:
     - runas: gssblib
     - creates:
       - {{ client_dir }}/dist
+    - onchanges:
+      - git: gssblib clone
 {% endif %}
