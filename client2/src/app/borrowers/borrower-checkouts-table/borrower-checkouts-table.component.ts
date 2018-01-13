@@ -33,9 +33,9 @@ export class BorrowerCheckoutsTableComponent implements OnInit {
     { name: 'barcode', label: 'Barcode', sortable: true, width: 100 },
     { name: 'title', label: 'Title', sortable: true, width: { min: 250 } },
     { name: 'description', label: 'Category', sortable: true, width: { min: 100, max: 200 } },
-    { name: 'checkout_date', label: 'Checkout Date', sortable: true, width: 140 },
-    { name: 'date_due', label: 'Due Date', sortable: true, width: 140 },
-    { name: 'fine_due', label: 'Fine Due', sortable: true, width: 80 },
+    { name: 'checkout_date', label: 'Checkout Date', sortable: true, width: 160 },
+    { name: 'date_due', label: 'Due Date', sortable: true, width: 160 },
+    { name: 'fine_due', label: 'Fine Due', sortable: true, width: 100 },
     { name: 'renew', label: 'Renewal', width: 120 },
   ];
 
