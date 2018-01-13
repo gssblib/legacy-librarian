@@ -27,15 +27,17 @@ git push.default config:
     - repo: {{ app_dir }}
     - user: gssblib
 
-#gssblib ssh key:
-#  cmd.run:
-#    - name: |
-#        ssh-keygen -q -t rsa -b 4096 \
-#          -N "{{ salt['grains.get_or_set_hash']('ssh.passphrase') }}"
-#          -C "librarygssb@gmail.com" \
-#          -f ~/.ssh/id_rsa
-#    - runas: gssblib
-#    - unless: test -f ~/.ssh/id_rsa
+{% if salt['grains.get']('server_type') == 'prod' %}
+gssblib ssh key:
+  cmd.run:
+    - name: |
+        ssh-keygen -q -t rsa -b 4096 \
+          -N "{{ salt['grains.get_or_set_hash']('ssh.passphrase') }}"
+          -C "librarygssb@gmail.com" \
+          -f ~/.ssh/id_rsa
+    - runas: gssblib
+    - unless: test -f ~/.ssh/id_rsa
+{% endif %}
 
 #gssblib ssh-agent add key:
 #  cmd.run:
@@ -55,10 +57,18 @@ gssblib ssh key github creation:
 gssblib clone:
   git.latest:
     - target: {{ salt['grains.get']('app_dir') }}
+{% if salt['grains.get']('server_type') == 'public' %}
     - name: https://github.com/gssblib/librarian.git
+{% endif %}
+{% if salt['grains.get']('server_type') == 'prod' %}
+    - name: git@github.com:gssblib/librarian.git
+{% endif %}
     - user: gssblib
     - force_clone: True
     - force_checkout: True
     - force_reset: True
     - require:
       - git install
+{% if salt['grains.get']('server_type') == 'prod' %}
+      - gssblib ssh key
+{% endif %}
