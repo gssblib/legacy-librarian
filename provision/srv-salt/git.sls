@@ -27,15 +27,15 @@ git push.default config:
     - repo: {{ app_dir }}
     - user: gssblib
 
-gssblib ssh key:
-  cmd.run:
-    - name: |
-        ssh-keygen -q -t rsa -b 4096 \
-          -N "{{ salt['grains.get_or_set_hash']('ssh.passphrase') }}"
-          -C "librarygssb@gmail.com" \
-          -f ~/.ssh/id_rsa
-    - runas: gssblib
-    - unless: test -f ~/.ssh/id_rsa
+#gssblib ssh key:
+#  cmd.run:
+#    - name: |
+#        ssh-keygen -q -t rsa -b 4096 \
+#          -N "{{ salt['grains.get_or_set_hash']('ssh.passphrase') }}"
+#          -C "librarygssb@gmail.com" \
+#          -f ~/.ssh/id_rsa
+#    - runas: gssblib
+#    - unless: test -f ~/.ssh/id_rsa
 
 #gssblib ssh-agent add key:
 #  cmd.run:
