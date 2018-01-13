@@ -67,6 +67,12 @@ By convention `app-path` is `/opt/gssblib/librarian` on the public server.
 
 This needs to be written when I have access to our server.
 
+On the main library server execute:
+
+```
+sudo salt-call -c . --local state.apply update-public
+```
+
 
 # Managing Servers
 
