@@ -5,3 +5,7 @@ a {
 button:first-of-type {
   margin-right: 1em;
 }
+
+gsl-item-antolin {
+  margin-left: 1em;
+}

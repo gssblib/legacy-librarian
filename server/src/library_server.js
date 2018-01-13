@@ -37,19 +37,6 @@ server.use(require('express-session')({
   saveUninitialized: true
 }));
 
-// Serve the client web application as static content.
-config['clients'].forEach(function(clientConfig) {
-  var path = clientConfig.path;
-  if (path[0] != '/') {
-    path = __dirname + '/' + path;
-  }
-  if (clientConfig.endpoint === '') {
-    server.use(express.static(path));
-  } else {
-    server.use(clientConfig.endpoint, express.static(path));
-  }
-});
-
 var img_root_path = config['resources']['covers']
 if (img_root_path[0] != '/') {
   img_root_path = __dirname + '/' + img_root_path;
@@ -200,6 +187,31 @@ httpcall.handlePaths([
       });
     }}
 ]);
+
+// Serve the client web application as static content.
+config['clients'].forEach(function(clientConfig) {
+  var path = clientConfig.path;
+  if (path[0] != '/') {
+    path = __dirname + '/' + path;
+  }
+  if (clientConfig.endpoint === '') {
+    server.use(express.static(path));
+    // This needs to be the last registration, otherwise it will catch
+    // everything else.
+    server.get(
+      '*',
+      (req, res) => {
+        res.sendFile('index.html', {'root': path});
+    });
+  } else {
+    server.use(clientConfig.endpoint, express.static(path));
+    server.get(
+      clientConfig.endpoint + '/*',
+      (req, res) => {
+        res.sendFile('index.html', {'root': path});
+    });
+  }
+});
 
 
 // Start server.
