@@ -12,6 +12,9 @@
     "password": "<passwd>"
   },
 
+  // Client registrations.
+  // IMPORTANT: The client registered for the "" endpoint must be listed last
+  //            to ensure it is the last route registration.
   "clients": [
     {
       "name": "volunteers",
