@@ -108,9 +108,9 @@ Users are added with the `add_user.js` node script which takes the username,
 password, and list of roles as arguments.
 
 ```
-$ cd $GSSBLIB_HOME/server
-$ NODE_ENV=prod ./add_user.js some_user some_nice_password librarian
-$ NODE_ENV=prod ./add_user.js another_user another_password clerk
+$ cd $GSSBLIB_HOME
+$ NODE_ENV=prod server/src/add_user.js some_user some_nice_password librarian
+$ NODE_ENV=prod server/src/add_user.js another_user another_password clerk
 ```
 
 ### Running the server
