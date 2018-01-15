@@ -32,33 +32,47 @@ client:
 {% if salt['grains.get']('server_type') == 'public' %}
 client public:
   cmd.run:
-    - name: ng build --prod --app public --base-href "/" --progress false
+    - name: ng build --prod --app public --base-href "/" --progress false && \
+        git rev-parse HEAD > .public.git-rev
     - cwd: {{ client_dir }}
     - runas: gssblib
-    - creates:
-      - {{ client_dir }}/dist-public
-    - onchanges:
-      - git: gssblib clone
+    - unless: |
+        test -e {{ client_dir }}/dist-public && \
+        test -e .public.git-rev && test `git rev-parse HEAD` = `cat .public.git-rev`
+#    - creates:
+#      - {{ client_dir }}/dist-public
+#    - onchanges:
+#      - git: gssblib clone
 {% endif %}
 
 {% if salt['grains.get']('server_type') == 'prod' %}
 client public:
   cmd.run:
-    - name: ng build --prod --app public --base-href "/public/" --progress false
+    - name: |
+        ng build --prod --app public --base-href "/public/" --progress false && \
+        git rev-parse HEAD > .public.git-rev
     - cwd: {{ client_dir }}
     - runas: gssblib
-    - creates:
-      - {{ client_dir }}/dist-public
-    - onchanges:
-      - git: gssblib clone
+    - unless: |
+        test -e {{ client_dir }}/dist-public && \
+        test -e .public.git-rev && test `git rev-parse HEAD` = `cat .public.git-rev`
+#    - creates:
+#      - {{ client_dir }}/dist-public
+#    - onchanges:
+#      - git: gssblib clone
 
 client prod:
   cmd.run:
-    - name: ng build --prod --base-href "/volunteers/" --progress false
+    - name: |
+        ng build --prod --base-href "/volunteers/" --progress false && \
+        git rev-parse HEAD > .volunteers.git-rev
     - cwd: {{ client_dir }}
     - runas: gssblib
-    - creates:
-      - {{ client_dir }}/dist
-    - onchanges:
-      - git: gssblib clone
+    - unless: |
+        test -e {{ client_dir }}/dist && \
+        test -e .volunteers.git-rev && test `git rev-parse HEAD` = `cat .volunteers.git-rev`
+#    - creates:
+#      - {{ client_dir }}/dist
+#    - onchanges:
+#      - git: gssblib clone
 {% endif %}
