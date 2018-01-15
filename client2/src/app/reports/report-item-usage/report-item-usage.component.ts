@@ -96,6 +96,9 @@ export class ReportItemUsageComponent implements OnInit {
   }
 
   updateReport(criteria) {
+    if (criteria['classification'] === '') {
+      delete this.criteria['classification'];
+    }
     this.rpc.httpGet('reports/itemUsage', criteria).subscribe(
       data => {
         this.data = data['rows'];
