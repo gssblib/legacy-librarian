@@ -54,21 +54,22 @@ gssblib ssh key github creation:
     - runas: gssblib
 {% endif %}
 
-gssblib clone:
-  git.latest:
-    - target: {{ salt['grains.get']('app_dir') }}
-{% if salt['grains.get']('server_type') == 'public' %}
-    - name: https://github.com/gssblib/librarian.git
-{% endif %}
-{% if salt['grains.get']('server_type') == 'prod' %}
-    - name: git@github.com:gssblib/librarian.git
-{% endif %}
-    - user: gssblib
-    - force_clone: True
-    - force_checkout: True
-    - force_reset: True
-    - require:
-      - git install
-{% if salt['grains.get']('server_type') == 'prod' %}
-      - gssblib ssh key
-{% endif %}
+# Only activate once ssh-agent works.
+#gssblib clone:
+#  git.latest:
+#    - target: {{ salt['grains.get']('app_dir') }}
+#{% if salt['grains.get']('server_type') == 'public' %}
+#    - name: https://github.com/gssblib/librarian.git
+#{% endif %}
+#{% if salt['grains.get']('server_type') == 'prod' %}
+#    - name: git@github.com:gssblib/librarian.git
+#{% endif %}
+#    - user: gssblib
+#    - force_clone: True
+#    - force_checkout: True
+#    - force_reset: True
+#    - require:
+#      - git install
+#{% if salt['grains.get']('server_type') == 'prod' %}
+#      - gssblib ssh key
+#{% endif %}
