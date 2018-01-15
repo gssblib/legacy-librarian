@@ -17,5 +17,7 @@ labels/*.pdf
 
 client2/dist
 client2/dist-public
+client2/.public.git-rev
+client2/.volunteers.git-rev
 
 provision/grains
