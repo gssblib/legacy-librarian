@@ -27,7 +27,7 @@ import { ItemsService } from "../shared/items.service";
 export class ItemSearchPageComponent implements OnInit, OnDestroy {
   ItemState = ItemState;
 
-  searchFields: string[] = ['title', 'author', 'description', 'subject', 'state'];
+    searchFields: string[] = ['title', 'author', 'description', 'subject', 'state', 'seriestitle'];
 
   /** Current result being shown in the table. */
   result: TableFetchResult<Item>;
