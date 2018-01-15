@@ -101,7 +101,7 @@ client: client2/package.json
 ##> client-dist : Build volunteer client distribution
 client-dist:
 	cd client2; \
-	ng build --base-href "/volunteers/"
+	ng build --prod --base-href "/volunteers/"
 
 ##> client-dev : Start the volunteer client dev server on port 4200.
 client-dev:
@@ -111,7 +111,7 @@ client-dev:
 ##> public-client-dist : Build public client distribution
 public-client-dist:
 	cd client2; \
-	ng build --app public --base-href "/public/"
+	ng build --prod --app public --base-href "/public/"
 
 ##> public-client-dev : Start the public client dev server on port 5200.
 public-client-dev:
