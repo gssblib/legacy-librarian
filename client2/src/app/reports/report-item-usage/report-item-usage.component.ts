@@ -96,7 +96,7 @@ export class ReportItemUsageComponent implements OnInit {
   }
 
   updateReport(criteria) {
-    this.rpc.httpGet('/reports/itemUsage', criteria).subscribe(
+    this.rpc.httpGet('reports/itemUsage', criteria).subscribe(
       data => {
         this.data = data['rows'];
         this.total = data['rows'].length;
