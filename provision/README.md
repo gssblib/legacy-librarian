@@ -54,11 +54,20 @@ sudo salt-call -c . --local -l debug ...
 ```
 $ ssh gssblib@library.gssb.org
 $ bash
-$ cd <app-path>
-$ git pull -r
-$ cd provision
-$ sudo salt-call -c . --local saltutil.sync_all
+$ cd <app-path>/provision
 $ sudo salt-call -c . --local state.apply
+```
+
+If the something in the provisioning changed, you should do the following
+first:
+
+```
+$ ssh gssblib@library.gssb.org
+$ bash
+$ cd <app-path>/provision
+$ git pull -r
+$ sudo salt-call -c . --local saltutil.sync_all
+
 ```
 
 By convention `app-path` is `/opt/gssblib/librarian` on the public server.
