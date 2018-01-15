@@ -2,7 +2,6 @@
 {% set client_dir = app_dir + '/client2' %}
 
 include:
-  - git
   - node
 
 # We cannot use npm.installed here since it does
@@ -39,10 +38,6 @@ client public:
     - unless: |
         test -e {{ client_dir }}/dist-public && \
         test -e .public.git-rev && test `git rev-parse HEAD` = `cat .public.git-rev`
-#    - creates:
-#      - {{ client_dir }}/dist-public
-#    - onchanges:
-#      - git: gssblib clone
 {% endif %}
 
 {% if salt['grains.get']('server_type') == 'prod' %}
@@ -56,10 +51,6 @@ client public:
     - unless: |
         test -e {{ client_dir }}/dist-public && \
         test -e .public.git-rev && test `git rev-parse HEAD` = `cat .public.git-rev`
-#    - creates:
-#      - {{ client_dir }}/dist-public
-#    - onchanges:
-#      - git: gssblib clone
 
 client prod:
   cmd.run:
@@ -71,8 +62,4 @@ client prod:
     - unless: |
         test -e {{ client_dir }}/dist && \
         test -e .volunteers.git-rev && test `git rev-parse HEAD` = `cat .volunteers.git-rev`
-#    - creates:
-#      - {{ client_dir }}/dist
-#    - onchanges:
-#      - git: gssblib clone
 {% endif %}
