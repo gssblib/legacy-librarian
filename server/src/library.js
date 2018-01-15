@@ -61,7 +61,7 @@ module.exports = {
       name: 'ItemAge',
       type: 'enum',
       options: [
-        "na", "A", "All Ages", "K-1", "K-2", "T", "T-17",
+        "na", "A", "All Ages", "K-1", "K-2", "T-12", "T-17",
         "Leseleiter-1A", "Leseleiter-1B", "Leseleiter-1C", "Leseleiter-2",
         "Leseleiter-3", "Leseleiter-4", "Leseleiter-5",  "Leseleiter-6",
         "Leseleiter-7", "Leseleiter-8", "Leseleiter-9", "Leseleiter-10",
