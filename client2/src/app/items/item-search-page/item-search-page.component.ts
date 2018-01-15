@@ -27,7 +27,7 @@ import { ItemsService } from "../shared/items.service";
 export class ItemSearchPageComponent implements OnInit, OnDestroy {
   ItemState = ItemState;
 
-  searchFields: string[] = ['title', 'author', 'description', 'subject', 'state'];
+  searchFields: string[] = ['title', 'author', 'category', 'subject', 'state'];
 
   /** Current result being shown in the table. */
   result: TableFetchResult<Item>;
@@ -57,7 +57,7 @@ export class ItemSearchPageComponent implements OnInit, OnDestroy {
     {name: 'title', label: 'Title', sortable: true},
     {name: 'author', label: 'Author', width: 220, sortable: true},
     {name: 'subject', label: 'Subject', width: 180, sortable: true},
-    {name: 'description', label: 'Category', width: 100, sortable: true},
+    {name: 'category', label: 'Category', width: 100, sortable: true},
   ];
 
   /** Flag set while setting page in paging bar with navigateToPage. */

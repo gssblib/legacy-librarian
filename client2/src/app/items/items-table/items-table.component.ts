@@ -36,7 +36,7 @@ export class ItemsTableComponent implements OnInit, OnChanges {
     { name: 'barcode', label: 'Barcode', sortable: true },
     { name: 'title', label: 'Title', sortable: true },
     { name: 'author', label: 'Author', sortable: true },
-    { name: 'description', label: 'Category', sortable: true },
+    { name: 'category', label: 'Category', sortable: true },
   ];
 
   constructor() { }

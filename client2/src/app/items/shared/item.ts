@@ -9,12 +9,11 @@ export class Item {
   antolin: string;
   author: string;
   title: string;
-  description: string;
+  category: string;
   subject: string;
   publicationyear: number;
-  publishercode: string;
+  publisher: string;
   age: string;
-  media: string;
   serial: string;
   seriestitle: string;
   classification: string;

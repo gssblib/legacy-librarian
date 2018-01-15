@@ -31,10 +31,6 @@ angular.module("library")
         "Leseleiter-7", "Leseleiter-8", "Leseleiter-9", "Leseleiter-10",
         "Lehrer"
       ],
-      media: [
-        "na", "DVD-Europa", "DVD-USA", "Software-Mac", "Software-Windows",
-        "Software-Windows/Mac"
-      ],
       states: [
         'CIRCULATING', 'STORED', 'DELETED', 'LOST'
       ]

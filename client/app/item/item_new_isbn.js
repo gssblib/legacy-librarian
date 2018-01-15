@@ -17,7 +17,7 @@ angular.module("library")
       author: data.author,
       isbn13: data.isbn13,
       isbn10: data.isbn10,
-      publishercode: data.publisher,
+      publisher: data.publisher,
       antolin: data.book_id
     };
   }

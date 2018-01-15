@@ -27,7 +27,7 @@ export class ReturnPageComponent implements OnInit {
     {name: 'title', label: 'Title'},
     {name: 'author', label: 'Author', width: 220},
     {name: 'subject', label: 'Subject', width: 180},
-    {name: 'description', label: 'Category', width: 100},
+    {name: 'category', label: 'Category', width: 100},
   ]
 
   constructor(
