@@ -101,7 +101,7 @@ UPDATE items SET title = 'Klassik fuer Kids - Mozart' WHERE barcode = '000014307
 -- Make "Sachkunde Serie" subject items always have "Serie" classification.
 UPDATE items SET classification = 'Serie' WHERE subject LIKE "Sachkunde Serie%";
 
--- Leseleiter classification fixes
+-- Leseleiter classification fixes.
 UPDATE items SET classification = 'L1a' WHERE subject LIKE 'Leseleiter%' and classification = '1a';
 UPDATE items SET classification = 'L1b' WHERE subject LIKE 'Leseleiter%' and classification = '1b';
 UPDATE items SET classification = 'L1c' WHERE subject LIKE 'Leseleiter%' and classification = '1c';
@@ -145,3 +145,30 @@ UPDATE items SET classification = 'L6' WHERE barcode = '000009336';
 UPDATE items SET classification = 'L6' WHERE barcode = '000010289';
 UPDATE items SET classification = 'L6' WHERE barcode = '000011128';
 UPDATE items SET classification = 'L6' WHERE barcode = '000011739';
+
+-- Erzaehlung classification fixes.
+
+--  * Convert classification "Erzaehlung" or "Erzaehlungen" to first 3 letters of author.
+UPDATE items SET classification = left(author, 3) WHERE subject LIKE 'Erz%' AND classification LIKE 'Erz%';
+
+--  * Convert classification "Geo - Geographie / Atlanten" to first 3 letters of author.
+UPDATE items SET classification = left(author, 3) WHERE subject LIKE 'Erz%' AND classification LIKE 'Geo - %';
+
+--  * Convert classification "E/G" and "E/G Erzaehlung" to first 3 letters of author.
+UPDATE items SET classification = left(author, 3) WHERE subject LIKE 'Erz%' AND classification LIKE 'E/G%';
+
+--  * Convert classification "Krimi" to first 3 letters of author.
+UPDATE items SET classification = left(author, 3) WHERE subject LIKE 'Erz%' AND classification LIKE 'Krimi';
+
+--  * Convert classification "Roman" to first 3 letters of author.
+UPDATE items SET classification = left(author, 3) WHERE subject LIKE 'Erz%' AND classification LIKE 'Roman';
+
+--  * Convert classification "Teenager" to first 3 letters of author.
+UPDATE items SET classification = left(author, 3) WHERE subject LIKE 'Erz%' AND classification LIKE 'Teenager';
+
+--  * Convert classification "[A-Z]{3}" to first 3 letters of author effectively titling the string..
+UPDATE items SET classification = left(author, 3) WHERE subject LIKE 'Erz%' AND classification REGEXP BINARY '[A-Z]{3}';
+
+-- TODO
+-- Maerchen classifications.
+-- Bilderbuch classifications.
