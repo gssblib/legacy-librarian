@@ -48,7 +48,7 @@
           </a>
         </th>
         <th>
-          <a href='' ng-click="ctrl.setSortKey('description')">
+          <a href='' ng-click="ctrl.setSortKey('category')">
             Description
           </a>
         </th>
@@ -81,7 +81,7 @@
                   ng-show="item.antolin == true"></span>
           </td>
           <td class="clickable" ng-click="ctrl.selectItem(item)">
-            {{item.description}}
+            {{item.category}}
           </td>
           <td>{{item.checkout_date | date:'dd MMM yyyy'}}</td>
           <td>{{item.date_due | date:'dd MMM yyyy'}}</td>

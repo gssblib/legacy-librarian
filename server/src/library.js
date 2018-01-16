@@ -249,7 +249,7 @@ module.exports = {
         "update `out` a, items b " +
         "set a.date_due = ? " +
         "where borrowernumber = ? and a.barcode = b.barcode " +
-        "and (b.description != 'DVD' or a.checkout_date > ?)",
+        "and (b.category != 'DVD' or a.checkout_date > ?)",
         [newDueDate, borrowerNumber, dvdCheckoutLimit]);
     };
 
@@ -305,7 +305,7 @@ module.exports = {
       name: 'items',
       columns: [
         { name: 'barcode', required: true, domain: domains.Barcode },
-        { name: 'description', label: 'Category', required: true,
+        { name: 'category', label: 'Category', required: true,
           domain: domains.ItemDescription },
         { name: 'subject', required: true,
           domain: domains.ItemSubject },

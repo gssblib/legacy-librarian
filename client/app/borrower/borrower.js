@@ -87,7 +87,7 @@ angular.module("library")
   }
 
   self.renewable = function(item) {
-    return item.description != 'DVD' ||
+    return item.category != 'DVD' ||
       new Date(item.checkout_date) > addDays(new Date(), -21);
   };
 
