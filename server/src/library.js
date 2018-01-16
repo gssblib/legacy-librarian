@@ -50,11 +50,24 @@ module.exports = {
       name: 'ItemSubject',
       type: 'enum',
       options: [
-        "CD", "CD-ROM", "DVD", "Bilderbuch B-gelb", "Comic C-orange",
-        "Erzaehlung E-d gruen", "Fasching", "Halloween", "Leseleiter LL-klar",
-        "Maerchen Mae-rot", "Multimedia MM-rosa", "Ostern", "Sachkunde S-blau",
-        "Sachkunde Serie - h blau", "St. Martin", "Teen T - h gruen",
-        "Uebergroesse - lila", "Weihnachten", "Zeitschrift"
+        "CD",
+        "CD-ROM",
+        "DVD",
+        "Bilderbuch B - gelb",
+        "Comic C - orange",
+        "Erzaehlung E - dunkelgruen",
+        "Fasching", "Halloween",
+        "Leseleiter LL - klar",
+        "Maerchen Mae - rot",
+        "Multimedia MM - rosa",
+        "Ostern",
+        "Sachkunde S - blau",
+        "Sachkunde Serie - hellblau",
+        "St. Martin",
+        "Teen T - hellgruen",
+        "Uebergroesse - lila",
+        "Weihnachten",
+        "Zeitschrift"
       ]
     });
     addDomain({
