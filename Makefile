@@ -134,7 +134,7 @@ backup:
 ##> restore FILE=<path>: Load the specified backup file into database.
 .PHONY: restore
 restore:
-	zcat $(FILE) | mysql -u gssb --password=gssblib spils
+	zcat $(FILE) | mysql spils
 
 ##> reminder-emails-file : Create a file with reminder E-mails
 .PHONY: reminder-emails

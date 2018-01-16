@@ -16,9 +16,6 @@ def create_db_dump(db_config, dump_filename):
     """Writes the gzipped dump of the database to the file."""
     args = [
         'mysqldump',
-        #'-u',
-        #db_config['user'],
-        #'-p%s' % db_config['password'],
         db_config['database']
         ]
     with open(dump_filename, 'wb', 0) as dump_file:
