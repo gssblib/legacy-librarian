@@ -42,8 +42,12 @@ module.exports = {
       name: 'ItemDescription',
       type: 'enum',
       options: [
-        "Buch", "CD", "CD-ROM", "DVD", "Comic", "Multimedia", "Zeitschrift",
-        "Kassette", "Computer", "Projector", "DVD Player"
+        "Buch",
+        "CD",
+        "DVD",
+        "Comic",
+        "Multimedia",
+        "Zeitschrift",
       ]
     });
     addDomain({
@@ -53,40 +57,45 @@ module.exports = {
         "CD",
         "CD-ROM",
         "DVD",
+        "Zeitschrift",
         "Bilderbuch B - gelb",
         "Comic C - orange",
         "Erzaehlung E - dunkelgruen",
-        "Fasching", "Halloween",
         "Leseleiter LL - klar",
         "Maerchen Mae - rot",
         "Multimedia MM - rosa",
-        "Ostern",
         "Sachkunde S - blau",
         "Sachkunde Serie - hellblau",
-        "St. Martin",
         "Teen T - hellgruen",
         "Uebergroesse - lila",
-        "Weihnachten",
-        "Zeitschrift"
+        "Fasching",
+        "Halloween",
+        "Ostern",
+        "St. Martin",
+        "Weihnachten"
       ]
     });
     addDomain({
       name: 'ItemAge',
       type: 'enum',
       options: [
-        "na", "A", "All Ages", "K-1", "K-2", "T-12", "T-17",
-        "Leseleiter-1A", "Leseleiter-1B", "Leseleiter-1C", "Leseleiter-2",
-        "Leseleiter-3", "Leseleiter-4", "Leseleiter-5",  "Leseleiter-6",
-        "Leseleiter-7", "Leseleiter-8", "Leseleiter-9", "Leseleiter-10",
-        "Lehrer"
-      ]
-    });
-    addDomain({
-      name: 'MediaType',
-      type: 'enum',
-      options: [
-        "na", "DVD-Europa", "DVD-USA", "Software-Mac", "Software-Windows",
-        "Software-Windows/Mac"
+        "All Ages",
+        "K-1",
+        "K-2",
+        "T-12",
+        "T-17",
+        "Leseleiter-1A",
+        "Leseleiter-1B",
+        "Leseleiter-1C",
+        "Leseleiter-2",
+        "Leseleiter-3",
+        "Leseleiter-4",
+        "Leseleiter-5",
+        "Leseleiter-6",
+        "Leseleiter-7",
+        "Leseleiter-8",
+        "Leseleiter-9",
+        "Leseleiter-10"
       ]
     });
     addDomain({
