@@ -97,3 +97,51 @@ UPDATE items SET title = 'Licht an - Nachts auf dem Bauernhof' WHERE barcode = '
 UPDATE items SET title = 'Kommissar Schlotterteich laesst nicht locker: Ertappt! Erwischt!' WHERE barcode = '000012561';
 UPDATE items SET title = 'Kommissar Kugelblitz' WHERE barcode = '000012582';
 UPDATE items SET title = 'Klassik fuer Kids - Mozart' WHERE barcode = '000014307';
+
+-- Make "Sachkunde Serie" subject items always have "Serie" classification.
+UPDATE items SET classification = 'Serie' WHERE subject LIKE "Sachkunde Serie%";
+
+-- Leseleiter classification fixes
+UPDATE items SET classification = 'L1a' WHERE subject LIKE 'Leseleiter%' and classification = '1a';
+UPDATE items SET classification = 'L1b' WHERE subject LIKE 'Leseleiter%' and classification = '1b';
+UPDATE items SET classification = 'L1c' WHERE subject LIKE 'Leseleiter%' and classification = '1c';
+UPDATE items SET classification = 'L1c' WHERE subject LIKE 'Leseleiter%' and
+classification = '1 C';
+UPDATE items SET classification = 'L2' WHERE subject LIKE 'Leseleiter%' and classification = '2';
+UPDATE items SET classification = 'L3' WHERE subject LIKE 'Leseleiter%' and classification = '3';
+UPDATE items SET classification = 'L4' WHERE subject LIKE 'Leseleiter%' and classification = '4';
+UPDATE items SET classification = 'L5' WHERE subject LIKE 'Leseleiter%' and classification = '5';
+UPDATE items SET classification = 'L6' WHERE subject LIKE 'Leseleiter%' and classification = '6';
+UPDATE items SET classification = 'L7' WHERE subject LIKE 'Leseleiter%' and classification = '7';
+UPDATE items SET classification = 'L8' WHERE subject LIKE 'Leseleiter%' and classification = '8';
+UPDATE items SET classification = 'L9' WHERE subject LIKE 'Leseleiter%' and classification = '9';
+UPDATE items SET classification = 'L10' WHERE subject LIKE 'Leseleiter%' and classification = '10';
+
+UPDATE items SET classification = 'L1a' WHERE subject LIKE 'Leseleiter%' and classification = 'L 1a';
+UPDATE items SET classification = 'L1b' WHERE subject LIKE 'Leseleiter%' and classification = 'L 1b';
+UPDATE items SET classification = 'L1c' WHERE subject LIKE 'Leseleiter%' and classification = 'L 1c';
+UPDATE items SET classification = 'L2' WHERE subject LIKE 'Leseleiter%' and classification = 'L 2';
+UPDATE items SET classification = 'L3' WHERE subject LIKE 'Leseleiter%' and classification = 'L 3';
+UPDATE items SET classification = 'L4' WHERE subject LIKE 'Leseleiter%' and classification = 'L 4';
+UPDATE items SET classification = 'L5' WHERE subject LIKE 'Leseleiter%' and classification = 'L 5';
+UPDATE items SET classification = 'L6' WHERE subject LIKE 'Leseleiter%' and classification = 'L 6';
+UPDATE items SET classification = 'L7' WHERE subject LIKE 'Leseleiter%' and classification = 'L 7';
+UPDATE items SET classification = 'L8' WHERE subject LIKE 'Leseleiter%' and classification = 'L 8';
+UPDATE items SET classification = 'L9' WHERE subject LIKE 'Leseleiter%' and classification = 'L 9';
+UPDATE items SET classification = 'L10' WHERE subject LIKE 'Leseleiter%' and classification = 'L 10';
+
+UPDATE items SET classification = 'L3' WHERE subject LIKE 'Leseleiter%' and classification = 'Leseleiter 3';
+UPDATE items SET classification = 'Anfaenger-L4' WHERE barcode = '000010901';
+UPDATE items SET classification = 'L5' WHERE subject LIKE 'Leseleiter%' and classification = 'Serie';
+UPDATE items SET classification = 'Teen' WHERE subject LIKE 'Leseleiter%' and classification = 'Teen Rei';
+UPDATE items SET classification = 'L5' WHERE barcode = '000010957';
+UPDATE items SET classification = 'L6' WHERE barcode = '000011747';
+UPDATE items SET classification = 'L5' WHERE barcode = '000006459';
+UPDATE items SET classification = 'L1b' WHERE barcode = '000000414';
+
+UPDATE items SET classification = 'Anfaenger' WHERE barcode = '000000529';
+UPDATE items SET classification = 'L5' WHERE barcode = '000002853';
+UPDATE items SET classification = 'L6' WHERE barcode = '000009336';
+UPDATE items SET classification = 'L6' WHERE barcode = '000010289';
+UPDATE items SET classification = 'L6' WHERE barcode = '000011128';
+UPDATE items SET classification = 'L6' WHERE barcode = '000011739';
