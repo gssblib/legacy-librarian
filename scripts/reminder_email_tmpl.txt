@@ -15,7 +15,7 @@ Our records show you currently owe fines of ${{'%.2f' % borrower.fine_due()}}.
 Our records indicate you have the following {{borrower.loans|length}} item{{borrower.loans|length|pluralize}} checked out:
 {% for loan in borrower.loans %}
  Title:        {{loan.title}}
- Item Type:    {{loan.description}}
+ Item Type:    {{loan.category}}
  Author:       {{loan.author}}
  Barcode:      {{loan.barcode}}
  Due Date:     {{loan.date_due.strftime('%d-%b-%Y')}}

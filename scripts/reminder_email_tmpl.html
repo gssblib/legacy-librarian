@@ -20,7 +20,7 @@ Our records indicate you have the following {{borrower.loans|length}} item{{borr
 {% for loan in borrower.loans %}
 <table>
   <tr><td style="padding: 0px 1em">Title</td><td>{{loan.title}}</td></tr>
-  <tr><td style="padding: 0px 1em">Item Type</td><td>{{loan.description}}</td></tr>
+  <tr><td style="padding: 0px 1em">Item Type</td><td>{{loan.category}}</td></tr>
   <tr><td style="padding: 0px 1em">Author</td><td>{{loan.author}}</td></tr>
   <tr><td style="padding: 0px 1em">Barcode</td><td>{{loan.barcode}}</td></tr>
   <tr><td style="padding: 0px 1em">Due Date</td><td>{{loan.date_due.strftime('%d-%b-%Y')}}</td></tr>

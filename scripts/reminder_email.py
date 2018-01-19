@@ -46,13 +46,12 @@ _reminder_templates = {
 
 class Loan(object):
     """A checked-out item."""
-    def __init__(self, barcode, title, description, author, media,
+    def __init__(self, barcode, title, category, author,
                  checkout_date, date_due, fine_due, fine_paid):
         self.barcode = barcode
         self.title = title
-        self.description = description
+        self.category = category
         self.author = author
-        self.media = media
         self.checkout_date = checkout_date
         self.date_due = date_due
         self.fine_due = fine_due
@@ -101,7 +100,7 @@ class LibraryStore(object):
     select
       b.borrowernumber, b.firstname, b.surname,
       b.emailaddress,
-      i.barcode, i.title, i.description, i.author, i.media,
+      i.barcode, i.title, i.category, i.author,
       o.checkout_date, o.date_due, o.fine_due, o.fine_paid
     from `out` o
     inner join borrowers b on o.borrowernumber = b.borrowernumber
