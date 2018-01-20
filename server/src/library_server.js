@@ -39,7 +39,7 @@ server.use(require('express-session')({
 
 var img_root_path = config['resources']['covers']
 if (img_root_path[0] != '/') {
-  img_root_path = __dirname + '/' + img_root_path;
+  img_root_path = __dirname + '/../' + img_root_path;
 }
 
 // Middleware that authentication JWT requests.
