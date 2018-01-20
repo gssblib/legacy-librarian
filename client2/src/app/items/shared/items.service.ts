@@ -6,7 +6,7 @@ import { RpcService } from "../../core/rpc.service";
 import { FetchResult } from "../../core/fetch-result";
 import { TableFetchResult } from "../../core/table-fetcher";
 import { ItemState } from "./item-state";
-import { Column, FormService } from "../../core/form.service";
+import { Column, FormService, ViewFormField } from '../../core/form.service';
 import { FormlyFieldConfig } from "@ngx-formly/core";
 
 /**
@@ -30,20 +30,23 @@ export class ItemsService {
     return window.btoa(binary);
   }
 
+  getColumns(): Observable<Column[]> {
+    return this.cols
+      ? Observable.of(this.cols)
+      : this.rpc.httpGet('items/fields').do(cols => this.cols = cols);
+  }
+
   /**
    * Returns the formly form fields for the borrower details page.
    *
    * @param selected Keys of the fields to return (in this order)
    */
   getItemFields(selected?: string[]): Observable<FormlyFieldConfig[]> {
-    if (this.cols) {
-      return Observable.of(this.formService.formlyFields(this.cols, selected));
-    }
-    return this.rpc.httpGet('items/fields')
-      .map((cols: any) => {
-        this.cols = cols;
-        return this.formService.formlyFields(cols, selected);
-      });
+    return this.getColumns().map(cols => this.formService.formlyFields(cols, selected));
+  }
+
+  getViewFields(selected?: string[]): Observable<ViewFormField[]> {
+    return this.getColumns().map(cols => this.formService.viewFormFields(cols, selected));
   }
 
   /**

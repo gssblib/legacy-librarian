@@ -40,6 +40,7 @@ import { ItemStatusComponent } from './item-status/item-status.component';
 import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
 import { ItemEditCoverComponent } from './item-edit-cover/item-edit-cover.component';
 import { ItemCardComponent } from './item-card/item-card.component';
+import { ItemDetailsComponent } from './item-details/item-details.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -89,6 +90,7 @@ import { ItemCardComponent } from './item-card/item-card.component';
     ItemAntolinComponent,
     ItemEditCoverComponent,
     ItemCardComponent,
+    ItemDetailsComponent,
   ],
   providers: [
     ItemResolverService,
@@ -106,6 +108,7 @@ import { ItemCardComponent } from './item-card/item-card.component';
     ItemAntolinComponent,
     ItemCardComponent,
     ItemSearchPageComponent,
+    ItemDetailsComponent,
   ]
 })
 export class ItemsModule { }

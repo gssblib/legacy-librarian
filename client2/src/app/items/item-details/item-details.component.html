@@ -1,0 +1,12 @@
+<gsl-item-edit-form *ngIf="editable"></gsl-item-edit-form>
+
+<div fxLayoutGap="30px" *ngIf="!editable">
+  <div fxFlex="" class="col3 form">
+    <div class="fields">
+      <gsl-readonly-field-list [model]="item" [fields]="fields"></gsl-readonly-field-list>
+    </div>
+  </div>
+  <div>
+    <gsl-item-edit-cover [item]="item"></gsl-item-edit-cover>
+  </div>
+</div>
