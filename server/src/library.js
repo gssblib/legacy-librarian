@@ -144,6 +144,16 @@ module.exports = {
     };
 
     /**
+     * Sets the renewable flag in the 'checkout'.
+     */
+    function setRenewable(checkout) {
+      const dvdCheckoutLimit = addDays(time.now(), -config.renewalDays);
+      checkout.renewable = checkout.category != 'DVD'
+        || checkout.checkout_date > dvdCheckoutLimit;
+      return checkout;
+    }
+
+    /**
      * Returns promise of checkout records joined with the associated item
      * information. The table is either the checkouts table 'out' or the history
      * table 'issue_history'. If feesOnly is true, only records with outstanding
@@ -156,7 +166,11 @@ module.exports = {
       if (feesOnly) {
         sql += ' and b.fine_due > b.fine_paid';
       }
-      return db.selectRows(sql, [borrowerNumber], limit, order);
+      return db.selectRows(sql, [borrowerNumber], limit, order).then(
+          result => {
+            result.rows.forEach(setRenewable);
+            return result;
+          });
     }
 
     borrowers.checkouts = function (borrowerNumber, feesOnly, limit) {
