@@ -85,14 +85,14 @@ export class ItemsService {
 
   addItem(item): Observable<Item> {
     const storedItem = Object.assign({}, item);
-    return this.rpc.httpPost('/items', storedItem)
+    return this.rpc.httpPost('items', storedItem)
       .map(obj => Object.assign(new Item(), obj));
   }
 
   saveItem(item) {
     const storedItem = Object.assign({}, item);
     storedItem.added = undefined; // datetime not handled yet
-    return this.rpc.httpPut('/items', storedItem)
+    return this.rpc.httpPut('items', storedItem)
       .map(obj => Object.assign(new Item(), obj));
   }
 
@@ -126,5 +126,4 @@ export class ItemsService {
     return this.rpc.labelsHttpPost(
       item.barcode + '/' + category + '/print', data);
   }
-
 }

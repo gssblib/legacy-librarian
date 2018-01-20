@@ -22,12 +22,12 @@ export class FeesService {
               private datePipe: DatePipe) {}
 
   getFees(criteria, offset, limit, returnCount): Observable<TableFetchResult<Fee>> {
-    return this.rpc.fetch('/fees', criteria, offset, limit, returnCount)
+    return this.rpc.fetch('fees', criteria, offset, limit, returnCount)
       .map(result => new TableFetchResult(result.rows, result.count));
   }
 
   updateFees(date) {
     var dateStr = this.datePipe.transform(date, 'yyyy-MM-dd');
-    return this.rpc.httpPost('/checkouts/updateFees', {date: dateStr});
+    return this.rpc.httpPost('checkouts/updateFees', {date: dateStr});
   }
 }

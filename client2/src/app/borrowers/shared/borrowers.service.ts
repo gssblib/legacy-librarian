@@ -61,13 +61,13 @@ export class BorrowersService {
 
   addBorrower(borrower): Observable<Borrower> {
     const storedBorrower = Object.assign({}, borrower);
-    return this.rpc.httpPost('/borrowers', storedBorrower)
+    return this.rpc.httpPost('borrowers', storedBorrower)
       .map(obj => Object.assign(new Borrower(), obj));
   }
 
   saveBorrower(borrower) {
     const storedBorrower = Object.assign({}, borrower);
-    return this.rpc.httpPut('/borrowers', storedBorrower)
+    return this.rpc.httpPut('borrowers', storedBorrower)
       .map(obj => Object.assign(new Borrower(), obj));
   }
 

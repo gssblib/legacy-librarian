@@ -56,20 +56,20 @@ export class BorrowerService {
 
   renewAll() {
     return this.rpc.httpPost(
-      '/borrowers/' + this.borrower.borrowernumber + '/renewAllItems');
+      'borrowers/' + this.borrower.borrowernumber + '/renewAllItems');
   };
 
   payFees() {
     return this.rpc.httpPost(
-      '/borrowers/' + this.borrower.borrowernumber + '/payFees');
+      'borrowers/' + this.borrower.borrowernumber + '/payFees');
   };
 
   payFee(item) {
     if (item.type === 'checkouts') {
       return this.rpc.httpPost(
-        '/checkouts/' + item.barcode + '/payFee');
+        'checkouts/' + item.barcode + '/payFee');
     } else {
-      return this.rpc.httpPost('/history/' + item.id + '/payFee');
+      return this.rpc.httpPost('history/' + item.id + '/payFee');
     }
   };
 
