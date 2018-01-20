@@ -26,7 +26,7 @@ export class ReturnPageComponent implements OnInit {
     {name: 'barcode', label: 'Barcode', width: 100},
     {name: 'title', label: 'Title'},
     {name: 'author', label: 'Author', width: 220},
-    {name: 'subject', label: 'Subject', width: 180},
+    {name: 'subject', label: 'Subject', width: 200},
     {name: 'category', label: 'Category', width: 100},
   ]
 
