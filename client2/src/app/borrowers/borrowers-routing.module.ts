@@ -7,6 +7,7 @@ import { BorrowerCheckoutsComponent } from './borrower-checkouts/borrower-checko
 import { BorrowerFeesComponent } from './borrower-fees/borrower-fees.component';
 import { BorrowerResolverService } from 'app/borrowers/shared/borrower.resolver.service';
 import { BorrowerProfileComponent } from "./borrower-profile/borrower-profile.component";
+import { BorrowerHistoryComponent } from './borrower-history/borrower-history.component';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { BorrowerProfileComponent } from "./borrower-profile/borrower-profile.co
           {path: 'checkouts', component: BorrowerCheckoutsComponent},
           {path: 'fees', component: BorrowerFeesComponent},
           {path: 'profile', component: BorrowerProfileComponent},
+          {path: 'history', component: BorrowerHistoryComponent},
         ]
       },
       {path: 'borrowers', component: BorrowerSearchPageComponent},

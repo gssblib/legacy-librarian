@@ -42,11 +42,11 @@ Db.prototype.query = function (sql, params) {
   return self.getConnection().then(
     function (connection) {
       return Q.ninvoke(connection, "query", sql, params).fin(function () {
-	try {
-	  connection.release();
-	} catch (e) {
-	  self.logger.error('error releasing connection:' + e);
-	}
+        try {
+          connection.release();
+        } catch (e) {
+          self.logger.error('error releasing connection:' + e);
+        }
       });
     },
     function (err) {
@@ -103,15 +103,16 @@ Db.prototype.selectRows = function(sql, params, limit, order) {
   }
   if (limit && limit.returnCount) {
     var result = {};
-    var countSql = 'select count(1) as count from (' + sql + ') a';
+    // replace from clause (everything between 'select' and 'from') with 'count(1)'
+    var countSql = sql.replace(/(\s*select\s+).*?(\s+from.*)/i, "$1 count(1) as count $2");
     return self.selectRow(countSql, params)
       .then(function (row) {
-	result.count = row.count;
-	return self.query(valueSql, valueParams);
+        result.count = row.count;
+        return self.query(valueSql, valueParams);
       })
       .then(function (data) {
-	result.rows = data[0];
-	return result;
+        result.rows = data[0];
+        return result;
       });
   } else {
     return self.query(valueSql, valueParams).then(function (data) {

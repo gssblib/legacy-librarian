@@ -149,22 +149,22 @@ module.exports = {
      * table 'issue_history'. If feesOnly is true, only records with outstanding
      * fees will be returned.
      */
-    function getCheckouts(table, borrowerNumber, feesOnly) {
+    function getCheckouts(table, borrowerNumber, feesOnly, limit, order) {
       var sql = 'select a.*, b.* from items a ' +
         'inner join ' + table + ' b on a.barcode = b.barcode ' +
         'where b.borrowernumber = ?';
       if (feesOnly) {
         sql += ' and b.fine_due > b.fine_paid';
       }
-      return db.selectRows(sql, borrowerNumber);
+      return db.selectRows(sql, [borrowerNumber], limit, order);
     }
 
-    borrowers.checkouts = function (borrowerNumber, feesOnly) {
-      return getCheckouts('`out`', borrowerNumber, feesOnly);
+    borrowers.checkouts = function (borrowerNumber, feesOnly, limit) {
+      return getCheckouts('`out`', borrowerNumber, feesOnly, limit);
     };
 
-    borrowers.history = function (borrowerNumber, feesOnly) {
-      return getCheckouts('issue_history', borrowerNumber, feesOnly);
+    borrowers.history = function (borrowerNumber, feesOnly, limit, order) {
+      return getCheckouts('issue_history', borrowerNumber, feesOnly, limit, order);
     };
 
     /**

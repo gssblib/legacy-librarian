@@ -73,7 +73,7 @@ export class RpcService {
    * @param params Query parameters
    * @returns {Observable<Object>} JSON result observable
    */
-  httpGet(path: string, params?: {[param: string]: string}): Observable<Object> {
+  httpGet(path: string, params?: {[param: string]: string}): Observable<any> {
     return this.handleHttpResult(
       this.http.get(this.config.apiPath(path), this.addJwt({params: params || {}})));
   }

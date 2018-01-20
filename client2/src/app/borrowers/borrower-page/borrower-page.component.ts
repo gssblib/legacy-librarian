@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { Borrower } from "../shared/borrower";
-import { BorrowersService } from "../shared/borrowers.service";
-import { ActivatedRoute } from "@angular/router";
+import { Borrower } from '../shared/borrower';
+import { ActivatedRoute } from '@angular/router';
 import { BorrowerService } from '../shared/borrower.service';
 
 /**
@@ -17,7 +16,8 @@ export class BorrowerPageComponent implements OnInit {
   navLinks = [
     { link: 'checkouts', label: 'Checkouts', action: 'borrowers.read' },
     { link: 'fees', label: 'Fees', action: 'borrowers.payFees' },
-    { link: 'profile', label: 'Profile', action: 'borrowers.view' }
+    { link: 'profile', label: 'Profile', action: 'borrowers.view' },
+    { link: 'history', label: 'History', action: 'borrowers.view' },
   ];
 
   borrower: Borrower;

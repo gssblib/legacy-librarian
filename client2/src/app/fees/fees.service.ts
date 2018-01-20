@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { DatePipe } from '@angular/common'
-import { RpcService } from "../core/rpc.service";
+import { RpcService } from '../core/rpc.service';
 import { Observable } from 'rxjs/Observable';
 import { TableFetchResult } from '../core/table-fetcher';
 import { FetchResult } from '../core/fetch-result';
@@ -23,19 +23,7 @@ export class FeesService {
 
   getFees(criteria, offset, limit, returnCount): Observable<TableFetchResult<Fee>> {
     return this.rpc.fetch('/fees', criteria, offset, limit, returnCount)
-      .map(this.fetchResultToFeeResult.bind(this));
-  }
-
-  fetchResultToFeeResult(result: FetchResult): TableFetchResult<Fee> {
-    return new TableFetchResult(this.rowsToFees(result.rows), result.count);
-  }
-
-  rowToFee(row: Object): Fee {
-    return Object.assign(new Fee(), row);
-  }
-
-  rowsToFees(rows: Object[]): Fee[] {
-    return rows.map(this.rowToFee);
+      .map(result => new TableFetchResult(result.rows, result.count));
   }
 
   updateFees(date) {

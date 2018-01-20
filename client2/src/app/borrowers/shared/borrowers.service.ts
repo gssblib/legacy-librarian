@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
-import { RpcService } from "../../core/rpc.service";
-import { Observable } from "rxjs";
-import { Borrower } from "./borrower";
-import { FetchResult } from "../../core/fetch-result";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Column, FormService } from "../../core/form.service";
+import { RpcService } from '../../core/rpc.service';
+import { Observable } from 'rxjs';
+import { Borrower } from './borrower';
+import { FetchResult } from '../../core/fetch-result';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Column, FormService } from '../../core/form.service';
+import { Item } from '../../items/shared/item';
+import { Checkout } from '../../items/shared/checkout';
+import { TableFetchResult } from '../../core/table-fetcher';
+
+export type ItemCheckout = Item & Checkout;
 
 /**
  * Borrower functions talking to the server.
@@ -39,6 +44,11 @@ export class BorrowersService {
   getBorrower(id: number, params?): Observable<Borrower> {
     return this.rpc.httpGet('borrowers/' + id, params)
         .map(obj => Object.assign(new Borrower(), obj));
+  }
+
+  getBorrowerHistory(id: number, params: any) : Observable<TableFetchResult<ItemCheckout>> {
+    return this.rpc.httpGet(`borrowers/${id}/history`, params)
+      .map(result => new TableFetchResult(result.rows, result.count));
   }
 
   getBorrowers(criteria, offset, limit, returnCount): Observable<FetchResult> {
