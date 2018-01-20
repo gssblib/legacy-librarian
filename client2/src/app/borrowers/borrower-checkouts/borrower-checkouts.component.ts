@@ -53,6 +53,15 @@ export class BorrowerCheckoutsComponent implements OnInit {
         (error: RpcError) => this.onError(barcode, error));
   }
 
+  renewAll() {
+    this.borrowerService.renewAll().subscribe(
+      result => {
+        this.borrowerService.reloadBorrower();
+      },
+      (error: RpcError) => this.errorService.showError('error renewing items')
+    );
+  }
+
   private onSuccess(result) {
     this.borrowerChange.emit(null);
     this.borrowerService.reloadBorrower();

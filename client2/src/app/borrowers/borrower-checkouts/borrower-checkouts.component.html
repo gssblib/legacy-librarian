@@ -1,8 +1,11 @@
 <div class="checkout">
   <div *ngIf="borrower">
     <div>
-      <gsl-barcode-field icon="add" #barcode [focus]="true"
+      <gsl-barcode-field icon="add" #barcode [focus]="true" class="barcode"
                          (barcodeSubmit)="checkout($event)"></gsl-barcode-field>
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="renewAll()">Renew All</button>
+      </div>
     </div>
     <div *ngIf="borrower.items.length == 0">
       No items checked out.

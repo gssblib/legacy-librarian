@@ -54,6 +54,11 @@ export class BorrowerService {
     }
   }
 
+  renewAll() {
+    return this.rpc.httpPost(
+      '/borrowers/' + this.borrower.borrowernumber + '/renewAllItems');
+  };
+
   payFees() {
     return this.rpc.httpPost(
       '/borrowers/' + this.borrower.borrowernumber + '/payFees');

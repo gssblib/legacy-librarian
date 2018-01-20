@@ -4,3 +4,10 @@
 .number-checked-out {
   font-size: 120%;
 }
+.barcode {
+  display: inline-block;
+}
+.actions {
+  margin-left: 1em;
+  display: inline-block;
+}
