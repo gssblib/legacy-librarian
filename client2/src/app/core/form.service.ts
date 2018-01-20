@@ -11,11 +11,25 @@ class Domain {
  * Column metadata as returned by the server.
  */
 export class Column {
+  /** Column name which is also the property name. */
   name: string;
+
+  /** Type and restrictions for the column's values. */
   domain?: Domain;
+
+  /** Displayed name. */
   label?: string;
+
   required?: boolean;
   disabled?: boolean;
+}
+
+/**
+ * Metadata for a field of a read-only form.
+ */
+export class ViewFormField {
+  name: string;
+  label: string;
 }
 
 /**
@@ -33,12 +47,30 @@ export class FormService {
    * controlling the dynamic forms.
    */
   formlyFields(cols: Column[], selected?: string[]): FormlyFieldConfig[] {
-    const fields = FormService.toFormlyFields(cols);
+    return FormService.select(FormService.toFormlyFields(cols), selected, field => field.key);
+  }
+
+  static select<T>(fields: T[], selected?: string[], key?: (field: T) => string): T[] {
     return selected === undefined
       ? fields
       : fields
-        .filter(field => selected.includes(field.key))
-        .sort((f1, f2) => selected.indexOf(f1.key) - selected.indexOf(f2.key));
+        .filter(field => selected.includes(key(field)))
+        .sort((f1, f2) => selected.indexOf(key(f1)) - selected.indexOf(key(f2)));
+  }
+
+  viewFormFields(cols: Column[], selected?: string[]): ViewFormField[] {
+    return FormService.select(FormService.toViewFormFields(cols), selected, field => field.name);
+  }
+
+  static toViewFormFields(cols: Column[]): ViewFormField[] {
+    return cols.map(FormService.toViewFormField);
+  }
+
+  static toViewFormField(col: Column): ViewFormField {
+    return {
+      name: col.name,
+      label: col.label || FormService.capitalizeFirst(col.name),
+    };
   }
 
   /**

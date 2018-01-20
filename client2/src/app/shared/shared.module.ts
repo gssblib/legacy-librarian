@@ -22,6 +22,7 @@ import {
   SycamoreLoginPageComponent,
   InternalLoginPageComponent,
 } from './login-page/login-page.component';
+import { ReadonlyFieldListComponent } from './readonly-field-list/readonly-field-list.component';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import {
     LoginPageComponent,
     SycamoreLoginPageComponent,
     InternalLoginPageComponent,
+    ReadonlyFieldListComponent,
   ],
   exports: [
     BarcodeFieldComponent,
@@ -57,6 +59,7 @@ import {
     LoginPageComponent,
     SycamoreLoginPageComponent,
     InternalLoginPageComponent,
+    ReadonlyFieldListComponent,
   ]
 })
 export class SharedModule { }

@@ -1,0 +1,4 @@
+<mat-form-field *ngFor="let field of fields" class="field">
+  <input matInput [placeholder]="field.label" [value]="getValue(field)" readonly>
+</mat-form-field>
+

@@ -43,5 +43,4 @@ export class BorrowerProfileEditComponent {
     );
     this.router.navigate(['/borrowers']);
   }
-
 }

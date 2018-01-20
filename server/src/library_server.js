@@ -93,7 +93,7 @@ httpcall.handlePaths([
   },
   { get: '/borrowers/:id/history',
     fn: call => library.borrowers.history(call.param('id'), false, call.limit(), call.req.query._order),
-    action: {resource: 'fees', operation: 'read'},
+    action: {resource: 'borrowers', operation: 'read'},
   },
   { post: '/history/:id/payFee',
     fn: function (call) {

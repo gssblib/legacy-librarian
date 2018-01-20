@@ -15,9 +15,8 @@ export class Action {
 @Injectable()
 export class AuthorizationService {
 
-  constructor(
-    private authenticationService: AuthenticationService,
-  ) { }
+  constructor(private authenticationService: AuthenticationService,) {
+  }
 
   /**
    * Returns a boolean indicating whether the current user is authorized
@@ -34,11 +33,10 @@ export class AuthorizationService {
     for (var i = 0; i < user.permissions.length; ++i) {
       var permission = user.permissions[i];
       if (action.resource === permission.resource
-	  && permission.operations.indexOf(action.operation) >= 0) {
-	return true;
+        && permission.operations.indexOf(action.operation) >= 0) {
+        return true;
       }
     }
     return false;
   }
-
 }
