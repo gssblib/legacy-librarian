@@ -34,11 +34,11 @@
       <ng-template tdDataTableTemplate="fine" let-row="row" let-value="value">
         {{ row.fine_due - row.fine_paid | currency }}
       </ng-template>
-      <ng-template tdDataTableTemplate="actions" let-row="row">
-        <button type="submit" mat-raised-button color="basic" (click)="payFee(row)">
+      <ng-template tdDataTableTemplate="actions" let-row="row" class="actions">
+        <button type="submit" mat-raised-button color="primary" (click)="payFee(row)">
           Pay Fee
         </button>
-        <button type="submit" mat-raised-button color="basic" (click)="waiveFee(row)">
+        <button type="submit" mat-raised-button color="primary" (click)="waiveFee(row)">
           Waive Fee
         </button>
       </ng-template>
