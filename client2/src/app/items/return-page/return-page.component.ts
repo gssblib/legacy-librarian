@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { ITdDataTableColumn, TdDataTableComponent } from "@covalent/core";
-import { ItemsService } from "../shared/items.service";
-import { Item } from "../shared/item";
-import { ErrorService } from "../../core/error-service";
-import { RpcError } from "../../core/rpc-error";
-import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.component";
+import { ItemsService } from '../shared/items.service';
+import { Item } from '../shared/item';
+import { ErrorService } from '../../core/error-service';
+import { RpcError } from '../../core/rpc-error';
+import { BarcodeFieldComponent } from '../../shared/barcode-field/barcode-field.component';
+import { MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'gsl-return-page',
@@ -13,30 +13,21 @@ import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.
   styleUrls: ['./return-page.component.css']
 })
 export class ReturnPageComponent implements OnInit {
+  displayedColumns = ['barcode', 'title', 'category'];
   returnedItems: Item[] = [];
+  dataSource = new MatTableDataSource<Object>([]);
   itemCountClass: string = '';
 
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
-  @ViewChild(TdDataTableComponent)
-  dataTable: TdDataTableComponent;
-
-  columns: ITdDataTableColumn[] = [
-    {name: 'barcode', label: 'Barcode', width: 100},
-    {name: 'title', label: 'Title'},
-    {name: 'author', label: 'Author', width: 220},
-    {name: 'subject', label: 'Subject', width: 200},
-    {name: 'category', label: 'Category', width: 100},
-  ]
-
-  constructor(
-    private itemsService: ItemsService,
-    private errorService: ErrorService
-  ) {}
+  constructor(private itemsService: ItemsService,
+              private errorService: ErrorService) {
+  }
 
   ngOnInit() {
     this.returnedItems = this.getItems();
+    this.dataSource.data = this.returnedItems;
   }
 
   pulseCount() {
@@ -46,7 +37,7 @@ export class ReturnPageComponent implements OnInit {
 
   resetItems() {
     this.returnedItems = [];
-    this.dataTable.refresh();
+    this.dataSource.data = this.returnedItems;
   }
 
   returnItem(barcode: string) {
@@ -60,7 +51,7 @@ export class ReturnPageComponent implements OnInit {
     this.storeItems(this.returnedItems);
     this.barcode.barcode = '';
     this.pulseCount();
-    this.dataTable.refresh();
+    this.dataSource.data = this.returnedItems;
   }
 
   private onError(barcode: string, error: RpcError) {

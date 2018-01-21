@@ -2,25 +2,36 @@
   <gsl-barcode-field icon="check" (barcodeSubmit)="returnItem($event)" #barcode>
   </gsl-barcode-field>
   <h3>
-    <button mat-fab class="number-returned" color="accent"
+    <button mat-mini-fab class="number-returned" color="accent"
             title="Clear list of returned items"
             (click)="resetItems()" [ngClass]="itemCountClass">
       <b>{{ returnedItems.length }}</b>
     </button>
     items returned
   </h3>
-  <td-data-table [data]="returnedItems"
-                 [columns]="columns">
-    <ng-template tdDataTableTemplate="barcode" let-row="row" let-value="value">
-      <a [routerLink]="['items', row.barcode, 'details']">
-        {{ value }}
-      </a>
-    </ng-template>
-    <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
-      <a [routerLink]="['items', row.barcode, 'details']">
-        {{ value }}
-      </a>
-    </ng-template>
-  </td-data-table>
+  <div *ngIf="returnedItems.length > 0">
+    <mat-table #table [dataSource]="dataSource"
+               matSort matSortActive="checkout_date" matSortDisableClear matSortDirection="desc">
+      <ng-container matColumnDef="barcode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a [routerLink]="['/items', row.barcode, 'details']">{{ row.barcode }}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a [routerLink]="['/items', row.barcode, 'details']">{{ row.title }}</a>
+          <gsl-item-antolin [antolin]="row.antolin"></gsl-item-antolin>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="category">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row.category}}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
 </mat-card>
 
