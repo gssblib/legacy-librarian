@@ -1,66 +1,52 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from "@angular/forms";
-import {
-  IPageChangeEvent,
-  ITdDataTableColumn,
-  TdDataTableService,
-  ITdDataTableSortChangeEvent,
-  TdDataTableSortingOrder,
-  TdPagingBarComponent,
-} from "@covalent/core";
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { TdDataTableService, } from '@covalent/core';
 import { Angular2Csv } from 'angular2-csv/Angular2-csv';
-import { SortKey } from "../../core/sort-key";
-import { RpcService } from "../../core/rpc.service";
-import { ItemState } from "../../items/shared/item-state";
-import { ItemsService } from "../../items/shared/items.service";
+import { RpcService } from '../../core/rpc.service';
+import { ItemsService } from '../../items/shared/items.service';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { of as observableOf } from 'rxjs/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/catch';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationService } from '../../core/notification-service';
+import { Observable } from 'rxjs/Observable';
+import { ParamsUtil } from '../../core/params-util';
+
+const SEARCH_FIELDS = ['subject', 'classification'];
 
 @Component({
   selector: 'gsl-report-item-usage',
   templateUrl: './report-item-usage.component.html',
   styleUrls: ['./report-item-usage.component.css']
 })
-export class ReportItemUsageComponent implements OnInit {
-  ItemState = ItemState;
+export class ReportItemUsageComponent implements AfterViewInit {
+  /** Formly config for the search form. */
+  searchFields: Observable<FormlyFieldConfig[]>;
 
-  form = new FormGroup({});
+  /** Model of the search form. */
+  criteria: any = {};
 
-  criteriaFields: any;
+  displayedColumns = ['barcode', 'title', 'author'];
+  data = [];
+  dataSource = new MatTableDataSource([]);
+  count = 0;
+  loading = false;
 
-  criteria: Object = {};
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
-  start: number = 1;
-  total: number;
-  page: number = 1;
-  pageSize: number = 50;
-
-  /** Current sort key. Set from the URL and table sort event. */
-  sortKey = new SortKey('title', 'ASC');
-
-  @ViewChild('pagingBar')
-  pagingBar: TdPagingBarComponent;
-
-  /** Meta-data for the items table. */
-  columns: ITdDataTableColumn[] = [
-    {name: 'barcode', label: 'Barcode', sortable: true},
-    {name: 'title', label: 'Title', sortable: true},
-    {name: 'author', label: 'Author', sortable: true},
-  ];
-
-  result: any;
-  data: any;
-
-  constructor(
-    private rpc: RpcService,
-    private dataTableService: TdDataTableService,
-    private itemsService: ItemsService,
-  ) { }
-
-  ngOnInit() {
-    var fields = this.itemsService.getItemFields().subscribe(
+  constructor(private rpc: RpcService,
+              private dataTableService: TdDataTableService,
+              private notificationService: NotificationService,
+              private itemsService: ItemsService,
+              private route: ActivatedRoute,
+              private router: Router) {
+    this.searchFields = this.itemsService.getItemFields(SEARCH_FIELDS).map(
       fields => {
-        this.criteriaFields = fields.filter(
-          field => field['key'] == 'subject' || field['key'] == 'classification');
-        this.criteriaFields.push({
+        console.log(fields);
+        fields.push({
           key: 'lastCheckoutDate',
           type: 'input',
           templateOptions: {
@@ -69,43 +55,50 @@ export class ReportItemUsageComponent implements OnInit {
             type: "date"
           },
         });
-      }
-    );
+        return fields;
+      });
   }
 
-  onSort(event: ITdDataTableSortChangeEvent) {
-    this.sortKey = SortKey.fromChange(event);
-    this.filter();
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+
+    // Load new data when route changes.
+    this.route.queryParams
+      .map(params => {
+        const p = new ParamsUtil(params);
+        this.criteria = p.getValues(['subject', 'classification', 'lastCheckoutDate']);
+      })
+      .flatMap(() => {
+        this.loading = true;
+        const criteria = Object.assign({}, this.criteria);
+        if (criteria.classification === '') {
+          delete criteria.classification;
+        }
+        return this.rpc.httpGet('reports/itemUsage', criteria);
+      })
+      .catch(() => {
+        this.loading = false;
+        return observableOf([]);
+      })
+      .subscribe(result => {
+        this.loading = false;
+        this.data = result.rows;
+        this.count = this.data.length;
+        this.dataSource.data = this.data;
+      });
   }
 
-  onPage(event: IPageChangeEvent) {
-    this.start = event.fromRow
-    this.page = event.page;
-    this.pageSize = event.pageSize;
-    this.filter();
-  }
-
-  private filter() {
-    let result:any[] = Array.from(this.data);
-    result = this.dataTableService.sortData(
-      result, this.sortKey.name,
-      this.sortKey.order == 'ASC' ? TdDataTableSortingOrder.Ascending : TdDataTableSortingOrder.Descending);
-    result = this.dataTableService.pageData(
-      result, this.start, this.page * this.pageSize);
-    this.result = result;
-  }
-
-  updateReport(criteria) {
-    if (criteria['classification'] === '') {
-      delete this.criteria['classification'];
-    }
-    this.rpc.httpGet('reports/itemUsage', criteria).subscribe(
-      data => {
-        this.data = data['rows'];
-        this.total = data['rows'].length;
-        this.filter();
-      }
-    );
+  /**
+   * Changes the route to the route reflecting the current state of the search.
+   */
+  private navigate() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: this.criteria,
+    }).catch(err => {
+      this.notificationService.showError('navigation error', err);
+    });
   }
 
   downloadCsv() {

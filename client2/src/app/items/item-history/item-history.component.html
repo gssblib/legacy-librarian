@@ -7,27 +7,29 @@
     <ng-template ngPluralCase="other">times.</ng-template>
   </span>
 </p>
-<table td-data-table>
-  <tr>
-    <th td-data-table-column *ngFor="let column of columns"
-        (sortChange)="onSort($event)"
-        [sortOrder]="order"
-        [name]="column.name" [sortable]="column.sortable">
-      {{column.label}}
-    </th>
-  </tr>
-  <tr td-data-table-row *ngFor="let entry of item.history">
-    <td td-data-table-cell>
-      {{entry.checkout_date | date:'dd MMM yyyy'}}
-    </td>
-    <td td-data-table-cell>
-      {{entry.returndate | date:'dd MMM yyyy'}}
-    </td>
-    <td td-data-table-cell>
-      <a (onclick)="visitBorrower(entry.borrowernumber)">
-        {{entry.surname}},
-      </a>
-    </td>
-  </tr>
-</table>
+</div>
+<div class="mat-elevation-z8">
+  <mat-table #table [dataSource]="dataSource"
+             matSort matSortActive="title" matSortDisableClear matSortDirection="asc">
+    <ng-container matColumnDef="checkout_date">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Checkout Date</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.checkout_date | date:shortDate}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="returndate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Return Date</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.returndate | date:shortDate}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="surname">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Borrower</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <a (onclick)="visitBorrower(row.borrowernumber)">
+          {{row.surname}},
+        </a>
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator [length]="count" [pageSize]="10">
+  </mat-paginator>
 </div>

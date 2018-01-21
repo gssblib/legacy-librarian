@@ -3,44 +3,43 @@
     This report shows the items which have not been checked out since the
     given date.
   </p>
-  <form [formGroup]="form" (ngSubmit)="updateReport(criteria)">
-    <div class="fields">
-      <formly-form [model]="criteria" [fields]="criteriaFields">
-      </formly-form>
+  <gsl-multi-field-search-bar
+    [criteria]="criteria" [fields]="searchFields" (search)="navigate()">
+  </gsl-multi-field-search-bar>
+  <div *ngIf="data.length > 0">
+    Items found: <b>{{ data.length }}</b>
+    <div class="download">
+      <button mat-raised-button color="primary" (click)="downloadCsv()">Download CSV</button>
     </div>
-    <div class="actions">
-      <button type="submit" mat-raised-button color="primary">Update Report</button>
+  </div>
+  <div class="container mat-elevation-z8">
+    <div *ngIf="loading" class="spinner">
+      <mat-spinner></mat-spinner>
     </div>
-  </form>
-  <div *ngIf="result">
-    <p>
-      Items found: <b>{{ total }}</b>
-    </p>
-    <a mat-raised-button color="basic" (click)="downloadCsv()">CSV</a>
-    <td-data-table *ngIf="result"
-                   [data]="result"
-                   [columns]="columns"
-                   [sortable]="true"
-                   [sortBy]="sortKey.name"
-                   [sortOrder]="sortKey.order"
-                   (sortChange)="onSort($event)">
-      <ng-template tdDataTableTemplate="barcode" let-value="value">
-        <a [routerLink]="['/items', value]">{{value}}</a>
-      </ng-template>
-      <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
-        <a [routerLink]="['/items', row.barcode]">{{value}}</a>
-      </ng-template>
-      <ng-template tdDataTableTemplate="author" let-row="row" let-value="value">
-        <a routerLink="/items" [queryParams]="{author: value}">{{value}}</a>
-      </ng-template>
-    </td-data-table>
-    <td-paging-bar #pagingBar (change)="onPage($event)"
-                   [initialPage]="page"
-                   [pageSize]="pageSize"
-                   [total]="total">
-      <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
-      <span>Items {{pagingBar.range}}</span>
-      <span hide-xs> of {{pagingBar.total}}</span>
-    </td-paging-bar>
+    <mat-table #table [dataSource]="dataSource"
+               matSort matSortActive="fee" matSortDisableClear matSortDirection="desc">
+      <ng-container matColumnDef="barcode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a [routerLink]="['/items', row.barcode, 'details']">{{ row.barcode }}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a [routerLink]="['/items', row.barcode, 'details']">{{ row.title }}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="author">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Author</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a routerLink="/items" [queryParams]="{author: row.author}">{{row.author}}</a>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator [length]="count" [pageSize]="10">
+    </mat-paginator>
   </div>
 </div>

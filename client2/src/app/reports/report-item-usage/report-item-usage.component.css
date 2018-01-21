@@ -11,15 +11,9 @@ a {
   text-decoration: none;
   color: inherit;
 }
-/deep/ tbody .td-data-table-row:hover {
-  background-color: #eee;
+.download {
+  margin: 10px 0;
 }
-/deep/ td-paging-bar>div {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-}
-/deep/ td-paging-bar span {
-  font-size: 13px;
+.container {
+  margin-top: 10px;
 }

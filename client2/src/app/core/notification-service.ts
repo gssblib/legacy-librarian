@@ -13,9 +13,8 @@ export class NotificationService {
   @Output()
   notification = new EventEmitter();
 
-  constructor(
-    private errorService: ErrorService
-  ) {}
+  constructor(private errorService: ErrorService) {
+  }
 
   showError(message, error?) {
     if (error !== undefined) {

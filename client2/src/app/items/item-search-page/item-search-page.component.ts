@@ -52,12 +52,8 @@ export class ItemSearchPageComponent implements AfterViewInit {
   constructor(private notificationService: NotificationService,
               private itemsService: ItemsService,
               private route: ActivatedRoute,
-              private router: Router,) {
+              private router: Router) {
     this.searchFields = this.itemsService.getItemFields(SEARCH_FIELDS);
-  }
-
-  sortOrder(sort: MatSort): string {
-    return (sort.direction === 'desc' ? '-' : '') + sort.active;
   }
 
   ngAfterViewInit(): void {
