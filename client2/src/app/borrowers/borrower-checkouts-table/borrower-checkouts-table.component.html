@@ -1,23 +1,45 @@
-<td-data-table [data]="rows" [columns]="columns"
-    [sortBy]="sortBy" [sortOrder]="sortOrder" (sortChange)="onSort($event)">
-  <ng-template tdDataTableTemplate="barcode" let-value="value">
-    <a [routerLink]="['/items', value, 'details']">{{value}}</a>
-  </ng-template>
-  <ng-template tdDataTableTemplate="title" let-value="value" let-row="row">
-    <a [routerLink]="['/items', row.barcode, 'details']">{{value}}</a>
-    <gsl-item-antolin [antolin]="row.antolin"></gsl-item-antolin>
-  </ng-template>
-  <ng-template tdDataTableTemplate="checkout_date" let-value="value">
-    {{value | date:shortDate}}
-  </ng-template>
-  <ng-template tdDataTableTemplate="date_due" let-value="value">
-    {{value | date:shortDate}}
-  </ng-template>
-  <ng-template tdDataTableTemplate="fine_due" let-value="value">
-    <span *ngIf="value">{{value | currency}}</span>
-  </ng-template>
-  <ng-template tdDataTableTemplate="actions" let-row="row">
-    <button mat-raised-button color="primary" (click)="onRenew(row)" [disabled]="!row.renewable">Renew</button>
-    <button mat-raised-button color="primary" (click)="onReturn(row)">Return</button>
-  </ng-template>
-</td-data-table>
+<div *ngIf="items">
+  <mat-table #table [dataSource]="dataSource"
+             matSort matSortActive="checkout_date" matSortDisableClear matSortDirection="desc">
+    <ng-container matColumnDef="barcode">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <a [routerLink]="['/items', row.barcode, 'details']">{{ row.barcode }}</a>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <a [routerLink]="['/items', row.barcode, 'details']">{{ row.title }}</a>
+        <gsl-item-antolin [antolin]="row.antolin"></gsl-item-antolin>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="category">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.category}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="checkout_date">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Checked Out</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.checkout_date | date:shortDate}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="date_due">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Date Due</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.date_due | date:shortDate}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="fine_due">
+      <mat-header-cell *matHeaderCellDef>Fine Due</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <span *ngIf="value">{{row.fine_due | currency}}</span>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button mat-raised-button color="primary" (click)="onRenew(row)" [disabled]="!row.renewable">Renew</button>
+        <button mat-raised-button color="primary" (click)="onReturn(row)">Return</button>
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>

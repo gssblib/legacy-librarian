@@ -1,70 +1,52 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import {
-  ITdDataTableColumn,
-  ITdDataTableSortChangeEvent,
-  TdDataTableComponent,
-  TdDataTableService,
-  TdDataTableSortingOrder
-} from '@covalent/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ItemsService } from '../../items/shared/items.service';
-import { BorrowerService } from "../shared/borrower.service";
-import { ErrorService } from "../../core/error-service";
-import { RpcError } from "../../core/rpc-error";
-import { Observable } from "rxjs/Observable";
-import { Item } from "../../items/shared/item";
+import { BorrowerService } from '../shared/borrower.service';
+import { ErrorService } from '../../core/error-service';
+import { RpcError } from '../../core/rpc-error';
+import { Observable } from 'rxjs/Observable';
+import { Item } from '../../items/shared/item';
+import { MatSort, MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'gsl-borrower-checkouts-table',
   templateUrl: './borrower-checkouts-table.component.html',
   styleUrls: ['./borrower-checkouts-table.component.css']
 })
-export class BorrowerCheckoutsTableComponent implements OnInit {
+export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, AfterViewInit {
+  displayedColumns = [
+    'barcode', 'title', 'category', 'checkout_date', 'date_due', 'fine_due', 'actions'
+  ];
+
   @Input()
   showActions: boolean = true;
 
-  /** Checkout data set as input. */
-  data: any[] = [];
+  items: Object[] = [];
+  dataSource = new MatTableDataSource<Object>([]);
+
+  @ViewChild(MatSort) sort: MatSort;
 
   @Input()
   set checkouts(checkouts) {
-    this.data = checkouts.map(this.prepareCheckout);
-    this.updateRows();
+    this.items = checkouts.map(this.prepareCheckout);
   }
-
-  /** Checkout data as shown in the (sorted) table. */
-  rows: any[] = [];
-
-  @ViewChild(TdDataTableComponent)
-  table: TdDataTableComponent;
-
-  columns: ITdDataTableColumn[] = [
-    { name: 'barcode', label: 'Barcode', sortable: true, width: 100 },
-    { name: 'title', label: 'Title', sortable: true, width: { min: 250 } },
-    { name: 'category', label: 'Category', sortable: true, width: { min: 100, max: 200 } },
-    { name: 'checkout_date', label: 'Checkout Date', sortable: true, width: 160 },
-    { name: 'date_due', label: 'Due Date', sortable: true, width: 160 },
-    { name: 'fine_due', label: 'Fine Due', sortable: true, width: 100 },
-    { name: 'actions', label: 'Actions', width: 250 },
-  ];
-
-  sortBy = 'date_due';
-  sortOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private itemsService: ItemsService,
               private borrowerService: BorrowerService,
-              private errorService: ErrorService,
-              private dataTableService: TdDataTableService) {}
-
-  onSort(event: ITdDataTableSortChangeEvent) {
-    this.sortBy = event.name;
-    this.sortOrder = event.order;
-    this.updateRows();
-  }
+              private errorService: ErrorService) {}
 
   ngOnInit() {
     if (!this.showActions) {
-      this.columns.pop()
+      this.displayedColumns.pop()
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.dataSource.data = this.items;
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.data = this.items;
   }
 
   private prepareCheckout(checkout: any): any {
@@ -73,16 +55,10 @@ export class BorrowerCheckoutsTableComponent implements OnInit {
     return checkout;
   }
 
-  updateRows() {
-    this.rows = this.dataTableService.sortData(this.data, this.sortBy, this.sortOrder);
-    this.table.refresh();
-  }
-
   onRenew(item) {
     this.itemsService.renewItem(item.barcode).subscribe(
       newItem => {
         item.date_due = newItem.checkout.date_due;
-        this.table.refresh();
       },
       (error: RpcError) => this.onError(item, error)
     );

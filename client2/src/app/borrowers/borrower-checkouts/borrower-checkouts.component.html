@@ -12,7 +12,7 @@
     </div>
     <div *ngIf="borrower.items.length > 0">
       <h3>
-        <a mat-fab class="number-checked-out" color="accent" [ngClass]="itemCountClass">
+        <a mat-mini-fab class="number-checked-out" color="accent" [ngClass]="itemCountClass">
           <b>{{ borrower.items.length }}</b>
         </a>
         <span [ngPlural]="borrower.items.length">
