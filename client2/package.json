@@ -25,7 +25,6 @@
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/platform-server": "^5.2.0",
     "@angular/router": "^5.2.0",
-    "@covalent/core": "^1.0.0-rc.3",
     "@ngx-formly/core": "^2.0.0-rc.13",
     "@ngx-formly/material": "^2.0.0-rc.13",
     "angular-date-value-accessor": "0.0.2",

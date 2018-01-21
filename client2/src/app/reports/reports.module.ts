@@ -17,7 +17,6 @@ import {
 } from '@angular/material';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
-import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 
 import { ReportsRoutingModule } from './reports-routing';
 import { ReportsPageComponent } from './reports-page/reports-page.component';
@@ -30,8 +29,6 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CovalentDataTableModule,
-    CovalentPagingModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,

@@ -10,14 +10,11 @@ import { BorrowersService } from "../../borrowers/shared/borrowers.service";
 export class CheckedOutPageComponent implements OnInit {
   borrower: Borrower;
 
-
-  constructor(
-    private borrowersService: BorrowersService,
-  ) { }
+  constructor(private borrowersService: BorrowersService,) {
+  }
 
   ngOnInit() {
     this.borrowersService.getMyBorrower().subscribe(
       borrower => {this.borrower = borrower});
   }
-
 }

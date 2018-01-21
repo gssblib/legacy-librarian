@@ -1,4 +1,3 @@
-import {ITdDataTableSortChangeEvent, TdDataTableSortingOrder} from "@covalent/core";
 export class SortKey {
   constructor(readonly name: string, readonly order: string) {}
 
@@ -18,11 +17,5 @@ export class SortKey {
     const order = s.startsWith('-') ? 'DESC' : 'ASC';
     const name = order == 'ASC' ? s : s.substring(1);
     return new SortKey(name, order);
-  }
-
-  static fromChange(event: ITdDataTableSortChangeEvent) {
-    return new SortKey(
-      event.name,
-      event.order == TdDataTableSortingOrder.Ascending ? 'ASC' : 'DESC');
   }
 }

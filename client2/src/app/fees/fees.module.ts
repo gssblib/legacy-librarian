@@ -1,16 +1,20 @@
-import { NgModule } from "@angular/core";
-import { DatePipe, CurrencyPipe, CommonModule } from "@angular/common";
+import { NgModule } from '@angular/core';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import {
   MatButtonModule,
   MatCardModule,
-  MatInputModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSortModule,
+  MatInputModule,
+  MatOptionModule,
+  MatPaginatorModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
+  MatSortModule,
   MatTableModule,
 } from '@angular/material';
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateValueAccessorModule } from 'angular-date-value-accessor';
-import { FeesService } from "./fees.service";
-import { FeesRoutingModule } from "./fees-routing.module";
+import { FeesService } from './fees.service';
+import { FeesRoutingModule } from './fees-routing.module';
 import { FeesPageComponent } from './fees-page/fees-page.component';
 import { FeesTableComponent } from './fees-table/fees-table.component';
 
@@ -25,8 +29,6 @@ import { FeesTableComponent } from './fees-table/fees-table.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CovalentDataTableModule,
-    CovalentPagingModule,
     FeesRoutingModule,
     DateValueAccessorModule,
     MatButtonModule,

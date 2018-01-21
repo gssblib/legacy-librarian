@@ -5,16 +5,18 @@ import { SortKey } from './sort-key';
 
 export class DataTableParams {
 
-  constructor(private fields: string[], private paginator: MatPaginator, private sort: MatSort) {
+  constructor(private fields: string[], private paginator: MatPaginator, private sort?: MatSort) {
     // Reset page when sort order is change.
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    if (this.sort) {
+      this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    }
   }
 
   parseParams(params: Params): Object {
     const p = new ParamsUtil(params);
     this.paginator.pageIndex = p.getNumber('page', 0);
     this.paginator.pageSize = p.getNumber('pageSize', 10);
-    if (params['order']) {
+    if (params['order'] && this.sort) {
       const sortKey = SortKey.fromString(params['order'])
       this.sort.active = sortKey.name;
       this.sort.direction = sortKey.order === 'ASC' ? 'asc' : 'desc';
@@ -27,7 +29,7 @@ export class DataTableParams {
   }
 
   sortOrder(): string {
-    return DataTableParams.sortOrder(this.sort);
+    return this.sort ? DataTableParams.sortOrder(this.sort) : '';
   }
 
   offset() {
@@ -46,11 +48,14 @@ export class DataTableParams {
    * Returns the query parameters representing the current state.
    */
   toQueryParams(criteria: Object): Params {
-    return Object.assign({}, criteria, {
+    const params = Object.assign({}, criteria, {
       page: this.paginator.pageIndex,
       pageSize: this.paginator.pageSize,
-      order: this.sortOrder(),
     });
+    if (this.sort) {
+      params.order = this.sortOrder();
+    }
+    return params;
   }
 }
 

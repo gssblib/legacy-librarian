@@ -1,19 +1,9 @@
 <mat-card>
   <gsl-multi-field-search-bar
-     [criteria]="criteria" [fields]="getSearchFields()" (search)="onSearch($event)">
+     [criteria]="criteria" [fields]="searchFields" (search)="navigate()">
   </gsl-multi-field-search-bar>
 
-  <div *ngIf="result">
-    <gsl-item-card *ngFor="let item of result.rows" [item]="item"></gsl-item-card>
-
-    <td-paging-bar #pagingBar (change)="onPage($event)"
-                   [initialPage]="page"
-                   [pageSize]="pageSize"
-                   [total]="result.count">
-      <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
-      <span>Items {{pagingBar.range}}</span>
-      <span hide-xs> of {{pagingBar.total}}</span>
-    </td-paging-bar>
-  </div>
-
+  <gsl-item-card *ngFor="let item of items" [item]="item"></gsl-item-card>
+  <mat-paginator [length]="count" [pageSize]="10">
+  </mat-paginator>
 </mat-card>

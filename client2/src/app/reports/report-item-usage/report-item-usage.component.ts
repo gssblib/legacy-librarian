@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { TdDataTableService, } from '@covalent/core';
 import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 import { RpcService } from '../../core/rpc.service';
 import { ItemsService } from '../../items/shared/items.service';
@@ -38,7 +37,6 @@ export class ReportItemUsageComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private rpc: RpcService,
-              private dataTableService: TdDataTableService,
               private notificationService: NotificationService,
               private itemsService: ItemsService,
               private route: ActivatedRoute,

@@ -1,21 +1,88 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params, Router } from "@angular/router";
-import { TdPagingBarComponent } from "@covalent/core";
-import { Subscription } from "rxjs/Subscription";
-import { TableFetchResult } from "../../core/table-fetcher";
-import { ParamsUtil } from "../../core/params-util";
-import { SortKey } from "../../core/sort-key";
-import { ConfigService } from "../../core/config.service";
-import { ItemsService } from "../../items/shared/items.service";
-import { ItemState } from "../../items/shared/item-state";
-import { ItemSearchPageComponent } from '../../items/item-search-page/item-search-page.component';
+import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ItemsService } from '../../items/shared/items.service';
+import { ItemState } from '../../items/shared/item-state';
+import { Observable } from 'rxjs/Observable';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { DataTableParams } from '../../core/data-table-params';
+import { MatPaginator } from '@angular/material';
+import { NotificationService } from '../../core/notification-service';
+import { of as observableOf } from 'rxjs/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/catch';
+
+const SEARCH_FIELDS = ['title', 'seriestitle', 'author', 'category', 'age'];
 
 @Component({
   selector: 'gsl-item-browser-page',
   templateUrl: './item-browser-page.component.html',
   styleUrls: ['./item-browser-page.component.css']
 })
-export class ItemBrowserPageComponent extends ItemSearchPageComponent {
-  //searchFields: string[] = ['title', 'seriestitle', 'author', 'category', 'age'];
+export class ItemBrowserPageComponent {
+
   extraCriteria: Object = {'state': 'CIRCULATING'}
+  ItemState = ItemState;
+
+  items = [];
+
+  /** Formly config for the search form. */
+  searchFields: Observable<FormlyFieldConfig[]>;
+
+  /** Model of the search form. */
+  criteria = {};
+
+  count = 0;
+  loading = false;
+
+  /** Wrapper for pagination and sorting. */
+  params: DataTableParams;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(private notificationService: NotificationService,
+              private itemsService: ItemsService,
+              private route: ActivatedRoute,
+              private router: Router) {
+    this.searchFields = this.itemsService.getItemFields(SEARCH_FIELDS);
+  }
+
+  ngAfterViewInit(): void {
+    this.params = new DataTableParams(SEARCH_FIELDS, this.paginator, null);
+
+    // Navigate if pagination or sort order changes.
+    this.paginator.page.subscribe(() => this.navigate());
+
+    // Load new data when route changes.
+    this.route.queryParams
+      .map(params => { this.criteria = this.params.parseParams(params) })
+      .flatMap(() => {
+        this.loading = true;
+        const criteria = Object.assign({}, this.criteria, this.extraCriteria);
+        return this.itemsService.getItems(
+          this.params.query(criteria), this.params.offset(), this.params.limit(), true);
+      })
+      .map(result => {
+        this.loading = false;
+        this.count = result.count;
+        return result.rows;
+      })
+      .catch(() => {
+        this.loading = false;
+        return observableOf([]);
+      })
+      .subscribe(data => this.items = data);
+  }
+
+  /**
+   * Changes the route to the route reflecting the current state of the search.
+   */
+  private navigate() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: this.params.toQueryParams(this.criteria),
+    }).catch(err => {
+      this.notificationService.showError('navigation error', err);
+    });
+  }
 }

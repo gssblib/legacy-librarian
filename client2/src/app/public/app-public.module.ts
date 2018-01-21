@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FlexLayoutModule } from "@angular/flex-layout";
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatButtonModule,
@@ -11,12 +11,12 @@ import {
   MatIconModule,
   MatInputModule,
   MatListModule,
+  MatPaginatorModule,
+  MatProgressSpinnerModule,
   MatSelectModule,
   MatSidenavModule,
   MatSnackBarModule,
   MatToolbarModule,
-  MatPaginatorModule,
-  MatProgressSpinnerModule,
 } from '@angular/material';
 import { NotFoundModule } from '../../not-found/not-found.module';
 import { HomeModule } from '../../home/home.module';
@@ -27,10 +27,9 @@ import { BorrowersModule } from '../borrowers/borrowers.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppPublicComponent } from './app-public.component';
 import { ItemBrowserPageComponent } from './item-browser-page/item-browser-page.component';
-import { RouterModule } from "@angular/router";
+import { RouterModule } from '@angular/router';
 import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.component';
-import { SharedModule } from "../shared/shared.module";
-import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -41,8 +40,6 @@ import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
     BrowserAnimationsModule,
     HttpClientModule,
     CoreModule,
-    CovalentDataTableModule,
-    CovalentPagingModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

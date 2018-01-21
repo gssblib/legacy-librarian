@@ -28,7 +28,6 @@ import { ItemPageComponent } from './item-page/item-page.component';
 import { ItemAutoCompleteComponent } from './item-auto-complete/item-auto-complete.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ItemSearchBarComponent } from './item-search-bar/item-search-bar.component';
-import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 import { ItemResolverService } from './shared/item.resolver.service';
 import { ReturnPageComponent } from './return-page/return-page.component';
 import { SharedModule } from '../shared/shared.module';
@@ -57,8 +56,6 @@ import { ItemDetailsComponent } from './item-details/item-details.component';
     FormsModule,
     FlexLayoutModule,
     ReactiveFormsModule,
-    CovalentDataTableModule,
-    CovalentPagingModule,
     CoreModule,
     SharedModule,
     MatCardModule,
