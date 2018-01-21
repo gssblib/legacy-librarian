@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemsService } from '../../items/shared/items.service';
 import { ItemState } from '../../items/shared/item-state';
@@ -19,7 +19,7 @@ const SEARCH_FIELDS = ['title', 'seriestitle', 'author', 'category', 'age'];
   templateUrl: './item-browser-page.component.html',
   styleUrls: ['./item-browser-page.component.css']
 })
-export class ItemBrowserPageComponent {
+export class ItemBrowserPageComponent implements AfterViewInit {
 
   extraCriteria: Object = {'state': 'CIRCULATING'}
   ItemState = ItemState;
@@ -77,7 +77,7 @@ export class ItemBrowserPageComponent {
   /**
    * Changes the route to the route reflecting the current state of the search.
    */
-  private navigate() {
+  navigate() {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: this.params.toQueryParams(this.criteria),

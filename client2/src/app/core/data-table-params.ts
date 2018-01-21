@@ -48,7 +48,7 @@ export class DataTableParams {
    * Returns the query parameters representing the current state.
    */
   toQueryParams(criteria: Object): Params {
-    const params = Object.assign({}, criteria, {
+    const params: any = Object.assign({}, criteria, {
       page: this.paginator.pageIndex,
       pageSize: this.paginator.pageSize,
     });

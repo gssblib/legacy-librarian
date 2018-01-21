@@ -90,7 +90,7 @@ export class ReportItemUsageComponent implements AfterViewInit {
   /**
    * Changes the route to the route reflecting the current state of the search.
    */
-  private navigate() {
+  navigate() {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: this.criteria,

@@ -86,7 +86,7 @@ export class ItemSearchPageComponent implements AfterViewInit {
   /**
    * Changes the route to the route reflecting the current state of the search.
    */
-  private navigate() {
+  navigate() {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: this.params.toQueryParams(this.criteria),
