@@ -19,6 +19,8 @@ export class TablePageRequest {
  * Data of a page of some table-like set.
  */
 export class TableFetchResult<T> {
+  static EMPTY = new TableFetchResult([], 0);
+
   constructor(readonly rows: T[], readonly count: number) {
   }
 }

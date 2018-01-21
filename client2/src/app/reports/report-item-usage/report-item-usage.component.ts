@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../core/notification-service';
 import { Observable } from 'rxjs/Observable';
 import { ParamsUtil } from '../../core/params-util';
+import { TableFetchResult } from '../../core/table-fetcher';
 
 const SEARCH_FIELDS = ['subject', 'classification'];
 
@@ -43,7 +44,6 @@ export class ReportItemUsageComponent implements AfterViewInit {
               private router: Router) {
     this.searchFields = this.itemsService.getItemFields(SEARCH_FIELDS).map(
       fields => {
-        console.log(fields);
         fields.push({
           key: 'lastCheckoutDate',
           type: 'input',
@@ -68,16 +68,17 @@ export class ReportItemUsageComponent implements AfterViewInit {
         this.criteria = p.getValues(['subject', 'classification', 'lastCheckoutDate']);
       })
       .flatMap(() => {
-        this.loading = true;
-        const criteria = Object.assign({}, this.criteria);
-        if (criteria.classification === '') {
-          delete criteria.classification;
+        const criteria = this.normalizeCriteria(Object.assign({}, this.criteria));
+        if (!this.criteria.lastCheckoutDate) {
+          return observableOf(TableFetchResult.EMPTY);
         }
+        this.loading = true;
         return this.rpc.httpGet('reports/itemUsage', criteria);
       })
-      .catch(() => {
+      .catch(err => {
+        this.notificationService.showError('error loading report', err);
         this.loading = false;
-        return observableOf([]);
+        return observableOf(TableFetchResult.EMPTY);
       })
       .subscribe(result => {
         this.loading = false;
@@ -85,6 +86,16 @@ export class ReportItemUsageComponent implements AfterViewInit {
         this.count = this.data.length;
         this.dataSource.data = this.data;
       });
+  }
+
+  normalizeCriteria(criteria: any) {
+    if (criteria.lastCheckoutDate === '') {
+      delete criteria.lastCheckoutDate;
+    }
+    if (criteria.classification === '') {
+      delete criteria.classification;
+    }
+    return criteria;
   }
 
   /**
