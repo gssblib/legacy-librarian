@@ -1,6 +1,3 @@
-td-paging-bar {
-  margin-top: 10px;
-}
 span.label {
   margin-right: -5px;
 }
@@ -8,17 +5,20 @@ a {
   text-decoration: none;
   color: inherit;
 }
-/deep/ tbody .td-data-table-row:hover {
-  background-color: #eee;
+.mat-column-barcode {
+  max-width: 100px;
 }
-/deep/ td-paging-bar>div {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
+.mat-column-status {
+  max-width: 100px;
 }
-/deep/ td-paging-bar span {
-  font-size: 13px;
+.mat-column-author {
+  max-width: 150px;
+}
+.mat-column-subject {
+  max-width: 150px;
+}
+.mat-column-category {
+  max-width: 100px;
 }
 .add {
   margin-left: 15px;
