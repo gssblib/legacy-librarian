@@ -22,6 +22,7 @@ import { ReportsRoutingModule } from './reports-routing';
 import { ReportsPageComponent } from './reports-page/reports-page.component';
 import { ReportItemUsageComponent } from './report-item-usage/report-item-usage.component';
 import { SharedModule } from '../shared/shared.module';
+import { ReportOverdueComponent } from './report-overdue/report-overdue.component';
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [
     ReportsPageComponent,
     ReportItemUsageComponent,
+    ReportOverdueComponent,
   ],
   providers: [
   ],

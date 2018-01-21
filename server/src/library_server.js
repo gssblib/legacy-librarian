@@ -119,6 +119,12 @@ httpcall.handlePaths([
     },
     action: {resource: 'reports', operation: 'read'},
   },
+  { get: '/reports/overdue',
+    fn: function (call) {
+        return library.reports.getOverdue(call.req.query);
+    },
+    action: {resource: 'reports', operation: 'read'},
+  },
   { get: '/items/:key/cover',
     fn: function (call) {
       var img_path = img_root_path + '/' + call.param('key') + '.jpg';

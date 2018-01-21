@@ -9,6 +9,7 @@ import { ActivatedRoute } from "@angular/router";
 export class ReportsPageComponent implements OnInit {
   navLinks = [
     { link: 'item-usage', label: 'Item Usage'},
+    { link: 'overdue', label: 'Overdue'},
   ];
 
   constructor(private route: ActivatedRoute) { }

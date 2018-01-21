@@ -32,6 +32,20 @@ export class ViewFormField {
   label: string;
 }
 
+export class FormlyFields {
+  static date(key: string, label: string, required: boolean = false) {
+    return {
+      key: key,
+      type: 'input',
+      templateOptions: {
+        placeholder: label,
+        required: required,
+        type: "date"
+      },
+    };
+  }
+}
+
 /**
  * Support service for forms.
  *

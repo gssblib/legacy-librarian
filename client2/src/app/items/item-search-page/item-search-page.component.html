@@ -21,7 +21,7 @@
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="status">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
         <mat-cell *matCellDef="let row">
           <gsl-item-status [status]="ItemState[row.status]" size="normal"></gsl-item-status>
         </mat-cell>

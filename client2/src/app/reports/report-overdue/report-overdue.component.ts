@@ -1,35 +1,27 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { Angular2Csv } from 'angular2-csv/Angular2-csv';
-import { RpcService } from '../../core/rpc.service';
-import { ItemsService } from '../../items/shared/items.service';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { FormlyFields } from '../../core/form.service';
 import { of as observableOf } from 'rxjs/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/catch';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../core/notification-service';
-import { Observable } from 'rxjs/Observable';
+import { RpcService } from '../../core/rpc.service';
 import { ParamsUtil } from '../../core/params-util';
 import { TableFetchResult } from '../../core/table-fetcher';
-import { FormlyFields } from '../../core/form.service';
-
-const SEARCH_FIELDS = ['subject', 'classification', 'category'];
+import { Angular2Csv } from 'angular2-csv';
 
 @Component({
-  selector: 'gsl-report-item-usage',
-  templateUrl: './report-item-usage.component.html',
-  styleUrls: ['./report-item-usage.component.css']
+  selector: 'gsl-report-overdue',
+  templateUrl: './report-overdue.component.html',
+  styleUrls: ['./report-overdue.component.css']
 })
-export class ReportItemUsageComponent implements AfterViewInit {
+export class ReportOverdueComponent implements AfterViewInit {
   /** Formly config for the search form. */
-  searchFields: Observable<FormlyFieldConfig[]>;
+  searchFields = observableOf([FormlyFields.date('last_checkout_date', 'Last Checkout Date')]);
 
   /** Model of the search form. */
   criteria: any = {};
 
-  displayedColumns = ['barcode', 'title', 'author', 'category', 'last_checkout_date'];
+  displayedColumns = ['surname', 'count'];
   data = [];
   dataSource = new MatTableDataSource([]);
   count = 0;
@@ -40,14 +32,8 @@ export class ReportItemUsageComponent implements AfterViewInit {
 
   constructor(private rpc: RpcService,
               private notificationService: NotificationService,
-              private itemsService: ItemsService,
               private route: ActivatedRoute,
               private router: Router) {
-    this.searchFields = this.itemsService.getItemFields(SEARCH_FIELDS).map(
-      fields => {
-        fields.push(FormlyFields.date('lastCheckoutDate', 'Last Checkout Date', true));
-        return fields;
-      });
   }
 
   ngAfterViewInit(): void {
@@ -58,15 +44,15 @@ export class ReportItemUsageComponent implements AfterViewInit {
     this.route.queryParams
       .map(params => {
         const p = new ParamsUtil(params);
-        this.criteria = p.getValues(SEARCH_FIELDS.concat(['lastCheckoutDate']));
+        this.criteria = p.getValues(['last_checkout_date']);
       })
       .flatMap(() => {
         const criteria = this.normalizeCriteria(Object.assign({}, this.criteria));
-        if (!this.criteria.lastCheckoutDate) {
+        if (!this.criteria.last_checkout_date) {
           return observableOf(TableFetchResult.EMPTY);
         }
         this.loading = true;
-        return this.rpc.httpGet('reports/itemUsage', criteria);
+        return this.rpc.httpGet('reports/overdue', criteria);
       })
       .catch(err => {
         this.notificationService.showError('error loading report', err);
@@ -82,18 +68,12 @@ export class ReportItemUsageComponent implements AfterViewInit {
   }
 
   normalizeCriteria(criteria: any) {
-    if (criteria.lastCheckoutDate === '') {
-      delete criteria.lastCheckoutDate;
-    }
-    if (criteria.classification === '') {
-      delete criteria.classification;
+    if (criteria.last_checkout_date === '') {
+      delete criteria.last_checkout_date;
     }
     return criteria;
   }
 
-  /**
-   * Changes the route to the route reflecting the current state of the search.
-   */
   navigate() {
     this.router.navigate([], {
       relativeTo: this.route,
@@ -105,11 +85,11 @@ export class ReportItemUsageComponent implements AfterViewInit {
 
   downloadCsv() {
     new Angular2Csv(
-      this.data, 'item_usage_report.csv',
+      this.data, 'overdue_report.csv',
       {
         showTitle: true,
         showLabels: true,
-        title: 'Item Usage Report',
+        title: 'Overdue Report',
       }
     );
   }

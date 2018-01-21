@@ -22,5 +22,8 @@ gsl-item-antolin {
   max-width: 120px;
 }
 .mat-column-fine_due {
-  max-width: 120px;
+  max-width: 80px;
+}
+.mat-column-actions {
+  min-width: 200px;
 }

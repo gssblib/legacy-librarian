@@ -14,3 +14,16 @@ a {
 .container {
   margin-top: 10px;
 }
+.mat-column-barcode {
+  max-width: 100px;
+}
+.mat-column-author {
+  max-width: 140px;
+}
+.mat-column-category {
+  max-width: 140px;
+}
+.mat-column-last_checkout_date {
+  max-width: 100px;
+}
+

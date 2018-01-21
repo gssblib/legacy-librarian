@@ -5,3 +5,9 @@ a {
 .number-returned {
   font-size: 120%;
 }
+.mat-column-barcode {
+  max-width: 100px;
+}
+.mat-column-category {
+  max-width: 120px;
+}

@@ -17,7 +17,7 @@
       <mat-spinner></mat-spinner>
     </div>
     <mat-table #table [dataSource]="dataSource"
-               matSort matSortActive="fee" matSortDisableClear matSortDirection="desc">
+               matSort matSortActive="last_checkout_date" matSortDisableClear matSortDirection="asc">
       <ng-container matColumnDef="barcode">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</mat-header-cell>
         <mat-cell *matCellDef="let row">
@@ -34,6 +34,16 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Author</mat-header-cell>
         <mat-cell *matCellDef="let row">
           <a routerLink="/items" [queryParams]="{author: row.author}">{{row.author}}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="category">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row.category}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="last_checkout_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Checkout</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.last_checkout_date | date:shortDate}}
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

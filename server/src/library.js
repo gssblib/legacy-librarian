@@ -550,15 +550,21 @@ module.exports = {
 
     reports.getItemUsage = function(query) {
       var itemsWhere = items.sqlWhere(query);
-      var sql = 'select a.barcode, a.title, a.author, ' +
-                'max(h.checkout_date) as last_checkout_date ' +
+      var sql = 'select a.*, max(h.checkout_date) as last_checkout_date ' +
                 'from items a, issue_history h ' +
-                itemsWhere.sql +
-                ' and a.barcode = h.barcode ' +
+                (itemsWhere.sql ? itemsWhere.sql + ' and ' : ' where ') +
+                ' a.barcode = h.barcode ' +
                 'group by a.barcode having last_checkout_date < ?';
       itemsWhere.params.push(query.lastCheckoutDate);
-      console.log(sql);
       return db.selectRows(sql, itemsWhere.params);
+    };
+
+    reports.getOverdue = query => {
+      const sql = 'select * from borrowers a, ' +
+        '(select  borrowernumber, count(1) as count from `out` a ' +
+        ' where a.checkout_date < ? group by a.borrowernumber) b ' +
+        'where a.borrowernumber = b.borrowernumber';
+      return db.selectRows(sql, [query.last_checkout_date]);
     };
 
     return {
