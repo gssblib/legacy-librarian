@@ -2,6 +2,22 @@ a {
   text-decoration: none;
   color: inherit;
 }
-/deep/ tbody .td-data-table-row:hover {
-  background-color: #eee;
+.container {
+  position: relative;
 }
+.spinner {
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  display: flex;
+  bottom: 50%;
+  left: 50%;
+}
+.mat-column-surname {
+  max-width: 150px;
+}
+.mat-column-fee {
+  max-width: 150px;
+}
+

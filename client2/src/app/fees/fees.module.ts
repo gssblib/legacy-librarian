@@ -3,7 +3,8 @@ import { DatePipe, CurrencyPipe, CommonModule } from "@angular/common";
 import {
   MatButtonModule,
   MatCardModule,
-  MatInputModule, MatOptionModule, MatSelectModule,
+  MatInputModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSortModule,
+  MatTableModule,
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
@@ -33,6 +34,10 @@ import { FeesTableComponent } from './fees-table/fees-table.component';
     MatInputModule,
     MatOptionModule,
     MatSelectModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
   ],
   declarations: [
     FeesPageComponent,
