@@ -33,7 +33,7 @@ client:
 client public:
   cmd.run:
     - name: |
-        ng build --prod --app public --base-href "/" --progress false && \
+        ng build --app public --base-href "/" --progress false && \
         git rev-parse HEAD > .public.git-rev
     - cwd: {{ client_dir }}
     - runas: gssblib
@@ -48,7 +48,7 @@ client public:
 client public:
   cmd.run:
     - name: |
-        ng build --prod --app public --base-href "/public/" --progress false && \
+        ng build --app public --base-href "/public/" --progress false && \
         git rev-parse HEAD > .public.git-rev
     - cwd: {{ client_dir }}
     - runas: gssblib
@@ -61,7 +61,7 @@ client public:
 client prod:
   cmd.run:
     - name: |
-        ng build --prod --base-href "/volunteers/" --progress false && \
+        ng build --base-href "/volunteers/" --progress false && \
         git rev-parse HEAD > .volunteers.git-rev
     - cwd: {{ client_dir }}
     - runas: gssblib
