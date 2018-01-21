@@ -1,13 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Borrower } from '../shared/borrower';
-import { BorrowersService, ItemCheckout } from '../shared/borrowers.service';
+import { BorrowersService } from '../shared/borrowers.service';
 import { BorrowerService } from '../shared/borrower.service';
-import { TableFetchResult } from '../../core/table-fetcher';
-import { SortKey } from '../../core/sort-key';
-import {
-  IPageChangeEvent, ITdDataTableColumn, ITdDataTableSortChangeEvent,
-  TdPagingBarComponent
-} from '@covalent/core';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { merge } from 'rxjs/observable/merge';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { of as observableOf } from 'rxjs/observable/of';
 
 /**
  * Presents the items that a borrower has checked out in the past.
@@ -17,66 +15,60 @@ import {
   templateUrl: './borrower-history.component.html',
   styleUrls: ['./borrower-history.component.css']
 })
-export class BorrowerHistoryComponent implements OnInit {
+export class BorrowerHistoryComponent implements OnInit, AfterViewInit {
   borrower: Borrower;
-  result: TableFetchResult<ItemCheckout>;
 
-  /** Current page number. Set from the URL and the pagination bar. */
-  page: number = 1;
+  displayedColumns = ['barcode', 'title', 'checkout_date', 'returndate'];
+  dataSource = new MatTableDataSource();
 
-  /** Current page size. Set from the URL and the pagination bar. */
-  pageSize: number = 10;
+  resultsLength = 0;
+  isLoadingResults = false;
 
-  /** Current sort key. Set from the URL and table sort event. */
-  sortKey = new SortKey('checkout_date', 'DESC');
-
-  @ViewChild('pagingBar')
-  pagingBar: TdPagingBarComponent;
-
-  /** Meta-data for the fees table. */
-  columns: ITdDataTableColumn[] = [
-    {name: 'barcode', label: 'Barcode', sortable: false, width: 100},
-    {name: 'title', label: 'Title', sortable: true},
-    {name: 'checkout_date', label: 'Checkout Date', sortable: true, width: 150},
-    {name: 'returndate', label: 'Return Date', sortable: true, width: 150},
-  ];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private borrowersService: BorrowersService,
               private borrowerService: BorrowerService) {
     this.borrowerService.borrowerObservable.subscribe(borrower => {
       this.borrower = borrower;
-      this.reload();
     });
   }
 
   ngOnInit() {
     this.borrower = this.borrowerService.getBorrower();
-    this.reload();
   }
 
-  onSort(event: ITdDataTableSortChangeEvent) {
-    this.sortKey = SortKey.fromChange(event);
-    this.reload();
+  sortOrder(sort: MatSort): string {
+    return (sort.direction === 'desc' ? '-' : '') + sort.active;
   }
 
-  onPage(event: IPageChangeEvent) {
-    this.page = event.page;
-    this.pageSize = event.pageSize;
-    this.reload();
-  }
+  ngAfterViewInit(): void {
+    // Reset page when sort order is change.
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-  /**
-   * Gets the items from the server.
-   */
-  private reload() {
-    const params = {
-      offset: (this.page - 1) * this.pageSize,
-      limit: this.pageSize, returnCount: true,
-      _order: this.sortKey.toString(),
-    };
-
-    this.borrowersService.getBorrowerHistory(this.borrower.borrowernumber, params).subscribe(
-      result => this.result = result
-    );
+    // Reload data When sort order or page changes.
+    merge(this.sort.sortChange, this.paginator.page, this.borrowerService.borrowerObservable)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoadingResults = true;
+          const params = {
+            offset: this.paginator.pageIndex * this.paginator.pageSize,
+            limit: this.paginator.pageSize,
+            returnCount: true,
+            _order: this.sortOrder(this.sort),
+          };
+          return this.borrowersService.getBorrowerHistory(this.borrower.borrowernumber, params);
+        }),
+        map(result => {
+          this.isLoadingResults = false;
+          this.resultsLength = result.count;
+          return result.rows;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
+          return observableOf([]);
+        })
+      ).subscribe(data => this.dataSource.data = data);
   }
 }

@@ -2,3 +2,9 @@ a {
   text-decoration: none;
   color: inherit;
 }
+.mat-column-barcode {
+  max-width: 100px;
+}
+.mat-column-checkout_date, .mat-column-returndate {
+  max-width: 120px;
+}

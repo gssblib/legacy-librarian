@@ -1,32 +1,29 @@
-<div *ngIf="result">
-  <td-data-table *ngIf="result"
-                 [data]="result.rows"
-                 [columns]="columns"
-                 [sortable]="true"
-                 [sortBy]="sortKey.name"
-                 [sortOrder]="sortKey.order"
-                 (sortChange)="onSort($event)">
-    <ng-template tdDataTableTemplate="barcode" let-value="value">
-      <a [routerLink]="['/items', value, 'details']">{{value}}</a>
-    </ng-template>
-    <ng-template tdDataTableTemplate="title" let-value="value" let-row="row">
-      <a [routerLink]="['/items', row.barcode, 'details']">{{value}}</a>
-      <gsl-item-antolin [antolin]="row.antolin"></gsl-item-antolin>
-    </ng-template>
-    <ng-template tdDataTableTemplate="checkout_date" let-value="value">
-      {{value | date:shortDate}}
-    </ng-template>
-    <ng-template tdDataTableTemplate="returndate" let-value="value">
-      {{value | date:shortDate}}
-    </ng-template>
-  </td-data-table>
-  <td-paging-bar #pagingBar (change)="onPage($event)"
-                 [initialPage]="page"
-                 [pageSize]="pageSize"
-                 [total]="result.count">
-    <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
-    <span>Items {{pagingBar.range}}</span>
-    <span hide-xs> of {{pagingBar.total}}</span>
-  </td-paging-bar>
+<div>
+  <mat-table #table [dataSource]="dataSource"
+             matSort matSortActive="checkout_date" matSortDisableClear matSortDirection="desc">
+    <ng-container matColumnDef="barcode">
+      <mat-header-cell *matHeaderCellDef>Barcode</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <a [routerLink]="['/items', row.barcode, 'details']">{{ row.barcode }}</a>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <a [routerLink]="['/items', row.barcode, 'details']">{{ row.title }}</a>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="checkout_date">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Checkout Date</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.checkout_date | date:shortDate}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="returndate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Return Date</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{ row.returndate | date:shortDate}}</mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator [length]="resultsLength" [pageSize]="10">
+  </mat-paginator>
 </div>
-

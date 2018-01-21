@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from "@angular/router";
+import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from "@angular/flex-layout";
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatAutocompleteModule,
@@ -12,7 +12,10 @@ import {
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
+  MatPaginatorModule,
   MatSelectModule,
+  MatSortModule,
+  MatTableModule,
   MatTabsModule
 } from '@angular/material';
 import { FormlyMaterialModule } from '@ngx-formly/material';
@@ -20,7 +23,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { CovalentDataTableModule, CovalentPagingModule } from '@covalent/core';
 import { CoreModule } from '../core/core.module';
 import { SharedModule } from '../shared/shared.module';
-import { ConfirmationDialogModule } from "../shared/confirmation-dialog/confirmation-dialog.module";
+import { ConfirmationDialogModule } from '../shared/confirmation-dialog/confirmation-dialog.module';
 import { ItemsModule } from '../items/items.module';
 import { BorrowersService } from './shared/borrowers.service';
 import { BorrowerService } from './shared/borrower.service';
@@ -33,10 +36,11 @@ import { BorrowerFeesComponent } from './borrower-fees/borrower-fees.component';
 import { BorrowerHistoryComponent } from './borrower-history/borrower-history.component';
 import { BorrowerProfileComponent } from './borrower-profile/borrower-profile.component';
 import { BorrowerAutoCompleteComponent } from './borrower-auto-complete/borrower-auto-complete.component';
-import { BorrowerProfileEditComponent } from "./borrower-profile-edit/borrower-profile-edit.component";
+import { BorrowerProfileEditComponent } from './borrower-profile-edit/borrower-profile-edit.component';
 import { BorrowerSearchBarComponent } from './borrower-search-bar/borrower-search-bar.component';
 import { BorrowerAddPageComponent } from './borrower-add-page/borrower-add-page.component';
 import { BorrowerStatusComponent } from './borrower-status/borrower-status.component';
+import { CdkTableModule } from '@angular/cdk/table';
 
 @NgModule({
   imports: [
@@ -48,6 +52,7 @@ import { BorrowerStatusComponent } from './borrower-status/borrower-status.compo
     BrowserAnimationsModule,
     CovalentDataTableModule,
     CovalentPagingModule,
+    CdkTableModule,
     SharedModule,
     ConfirmationDialogModule,
     MatCardModule,
@@ -58,8 +63,11 @@ import { BorrowerStatusComponent } from './borrower-status/borrower-status.compo
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatSortModule,
     MatIconModule,
     MatButtonModule,
+    MatTableModule,
+    MatPaginatorModule,
     FormlyModule.forRoot(),
     FormlyMaterialModule,
     RouterModule,
