@@ -5,7 +5,19 @@ a {
 button:first-of-type {
   margin-right: 1em;
 }
-
-/deep/ tbody .td-data-table-row:hover {
-  background-color: #eee;
+form {
+  margin-bottom: 10px;
 }
+.mat-column-fee {
+  max-width: 80px;
+}
+.mat-column-checkout_date {
+  max-width: 120px;
+}
+.mat-column-date_due {
+  max-width: 120px;
+}
+.mat-column-returndate {
+  max-width: 120px;
+}
+

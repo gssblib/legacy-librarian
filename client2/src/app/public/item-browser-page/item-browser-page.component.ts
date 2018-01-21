@@ -16,6 +16,6 @@ import { ItemSearchPageComponent } from '../../items/item-search-page/item-searc
   styleUrls: ['./item-browser-page.component.css']
 })
 export class ItemBrowserPageComponent extends ItemSearchPageComponent {
-  searchFields: string[] = ['title', 'seriestitle', 'author', 'category', 'age'];
+  //searchFields: string[] = ['title', 'seriestitle', 'author', 'category', 'age'];
   extraCriteria: Object = {'state': 'CIRCULATING'}
 }

@@ -12,19 +12,19 @@
       </a>
     </div>
   </div>
-  <div>
+  <div class="mat-elevation-z8">
     <mat-table #table [dataSource]="dataSource"
                matSort matSortActive="surname" matSortDisableClear matSortDirection="asc">
       <ng-container matColumnDef="surname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <a [routerLink]="[row.borrowernumber, '/checkouts']">{{row.surname}}</a>
+          <a [routerLink]="[row.borrowernumber, 'checkouts']">{{row.surname}}</a>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="firstname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>First Name</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <a [routerLink]="[row.borrowernumber, '/checkouts']">{{row.firstname}}</a>
+          <a [routerLink]="[row.borrowernumber, 'checkouts']">{{row.firstname}}</a>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="state">
@@ -36,13 +36,13 @@
       <ng-container matColumnDef="emailaddress">
         <mat-header-cell *matHeaderCellDef mat-sort-header>E-Mail</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <a [routerLink]="[row.borrowernumber, '/checkouts']">{{row.emailaddress}}</a>
+          <a [routerLink]="[row.borrowernumber, 'checkouts']">{{row.emailaddress}}</a>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="contactname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Contact Name</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <a [routerLink]="[row.borrowernumber, '/checkouts']">{{row.contactname}}</a>
+          <a [routerLink]="[row.borrowernumber, 'checkouts']">{{row.contactname}}</a>
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

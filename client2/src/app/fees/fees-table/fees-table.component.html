@@ -3,7 +3,7 @@
     <mat-spinner></mat-spinner>
   </div>
   <mat-table #table [dataSource]="dataSource"
-             matSort matSortActive="title" matSortDisableClear matSortDirection="asc">
+             matSort matSortActive="fee" matSortDisableClear matSortDirection="desc">
     <ng-container matColumnDef="surname">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</mat-header-cell>
       <mat-cell *matCellDef="let row">

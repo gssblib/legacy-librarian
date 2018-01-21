@@ -15,34 +15,53 @@
       </span>
     </form>
 
-    <td-data-table [data]="items"
-                   [columns]="columns"
-                   [sortable]="true"
-                   [sortBy]="sortKey.name"
-                   [sortOrder]="sortKey.order"
-                   (sortChange)="onSort($event)">
-      <ng-template tdDataTableTemplate="barcode" let-row="row" let-value="value">
-        <a [routerLink]="'/items/'+value">
-          {{ value }}
-        </a>
-      </ng-template>
-      <ng-template tdDataTableTemplate="title" let-row="row" let-value="value">
-        <a [routerLink]="'/items/'+row.barcode">
-          {{ value }}
-        </a>
-      </ng-template>
-      <ng-template tdDataTableTemplate="fine" let-row="row" let-value="value">
-        {{ row.fine_due - row.fine_paid | currency }}
-      </ng-template>
-      <ng-template tdDataTableTemplate="actions" let-row="row" class="actions">
-        <button type="submit" mat-raised-button color="primary" (click)="payFee(row)">
-          Pay Fee
-        </button>
-        <button type="submit" mat-raised-button color="primary" (click)="waiveFee(row)">
-          Waive Fee
-        </button>
-      </ng-template>
-    </td-data-table>
-
+    <div>
+      <mat-table #table [dataSource]="dataSource"
+                 matSort matSortActive="checkout_date" matSortDisableClear matSortDirection="desc">
+        <ng-container matColumnDef="barcode">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <a [routerLink]="['/items', row.barcode, 'details']">{{ row.barcode }}</a>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <a [routerLink]="['/items', row.barcode, 'details']">{{ row.title }}</a>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="fee">
+          <mat-header-cell *matHeaderCellDef>Fee</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ row.fine_due - row.fine_paid | currency }}
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="checkout_date">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Checked Out</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.checkout_date | date:shortDate}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="date_due">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Date Due</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.date_due | date:shortDate}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="returndate">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Returned</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.returndate | date:shortDate}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button type="submit" mat-raised-button color="primary" (click)="payFee(row)">
+              Pay Fee
+            </button>
+            <button type="submit" mat-raised-button color="primary" (click)="waiveFee(row)">
+              Waive Fee
+            </button>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+    </div>
   </div>
 </div>
