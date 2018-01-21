@@ -1,16 +1,18 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { BorrowersService } from "../shared/borrowers.service";
-import { ActivatedRoute, Params, Router } from "@angular/router";
-import { Borrower } from "../shared/borrower";
-import { TableFetchResult } from "../../core/table-fetcher";
-import {
-  IPageChangeEvent, ITdDataTableColumn, ITdDataTableSortChangeEvent,
-  TdPagingBarComponent
-} from "@covalent/core";
-import { ParamsUtil } from "../../core/params-util";
-import { SortKey } from "../../core/sort-key";
-import { NotificationService } from "../../core/notification-service";
-import { Subscription } from "rxjs/Subscription";
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { BorrowersService } from '../shared/borrowers.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationService } from '../../core/notification-service';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { merge } from 'rxjs/observable/merge';
+import { of as observableOf } from 'rxjs/observable/of';
+import { DataTableParams } from '../../core/data-table-params';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/catch';
+import { Observable } from 'rxjs/Observable';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+
+const SEARCH_FIELDS = ['surname', 'firstname', 'emailaddress', 'state'];
 
 /**
  * Borrower search page with search form and result table.
@@ -23,116 +25,56 @@ import { Subscription } from "rxjs/Subscription";
   templateUrl: './borrower-search-page.component.html',
   styleUrls: ['./borrower-search-page.component.css']
 })
-export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
-  private searchFields = ['surname', 'firstname', 'emailaddress', 'state'];
+export class BorrowerSearchPageComponent implements AfterViewInit {
+  /** Formly config for the search form. */
+  searchFields: Observable<FormlyFieldConfig[]>;
 
-  /** Current result being shown in the table. */
-  result: TableFetchResult<Borrower>;
+  /** Model of the search form. */
+  criteria = {};
 
-  /** Current criteria for the borrower search. Set from the URL parameters. */
-  criteria: Object = {};
+  /** Data table. */
+  displayedColumns = ['surname', 'firstname', 'state', 'emailaddress', 'contactname'];
+  dataSource = new MatTableDataSource();
+  count = 0;
+  loading = false;
 
-  /** Current page number. Set from the URL and the pagination bar. */
-  page: number = 1;
+  /** Wrapper for pagination and sorting. */
+  params: DataTableParams;
 
-  /** Current page size. Set from the URL and the pagination bar. */
-  pageSize: number = 10;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
-  /** Current sort key. Set from the URL and table sort event. */
-  sortKey = new SortKey('surnmae', 'ASC');
-
-  @ViewChild('pagingBar')
-  pagingBar: TdPagingBarComponent;
-
-  /** Meta-data for the borrowers table. */
-  columns: ITdDataTableColumn[] = [
-    {name: 'surname', label: 'Last Name', width: 150, sortable: true},
-    {name: 'firstname', label: 'First Name', width: 175, sortable: true},
-    {name: 'state', label: 'State', width: 120, sortable: true},
-    {name: 'emailaddress', label: 'E-Mail', sortable: true},
-    {name: 'contactname', label: 'Contact Name', sortable: true},
-  ];
-
-  /** Flag set while setting page in paging bar with navigateToPage. */
-  private navigating = false;
-
-  private routeSubscription: Subscription;
-
-  constructor(
-    private notificationService: NotificationService,
-    private borrowersService: BorrowersService,
-    private route: ActivatedRoute,
-    private router: Router) {
+  constructor(private notificationService: NotificationService,
+              private borrowersService: BorrowersService,
+              private route: ActivatedRoute,
+              private router: Router) {
+    this.searchFields = this.borrowersService.getBorrowerFields(SEARCH_FIELDS);
   }
 
-  ngOnInit() {
-    this.routeSubscription =
-      this.route.queryParams.subscribe(this.onQueryParamsChanged.bind(this));
-  }
+  ngAfterViewInit(): void {
+    this.params = new DataTableParams(SEARCH_FIELDS, this.paginator, this.sort);
 
-  ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
-  }
+    // Navigate if pagination or sort order changes.
+    merge(this.sort.sortChange, this.paginator.page).subscribe(() => this.navigate());
 
-  onQueryParamsChanged(params: Params) {
-    this.parseParams(params);
-    // TdPagingBar's `page` property is read-only. It can only be changed by calling
-    // the navigateToPage method. We do that if the page differs, but temporarily set
-    // the `navigating` flag to that the page change event triggered by navigateToPage
-    // does not cause another navigation.
-    if (this.pagingBar && this.pagingBar.page !== this.page) {
-      this.navigating = true;
-      this.pagingBar.navigateToPage(this.page);
-    }
-    this.reload();
-  }
-
-  onSort(event: ITdDataTableSortChangeEvent) {
-    this.sortKey = SortKey.fromChange(event);
-    this.navigate();
-  }
-
-  onPage(event: IPageChangeEvent) {
-    if (this.navigating) {
-      this.navigating = false;
-    } else {
-      this.page = event.page;
-      this.pageSize = event.pageSize;
-      this.navigate();
-    }
-  }
-
-  onSearch(event) {
-    this.criteria = event;
-    this.navigate();
-  }
-
-  public getSearchFields() {
-    return this.borrowersService.getBorrowerFields(this.searchFields)
-  }
-
-  /**
-   * Sets the properties from the route's query parameters.
-   */
-  private parseParams(params: Params) {
-    const p = new ParamsUtil(params);
-    this.page = p.getNumber('page', 1);
-    this.pageSize = p.getNumber('pageSize', 10);
-    this.sortKey = params['order']
-      ? SortKey.fromString(params['order'])
-      : new SortKey('surname', 'ASC');
-    this.criteria = p.getValues(this.searchFields);
-  }
-
-  /**
-   * Returns the query parameters representing the current state.
-   */
-  private toQueryParams(): Params {
-    return Object.assign({}, this.criteria, {
-      page: this.page,
-      pageSize: this.pageSize,
-      order: this.sortKey.toString(),
-    });
+    // Load new data when route changes.
+    this.route.queryParams
+      .map(params => { this.criteria = this.params.parseParams(params) })
+      .flatMap(() => {
+        this.loading = true;
+        return this.borrowersService.getBorrowers(
+          this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
+      })
+      .map(result => {
+        this.loading = false;
+        this.count = result.count;
+        return result.rows;
+      })
+      .catch(() => {
+        this.loading = false;
+        return observableOf([]);
+      })
+      .subscribe(data => this.dataSource.data = data);
   }
 
   /**
@@ -141,23 +83,9 @@ export class BorrowerSearchPageComponent implements OnInit, OnDestroy {
   private navigate() {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: this.toQueryParams(),
+      queryParams: this.params.toQueryParams(this.criteria),
     }).catch(err => {
       this.notificationService.showError('navigation error', err);
     });
-  }
-
-  /**
-   * Gets the borrowers from the server.
-   */
-  private reload() {
-    const offset = (this.page - 1) * this.pageSize;
-    const criteria = Object.assign(
-      {}, this.criteria, {'_order': this.sortKey.toString()});
-    this.borrowersService.getBorrowers(criteria, offset, this.pageSize, true).subscribe(
-      result => {
-        this.result = result;
-      }
-    );
   }
 }

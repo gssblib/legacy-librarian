@@ -8,17 +8,14 @@ a {
   text-decoration: none;
   color: inherit;
 }
-/deep/ tbody .td-data-table-row:hover {
-  background-color: #eee;
+.mat-column-surname {
+  max-width: 120px;
 }
-/deep/ td-paging-bar>div {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
+.mat-column-firstname {
+  max-width: 180px;
 }
-/deep/ td-paging-bar span {
-  font-size: 13px;
+.mat-column-state {
+  max-width: 100px;
 }
 .add {
   margin-left: 15px;

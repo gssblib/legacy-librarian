@@ -2,47 +2,53 @@
   <div class="containerX">
     <div fxFlex="">
       <gsl-multi-field-search-bar
-         [criteria]="criteria" [fields]="getSearchFields()" (search)="onSearch($event)">
+         [criteria]="criteria" [fields]="searchFields" (search)="navigate()">
       </gsl-multi-field-search-bar>
     </div>
     <div>
-      <a mat-fab class="add" routerLink="add" *gslAuthorized="'borrowers.create'"
+      <a mat-mini-fab class="add" routerLink="add" *gslAuthorized="'borrowers.create'"
          title="Add new borrower">
         <mat-icon>add</mat-icon>
       </a>
     </div>
   </div>
-  <div *ngIf="result">
-    <td-data-table *ngIf="result"
-                   [data]="result.rows"
-                   [columns]="columns"
-                   [sortable]="true"
-                   [sortBy]="sortKey.name"
-                   [sortOrder]="sortKey.order"
-                   (sortChange)="onSort($event)">
-      <ng-template tdDataTableTemplate="surname" let-row="row" let-value="value">
-        <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
-      </ng-template>
-      <ng-template tdDataTableTemplate="state" let-row="row" let-value="value">
-        <gsl-borrower-status [status]="row.state" size="normal"></gsl-borrower-status>
-      </ng-template>
-      <ng-template tdDataTableTemplate="firstname" let-row="row" let-value="value">
-        <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
-      </ng-template>
-      <ng-template tdDataTableTemplate="emailaddress" let-row="row" let-value="value">
-        <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
-      </ng-template>
-      <ng-template tdDataTableTemplate="contactname" let-row="row" let-value="value">
-        <a [routerLink]="row.borrowernumber+'/checkouts'">{{value}}</a>
-      </ng-template>
-    </td-data-table>
-    <td-paging-bar #pagingBar (change)="onPage($event)"
-                   [initialPage]="page"
-                   [pageSize]="pageSize"
-                   [total]="result.count">
-      <span class="label" td-paging-bar-label hide-xs>Rows per page: </span>
-      <span>Borrowers {{pagingBar.range}}</span>
-      <span hide-xs> of {{pagingBar.total}}</span>
-    </td-paging-bar>
+  <div>
+    <mat-table #table [dataSource]="dataSource"
+               matSort matSortActive="surname" matSortDisableClear matSortDirection="asc">
+      <ng-container matColumnDef="surname">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a [routerLink]="[row.borrowernumber, '/checkouts']">{{row.surname}}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="firstname">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>First Name</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a [routerLink]="[row.borrowernumber, '/checkouts']">{{row.firstname}}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="state">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <gsl-borrower-status [status]="row.state" size="normal"></gsl-borrower-status>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="emailaddress">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>E-Mail</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a [routerLink]="[row.borrowernumber, '/checkouts']">{{row.emailaddress}}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="contactname">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Contact Name</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a [routerLink]="[row.borrowernumber, '/checkouts']">{{row.contactname}}</a>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator [length]="count" [pageSize]="10">
+    </mat-paginator>
   </div>
 </mat-card>
