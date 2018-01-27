@@ -43,8 +43,21 @@
 <p>
   You can also view your checked out the library items and see all of the
   library's items <a href="https://library.gssb.org">online</a>. You can use
-  your Sycamore credentials to log in. As a reminder, your user id is "{{borrower.sycamoreid}}".
+  your Sycamore credentials to log in.
+  {% if borrower.sycamoreid %}
+  As a reminder, your user id is "{{borrower.sycamoreid}}".
+  {% endif %}
 </p>
+
+{% if not borrower.sycamoreid %}
+<p>
+  <b>
+    IMPORTANT: We do not have your Sycamore login id. Please send it to us
+    by replying to this E-mail or by E-mailing
+    <a href="mailto:library-reminder@gssb.org">us</a>.
+  </b>
+</p>
+{% endif %}
 
 <p>
   Thank you for using the GSSB library.
