@@ -57,7 +57,7 @@ export class BorrowerAutoCompleteComponent implements OnInit, AfterViewInit {
       this.suggestions = [];
     } else {
       this.borrowersService.getBorrowers(
-        {surname: value}, 0, this.size, false).subscribe(
+        {surname: value, state: 'ACTIVE'}, 0, this.size, false).subscribe(
           borrowers => {
             this.suggestions = borrowers.rows;
           });
