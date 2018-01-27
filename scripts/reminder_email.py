@@ -66,11 +66,12 @@ class Loan(object):
 class Borrower(object):
     """A borrower and its checked-out items."""
     def __init__(self, number, first_name, surname,
-                 emails):
+                 emails, sycamoreid):
         self.number = number
         self.first_name = first_name
         self.surname = surname
         self.emails = emails
+        self.sycamoreid = sycamoreid
         self.loans = []
         self.old_fine = 0
 
@@ -82,11 +83,12 @@ class Borrower(object):
             loan.fine_due for loan in self.loans if loan.fine_paid == 0)
 
     def __repr__(self):
-        return 'Borrower(%s, %s, %s, %s, %s, %s)' % (
+        return 'Borrower(%s, %s, %s, %s, %s, %s, %s)' % (
             self.number,
             self.first_name,
             self.surname,
             self.emails,
+            self, sycamoreid,
             self.loans,
             self.old_fine)
 
@@ -99,7 +101,7 @@ class LibraryStore(object):
     get_loans_sql = """
     select
       b.borrowernumber, b.firstname, b.surname,
-      b.emailaddress,
+      b.emailaddress, b.sycamoreid,
       i.barcode, i.title, i.category, i.author,
       o.checkout_date, o.date_due, o.fine_due, o.fine_paid
     from `out` o
@@ -135,9 +137,9 @@ class LibraryStore(object):
                 assert borrower_number not in borrowers
                 emails = [email.strip() for email in data[3].split(',')]
                 borrower = Borrower(
-                    borrower_number, data[1], data[2], emails)
+                    borrower_number, data[1], data[2], emails, data[4])
                 borrowers[borrower_number] = borrower
-            borrower.add_loan(Loan(*data[4:]))
+            borrower.add_loan(Loan(*data[5:]))
 
         # add outstanding fees for returned items
         cursor.execute(self.get_fees_sql)
@@ -236,8 +238,8 @@ class Reminder(object):
         """
         borrowers, emails = reminder.generate_emails_from_db(test=True)
         for email in emails:
-            if email.recipient in recipients:
-                print 'sending reminder email to', email.recipient
+            if any([rec in recipients for rec in email.recipients]):
+                print 'sending reminder email to', email.recipients
                 email.merge(self.template_email)
                 self.smtp_client.send(email)
 

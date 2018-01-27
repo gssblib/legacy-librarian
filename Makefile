@@ -147,3 +147,9 @@ reminder-emails-file:
 send-reminder-emails:
 	NODE_ENV=prod $(PYTHON) \
 	    scripts/reminder_email.py email email-recipients.txt
+
+##> test-reminder-emails : Create and send a test E-mail
+.PHONY: test-reminder-emails
+test-reminder-emails:
+	NODE_ENV=prod $(PYTHON) \
+	    scripts/reminder_email.py test

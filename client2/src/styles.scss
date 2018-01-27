@@ -1,5 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+$gssb-theme-primary: mat-palette($mat-blue);
+$gssb-theme-accent: mat-palette($mat-amber, A200, A100, A400);
+$gssb-theme-warn: mat-palette($mat-red);
+
+/*$gssb-theme: mat-light-theme($gssb-theme-primary, $gssb-theme-accent, $gssb-theme-warn);*/
+
+$gssb-theme: (
+    primary: $gssb-theme-primary,
+    accent: $gssb-theme-accent,
+    warn: $gssb-theme-warn,
+    is-dark: false,
+    foreground: $mat-light-theme-foreground,
+    background: $mat-light-theme-background
+);
+
+@include angular-material-theme($gssb-theme);
 
 .formly-checkbox .mat-form-field-infix {
   border-top: 0.5em solid transparent;

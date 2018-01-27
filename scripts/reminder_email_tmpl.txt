@@ -23,5 +23,15 @@ Our records indicate you have the following {{borrower.loans|length}} item{{borr
 {% endif %}
 {%- endfor %}
 
+You can also view your checked out the library items and see all of the
+library's items at https://library.gssb.org. You can use
+your Sycamore credentials to log in.
+{% if borrower.sycamoreid %}
+As a reminder, your user id is "{{borrower.sycamoreid}}".
+{% endif %}
+{% if not borrower.sycamoreid %}
+IMPORTANT: We do not have your Sycamore login id. Please send it to us
+by replying to this E-mail or by E-mailing library-reminder@gssb.org.
+{% endif %}
 Thank you for using the GSSB library.
 
