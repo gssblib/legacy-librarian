@@ -7,7 +7,16 @@ $gssb-theme-primary: mat-palette($mat-blue);
 $gssb-theme-accent: mat-palette($mat-amber, A200, A100, A400);
 $gssb-theme-warn: mat-palette($mat-red);
 
-$gssb-theme: mat-light-theme($gssb-theme-primary, $gssb-theme-accent, $gssb-theme-warn);
+/*$gssb-theme: mat-light-theme($gssb-theme-primary, $gssb-theme-accent, $gssb-theme-warn);*/
+
+$gssb-theme: (
+    primary: $gssb-theme-primary,
+    accent: $gssb-theme-accent,
+    warn: $gssb-theme-warn,
+    is-dark: false,
+    foreground: $mat-light-theme-foreground,
+    background: $mat-light-theme-background
+);
 
 @include angular-material-theme($gssb-theme);
 
