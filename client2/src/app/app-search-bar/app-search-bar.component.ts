@@ -8,10 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class AppSearchBarComponent implements OnInit {
 
   constructor() {
-
   }
 
   ngOnInit() {
   }
-
 }

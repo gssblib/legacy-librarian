@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsul
 import { FormControl } from "@angular/forms";
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
+import { NotificationService } from "../../core/notification-service";
+import { RpcError } from "../../core/rpc-error";
 
 /**
  * Auto-complete component for items using the item title (or parts of it) for the
@@ -27,9 +29,8 @@ export class ItemAutoCompleteComponent implements OnInit {
   @Input()
   size: number = 20;
 
-  constructor(
-    private itemsService: ItemsService,
-  ) { }
+  constructor(private itemsService: ItemsService, private notificationService: NotificationService) {
+  }
 
   ngOnInit() {
     this.itemCtrl = new FormControl();
@@ -64,10 +65,13 @@ export class ItemAutoCompleteComponent implements OnInit {
     } else {
       this.itemsService.getItems(
         {title: query, barcode: query, op: 'or'}, 0, this.size, false)
-        .subscribe(items => {
-          this.suggestions = items.rows;
-        });
+        .subscribe(items => this.suggestions = items.rows,
+          error => this.handleFetchError(query, error));
     }
+  }
+
+  private handleFetchError(query: string, error: RpcError) {
+    this.notificationService.showError(`error searching for items matching ${query}`, error);
   }
 
   /**
@@ -91,7 +95,7 @@ export class ItemAutoCompleteComponent implements OnInit {
           this.suggestions = [];
           this.itemCtrl.setValue('');
         },
-        error => {console.log('Item not found: ', barcode);}
+        err => this.handleBarcodeFetchError(barcode, err)
       );
     }
     var value = this.suggestions ? this.suggestions[0] : undefined;
@@ -99,6 +103,14 @@ export class ItemAutoCompleteComponent implements OnInit {
       this.suggestions = [];
       this.itemCtrl.setValue('');
       this.itemSelected.emit(value);
+    }
+  }
+
+  private handleBarcodeFetchError(barcode: string, error: RpcError) {
+    if (error.errorCode === 'ENTITY_NOT_FOUND') {
+      this.notificationService.showError(`No item with barcode ${barcode} found`);
+    } else {
+      this.notificationService.showError(`Server error while looking for barcode ${barcode}`, error);
     }
   }
 }
