@@ -66,10 +66,7 @@ class Email(object):
 
     def get_text_message(self):
         """Returns this email as a MIMEText object."""
-        # brutally convert to ascii for now so that it's easier to check
-        # the emails. The alternative would be:
-        #   MIMEText(self.text, _charset='utf-8')
-        message = MIMEText(_ascii(self.text))
+        message = MIMEText(self.text, _charset='utf-8')
         self._init_message(message)
         return message
 
@@ -79,8 +76,8 @@ class Email(object):
             return self.get_text_message()
         message = MIMEMultipart('alternative')
         self._init_message(message)
-        message.attach(MIMEText(_ascii(self.text), 'plain'))
-        message.attach(MIMEText(_ascii(self.html), 'html'))
+        message.attach(MIMEText(self.text, 'plain', _charset='utf-8'))
+        message.attach(MIMEText(self.html, 'html', _charset='utf-8'))
         return message
 
 
