@@ -1,9 +1,9 @@
 export enum BorrowerState {
-  ACTIVE,
-  INACTIVE
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE'
 }
 
 export const BorrowerStateLabels = {
   ACTIVE: 'Active',
-  INACTIVE: 'Inactive',
+  INACTIVE: 'Inactive'
 }
