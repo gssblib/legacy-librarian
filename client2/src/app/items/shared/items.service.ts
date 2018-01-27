@@ -63,9 +63,6 @@ export class ItemsService {
 
   rowToItem(row: Object): Item {
     const item = Object.assign(new Item(), row);
-    if (typeof item.state === 'string') {
-      item.state = ItemState[<string> item.state];
-    }
     return item;
   }
 

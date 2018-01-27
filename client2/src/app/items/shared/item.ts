@@ -1,5 +1,6 @@
 import { Checkout } from "./checkout";
 import { ItemState } from "./item-state";
+import { ItemStatus } from "./item-status";
 /**
  * Represents an item (as stored in the database).
  */
@@ -23,13 +24,9 @@ export class Item {
   checkout?: Checkout;
   history: Array<any>;
 
-  get status(): ItemState {
+  get status(): ItemStatus {
     return this.state === ItemState.CIRCULATING
-        ? this.checkout ? ItemState.CHECKED_OUT : ItemState.AVAILABLE
-        : this.state;
-  }
-
-  get statusString(): string {
-    return ItemState[this.status];
+        ? this.checkout ? ItemStatus.CHECKED_OUT : ItemStatus.AVAILABLE
+        : ItemStatus[this.state];
   }
 }
