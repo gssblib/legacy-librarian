@@ -33,6 +33,10 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.mat-mini-fab span.mat-button-wrapper {
+  padding: 0;
+}
+
 /* Animations */
 
 .pulse {

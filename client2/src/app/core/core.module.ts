@@ -8,6 +8,7 @@ import { FormService } from './form.service';
 import { AuthenticationService } from './auth.service';
 import { Action, AuthorizationService } from './authorization.service';
 import { AuthorizedDirective } from './authorized.directive';
+import { DateService } from "./date-service";
 
 /**
  * Angular module for the shared services.
@@ -22,6 +23,7 @@ import { AuthorizedDirective } from './authorized.directive';
     FormService,
     AuthenticationService,
     AuthorizationService,
+    DateService,
     Action,
   ],
   declarations: [

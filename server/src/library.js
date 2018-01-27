@@ -154,7 +154,7 @@ module.exports = {
     }
 
     /**
-     * Returns promise of checkout records joined with the associated item
+     * Returns the promise of checkout records joined with the associated item
      * information. The table is either the checkouts table 'out' or the history
      * table 'issue_history'. If feesOnly is true, only records with outstanding
      * fees will be returned.
@@ -215,24 +215,23 @@ module.exports = {
      * items, history, and fees.
      */
     borrowers.get = function (borrowernumber, options) {
-      var self = this;
       options = options || {};
-      return self.constructor.prototype.get.call(self, borrowernumber).then(
-        function (borrower) {
-          var extras = [];
+      return this.constructor.prototype.get.call(this, borrowernumber).then(
+        borrower => {
+          const extras = [];
           if (options.items) {
-            extras.push(self.checkouts(borrowernumber)
-              .then(function (items) { borrower.items = items.rows; }));
+            extras.push(this.checkouts(borrowernumber)
+              .then(result => borrower.items = result.rows));
           }
           if (options.history) {
-            extras.push(self.history(borrowernumber)
-              .then(function (history) { borrower.history = history.rows; }));
+            extras.push(this.history(borrowernumber)
+              .then(result => borrower.history = result.rows));
           }
           if (options.fees) {
-            extras.push(self.fees(borrowernumber)
-              .then(function (fees) { borrower.fees = fees; }));
+            extras.push(this.fees(borrowernumber)
+              .then(result => borrower.fees = result));
           }
-          return Q.all(extras).then(function () { return borrower; });
+          return Q.all(extras).then(() => borrower);
         });
     };
 
@@ -271,7 +270,8 @@ module.exports = {
       return 'select * from (' +
         'select a.borrowernumber, a.surname, a.contactname, a.firstname, ' +
         'sum(if(b.fine_paid > b.fine_due, 0, b.fine_due - b.fine_paid)) as fee ' +
-        'from borrowers a join ' + table + ' b on a.borrowernumber = b.borrowernumber ' +
+        'from borrowers a ' +
+        'join ' + table + ' b on a.borrowernumber = b.borrowernumber ' +
         'group by a.borrowernumber) fees where fee > 0';
     }
 
@@ -300,7 +300,7 @@ module.exports = {
               borrowers[borrower.borrowernumber].oldFee = borrower.fee;
             }
           });
-          return Object.keys(borrowers).map(function (key) { return borrowers[key]; });
+          return Object.keys(borrowers).map(key => borrowers[key]);
         });
     };
 
@@ -384,18 +384,17 @@ module.exports = {
      * Throws an error if the item does not exist.
      */
     items.get = function (barcode, options) {
-      var self = this;
       options = options || {};
       var result;
-      return items.constructor.prototype.get.call(self, barcode)
-        .then(function (item) {
+      return items.constructor.prototype.get.call(this, barcode)
+        .then(item => {
           result = item;
           return checkouts.find(barcode);
         })
-        .then(function (checkout) {
+        .then(checkout => {
           if (checkout) {
             result.checkout = checkout;
-            return borrowers.get(checkout.borrowernumber).then(function (borrower) {
+            return borrowers.get(checkout.borrowernumber).then(borrower => {
               result.borrower = borrower;
               return result;
             });
@@ -403,9 +402,9 @@ module.exports = {
             return result;
           }
         })
-        .then(function () {
+        .then(() => {
           if (options['history']) {
-            return getItemHistory(barcode).then(function (history) {
+            return getItemHistory(barcode).then(history => {
               result.history = history.rows;
               return result;
             });

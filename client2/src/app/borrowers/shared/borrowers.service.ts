@@ -9,8 +9,29 @@ import { Item } from '../../items/shared/item';
 import { Checkout } from '../../items/shared/checkout';
 import { TableFetchResult } from '../../core/table-fetcher';
 import 'rxjs/add/operator/do';
+import { DateService } from "../../core/date-service";
 
-export type ItemCheckout = Item & Checkout;
+/**
+ * Information about a checked-out item as contained in the borrower information
+ * returned by the server.
+ */
+export class ItemCheckout extends Item {
+  borrowernumber: number;
+  checkout_date: string;
+  date_due: string;
+
+  get checkoutDate(): Date {
+    return new Date(this.checkout_date);
+  }
+
+  get dueDate(): Date {
+    return new Date(this.date_due);
+  }
+
+  get overdue(): boolean {
+    return this.dueDate < DateService.addDays(new Date(), -1);
+  }
+}
 
 /**
  * Borrower functions talking to the server.
@@ -51,8 +72,15 @@ export class BorrowersService {
    * Gets a single Borrower identified by id (borrowernumber).
    */
   getBorrower(id: number, params?): Observable<Borrower> {
-    return this.rpc.httpGet('borrowers/' + id, params)
-        .map(obj => Object.assign(new Borrower(), obj));
+    return this.rpc.httpGet('borrowers/' + id, params).map(obj => this.toBorrower(obj));
+  }
+
+  toBorrower(row: any): Borrower {
+    const borrower = Object.assign(new Borrower(), row);
+    if (borrower.items) {
+      borrower.items = borrower.items.map(checkout => Object.assign(new ItemCheckout(), checkout));
+    }
+    return borrower;
   }
 
   getBorrowerHistory(id: number, params: any) : Observable<TableFetchResult<ItemCheckout>> {

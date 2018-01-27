@@ -27,3 +27,6 @@ gsl-item-antolin {
 .mat-column-actions {
   min-width: 200px;
 }
+.overdue {
+  background: #fdd;
+}

@@ -4,9 +4,10 @@ import { ErrorService } from "../../core/error-service";
 import { RpcError } from "../../core/rpc-error";
 import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.component";
 import { Borrower } from '../shared/borrower';
-import { BorrowersService } from '../shared/borrowers.service';
+import { BorrowersService, ItemCheckout } from '../shared/borrowers.service';
 import { BorrowerService } from '../shared/borrower.service';
 import { ItemsService } from "../../items/shared/items.service";
+import { DateService } from "../../core/date-service";
 
 /**
  * Presents the items that a borrower has currently checked out.
@@ -26,12 +27,11 @@ export class BorrowerCheckoutsComponent implements OnInit {
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
-  constructor(
-    private errorService: ErrorService,
-    private borrowerService: BorrowerService,
-    private borrowersService: BorrowersService,
-    private itemsService: ItemsService
-  ) {
+  constructor(private errorService: ErrorService,
+              private borrowerService: BorrowerService,
+              private borrowersService: BorrowersService,
+              private itemsService: ItemsService,
+              private dateService: DateService) {
     this.borrowerService.borrowerObservable.subscribe(borrower => {
       this.borrower = borrower;
     });
@@ -51,6 +51,14 @@ export class BorrowerCheckoutsComponent implements OnInit {
       .subscribe(
         (barcode: string) => this.onSuccess(barcode),
         (error: RpcError) => this.onError(barcode, error));
+  }
+
+  get checkedOutToday(): ItemCheckout[] {
+    return this.borrower.items.filter(checkout => checkout.checkoutDate > this.dateService.yesterday());
+  }
+
+  get lateItems(): ItemCheckout[] {
+    return this.borrower.items.filter(checkout => checkout.dueDate < this.dateService.yesterday());
   }
 
   renewAll() {
