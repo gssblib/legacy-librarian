@@ -53,8 +53,7 @@ export class ItemsService {
    * Gets a single Item identified by barcode.
    */
   getItem(barcode: string, params?: any): Observable<Item> {
-    return this.rpc.httpGet('items/' + barcode, params)
-      .map(obj => Object.assign(new Item(), obj));
+    return this.rpc.httpGet('items/' + barcode, params).map(row => this.rowToItem(row))
   }
 
   getItems(criteria, offset, limit, returnCount): Observable<TableFetchResult<Item>> {

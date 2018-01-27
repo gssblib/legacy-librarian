@@ -23,7 +23,14 @@
       <ng-container matColumnDef="status">
         <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <gsl-item-status [status]="ItemState[row.status]" size="normal"></gsl-item-status>
+          <div *ngIf="row.checkout">
+            <a [routerLink]="['/borrowers', row.checkout.borrowernumber, 'checkouts']">
+              <gsl-item-status [status]="row.status" size="normal"></gsl-item-status>
+            </a>
+          </div>
+          <div *ngIf="!row.checkout">
+            <gsl-item-status [status]="row.status" size="normal"></gsl-item-status>
+          </div>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="title">

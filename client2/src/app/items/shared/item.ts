@@ -28,4 +28,8 @@ export class Item {
         ? this.checkout ? ItemState.CHECKED_OUT : ItemState.AVAILABLE
         : this.state;
   }
+
+  get statusString(): string {
+    return ItemState[this.status];
+  }
 }

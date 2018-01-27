@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ItemState, ItemStateLabels } from "../shared/item-state";
+import { getItemStateLabel, ItemState } from '../shared/item-state';
 
 const enum Size {
   SMALL = 'small',
@@ -16,9 +16,11 @@ export class ItemStatusComponent {
   @Input('status') status: ItemState;
   @Input('size') size = Size.SMALL;
 
-  constructor() { }
+  get name(): string {
+    return ItemState[this.status].toLowerCase();
+  }
 
-  getStatusLabel(status) {
-    return ItemStateLabels[status];
+  get label(): string {
+    return getItemStateLabel(this.status);
   }
 }

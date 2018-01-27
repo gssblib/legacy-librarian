@@ -1,19 +1,26 @@
+/**
+ * States of an item.
+ *
+ * The first four values are the actual states stored in the database. The last
+ * two values (CHECKOUT_OUT and AVAILABLE) are variations of CIRCULATING.
+ */
 export enum ItemState {
   CIRCULATING,
   STORED,
   DELETED,
   LOST,
-  /** Implies CIRCULATING. */
   CHECKED_OUT,
-  /** Implies CIRCULATING. */
   AVAILABLE,
 }
 
-export const ItemStateLabels = {
-  CIRCULATING: 'Circulating',
-  STORED: 'Stored',
-  DELETED: 'Deleted',
-  LOST: 'Lost',
-  CHECKED_OUT: 'Checked Out',
-  AVAILABLE: 'Available',
+export function getItemStateLabel(state: ItemState): string {
+  switch (state) {
+    case ItemState.CIRCULATING: return 'Circulating';
+    case ItemState.STORED: return 'Stored';
+    case ItemState.AVAILABLE: return 'Available';
+    case ItemState.CHECKED_OUT: return 'Checked Out';
+    case ItemState.DELETED: return 'Deleted';
+    case ItemState.LOST: return 'Lost';
+  }
 }
+
