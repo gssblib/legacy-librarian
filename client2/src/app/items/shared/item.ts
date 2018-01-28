@@ -1,6 +1,7 @@
 import { Checkout } from "./checkout";
 import { ItemState } from "./item-state";
 import { ItemStatus } from "./item-status";
+import { Borrower } from '../../borrowers/shared/borrower';
 /**
  * Represents an item (as stored in the database).
  */
@@ -23,6 +24,7 @@ export class Item {
   state: ItemState;
   checkout?: Checkout;
   history: Array<any>;
+  borrower?: Borrower;
 
   get status(): ItemStatus {
     return this.state === ItemState.CIRCULATING

@@ -374,7 +374,7 @@ module.exports = {
      * barcode. Adds the surname of the associated borrower.
      */
     function getItemHistory(barcode) {
-      var sql = 'select h.*, b.surname from issue_history h, borrowers b ' +
+      var sql = 'select h.*, b.* from issue_history h, borrowers b ' +
         'where h.barcode = ? and h.borrowernumber = b.borrowernumber';
       return db.selectRows(sql, barcode);
     }

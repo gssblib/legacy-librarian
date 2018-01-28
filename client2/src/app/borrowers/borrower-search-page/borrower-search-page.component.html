@@ -17,36 +17,32 @@
                matSort matSortActive="surname" matSortDisableClear matSortDirection="asc">
       <ng-container matColumnDef="surname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          <a [routerLink]="[row.borrowernumber, 'checkouts']">{{row.surname}}</a>
-        </mat-cell>
+        <mat-cell *matCellDef="let row">{{row.surname}}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="firstname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>First Name</mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          <a [routerLink]="[row.borrowernumber, 'checkouts']">{{row.firstname}}</a>
-        </mat-cell>
+        <mat-cell *matCellDef="let row">{{row.firstname}}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <gsl-borrower-status [status]="row.state" size="normal"></gsl-borrower-status>
+          <gsl-borrower-status [status]="row.state" size="normal"
+                               [routerLink]="[row.borrowernumber, 'checkouts']">
+          </gsl-borrower-status>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="emailaddress">
         <mat-header-cell *matHeaderCellDef mat-sort-header>E-Mail</mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          <a [routerLink]="[row.borrowernumber, 'checkouts']">{{row.emailaddress}}</a>
-        </mat-cell>
+        <mat-cell *matCellDef="let row">{{row.emailaddress}}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="contactname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Contact Name</mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          <a [routerLink]="[row.borrowernumber, 'checkouts']">{{row.contactname}}</a>
-        </mat-cell>
+        <mat-cell *matCellDef="let row">{{row.contactname}}</mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+               style="cursor: pointer"
+               [routerLink]="[row.borrowernumber, 'checkouts']"></mat-row>
     </mat-table>
     <mat-paginator [length]="count" [pageSize]="10">
     </mat-paginator>

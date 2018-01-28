@@ -12,13 +12,18 @@ const enum Size {
   styleUrls: ['./borrower-status.component.css']
 })
 export class BorrowerStatusComponent {
-  @Input('status') status: BorrowerState;
-  @Input('size') size = Size.SMALL;
+  @Input() status: BorrowerState;
+  @Input() size = Size.SMALL;
 
-  constructor() { }
+  /**
+   * Router link passed down to the chip.
+   *
+   * The click events don't bubble up from mat-chip so that we have to
+   * set the 'routerLink' property explicitly.
+   */
+  @Input() routerLink;
 
   getStatusLabel(status) {
     return BorrowerStateLabels[status];
   }
-
 }

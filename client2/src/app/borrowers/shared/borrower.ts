@@ -7,4 +7,12 @@ export class Borrower {
   contactname: string;
   items: ItemCheckout[];
   fees: any;
+
+  get fullName(): string {
+    return `${this.surname}, ${this.firstname}, ${this.contactname}`;
+  }
+
+  get studentNames(): string {
+    return `${this.surname}, ${this.firstname}`;
+  }
 }

@@ -5,9 +5,10 @@
     <gsl-item-status [status]="item.status"></gsl-item-status>
   </h3>
   <div *ngIf="item.checkout">
-    This item was checked out by
-    <a [routerLink]="['/borrowers', item.borrower.borrowernumber, 'checkouts']">{{item.borrower.surname}}</a>
-    on {{item.checkout.checkout_date | date:shortDate}}
+    This item is checked out by
+    <a [routerLink]="['/borrowers', item.borrower.borrowernumber, 'checkouts']">
+      {{item.borrower.studentNames}}</a>
+    since {{item.checkout.checkout_date | date:shortDate}}
   </div>
   <nav mat-tab-nav-bar>
     <ng-container *ngFor="let link of navLinks">

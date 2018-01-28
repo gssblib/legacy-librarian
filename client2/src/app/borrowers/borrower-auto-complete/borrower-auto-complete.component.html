@@ -5,8 +5,7 @@
 </mat-form-field>
 <mat-autocomplete #borrowerAutoComplete="matAutocomplete"
                  [displayWith]="displayName">
-  <mat-option *ngFor="let suggestion of suggestions; let i = $index;"
-             [value]="suggestion">
+  <mat-option *ngFor="let suggestion of suggestions" [value]="suggestion">
     {{displayName(suggestion)}}
   </mat-option>
 </mat-autocomplete>

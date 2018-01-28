@@ -8,6 +8,7 @@ import { TableFetchResult } from "../../core/table-fetcher";
 import { ItemState } from "./item-state";
 import { Column, FormService, ViewFormField } from '../../core/form.service';
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { Borrower } from '../../borrowers/shared/borrower';
 
 /**
  * Service for fetching and manipulating items.
@@ -63,6 +64,9 @@ export class ItemsService {
 
   rowToItem(row: Object): Item {
     const item = Object.assign(new Item(), row);
+    if (item.borrower) {
+      item.borrower = Object.assign(new Borrower(), item.borrower);
+    }
     return item;
   }
 
