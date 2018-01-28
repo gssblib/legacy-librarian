@@ -78,7 +78,7 @@ export class ItemAutoCompleteComponent implements OnInit {
    * Returns the string shown for an Item in the widget.
    */
   displayWith(item: Item): string {
-    return item ? `${item.title} - ${item.barcode}` : '';
+    return item ? `${item.barcode}: ${item.title}, ${item.author}, ${item.category}` : '';
   }
 
   /**
