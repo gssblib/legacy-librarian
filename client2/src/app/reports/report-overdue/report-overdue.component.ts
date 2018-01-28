@@ -8,6 +8,7 @@ import { RpcService } from '../../core/rpc.service';
 import { ParamsUtil } from '../../core/params-util';
 import { TableFetchResult } from '../../core/table-fetcher';
 import { Angular2Csv } from 'angular2-csv';
+import { Borrower } from '../../borrowers/shared/borrower';
 
 @Component({
   selector: 'gsl-report-overdue',
@@ -63,7 +64,7 @@ export class ReportOverdueComponent implements AfterViewInit {
         this.loading = false;
         this.data = result.rows;
         this.count = this.data.length;
-        this.dataSource.data = this.data;
+        this.dataSource.data = this.data.map(row => Object.assign(new Borrower(), row));
       });
   }
 
