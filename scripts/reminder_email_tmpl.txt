@@ -23,8 +23,8 @@ Our records indicate you have the following {{borrower.loans|length}} item{{borr
 {% endif %}
 {%- endfor %}
 
-You can also view your checked out the library items and see all of the
-library's items at https://library.gssb.org. You can use
+You can also view your checked out library items and see all of the
+library's items at https://library.gssb.org. Please use
 your Sycamore credentials to log in.
 {% if borrower.sycamoreid %}
 As a reminder, your user id is "{{borrower.sycamoreid}}".
