@@ -22,11 +22,11 @@ export class BorrowerAddPageComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.borrowersService.getBorrowerFields().subscribe(fields => this.fields = fields);
+    this.borrowersService.getFormlyFields().subscribe(fields => this.fields = fields);
   }
 
   submitForm(borrower) {
-    this.borrowersService.addBorrower(borrower).subscribe(
+    this.borrowersService.add(borrower).subscribe(
       value => {
         this.router.navigate(['/borrowers', value.borrowernumber, 'checkouts']);
       },

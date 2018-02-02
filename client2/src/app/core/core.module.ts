@@ -9,6 +9,7 @@ import { AuthenticationService } from './auth.service';
 import { Action, AuthorizationService } from './authorization.service';
 import { AuthorizedDirective } from './authorized.directive';
 import { DateService } from "./date-service";
+import { ModelsService } from "./models.service";
 
 /**
  * Angular module for the shared services.

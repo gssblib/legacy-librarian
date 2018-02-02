@@ -23,7 +23,7 @@ export class ItemEditFormComponent implements OnInit {
     private notificationService: NotificationService,
     private itemsService: ItemsService,
     private itemService: ItemService) {
-    this.itemsService.getItemFields().subscribe(fields => this.fields = fields);
+    this.itemsService.getFormlyFields().subscribe(fields => this.fields = fields);
     this.itemService.itemObservable.subscribe(item => this.item = item);
     this.item = this.itemService.getItem();
   }
@@ -33,7 +33,7 @@ export class ItemEditFormComponent implements OnInit {
   }
 
   submit() {
-    this.itemsService.saveItem(this.item).subscribe(
+    this.itemsService.save(this.item).subscribe(
       item => this.onSaved(item),
       error => { this.notificationService.showError("Failed saving item.", error)}
     );
@@ -49,7 +49,7 @@ export class ItemEditFormComponent implements OnInit {
 
   delete() {
     const barcode = this.item.barcode;
-    this.itemsService.deleteItem(this.item).subscribe(
+    this.itemsService.remove(this.item).subscribe(
       item => { this.notificationService.show(`Item ${barcode} deleted.`) },
       error => { this.notificationService.showError("Failed saving item.", error) }
     );

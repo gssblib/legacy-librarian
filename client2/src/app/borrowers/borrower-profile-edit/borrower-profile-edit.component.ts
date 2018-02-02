@@ -25,11 +25,11 @@ export class BorrowerProfileEditComponent {
   ) { }
 
   ngOnInit(): void {
-    this.borrowersService.getBorrowerFields().subscribe(fields => this.fields = fields);
+    this.borrowersService.getFormlyFields().subscribe(fields => this.fields = fields);
   }
 
   submit() {
-    this.borrowersService.saveBorrower(this.borrower).subscribe(
+    this.borrowersService.save(this.borrower).subscribe(
       value => { this.notificationService.show("Borrower saved."); },
       error => { this.notificationService.showError("Failed saving borrower.", error)}
     );
@@ -37,7 +37,7 @@ export class BorrowerProfileEditComponent {
 
   delete() {
     const num = this.borrower.borrowernumber;
-    this.borrowersService.deleteBorrower(this.borrower).subscribe(
+    this.borrowersService.remove(this.borrower).subscribe(
       borrower => { this.notificationService.show(`Borrower ${num} deleted.`) },
       error => { this.notificationService.showError("Failed to delete borrower..", error) }
     );

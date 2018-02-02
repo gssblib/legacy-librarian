@@ -63,8 +63,7 @@ export class ItemAutoCompleteComponent implements OnInit {
     if (query === '') {
       this.suggestions = [];
     } else {
-      this.itemsService.getItems(
-        {title: query, barcode: query, op: 'or'}, 0, this.size, false)
+      this.itemsService.getMany({title: query, barcode: query, op: 'or'}, 0, this.size, false)
         .subscribe(items => this.suggestions = items.rows,
           error => this.handleFetchError(query, error));
     }
@@ -89,7 +88,7 @@ export class ItemAutoCompleteComponent implements OnInit {
     // that the barcode scanner works on top as well.
     var barcode = this.itemCtrl.value;
     if (barcode !== undefined && this.isBarcode.test(barcode)) {
-      this.itemsService.getItem(barcode).subscribe(
+      this.itemsService.get(barcode).subscribe(
         item => {
           this.itemSelected.emit(item);
           this.suggestions = [];

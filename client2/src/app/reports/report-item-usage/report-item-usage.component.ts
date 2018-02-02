@@ -43,7 +43,7 @@ export class ReportItemUsageComponent implements AfterViewInit {
               private itemsService: ItemsService,
               private route: ActivatedRoute,
               private router: Router) {
-    this.searchFields = this.itemsService.getItemFields(SEARCH_FIELDS).map(
+    this.searchFields = this.itemsService.getFormlyFields(SEARCH_FIELDS).map(
       fields => {
         fields.push(FormlyFields.date('lastCheckoutDate', 'Last Checkout Date', true));
         return fields;

@@ -41,7 +41,7 @@ export class BorrowerService {
    * the change.
    */
   loadBorrower(borrowernumber: number) {
-    this.borrowersService.getBorrower(borrowernumber, {options: 'items,fees'})
+    this.borrowersService.get(borrowernumber, {options: 'items,fees'})
       .subscribe(this.setBorrower.bind(this));
   }
 

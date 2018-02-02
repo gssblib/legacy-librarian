@@ -48,7 +48,7 @@ export class BorrowerSearchPageComponent implements AfterViewInit {
               private borrowersService: BorrowersService,
               private route: ActivatedRoute,
               private router: Router) {
-    this.searchFields = this.borrowersService.getBorrowerFields(SEARCH_FIELDS);
+    this.searchFields = this.borrowersService.getFormlyFields(SEARCH_FIELDS);
   }
 
   ngAfterViewInit(): void {
@@ -62,8 +62,7 @@ export class BorrowerSearchPageComponent implements AfterViewInit {
       .map(params => { this.criteria = this.params.parseParams(params) })
       .flatMap(() => {
         this.loading = true;
-        return this.borrowersService.getBorrowers(
-          this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
+        return this.borrowersService.getMany(this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
       })
       .map(result => {
         this.loading = false;

@@ -13,6 +13,6 @@ export class ItemResolverService implements Resolve<Item> {
       Observable<Item>|Item {
     const barcode = route.params['id'];
     const item = this.itemService.getItem();
-    return item && item.barcode === barcode ? item : this.itemsService.getItem(barcode);
+    return item && item.barcode === barcode ? item : this.itemsService.get(barcode);
   }
 }

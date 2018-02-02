@@ -34,7 +34,7 @@ export class ItemService {
   }
 
   loadItem(barcode: string) {
-    this.itemsService.getItem(barcode).subscribe(this.setItem.bind(this))
+    this.itemsService.get(barcode).subscribe(this.setItem.bind(this))
   }
 
   reloadItem() {

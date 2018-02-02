@@ -53,7 +53,7 @@ export class ItemSearchPageComponent implements AfterViewInit {
               private itemsService: ItemsService,
               private route: ActivatedRoute,
               private router: Router) {
-    this.searchFields = this.itemsService.getItemFields(SEARCH_FIELDS);
+    this.searchFields = this.itemsService.getFormlyFields(SEARCH_FIELDS);
   }
 
   ngAfterViewInit(): void {
@@ -68,8 +68,7 @@ export class ItemSearchPageComponent implements AfterViewInit {
       .flatMap(() => {
         this.loading = true;
         const criteria = Object.assign({}, this.criteria, this.extraCriteria);
-        return this.itemsService.getItems(
-          this.params.query(criteria), this.params.offset(), this.params.limit(), true);
+        return this.itemsService.getMany(this.params.query(criteria), this.params.offset(), this.params.limit(), true);
       })
       .map(result => {
         this.loading = false;

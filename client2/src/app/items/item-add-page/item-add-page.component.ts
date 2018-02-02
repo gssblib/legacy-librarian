@@ -26,14 +26,14 @@ export class ItemAddPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.itemsService.getItemFields().subscribe(fields => {
+    this.itemsService.getFormlyFields().subscribe(fields => {
       this.fields = fields
     });
     this.item = this.itemService.newItem;
   }
 
   submitForm(item) {
-    this.itemsService.addItem(item).subscribe(
+    this.itemsService.add(item).subscribe(
       value => {
         this.router.navigate(['/items', value.barcode, 'details']);
       },

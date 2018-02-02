@@ -36,7 +36,7 @@ export class ItemHistoryComponent implements OnInit, AfterViewInit {
 
   private setItem(item: Item) {
     if (item) {
-      this.itemsService.getItem(item.barcode, {options: 'history'})
+      this.itemsService.get(item.barcode, {options: 'history'})
         .subscribe(item => {
           this.item = item;
           this.count = this.item.history.length;
