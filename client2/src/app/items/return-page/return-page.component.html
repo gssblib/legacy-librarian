@@ -33,7 +33,7 @@
       <ng-container matColumnDef="borrower">
         <mat-header-cell *matHeaderCellDef>Borrower</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <a [routerLink]="['/borrowers', row.borrower.borrowernumber]">
+          <a [routerLink]="['/borrowers', row.borrower.borrowernumber, 'checkouts']">
             {{row.borrower.surname}}, {{row.borrower.firstname}}, {{row.borrower.contactname}}
           </a>
         </mat-cell>
