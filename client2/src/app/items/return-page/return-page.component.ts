@@ -37,6 +37,7 @@ export class ReturnPageComponent implements OnInit {
 
   resetItems() {
     this.returnedItems = [];
+    this.storeItems(this.returnedItems);
     this.dataSource.data = this.returnedItems;
   }
 
@@ -47,7 +48,7 @@ export class ReturnPageComponent implements OnInit {
   }
 
   private onSuccess(item: Item) {
-    this.returnedItems.push(item);
+    this.returnedItems.unshift(item);
     this.storeItems(this.returnedItems);
     this.barcode.barcode = '';
     this.pulseCount();
