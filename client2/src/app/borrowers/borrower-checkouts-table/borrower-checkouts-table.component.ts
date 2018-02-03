@@ -41,6 +41,7 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.items);
     this.dataSource.data = this.items;
   }
 

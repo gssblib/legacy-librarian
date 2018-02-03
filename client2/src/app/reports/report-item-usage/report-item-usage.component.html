@@ -42,9 +42,7 @@
       </ng-container>
       <ng-container matColumnDef="last_checkout_date">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Last Checkout</mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          {{row.last_checkout_date | date:shortDate}}
-        </mat-cell>
+        <mat-cell *matCellDef="let row">{{row.last_checkout_date | date}}</mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

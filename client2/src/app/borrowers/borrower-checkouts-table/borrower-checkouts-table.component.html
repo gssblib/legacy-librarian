@@ -20,11 +20,11 @@
     </ng-container>
     <ng-container matColumnDef="checkout_date">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Checked Out</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row.checkout_date | date:shortDate}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row.checkout_date | date:'MMM dd, yyyy, hh:mm'}}</mat-cell>
     </ng-container>
     <ng-container matColumnDef="date_due">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Date Due</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row.date_due | date:shortDate}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row.date_due | date}}</mat-cell>
     </ng-container>
     <ng-container matColumnDef="fine_due">
       <mat-header-cell *matHeaderCellDef>Fine Due</mat-header-cell>

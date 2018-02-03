@@ -13,11 +13,11 @@
              matSort matSortActive="title" matSortDisableClear matSortDirection="asc">
     <ng-container matColumnDef="checkout_date">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Checkout Date</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row.checkout_date | date:shortDate}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row.checkout_date | date:'MMM dd, yyyy, hh:mm'}}</mat-cell>
     </ng-container>
     <ng-container matColumnDef="returndate">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Return Date</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row.returndate | date:shortDate}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row.returndate | date:'MMM dd, yyyy, hh:mm'}}</mat-cell>
     </ng-container>
     <ng-container matColumnDef="surname">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Borrower</mat-header-cell>

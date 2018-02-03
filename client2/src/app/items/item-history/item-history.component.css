@@ -2,10 +2,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
-.mat-column-checkout_date {
-  max-width: 120px;
-}
-.mat-column-returndate {
-  max-width: 120px;
+.mat-column-checkout_date, .mat-column-returndate {
+  max-width: 150px;
 }
 

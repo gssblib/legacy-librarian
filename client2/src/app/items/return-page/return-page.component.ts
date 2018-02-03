@@ -13,7 +13,7 @@ import { MatTableDataSource } from '@angular/material';
   styleUrls: ['./return-page.component.css']
 })
 export class ReturnPageComponent implements OnInit {
-  displayedColumns = ['barcode', 'title', 'category', 'borrower'];
+  displayedColumns = ['barcode', 'title', 'category', 'checkout_date', 'returndate', 'borrower'];
   returnedItems: Item[] = [];
   dataSource = new MatTableDataSource<Object>([]);
   itemCountClass: string = '';
@@ -48,6 +48,7 @@ export class ReturnPageComponent implements OnInit {
   }
 
   private onSuccess(item: Item) {
+    console.log(item);
     this.returnedItems.unshift(item);
     this.storeItems(this.returnedItems);
     this.barcode.barcode = '';

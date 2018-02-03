@@ -8,7 +8,7 @@
     This item is checked out by
     <a [routerLink]="['/borrowers', item.borrower.borrowernumber, 'checkouts']">
       {{item.borrower.studentNames}}</a>
-    since {{item.checkout.checkout_date | date:shortDate}}
+    since {{item.checkout.checkout_date | date:'MMM d, y, h:mm'}}
   </div>
   <nav mat-tab-nav-bar>
     <ng-container *ngFor="let link of navLinks">
