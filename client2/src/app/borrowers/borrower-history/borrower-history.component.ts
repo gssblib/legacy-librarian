@@ -29,13 +29,13 @@ export class BorrowerHistoryComponent implements OnInit, AfterViewInit {
 
   constructor(private borrowersService: BorrowersService,
               private borrowerService: BorrowerService) {
-    this.borrowerService.borrowerObservable.subscribe(borrower => {
+    this.borrowerService.subscribe(borrower => {
       this.borrower = borrower;
     });
   }
 
   ngOnInit() {
-    this.borrower = this.borrowerService.getBorrower();
+    this.borrower = this.borrowerService.get();
   }
 
   sortOrder(sort: MatSort): string {
@@ -47,7 +47,7 @@ export class BorrowerHistoryComponent implements OnInit, AfterViewInit {
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     // Reload data When sort order or page changes.
-    merge(this.sort.sortChange, this.paginator.page, this.borrowerService.borrowerObservable)
+    merge(this.sort.sortChange, this.paginator.page, this.borrowerService.modelObservable)
       .pipe(
         startWith({}),
         switchMap(() => {

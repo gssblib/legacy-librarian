@@ -66,7 +66,7 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
 
   onReturn(item) {
     this.itemsService.returnItem(item.barcode).subscribe(
-      item => this.borrowerService.reloadBorrower(),
+      item => this.borrowerService.reload(),
       (error: RpcError) => this.onError(item, error)
     );
   }

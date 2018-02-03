@@ -26,7 +26,7 @@ export class ItemHistoryComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.setItem(this.itemService.getItem());
-    this.itemService.itemObservable.subscribe(item => this.setItem(item));
+    this.itemService.subscribe(item => this.setItem(item));
   }
 
   ngAfterViewInit(): void {

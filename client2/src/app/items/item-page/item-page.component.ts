@@ -25,7 +25,7 @@ export class ItemPageComponent implements OnInit {
               private itemService: ItemService,
               private route: ActivatedRoute) {
     this.item = this.itemService.getItem();
-    this.itemService.itemObservable.subscribe(item => this.item = item);
+    this.itemService.subscribe(item => this.item = item);
   }
 
   ngOnInit(): void {

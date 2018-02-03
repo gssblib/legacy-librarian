@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { RpcService } from "../../core/rpc.service";
 import { Item } from './item';
-import { Subject } from "rxjs/Subject";
 import { ItemsService } from "./items.service";
+import { ModelService } from "../../core/model.service";
 
 /**
  * Manages the single item shown by the item views.
@@ -11,35 +10,26 @@ import { ItemsService } from "./items.service";
  * (reloading the item from the server) are published to this service.
  */
 @Injectable()
-export class ItemService {
-  /** Current item. */
-  private item: Item;
-
-  private itemSubject = new Subject<Item>();
-  itemObservable = this.itemSubject.asObservable();
-
-  newItem: Item = new Item();
+export class ItemService extends ModelService<Item> {
+  newItem: Item;
 
   constructor(private itemsService: ItemsService) {
-    this.itemObservable.subscribe(item => this.item = item);
+    super(itemsService);
   }
 
   getItem(): Item {
-    return this.item;
+    return this.get();
   }
 
   setItem(item: Item) {
-    this.item = item;
-    this.itemSubject.next(item);
+    return this.set(item);
   }
 
   loadItem(barcode: string) {
-    this.itemsService.get(barcode).subscribe(this.setItem.bind(this))
+    return this.load(barcode);
   }
 
   reloadItem() {
-    if (this.item) {
-      this.loadItem(this.item.barcode);
-    }
+    return this.reload();
   }
 }

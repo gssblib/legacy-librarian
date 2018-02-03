@@ -20,7 +20,7 @@ export class ItemDetailsComponent implements OnInit {
               private authorizationService: AuthorizationService) {
     this.editable = authorizationService.isAuthorized('items.update');
     this.itemsService.getViewFields().subscribe(fields => this.fields = fields);
-    this.itemService.itemObservable.subscribe(item => this.item = item);
+    this.itemService.subscribe(item => this.item = item);
   }
 
   ngOnInit() {

@@ -32,13 +32,13 @@ export class BorrowerCheckoutsComponent implements OnInit {
               private borrowersService: BorrowersService,
               private itemsService: ItemsService,
               private dateService: DateService) {
-    this.borrowerService.borrowerObservable.subscribe(borrower => {
+    this.borrowerService.subscribe(borrower => {
       this.borrower = borrower;
     });
   }
 
   ngOnInit() {
-    this.borrower = this.borrowerService.getBorrower();
+    this.borrower = this.borrowerService.get();
   }
 
   pulseCount() {
@@ -64,7 +64,7 @@ export class BorrowerCheckoutsComponent implements OnInit {
   renewAll() {
     this.borrowerService.renewAll().subscribe(
       result => {
-        this.borrowerService.reloadBorrower();
+        this.borrowerService.reload();
       },
       (error: RpcError) => this.errorService.showError('error renewing items')
     );
@@ -72,7 +72,7 @@ export class BorrowerCheckoutsComponent implements OnInit {
 
   private onSuccess(result) {
     this.borrowerChange.emit(null);
-    this.borrowerService.reloadBorrower();
+    this.borrowerService.reload();
     this.barcode.barcode = '';
     this.pulseCount();
   }

@@ -28,11 +28,11 @@ export class BorrowerFeesComponent implements OnInit, AfterViewInit {
               private notificationService: NotificationService,
               private borrowersService: BorrowersService,
               private borrowerService: BorrowerService) {
-    borrowerService.borrowerObservable.subscribe(borrower => this.updateBorrower(borrower));
+    borrowerService.subscribe(borrower => this.updateBorrower(borrower));
   }
 
   ngOnInit() {
-    this.updateBorrower(this.borrowerService.getBorrower());
+    this.updateBorrower(this.borrowerService.get());
   }
 
   ngAfterViewInit() {
@@ -62,7 +62,7 @@ export class BorrowerFeesComponent implements OnInit, AfterViewInit {
     action
       .subscribe(
         data => {
-          this.borrowerService.reloadBorrower();
+          this.borrowerService.reload();
           this.notificationService.show(message);
         },
         error => {

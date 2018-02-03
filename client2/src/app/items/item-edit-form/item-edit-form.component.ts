@@ -24,7 +24,7 @@ export class ItemEditFormComponent implements OnInit {
     private itemsService: ItemsService,
     private itemService: ItemService) {
     this.itemsService.getFormlyFields().subscribe(fields => this.fields = fields);
-    this.itemService.itemObservable.subscribe(item => this.item = item);
+    this.itemService.subscribe(item => this.item = item);
     this.item = this.itemService.getItem();
   }
 
@@ -60,5 +60,4 @@ export class ItemEditFormComponent implements OnInit {
     this.notificationService.show("Item save.");
     this.itemService.reloadItem();
   }
-
 }

@@ -21,14 +21,12 @@ export class BorrowerProfileComponent implements OnInit {
   constructor(private borrowerService: BorrowerService,
               private borrowersService: BorrowersService,
               private authorizationService: AuthorizationService) {
-    this.borrowerService.borrowerObservable.subscribe(
-      borrower => this.borrower = borrower
-    );
+    this.borrowerService.subscribe(borrower => this.borrower = borrower);
     this.editable = authorizationService.isAuthorized('borrowers.update');
   }
 
   ngOnInit() {
-    this.borrower = this.borrowerService.getBorrower();
+    this.borrower = this.borrowerService.get();
     this.borrowersService.getViewFields().subscribe(fields => this.fields = fields);
   }
 }

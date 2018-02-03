@@ -13,7 +13,7 @@ export abstract class ModelsService<T> {
   /** Cached field fetched from server. */
   private cols: Column[];
 
-  constructor(protected basePath: string, protected id: (T) => any, protected rpc: RpcService, protected formService: FormService) {
+  constructor(protected basePath: string, public id: (T) => any, protected rpc: RpcService, protected formService: FormService) {
   }
 
   getColumns(): Observable<Column[]> {

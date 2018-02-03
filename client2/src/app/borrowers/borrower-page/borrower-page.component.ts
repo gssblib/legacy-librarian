@@ -26,12 +26,11 @@ export class BorrowerPageComponent implements OnInit {
     private currencyPipe: CurrencyPipe,
     private borrowerService: BorrowerService,
     private route: ActivatedRoute) {
-    borrowerService.borrowerObservable.subscribe(this.setBorrower.bind(this));
+    borrowerService.subscribe(borrower => this.setBorrower(borrower));
   }
 
   ngOnInit(): void {
-    this.route.data.subscribe(
-      data => this.borrowerService.setBorrower(data['borrower']));
+    this.route.data.subscribe(data => this.borrowerService.set(data['borrower']));
   }
 
   private setBorrower(borrower: Borrower) {
