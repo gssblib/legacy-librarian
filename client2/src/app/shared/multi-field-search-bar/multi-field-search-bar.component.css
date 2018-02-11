@@ -1,27 +1,8 @@
 .actions button {
   margin-left: 5px;
 }
-
-/deep/ .search-fields formly-form mat-form-field.mat-form-field {
-  width: 24% !important;
+.search-fields {
+  column-count: 3;
+  margin-right: 1em;
 }
 
-/deep/ .search-fields formly-form.width1 mat-form-field.mat-form-field {
-  width: 100% !important;
-}
-
-/deep/ .search-fields formly-form.width2 mat-form-field.mat-form-field {
-  width: 50% !important;
-}
-
-/deep/ .search-fields formly-form.width3 mat-form-field.mat-form-field {
-  width: 33% !important;
-}
-
-/deep/ .search-fields formly-form.width4 mat-form-field.mat-form-field {
-  width: 24% !important;
-}
-
-/deep/ .search-fields formly-form.width5 mat-form-field.mat-form-field {
-  width: 19% !important;
-}

@@ -12,6 +12,8 @@ import { DataTableParams } from '../../core/data-table-params';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/catch';
+import { Column } from "../../core/form.service";
+import { FocusService } from "../../core/focus.service";
 
 const SEARCH_FIELDS = ['title', 'author', 'category', 'subject', 'state', 'seriestitle'];
 
@@ -49,11 +51,13 @@ export class ItemSearchPageComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private notificationService: NotificationService,
+  constructor(private focusService: FocusService,
+              private notificationService: NotificationService,
               private itemsService: ItemsService,
               private route: ActivatedRoute,
               private router: Router) {
-    this.searchFields = this.itemsService.getFormlyFields(SEARCH_FIELDS);
+    this.searchFields = this.itemsService.getFormlyFields(
+      SEARCH_FIELDS, col => Object.assign(new Column(), col, {required: false}));
   }
 
   ngAfterViewInit(): void {
@@ -67,13 +71,21 @@ export class ItemSearchPageComponent implements AfterViewInit {
       .map(params => { this.criteria = this.params.parseParams(params) })
       .flatMap(() => {
         this.loading = true;
-        const criteria = Object.assign({}, this.criteria, this.extraCriteria);
-        return this.itemsService.getMany(this.params.query(criteria), this.params.offset(), this.params.limit(), true);
+        return Object.keys(this.criteria).length === 0
+          ? Observable.of(null)
+          : this.itemsService.getMany(
+            this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
       })
       .map(result => {
         this.loading = false;
-        this.count = result.count;
-        return result.rows;
+        if (result != null) {
+          this.count = result.count;
+          return result.rows;
+        } else {
+          this.count = -1;
+          this.focusService.setFocus('search');
+          return [];
+        }
       })
       .catch(() => {
         this.loading = false;

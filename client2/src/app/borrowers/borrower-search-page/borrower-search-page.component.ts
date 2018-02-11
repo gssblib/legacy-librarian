@@ -11,8 +11,9 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs/Observable';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Column } from "../../core/form.service";
 
-const SEARCH_FIELDS = ['surname', 'firstname', 'emailaddress', 'state'];
+const SEARCH_FIELDS = ['surname', 'firstname', 'contactname', 'emailaddress', 'state'];
 
 /**
  * Borrower search page with search form and result table.
@@ -35,7 +36,7 @@ export class BorrowerSearchPageComponent implements AfterViewInit {
   /** Data table. */
   displayedColumns = ['surname', 'firstname', 'state', 'emailaddress', 'contactname'];
   dataSource = new MatTableDataSource();
-  count = 0;
+  count = -1;
   loading = false;
 
   /** Wrapper for pagination and sorting. */
@@ -48,11 +49,13 @@ export class BorrowerSearchPageComponent implements AfterViewInit {
               private borrowersService: BorrowersService,
               private route: ActivatedRoute,
               private router: Router) {
-    this.searchFields = this.borrowersService.getFormlyFields(SEARCH_FIELDS);
+    this.searchFields = this.borrowersService.getFormlyFields(
+      SEARCH_FIELDS, col => Object.assign(new Column(), col, {required: false}));
   }
 
   ngAfterViewInit(): void {
     this.params = new DataTableParams(SEARCH_FIELDS, this.paginator, this.sort);
+    this.criteria = {};
 
     // Navigate if pagination or sort order changes.
     merge(this.sort.sortChange, this.paginator.page).subscribe(() => this.navigate());
@@ -62,14 +65,22 @@ export class BorrowerSearchPageComponent implements AfterViewInit {
       .map(params => { this.criteria = this.params.parseParams(params) })
       .flatMap(() => {
         this.loading = true;
-        return this.borrowersService.getMany(this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
+        return Object.keys(this.criteria).length === 0
+          ? Observable.of(null)
+          : this.borrowersService.getMany(
+            this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
       })
       .map(result => {
         this.loading = false;
-        this.count = result.count;
-        return result.rows;
+        if (result != null) {
+          this.count = result.count;
+          return result.rows;
+        } else {
+          this.count = -1;
+          return [];
+        }
       })
-      .catch(() => {
+      .catch((error) => {
         this.loading = false;
         return observableOf([]);
       })

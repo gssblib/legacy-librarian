@@ -5,6 +5,9 @@ a {
   text-decoration: none;
   color: inherit;
 }
+.no-search {
+  display: none;
+}
 .mat-column-surname {
   max-width: 120px;
 }

@@ -1,9 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit,
+  Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
 import { NotificationService } from "../../core/notification-service";
 import { RpcError } from "../../core/rpc-error";
+import { FocusService } from "../../core/focus.service";
 
 /**
  * Auto-complete component for items using the item title (or parts of it) for the
@@ -14,7 +19,7 @@ import { RpcError } from "../../core/rpc-error";
   templateUrl: './item-auto-complete.component.html',
   styleUrls: ['./item-auto-complete.component.css']
 })
-export class ItemAutoCompleteComponent implements OnInit {
+export class ItemAutoCompleteComponent implements OnInit, AfterViewInit, OnDestroy {
   private isBarcode = new RegExp('^[0-9]{9}$');
 
   /** FormControl for the input field. */
@@ -29,12 +34,28 @@ export class ItemAutoCompleteComponent implements OnInit {
   @Input()
   size: number = 20;
 
-  constructor(private itemsService: ItemsService, private notificationService: NotificationService) {
+  @ViewChild('input')
+  input: ElementRef;
+
+  constructor(private focusService: FocusService,
+              private itemsService: ItemsService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit() {
     this.itemCtrl = new FormControl();
     this.itemCtrl.valueChanges.subscribe(value => this.onChange(value));
+  }
+
+  ngAfterViewInit(): void {
+    this.focusService.add('search', () => this.focus());
+  }
+
+  focus() {
+    this.input.nativeElement.focus();
+  }
+
+  ngOnDestroy(): void {
   }
 
   /**

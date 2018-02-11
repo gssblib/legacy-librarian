@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup} from '@angular/forms';
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Observable } from "rxjs";
@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
   templateUrl: './multi-field-search-bar.component.html',
   styleUrls: ['./multi-field-search-bar.component.css']
 })
-export class MultiFieldSearchBarComponent implements OnInit {
+export class MultiFieldSearchBarComponent implements OnInit, OnChanges {
   @Input()
   criteria: Object;
 
@@ -31,6 +31,10 @@ export class MultiFieldSearchBarComponent implements OnInit {
 
   ngOnInit() {
     this.fieldsObservable.subscribe(fields => this.fields = fields);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.form.reset(this.criteria);
   }
 
   onSubmit(query) {

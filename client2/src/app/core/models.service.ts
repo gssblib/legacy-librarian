@@ -27,8 +27,11 @@ export abstract class ModelsService<T> {
    *
    * @param selected Keys of the fields to return (in this order)
    */
-  getFormlyFields(selected?: string[]): Observable<FormlyFieldConfig[]> {
-    return this.getColumns().map(cols => this.formService.formlyFields(cols, selected));
+  getFormlyFields(selected?: string[], colFn?: (Column) => Column): Observable<FormlyFieldConfig[]> {
+    return this.getColumns().map(cols => {
+      const newCols = colFn ? cols.map(colFn) : cols;
+      return this.formService.formlyFields(newCols, selected)
+    });
   }
 
   /**
