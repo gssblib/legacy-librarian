@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ErrorService } from "../../core/error-service";
 import { RpcError } from "../../core/rpc-error";
@@ -8,6 +8,9 @@ import { BorrowersService, ItemCheckout } from '../shared/borrowers.service';
 import { BorrowerService } from '../shared/borrower.service';
 import { ItemsService } from "../../items/shared/items.service";
 import { DateService } from "../../core/date-service";
+import { FocusService } from "../../core/focus.service";
+import { MatDialog } from "@angular/material";
+import { RenewReturnDialogComponent } from "./renew-return-dialog.component";
 
 /**
  * Presents the items that a borrower has currently checked out.
@@ -17,7 +20,7 @@ import { DateService } from "../../core/date-service";
   templateUrl: './borrower-checkouts.component.html',
   styleUrls: ['./borrower-checkouts.component.css']
 })
-export class BorrowerCheckoutsComponent implements OnInit {
+export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   borrower: Borrower;
   itemCountClass: string = '';
 
@@ -31,7 +34,9 @@ export class BorrowerCheckoutsComponent implements OnInit {
               private borrowerService: BorrowerService,
               private borrowersService: BorrowersService,
               private itemsService: ItemsService,
-              private dateService: DateService) {
+              private dateService: DateService,
+              private focusService: FocusService,
+              private matDialog: MatDialog) {
     this.borrowerService.subscribe(borrower => {
       this.borrower = borrower;
     });
@@ -41,16 +46,50 @@ export class BorrowerCheckoutsComponent implements OnInit {
     this.borrower = this.borrowerService.get();
   }
 
+  ngAfterViewInit(): void {
+    this.focusService.add('checkoutBarcode', () => this.focus());
+  }
+
   pulseCount() {
     this.itemCountClass = 'pulse';
     setTimeout(() => { this.itemCountClass = ''; }, 1000);
   }
 
   checkout(barcode) {
-    this.borrowersService.checkOutItem(barcode, this.borrower.borrowernumber)
-      .subscribe(
-        (barcode: string) => this.onSuccess(barcode),
-        (error: RpcError) => this.onError(barcode, error));
+    const item = this.borrower.items.find(item => item.barcode === barcode);
+    if (item) {
+      const dialog = this.matDialog.open(RenewReturnDialogComponent, {});
+      dialog.afterClosed().subscribe(result => {
+        if (result === 'renew') {
+          this.renewItem(item);
+        } else if (result === 'return') {
+          this.returnItem(item);
+        }
+        this.barcode.barcode = '';
+        focus();
+      })
+    } else {
+      this.borrowersService.checkOutItem(barcode, this.borrower.borrowernumber)
+        .subscribe(
+          (barcode: string) => this.onSuccess(barcode),
+          (error: RpcError) => this.onError(barcode, error));
+    }
+  }
+
+  renewItem(item) {
+    this.itemsService.renewItem(item.barcode).subscribe(
+      newItem => {
+        item.date_due = newItem.checkout.date_due;
+      },
+      (error: RpcError) => this.onError(item, error)
+    );
+  }
+
+  returnItem(item) {
+    this.itemsService.returnItem(item.barcode).subscribe(
+      item => this.borrowerService.reload(),
+      (error: RpcError) => this.onError(item, error)
+    );
   }
 
   get checkedOutToday(): ItemCheckout[] {
@@ -61,6 +100,10 @@ export class BorrowerCheckoutsComponent implements OnInit {
     return this.borrower.items.filter(checkout => checkout.dueDate < this.dateService.yesterday());
   }
 
+  focus() {
+    this.barcode.setFocus();
+  }
+
   renewAll() {
     this.borrowerService.renewAll().subscribe(
       result => {
@@ -68,6 +111,7 @@ export class BorrowerCheckoutsComponent implements OnInit {
       },
       (error: RpcError) => this.errorService.showError('error renewing items')
     );
+    this.focus();
   }
 
   private onSuccess(result) {

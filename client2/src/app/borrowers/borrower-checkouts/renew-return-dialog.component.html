@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Renew/Return Checked-Out Item</h1>
+<div mat-dialog-content>
+  <p>Do you want to renew or return the item?</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onClose('renew')" tabindex="2">Renew</button>
+  <button mat-raised-button (click)="onClose('return')" tabindex="-1">Return</button>
+  <button mat-raised-button (click)="onClose('cancel')" tabindex="-1">Cancel</button>
+</div>

@@ -22,10 +22,9 @@ export class BorrowerPageComponent implements OnInit {
 
   borrower: Borrower;
 
-  constructor(
-    private currencyPipe: CurrencyPipe,
-    private borrowerService: BorrowerService,
-    private route: ActivatedRoute) {
+  constructor(private currencyPipe: CurrencyPipe,
+              private borrowerService: BorrowerService,
+              private route: ActivatedRoute) {
     borrowerService.subscribe(borrower => this.setBorrower(borrower));
   }
 
@@ -35,7 +34,7 @@ export class BorrowerPageComponent implements OnInit {
 
   private setBorrower(borrower: Borrower) {
     this.borrower = borrower;
-    // Update the fee tab title tot reflect the total fee amount due.
+    // Update the fee tab title to reflect the total fee amount due.
     var fees = this.currencyPipe.transform(borrower.fees.total);
     this.navLinks[1]['label'] = `Fees (${fees})`;
     delete this.navLinks[1]['class']

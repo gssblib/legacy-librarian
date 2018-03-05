@@ -17,5 +17,4 @@ export class BorrowerSearchBarComponent implements OnInit {
   showBorrower(borrower: Borrower) {
     this.router.navigate(['/borrowers', borrower.borrowernumber, 'checkouts']);
   }
-
 }

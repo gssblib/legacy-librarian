@@ -6,6 +6,7 @@ import { RpcError } from '../../core/rpc-error';
 import { Observable } from 'rxjs/Observable';
 import { Item } from '../../items/shared/item';
 import { MatSort, MatTableDataSource } from '@angular/material';
+import { FocusService } from "../../core/focus.service";
 
 @Component({
   selector: 'gsl-borrower-checkouts-table',
@@ -32,7 +33,8 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
 
   constructor(private itemsService: ItemsService,
               private borrowerService: BorrowerService,
-              private errorService: ErrorService) {}
+              private errorService: ErrorService,
+              private focusService: FocusService) {}
 
   ngOnInit() {
     if (!this.showActions) {
@@ -41,7 +43,6 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.items);
     this.dataSource.data = this.items;
   }
 
@@ -63,6 +64,7 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
       },
       (error: RpcError) => this.onError(item, error)
     );
+    this.focusService.setFocus('checkoutBarcode');
   }
 
   onReturn(item) {
@@ -70,6 +72,7 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
       item => this.borrowerService.reload(),
       (error: RpcError) => this.onError(item, error)
     );
+    this.focusService.setFocus('checkoutBarcode');
   }
 
   private onError(item: Item, error: RpcError) {

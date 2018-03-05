@@ -9,6 +9,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatChipsModule,
+  MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
@@ -40,6 +41,7 @@ import { BorrowerSearchBarComponent } from './borrower-search-bar/borrower-searc
 import { BorrowerAddPageComponent } from './borrower-add-page/borrower-add-page.component';
 import { BorrowerStatusComponent } from './borrower-status/borrower-status.component';
 import { CdkTableModule } from '@angular/cdk/table';
+import { RenewReturnDialogComponent } from "./borrower-checkouts/renew-return-dialog.component";
 
 @NgModule({
   imports: [
@@ -83,6 +85,7 @@ import { CdkTableModule } from '@angular/cdk/table';
     BorrowerSearchBarComponent,
     BorrowerAddPageComponent,
     BorrowerStatusComponent,
+    RenewReturnDialogComponent,
   ],
   providers: [
     BorrowerService,
@@ -92,6 +95,9 @@ import { CdkTableModule } from '@angular/cdk/table';
   exports: [
     BorrowerSearchBarComponent,
     BorrowerCheckoutsTableComponent
+  ],
+  entryComponents: [
+    RenewReturnDialogComponent,
   ],
 })
 export class BorrowersModule {

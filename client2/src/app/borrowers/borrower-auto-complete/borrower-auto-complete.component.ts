@@ -79,5 +79,4 @@ export class BorrowerAutoCompleteComponent implements OnInit, AfterViewInit {
       this.borrowerSelected.emit(value);
     }
   }
-
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 
 /**
@@ -32,12 +32,19 @@ export class BarcodeFieldComponent implements OnInit {
   @Output()
   barcodeSubmit: EventEmitter<string> = new EventEmitter();
 
+  @ViewChild('input')
+  input: ElementRef;
+
   ngOnInit() {
     this.barcodeCtrl = new FormControl('', [
       Validators.required,
       Validators.minLength(this.length),
       Validators.maxLength(this.length)
     ]);
+  }
+
+  setFocus() {
+    this.input.nativeElement.focus();
   }
 
   /**
