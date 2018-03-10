@@ -9,7 +9,6 @@ library application which was based on MS WebMatrix).
 
 ## Directory Structure
 
-- client: old client web application (angular 1.x)
 - client2: new client web application (angular 5+)
 - server: node.js server
 - labels: A label printer server written in Python
@@ -44,21 +43,3 @@ $ npm install express --save
 $ npm install express-session --save
 ...
 ```
-
-### Installing client modules (with bower)
-
-```
-$ bower init
-$ bower install angular --save
-$ bower install bootstrap --save
-...
-```
-
-The minimal `Gruntfile.js` sets bower's `targetDir` option to `./client/vendor`
-so that one can copy the client libraries (js, css, images) to the frontend
-directory with
-
-```
-$ grunt bower:install
-```
-

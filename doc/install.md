@@ -83,17 +83,6 @@ when running the server or tools.
 
 [node-config-module]: https://github.com/lorenwest/node-config
 
-### Install node and bower modules
-
-To download and install all modules, run the npm and bower installation.
-
-```
-$ cd $GSSBLIB_HOME
-$ npm install
-$ sudo npm install grunt grunt-cli -g
-$ grunt bower:install
-```
-
 ### Setting up config file
 
 ```
