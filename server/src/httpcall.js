@@ -15,9 +15,8 @@ module.exports = function(server, api_prefix, auth) {
         return nullMiddleware;
 
     var authz = function(req, res, next) {
-      /* Look at either the JWT stored user or the session user. The latter is
-         for BBB. */
-      var user = req.user || req.session.user;
+      /* Look at either the JWT stored user. */
+      var user = req.user;
       if (user === undefined)
         return res.status(401).send('NO_USER');
       if (user.permissions === undefined)

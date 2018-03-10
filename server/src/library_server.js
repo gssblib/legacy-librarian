@@ -31,13 +31,8 @@ server.use(logger('combined', {
 
 server.use(require('body-parser').json());
 server.use(require('cookie-parser')(config.get('auth').cookie));
-server.use(require('express-session')({
-  secret: config.get('auth').session,
-  resave: false,
-  saveUninitialized: true
-}));
 
-var img_root_path = config['resources']['covers']
+var img_root_path = config['resources']['covers'];
 if (img_root_path[0] != '/') {
   img_root_path = __dirname + '/../' + img_root_path;
 }
@@ -167,36 +162,6 @@ httpcall.handlePaths([
 
 httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew']);
 httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
-
-// BBB: for client version 1
-httpcall.handlePaths([
-  { get: '/users/current',
-    fn: function (call) {
-      return Q(call.req.session.user);
-    },
-  },
-  { post: '/users/authenticate',
-    fn: function (call) {
-      return auth.authenticate(call.req.body).tap(function (result) {
-        console.log('authenticate', result);
-	if (result.authenticated) {
-	  call.req.session.user = result.user;
-	}
-      });
-    }},
-  { post: '/users/logout',
-    fn: function (call) {
-      return Q(true).then(function () {
-        var loggedIn = !!call.req.session.user;
-        if (loggedIn) {
-          delete call.req.session.user;
-          return {success: true};
-        } else {
-          return {success: false, reason: 'NOT_LOGGED_IN'};
-        }
-      });
-    }}
-]);
 
 // Serve the client web application as static content.
 config['clients'].forEach(function(clientConfig) {
