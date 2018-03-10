@@ -17,19 +17,14 @@
   //            to ensure it is the last route registration.
   "clients": [
     {
-      "name": "volunteers",
-      "endpoint": "/volunteers",
-      "path": "../../client2/dist"
-    },
-    {
       "name": "parents",
       "endpoint": "/public",
       "path": "../../client2/dist-public"
     },
     {
-      "name": "volunteers-old",
+      "name": "volunteers",
       "endpoint": "",
-      "path": "../../client/app"
+      "path": "../../client2/dist"
     }
   ],
 
