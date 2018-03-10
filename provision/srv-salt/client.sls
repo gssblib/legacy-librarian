@@ -61,7 +61,7 @@ client public:
 client prod:
   cmd.run:
     - name: |
-        ng build --prod --base-href "/volunteers/" --progress false && \
+        ng build --prod --base-href "/" --progress false && \
         git rev-parse HEAD > .volunteers.git-rev
     - cwd: {{ client_dir }}
     - runas: gssblib
