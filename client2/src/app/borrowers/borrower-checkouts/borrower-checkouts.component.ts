@@ -47,7 +47,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.focusService.add('checkoutBarcode', () => this.focus());
+    this.focusService.add('checkoutBarcode', () => this.reset());
   }
 
   pulseCount() {
@@ -100,7 +100,8 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
     return this.borrower.items.filter(checkout => checkout.dueDate < this.dateService.yesterday());
   }
 
-  focus() {
+  reset() {
+    this.barcode.reset();
     this.barcode.setFocus();
   }
 
@@ -111,7 +112,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
       },
       (error: RpcError) => this.errorService.showError('error renewing items')
     );
-    this.focus();
+    this.reset();
   }
 
   private onSuccess(result) {

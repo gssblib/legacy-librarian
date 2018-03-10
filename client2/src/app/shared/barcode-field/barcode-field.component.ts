@@ -43,6 +43,10 @@ export class BarcodeFieldComponent implements OnInit {
     ]);
   }
 
+  reset() {
+    this.barcodeCtrl.reset();
+  }
+
   setFocus() {
     this.input.nativeElement.focus();
   }

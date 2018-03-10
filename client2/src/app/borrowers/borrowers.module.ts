@@ -56,6 +56,7 @@ import { RenewReturnDialogComponent } from "./borrower-checkouts/renew-return-di
     ConfirmationDialogModule,
     MatCardModule,
     MatChipsModule,
+    MatDialogModule,
     MatTabsModule,
     MatAutocompleteModule,
     MatIconModule,
