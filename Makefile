@@ -80,16 +80,6 @@ run-labels-server:
 	    $(PYTHON) `pwd`/labels/make_label.py serve
 
 
-####> Old Client <#############################################################
-
-##> old-client : Install/build the old client.
-old-client: client/Gruntfile.js client/bower.json client/package.json
-	cd client; \
-	npm install; \
-	sudo npm install grunt -g; \
-	grunt bower:install
-
-
 ####> Client <#################################################################
 
 ##> client : Install client components.
