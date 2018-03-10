@@ -15,7 +15,6 @@ base:
     - labels
     - labels/supervisor
     - scripts
-    - old-client
 
   'server_type:public':
     - match: grain

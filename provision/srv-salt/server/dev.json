@@ -14,19 +14,14 @@
 
   "clients": [
     {
-      "name": "volunteers",
-      "endpoint": "/volunteers",
-      "path": "{{ root_path }}/client2/dist"
-    },
-    {
       "name": "parents",
       "endpoint": "/public",
       "path": "{{ root_path }}/client2/dist-public"
     },
     {
-      "name": "volunteers-old",
+      "name": "",
       "endpoint": "",
-      "path": "{{ root_path }}/client/app"
+      "path": "{{ root_path }}/client2/dist"
     }
   ],
 
