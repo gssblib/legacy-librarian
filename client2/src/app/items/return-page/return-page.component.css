@@ -11,3 +11,6 @@ a {
 .mat-column-category {
   max-width: 120px;
 }
+.returned-item {
+  background-color: #7f7;
+}

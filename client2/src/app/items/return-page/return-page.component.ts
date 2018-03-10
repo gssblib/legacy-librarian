@@ -15,8 +15,8 @@ import { MatTableDataSource } from '@angular/material';
 export class ReturnPageComponent implements OnInit {
   displayedColumns = ['barcode', 'title', 'category', 'checkout_date', 'returndate', 'borrower'];
   returnedItems: Item[] = [];
+  returnedItem?: Item = null;
   dataSource = new MatTableDataSource<Object>([]);
-  itemCountClass: string = '';
 
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
@@ -28,11 +28,6 @@ export class ReturnPageComponent implements OnInit {
   ngOnInit() {
     this.returnedItems = this.getItems();
     this.dataSource.data = this.returnedItems;
-  }
-
-  pulseCount() {
-    this.itemCountClass = 'pulse';
-    setTimeout(() => { this.itemCountClass = ''; }, 1000);
   }
 
   resetItems() {
@@ -52,8 +47,9 @@ export class ReturnPageComponent implements OnInit {
     this.returnedItems.unshift(item);
     this.storeItems(this.returnedItems);
     this.barcode.barcode = '';
-    this.pulseCount();
     this.dataSource.data = this.returnedItems;
+    this.returnedItem = item;
+    setTimeout(() => this.returnedItem = null, 1000);
   }
 
   private onError(barcode: string, error: RpcError) {

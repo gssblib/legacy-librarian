@@ -3,11 +3,11 @@
   <gsl-barcode-field icon="check" (barcodeSubmit)="returnItem($event)" #barcode>
   </gsl-barcode-field>
   <h3>
-    <button mat-mini-fab class="number-returned" color="accent"
+    <a mat-mini-fab class="number-returned" color="accent"
             title="Clear list of returned items"
-            (click)="resetItems()" [ngClass]="itemCountClass">
+            (click)="resetItems()" [class.pulse]="returnedItem">
       <b>{{ returnedItems.length }}</b>
-    </button>
+    </a>
     items returned
   </h3>
   <div *ngIf="returnedItems.length > 0">
@@ -47,7 +47,9 @@
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+               [class.returned-item]="row === returnedItem">
+      </mat-row>
     </mat-table>
   </div>
 </mat-card>
