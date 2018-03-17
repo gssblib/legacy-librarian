@@ -41,6 +41,12 @@ export class BorrowersService extends ModelsService<Borrower> {
     super('borrowers', borrower => borrower.borrowernumber, rpc, formService);
   }
 
+  newBorrower(): Borrower {
+    const borrower = new Borrower();
+    borrower.state = 'ACTIVE';
+    return borrower;
+  }
+
   toModel(row: any): Borrower {
     const borrower = Object.assign(new Borrower(), row);
     if (borrower.items) {

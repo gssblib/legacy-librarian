@@ -5,6 +5,7 @@ export class Borrower {
   firstname: string;
   surname: string;
   contactname: string;
+  state: string;
   items: ItemCheckout[];
   fees: any;
 

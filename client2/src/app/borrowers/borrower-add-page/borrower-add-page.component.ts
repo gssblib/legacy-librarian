@@ -13,16 +13,17 @@ import { Borrower } from "../shared/borrower";
 })
 export class BorrowerAddPageComponent implements OnInit {
   form = new FormGroup({});
-  borrower = {};
+  borrower: Borrower;
   fields: Array<FormlyFieldConfig> = [];
 
-  constructor(
-    private notificationService: NotificationService,
-    private borrowersService: BorrowersService,
-    private router: Router) { }
+  constructor(private notificationService: NotificationService,
+              private borrowersService: BorrowersService,
+              private router: Router) {
+  }
 
   ngOnInit() {
     this.borrowersService.getFormlyFields().subscribe(fields => this.fields = fields);
+    this.borrower = this.borrowersService.newBorrower();
   }
 
   submitForm(borrower) {
