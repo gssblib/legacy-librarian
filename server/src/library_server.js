@@ -143,8 +143,7 @@ httpcall.handlePaths([
   },
   { delete: '/items/:key/cover',
     fn: function (call) {
-      var img_path = __dirname + '/' + config['resources']['covers'] +
-            '/' + call.param('key') + '.jpg';
+      var img_path = img_root_path + '/' + call.param('key') + '.jpg';
       if (fs.existsSync(img_path)) {
         fs.unlinkSync(img_path);
       }
