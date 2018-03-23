@@ -6,13 +6,15 @@ import { RpcService } from "../../core/rpc.service";
 import { FormService } from '../../core/form.service';
 import { Borrower } from '../../borrowers/shared/borrower';
 import { ModelsService } from "../../core/models.service";
+import { DatePipe } from "@angular/common";
 
 /**
  * Service for fetching and manipulating items.
  */
 @Injectable()
 export class ItemsService extends ModelsService<Item> {
-  constructor(rpc: RpcService, formService: FormService) {
+  constructor(rpc: RpcService, formService: FormService,
+              private datePipe: DatePipe) {
     super('items', item => item.barcode, rpc, formService);
   }
 
@@ -44,6 +46,11 @@ export class ItemsService extends ModelsService<Item> {
 
   beforeSave(item: Item) {
     item.added = undefined; // datetime not handled yet
+  }
+
+  beforeAdd(item: Item) {
+    const now = new Date();
+    item.added = this.datePipe.transform(now, 'yyyy-MM-ddTHH:mm:ss');
   }
 
   deleteCover(item) {

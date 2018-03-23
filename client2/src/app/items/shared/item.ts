@@ -25,7 +25,7 @@ export class Item {
   checkout?: Checkout;
   history: Array<any>;
   borrower?: Borrower;
-  added?: Date;
+  added?: Date|string;
 
   get status(): ItemStatus {
     return this.state === ItemState.CIRCULATING
