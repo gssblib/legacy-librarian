@@ -14,6 +14,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/catch';
 import { Column } from "../../core/form.service";
 import { FocusService } from "../../core/focus.service";
+import { ItemService } from "../shared/item.service";
 
 const SEARCH_FIELDS = ['title', 'author', 'category', 'subject', 'state', 'seriestitle'];
 
@@ -53,11 +54,17 @@ export class ItemSearchPageComponent implements AfterViewInit {
 
   constructor(private focusService: FocusService,
               private notificationService: NotificationService,
+              private itemService: ItemService,
               private itemsService: ItemsService,
               private route: ActivatedRoute,
               private router: Router) {
     this.searchFields = this.itemsService.getFormlyFields(
       SEARCH_FIELDS, col => Object.assign(new Column(), col, {required: false}));
+  }
+
+  add() {
+    this.itemService.newItem = null;
+    this.router.navigate(['items', 'add']);
   }
 
   ngAfterViewInit(): void {
