@@ -17,12 +17,10 @@ export class ItemAddPageComponent implements OnInit {
   item: Item;
   fields: Array<FormlyFieldConfig> = [];
 
-  constructor(
-    private notificationService: NotificationService,
-    private itemsService: ItemsService,
-    private itemService: ItemService,
-    private router: Router,
-  ) {
+  constructor(private notificationService: NotificationService,
+              private itemsService: ItemsService,
+              private itemService: ItemService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -33,6 +31,7 @@ export class ItemAddPageComponent implements OnInit {
   }
 
   submitForm(item) {
+    console.log(item);
     this.itemsService.add(item).subscribe(
       value => {
         this.router.navigate(['/items', value.barcode, 'details']);

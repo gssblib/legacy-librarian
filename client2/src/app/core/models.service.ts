@@ -54,6 +54,10 @@ export abstract class ModelsService<T> {
   beforeSave(model: T) {
   }
 
+  beforeAdd(model: T) {
+    this.beforeSave(model);
+  }
+
   toModels(rows: Object[]): T[] {
     return rows.map(this.toModel);
   }
@@ -81,7 +85,9 @@ export abstract class ModelsService<T> {
   }
 
   add(model: T): Observable<T> {
-    return this.rpc.httpPost(this.basePath, model).map(obj => this.toModel(obj));
+    const storedModel = Object.assign({}, model);
+    this.beforeAdd(storedModel);
+    return this.rpc.httpPost(this.basePath, storedModel).map(obj => this.toModel(obj));
   }
 
   remove(model: T) {
