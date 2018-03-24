@@ -2,7 +2,8 @@
   <h1>
     Add Item
   </h1>
-  <form [formGroup]="form" novalidate (ngSubmit)="submitForm(item)">
+  <form [formGroup]="form" novalidate (ngSubmit)="submitForm(item)"
+        (keydown.enter)="$event.preventDefault()">
     <div class="fields">
       <formly-form [model]="item" [form]="form" [fields]="fields"></formly-form>
     </div>
