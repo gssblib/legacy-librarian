@@ -16,6 +16,7 @@ export class ItemService extends ModelService<Item> {
 
   set newItem(item: Item) {
     const newItem = Object.assign(new Item(), item);
+    newItem.state = ItemState.CIRCULATING;
     delete newItem.title;
     delete newItem.antolin;
     delete newItem.isbn10;

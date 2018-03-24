@@ -1,8 +1,8 @@
 <mat-card *ngIf="borrower">
-  <h3 *ngIf="borrower">
+  <h2 *ngIf="borrower">
     {{borrower.surname}}, {{borrower.firstname}}, {{borrower.contactname}}
     <gsl-borrower-status [status]="borrower.state"></gsl-borrower-status>
-  </h3>
+  </h2>
   <nav mat-tab-nav-bar>
     <a mat-tab-link
        *ngFor="let link of navLinks"

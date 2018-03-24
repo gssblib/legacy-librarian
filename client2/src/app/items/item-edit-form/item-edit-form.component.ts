@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Router } from "@angular/router";
@@ -18,11 +18,13 @@ export class ItemEditFormComponent implements OnInit {
   item: Item;
   fields: Array<FormlyFieldConfig> = [];
 
-  constructor(
-    private router: Router,
-    private notificationService: NotificationService,
-    private itemsService: ItemsService,
-    private itemService: ItemService) {
+  @Output()
+  cancel = new EventEmitter();
+
+  constructor(private router: Router,
+              private notificationService: NotificationService,
+              private itemsService: ItemsService,
+              private itemService: ItemService) {
     this.itemsService.getFormlyFields().subscribe(fields => this.fields = fields);
     this.itemService.subscribe(item => this.item = item);
     this.item = this.itemService.getItem();
@@ -39,21 +41,8 @@ export class ItemEditFormComponent implements OnInit {
     );
   }
 
-  copy() {
-    const newItem = Object.assign(new Item(), this.item);
-    newItem.barcode = '';
-    newItem.id = undefined;
-    this.itemService.newItem = newItem;
-    this.router.navigate(['items', 'add']);
-  }
-
-  delete() {
-    const barcode = this.item.barcode;
-    this.itemsService.remove(this.item).subscribe(
-      item => { this.notificationService.show(`Item ${barcode} deleted.`) },
-      error => { this.notificationService.showError("Failed saving item.", error) }
-    );
-    this.router.navigate(['/items']);
+  onCancel() {
+    this.cancel.emit(null);
   }
 
   private onSaved(item: Item) {

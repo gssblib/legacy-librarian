@@ -5,26 +5,14 @@
         <formly-form [model]="item" [fields]="fields" [form]="form">
         </formly-form>
       </div>
-      <div class="actions">
+      <div class="form-actions">
         <button type="submit" mat-raised-button color="primary"
                 [disabled]="form.invalid"
                 *gslAuthorized="'items.update'">
           Submit
         </button>
-        <button type="submit" mat-raised-button color="primary"
-                (click)="copy()"
-                *gslAuthorized="'items.create'">
-          Copy Item
-        </button>
-        <button
-           color="primary" type="submit" color="warn"
-           mat-raised-button
-           gslConfirmationDialog
-           title="Confirm Deletion"
-           message="Are you sure you want to delete the item?"
-           (confirm)="delete()"
-           *gslAuthorized="'items.delete'">
-          Delete
+        <button mat-raised-button color="primary" (click)="onCancel()">
+          Cancel
         </button>
       </div>
     </form>
