@@ -40,10 +40,11 @@ def _ascii(text):
 class Email(object):
     """Simple text email that knows how to create the MIME message."""
     def __init__(self, subject=None, recipients=None, sender=None,
-                 text=None, html=None):
+                 replyto=None,  text=None, html=None):
         self.recipients = recipients
         self.subject = subject
         self.sender = sender
+        self.replyto = replyto
         self.text = text
         self.html = html
 
@@ -52,6 +53,7 @@ class Email(object):
         self.recipients = self.recipients or template.recipients
         self.subject = self.subject or template.subject
         self.sender = self.sender or template.sender
+        self.replyto = self.replyto or template.replyto
         self.text = self.text or template.text
 
     def is_complete(self):
@@ -62,6 +64,7 @@ class Email(object):
         message["Subject"] = self.subject
         message["From"] = self.sender
         message["To"] = ', '.join(self.recipients)
+        message["Reply-To"] = self.replyto
         return message
 
     def get_text_message(self):

@@ -171,7 +171,8 @@ class Reminder(object):
         self.templates = templates
         self.config = config
         self.template_email = common.Email(
-                sender=config.sender, subject=config.subject)
+            sender=config.sender, subject=config.subject,
+            replyto=config.reply_to)
 
     def generate_emails_from_db(self, test=False):
         """Creates the reminder emails for the borrowers. Returns
@@ -200,7 +201,8 @@ class Reminder(object):
         """
         text = self.render_email(self.templates['text'], borrower, test)
         html = self.render_email(self.templates['html'], borrower, test)
-        return common.Email(recipients=recipients, text=text, html=html)
+        return common.Email(
+            recipients=recipients, text=text, html=html)
 
     def render_email(self, template, borrower, test):
         return template.render(
