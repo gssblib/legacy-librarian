@@ -536,7 +536,7 @@ class DVDLabelMaker(LabelMaker):
 
     @classmethod
     def is_applicable(cls, item):
-        return item.description == 'DVD'
+        return item.category == 'DVD'
 
     def prepare(self):
         if not self.data.get('title_abbr'):
