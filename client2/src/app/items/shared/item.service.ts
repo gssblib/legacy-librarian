@@ -15,7 +15,12 @@ export class ItemService extends ModelService<Item> {
   _newItem: Item;
 
   set newItem(item: Item) {
-    this._newItem = item;
+    const newItem = Object.assign(new Item(), item);
+    delete newItem.title;
+    delete newItem.antolin;
+    delete newItem.isbn10;
+    delete newItem.isbn13;
+    this._newItem = newItem;
   }
 
   get newItem(): Item {
