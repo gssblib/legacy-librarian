@@ -87,7 +87,9 @@ class SmtpClient(object):
     def __init__(self, host, port, username, password):
         self.name = "%s@%s:%d" % (username, host, port)
         logging.info("opening SMTP connection %s", self.name)
-        self.smtp_client = smtplib.SMTP_SSL(host, port)
+        self.smtp_client = smtplib.SMTP(host, port)
+        self.smtp_client.ehlo()
+        self.smtp_client.starttls()
         self.smtp_client.ehlo()
         self.smtp_client.login(username, password)
 
