@@ -101,6 +101,11 @@ export class ItemSearchPageComponent implements AfterViewInit {
       .subscribe(data => this.dataSource.data = data);
   }
 
+  search() {
+    this.paginator.pageIndex = 0;
+    this.navigate();
+  }
+
   /**
    * Changes the route to the route reflecting the current state of the search.
    */

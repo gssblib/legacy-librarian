@@ -5,7 +5,7 @@
   <div class="containerX">
     <div fxFlex="">
       <gsl-multi-field-search-bar
-        [criteria]="criteria" [fields]="searchFields" (search)="navigate()">
+        [criteria]="criteria" [fields]="searchFields" (search)="search()">
       </gsl-multi-field-search-bar>
     </div>
     <div class="add" *gslAuthorized="'items.create'">
