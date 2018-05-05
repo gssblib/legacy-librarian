@@ -1,11 +1,11 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
 
 /**
- * Central service for notification notifications.
+ * Central service for notifications (completed operations, errors).
  *
- * If an notification happens anywhere in the application, it can be sent to
- * this service which in turn will emit an notification event that can be
- * picked up in a central place, for exammple, to show an notification message.
+ * Any component can sent a notification to this service which will publish the
+ * message as a notication event that gets picked up in a central place of the
+ * application.
  */
 @Injectable()
 export class NotificationService {
