@@ -6,7 +6,6 @@ import { NotificationService } from "../../core/notification-service";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 import { ItemService } from "../shared/item.service";
-import { ErrorService } from "../../core/error-service";
 import { RpcError } from "../../core/rpc-error";
 import { Observable } from "rxjs/Observable";
 
@@ -21,7 +20,6 @@ export class ItemAddPageComponent implements OnInit {
   fields: Array<FormlyFieldConfig> = [];
 
   constructor(private notificationService: NotificationService,
-              private errorService: ErrorService,
               private itemsService: ItemsService,
               private itemService: ItemService,
               private router: Router) {
@@ -37,7 +35,7 @@ export class ItemAddPageComponent implements OnInit {
   submitForm(item) {
     this.itemsService.add(item).subscribe(
       (item: Item) => this.router.navigate(['/items', item.barcode, 'details']),
-      (error: RpcError) => this.errorService.showError(this.toErrorMessage(error)));
+      (error: RpcError) => this.notificationService.showError(this.toErrorMessage(error)));
   }
 
   private toErrorMessage(error: RpcError) {

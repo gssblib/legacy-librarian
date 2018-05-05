@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ItemsService } from '../shared/items.service';
 import { Item } from '../shared/item';
-import { ErrorService } from '../../core/error-service';
 import { RpcError } from '../../core/rpc-error';
 import { BarcodeFieldComponent } from '../../shared/barcode-field/barcode-field.component';
 import { MatTableDataSource } from '@angular/material';
+import { NotificationService } from "../../core/notification-service";
 
 @Component({
   selector: 'gsl-return-page',
@@ -22,7 +22,7 @@ export class ReturnPageComponent implements OnInit {
   barcode: BarcodeFieldComponent;
 
   constructor(private itemsService: ItemsService,
-              private errorService: ErrorService) {
+              private notificationService: NotificationService) {
   }
 
   ngOnInit() {
@@ -53,7 +53,7 @@ export class ReturnPageComponent implements OnInit {
   }
 
   private onError(barcode: string, error: RpcError) {
-    this.errorService.showError(this.toErrorMessage(barcode, error));
+    this.notificationService.showError(this.toErrorMessage(barcode, error));
     this.barcode.barcode = '';
     // Resolve the error.
     return Observable.create(() => {});

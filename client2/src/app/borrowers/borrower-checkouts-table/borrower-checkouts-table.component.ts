@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ItemsService } from '../../items/shared/items.service';
 import { BorrowerService } from '../shared/borrower.service';
-import { ErrorService } from '../../core/error-service';
 import { RpcError } from '../../core/rpc-error';
 import { Observable } from 'rxjs/Observable';
 import { Item } from '../../items/shared/item';
 import { MatSort, MatTableDataSource } from '@angular/material';
 import { FocusService } from "../../core/focus.service";
+import { NotificationService } from "../../core/notification-service";
 
 @Component({
   selector: 'gsl-borrower-checkouts-table',
@@ -33,7 +33,7 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
 
   constructor(private itemsService: ItemsService,
               private borrowerService: BorrowerService,
-              private errorService: ErrorService,
+              private notificationService: NotificationService,
               private focusService: FocusService) {}
 
   ngOnInit() {
@@ -76,7 +76,7 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
   }
 
   private onError(item: Item, error: RpcError) {
-    this.errorService.showError(this.toErrorMessage(item, error));
+    this.notificationService.showError(this.toErrorMessage(item, error));
     // Resolve the error.
     return Observable.create(() => {});
   }

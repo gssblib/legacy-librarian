@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { ErrorService } from '../core/error-service';
 import { AuthenticationService } from '../core/auth.service';
 import { Router } from "@angular/router";
+import { NotificationService } from "../core/notification-service";
 
 @Component({
   selector: 'gsl-root',
@@ -10,15 +10,14 @@ import { Router } from "@angular/router";
   styleUrls: ['./app-public.component.css']
 })
 export class AppPublicComponent implements OnInit {
-  constructor(
-    private snackBar: MatSnackBar,
-    private errorService: ErrorService,
-    private authenticationService: AuthenticationService,
-    private router: Router
-  ) {}
+  constructor(private snackBar: MatSnackBar,
+              private notificationService: NotificationService,
+              private authenticationService: AuthenticationService,
+              private router: Router) {
+  }
 
   ngOnInit(): void {
-    this.errorService.error.subscribe(error => {
+    this.notificationService.notification.subscribe(error => {
       this.snackBar.open(error.message, 'Dismiss', {
         duration: 3000,
       });

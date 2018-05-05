@@ -46,6 +46,6 @@ export class ItemEditFormComponent implements OnInit {
   }
 
   private onSaved(item: Item) {
-    this.notificationService.show("Item save.");
+    this.notificationService.show("Item saved.");
   }
 }

@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { ErrorService } from "../../core/error-service";
 import { RpcError } from "../../core/rpc-error";
 import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.component";
 import { Borrower } from '../shared/borrower';
@@ -11,6 +10,7 @@ import { DateService } from "../../core/date-service";
 import { FocusService } from "../../core/focus.service";
 import { MatDialog } from "@angular/material";
 import { RenewReturnDialogComponent } from "./renew-return-dialog.component";
+import { NotificationService } from "../../core/notification-service";
 
 /**
  * Presents the items that a borrower has currently checked out.
@@ -30,7 +30,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
-  constructor(private errorService: ErrorService,
+  constructor(private notificationService: NotificationService,
               private borrowerService: BorrowerService,
               private borrowersService: BorrowersService,
               private itemsService: ItemsService,
@@ -110,7 +110,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
       result => {
         this.borrowerService.reload();
       },
-      (error: RpcError) => this.errorService.showError('error renewing items')
+      (error: RpcError) => this.notificationService.showError('error renewing items')
     );
     this.reset();
   }
@@ -123,7 +123,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   }
 
   private onError(barcode: string, error: RpcError) {
-    this.errorService.showError(this.toErrorMessage(barcode, error));
+    this.notificationService.showError(this.toErrorMessage(barcode, error));
     this.barcode.barcode = '';
     // Resolve the error.
     return Observable.create(() => {});

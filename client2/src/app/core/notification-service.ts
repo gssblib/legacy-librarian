@@ -1,5 +1,4 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
-import { ErrorService } from "./error-service";
 
 /**
  * Central service for notification notifications.
@@ -13,17 +12,15 @@ export class NotificationService {
   @Output()
   notification = new EventEmitter();
 
-  constructor(private errorService: ErrorService) {
+  showError(message: string, error?) {
+    this.show(this.errorMessage(message, error));
   }
 
-  showError(message, error?) {
-    if (error !== undefined) {
-      message = `${message} (${error.message})`;
-    }
-    this.errorService.showError(message);
+  private errorMessage(message: string, error): string {
+    return error ? `${message} (${error.message})` : message;
   }
 
-  show(message) {
+  show(message: string) {
     this.notification.emit({message});
   }
 }

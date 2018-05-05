@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Router } from "@angular/router";
 import { AuthenticationService } from './core/auth.service';
-import { ErrorService } from './core/error-service';
 import { NotificationService } from "./core/notification-service";
 
 @Component({
@@ -12,20 +11,13 @@ import { NotificationService } from "./core/notification-service";
 })
 export class AppComponent implements OnInit {
 
-  constructor(
-    private router: Router,
-    private snackbar: MatSnackBar,
-    private authenticationService: AuthenticationService,
-    private errorService: ErrorService,
-    private notificationService: NotificationService,
-  ) {}
+  constructor(private router: Router,
+              private snackbar: MatSnackBar,
+              private authenticationService: AuthenticationService,
+              private notificationService: NotificationService) {
+  }
 
   ngOnInit(): void {
-    this.errorService.error.subscribe(error => {
-      this.snackbar.open(error.message, 'Dismiss', {
-        duration: 3000,
-      });
-    });
     this.notificationService.notification.subscribe(note => {
       this.snackbar.open(note.message, 'Dismiss', {
         duration: 3000,
@@ -42,6 +34,5 @@ export class AppComponent implements OnInit {
     this.authenticationService.logout();
     this.router.navigate(['/login']);
   }
-
 }
 
