@@ -12,7 +12,7 @@ export class ItemResolverService implements Resolve<Item> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):
       Observable<Item>|Item {
     const barcode = route.params['id'];
-    const item = this.itemService.getItem();
+    const item = this.itemService.get();
     return item && item.barcode === barcode ? item : this.itemsService.get(barcode);
   }
 }

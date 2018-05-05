@@ -24,11 +24,11 @@ export class ItemPageComponent implements OnInit {
   constructor(private itemsService: ItemsService,
               private itemService: ItemService,
               private route: ActivatedRoute) {
-    this.item = this.itemService.getItem();
+    this.item = this.itemService.get();
     this.itemService.subscribe(item => this.item = item);
   }
 
   ngOnInit(): void {
-    this.route.data.subscribe(data => this.itemService.setItem(data['item']));
+    this.route.data.subscribe(data => this.itemService.set(data['item']));
   }
 }

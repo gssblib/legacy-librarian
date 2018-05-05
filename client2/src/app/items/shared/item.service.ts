@@ -37,20 +37,4 @@ export class ItemService extends ModelService<Item> {
   constructor(private itemsService: ItemsService) {
     super(itemsService);
   }
-
-  getItem(): Item {
-    return this.get();
-  }
-
-  setItem(item: Item) {
-    return this.set(item);
-  }
-
-  loadItem(barcode: string) {
-    return this.load(barcode);
-  }
-
-  reloadItem() {
-    return this.reload();
-  }
 }

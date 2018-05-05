@@ -68,6 +68,7 @@ export class ItemSearchPageComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.itemService.set(null);
     this.params = new DataTableParams(SEARCH_FIELDS, this.paginator, this.sort);
 
     // Navigate if pagination or sort order changes.

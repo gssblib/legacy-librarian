@@ -27,11 +27,11 @@ export class ItemEditFormComponent implements OnInit {
               private itemService: ItemService) {
     this.itemsService.getFormlyFields().subscribe(fields => this.fields = fields);
     this.itemService.subscribe(item => this.item = item);
-    this.item = this.itemService.getItem();
+    this.item = this.itemService.get();
   }
 
   ngOnInit(): void {
-    this.item = this.itemService.getItem();
+    this.item = this.itemService.get();
   }
 
   submit() {
@@ -47,6 +47,5 @@ export class ItemEditFormComponent implements OnInit {
 
   private onSaved(item: Item) {
     this.notificationService.show("Item save.");
-    this.itemService.reloadItem();
   }
 }

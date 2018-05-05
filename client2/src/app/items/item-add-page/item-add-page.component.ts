@@ -6,6 +6,9 @@ import { NotificationService } from "../../core/notification-service";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 import { ItemService } from "../shared/item.service";
+import { ErrorService } from "../../core/error-service";
+import { RpcError } from "../../core/rpc-error";
+import { Observable } from "rxjs/Observable";
 
 @Component({
   selector: 'gsl-item-add-page',
@@ -18,6 +21,7 @@ export class ItemAddPageComponent implements OnInit {
   fields: Array<FormlyFieldConfig> = [];
 
   constructor(private notificationService: NotificationService,
+              private errorService: ErrorService,
               private itemsService: ItemsService,
               private itemService: ItemService,
               private router: Router) {
@@ -31,14 +35,17 @@ export class ItemAddPageComponent implements OnInit {
   }
 
   submitForm(item) {
-    console.log(item);
     this.itemsService.add(item).subscribe(
-      value => {
-        this.router.navigate(['/items', value.barcode, 'details']);
-      },
-      error => {
-        this.notificationService.showError('Failed to add item.', error)
-      }
-    );
+      (item: Item) => this.router.navigate(['/items', item.barcode, 'details']),
+      (error: RpcError) => this.errorService.showError(this.toErrorMessage(error)));
+  }
+
+  private toErrorMessage(error: RpcError) {
+    switch (error.errorCode) {
+      case 'ER_DUP_ENTRY':
+        return `Item with barcode '${this.item.barcode}' already exists`;
+      default:
+        return `Server error: ${error.errorCode}`;
+    }
   }
 }

@@ -45,6 +45,6 @@ export class ItemDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.editable = false;
-    this.item = this.itemService.getItem();
+    this.item = this.itemService.get();
   }
 }

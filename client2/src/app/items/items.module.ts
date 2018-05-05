@@ -21,7 +21,6 @@ import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FileUploadModule } from 'ng2-file-upload';
 import { CoreModule } from '../core/core.module';
-import { ItemComponent } from './item/item.component';
 import { ItemService } from './shared/item.service';
 import { ItemsService } from './shared/items.service';
 import { ItemPageComponent } from './item-page/item-page.component';
@@ -77,7 +76,6 @@ import { ItemDetailsComponent } from './item-details/item-details.component';
     ConfirmationDialogModule,
   ],
   declarations: [
-    ItemComponent,
     ItemPageComponent,
     ItemAutoCompleteComponent,
     ItemSearchBarComponent,
@@ -99,7 +97,6 @@ import { ItemDetailsComponent } from './item-details/item-details.component';
     ItemsService,
   ],
   exports: [
-    ItemComponent,
     ItemAutoCompleteComponent,
     ItemSearchBarComponent,
     ItemPageComponent,
