@@ -6,6 +6,7 @@ import { NotificationService } from "../../core/notification-service";
 import { ItemService } from "../shared/item.service";
 import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
+import { RpcError } from "../../core/rpc-error";
 
 
 @Component({
@@ -36,16 +37,20 @@ export class ItemEditFormComponent implements OnInit {
 
   submit() {
     this.itemsService.save(this.item).subscribe(
-      item => this.onSaved(item),
-      error => { this.notificationService.showError("Failed saving item.", error)}
-    );
+      item => this.notificationService.show("Item saved."),
+      error => this.notificationService.showError("Failed to save item: " + this.toErrorMessage(error)));
   }
 
   onCancel() {
     this.cancel.emit(null);
   }
 
-  private onSaved(item: Item) {
-    this.notificationService.show("Item saved.");
+  private toErrorMessage(error: RpcError) {
+    switch (error.errorCode) {
+      case 'ER_DUP_ENTRY':
+        return `Item with barcode '${this.item.barcode}' already exists`;
+      default:
+        return `Server error: ${error.errorCode}`;
+    }
   }
 }
