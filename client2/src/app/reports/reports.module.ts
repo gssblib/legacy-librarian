@@ -23,7 +23,6 @@ import { ReportsPageComponent } from './reports-page/reports-page.component';
 import { ReportItemUsageComponent } from './report-item-usage/report-item-usage.component';
 import { SharedModule } from '../shared/shared.module';
 import { ReportOverdueComponent } from './report-overdue/report-overdue.component';
-import { Angular2CsvModule} from "angular2-csv";
 
 @NgModule({
   imports: [
@@ -43,7 +42,6 @@ import { Angular2CsvModule} from "angular2-csv";
     MatSortModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    Angular2CsvModule,
     FormlyModule.forRoot(),
     FormlyMaterialModule,
     ReportsRoutingModule,
