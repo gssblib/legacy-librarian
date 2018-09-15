@@ -56,12 +56,13 @@ Drop.prototype._transform = function (data, encoding, done) {
  *   - email addresses (comma separated)
  */
 function csvFamilyToBorrower(row) {
+  const data = row.map(val => val.trim());
   return {
-    contactname: row[0],
-    surname: row[1],
-    firstname: row[2],
-    phone: row[3],
-    emailaddress: row[4]
+    sycamoreid: data[0],
+    contactname: data[1],
+    surname: data[1].split(",")[0],
+    firstname: data[2],
+    emailaddress: data[3]
   };
 }
 
