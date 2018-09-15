@@ -3,7 +3,7 @@ import { RpcService } from "../../core/rpc.service";
 import { Borrower } from './borrower';
 import { BorrowersService } from "./borrowers.service";
 import { ModelService } from "../../core/model.service";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 
 /**
  * Manages the single borrower whose information is shown in the borrower views.

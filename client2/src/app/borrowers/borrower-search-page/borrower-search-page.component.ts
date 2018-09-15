@@ -3,13 +3,9 @@ import { BorrowersService } from '../shared/borrowers.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../core/notification-service';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { merge } from 'rxjs/observable/merge';
-import { of as observableOf } from 'rxjs/observable/of';
+import { merge ,  of as observableOf ,  Observable } from 'rxjs';
+import { map, flatMap, catchError } from 'rxjs/operators';
 import { DataTableParams } from '../../core/data-table-params';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/catch';
-import { Observable } from 'rxjs/Observable';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Column } from "../../core/form.service";
 
@@ -62,28 +58,29 @@ export class BorrowerSearchPageComponent implements AfterViewInit {
 
     // Load new data when route changes.
     this.route.queryParams
-      .map(params => { this.criteria = this.params.parseParams(params) })
-      .flatMap(() => {
-        this.loading = true;
-        return Object.keys(this.criteria).length === 0
-          ? Observable.of(null)
-          : this.borrowersService.getMany(
-            this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
-      })
-      .map(result => {
-        this.loading = false;
-        if (result != null) {
-          this.count = result.count;
-          return result.rows;
-        } else {
-          this.count = -1;
-          return [];
-        }
-      })
-      .catch((error) => {
-        this.loading = false;
-        return observableOf([]);
-      })
+      .pipe(
+        map(params => { this.criteria = this.params.parseParams(params) }),
+        flatMap(() => {
+          this.loading = true;
+          return Object.keys(this.criteria).length === 0
+            ? observableOf(null)
+            : this.borrowersService.getMany(
+              this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
+        }),
+        map(result => {
+          this.loading = false;
+          if (result != null) {
+            this.count = result.count;
+            return result.rows;
+          } else {
+            this.count = -1;
+            return [];
+          }
+        }),
+        catchError((error) => {
+          this.loading = false;
+          return observableOf([]);
+        }))
       .subscribe(data => this.dataSource.data = data);
   }
 

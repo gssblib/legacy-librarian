@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators';
+
 import { Item } from "./item";
 import { RpcService } from "../../core/rpc.service";
 import { FormService } from '../../core/form.service';
@@ -59,12 +60,12 @@ export class ItemsService extends ModelsService<Item> {
 
   getLabelCategories(item): Observable<any> {
     return this.rpc.labelsHttpGet(item.barcode + '/categories')
-      .map(obj => obj.categories);
+      .pipe(map(obj => obj.categories));
   }
 
   getLabelCategoryFields(item, category): Observable<any> {
     return this.rpc.labelsHttpGet(item.barcode + '/' + category + '/details')
-      .map(obj => obj.fields);
+      .pipe(map(obj => obj.fields));
   }
 
   getLabelPreviewImage(item, category, data): Observable<any> {
@@ -72,7 +73,7 @@ export class ItemsService extends ModelsService<Item> {
       item.barcode + '/' + category + '/preview', data, {
         responseType: 'arraybuffer'
       })
-      .map(image => this.arrayBufferToBase64(image));
+      .pipe(map(image => this.arrayBufferToBase64(image)));
   }
 
   printLabel(item, category, data): Observable<any> {

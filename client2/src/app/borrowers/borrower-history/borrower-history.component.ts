@@ -3,9 +3,8 @@ import { Borrower } from '../shared/borrower';
 import { BorrowersService } from '../shared/borrowers.service';
 import { BorrowerService } from '../shared/borrower.service';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { merge } from 'rxjs/observable/merge';
+import { merge ,  of as observableOf } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
-import { of as observableOf } from 'rxjs/observable/of';
 
 /**
  * Presents the items that a borrower has checked out in the past.

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, View
 import { ItemsService } from '../../items/shared/items.service';
 import { BorrowerService } from '../shared/borrower.service';
 import { RpcError } from '../../core/rpc-error';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Item } from '../../items/shared/item';
 import { MatSort, MatTableDataSource } from '@angular/material';
 import { FocusService } from "../../core/focus.service";

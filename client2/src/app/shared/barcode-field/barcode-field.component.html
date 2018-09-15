@@ -1,9 +1,7 @@
 <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
   <mat-form-field>
     <input #input matInput placeholder="Barcode" [formControl]="barcodeCtrl"
-           [(ngModel)]="barcode" (keypress)="keyPress($event)" maxlength="9"
-           autocomplete="off"
-           [focus]="focus">
+           (keypress)="keyPress($event)" maxlength="9" autocomplete="off" [focus]="focus">
   </mat-form-field>
   <button mat-mini-fab [disabled]="!barcodeCtrl.valid"><mat-icon>{{icon}}</mat-icon></button>
 </form>

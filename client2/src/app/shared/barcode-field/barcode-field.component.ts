@@ -15,8 +15,9 @@ import { FormControl, Validators } from '@angular/forms';
 export class BarcodeFieldComponent implements OnInit {
   barcodeCtrl: FormControl;
 
-  /** Current barcode. */
-  barcode: string = '';
+  set barcode(value: string) {
+    this.barcodeCtrl.setValue(value);
+  }
 
   /** Name of the icon for the action button. */
   @Input()
@@ -63,6 +64,6 @@ export class BarcodeFieldComponent implements OnInit {
   }
 
   onSubmit(value) {
-    this.barcodeSubmit.emit(this.barcode);
+    this.barcodeSubmit.emit(this.barcodeCtrl.value);
   }
 }

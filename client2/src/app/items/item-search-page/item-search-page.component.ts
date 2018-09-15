@@ -4,14 +4,11 @@ import { NotificationService } from '../../core/notification-service';
 import { ItemState } from '../shared/item-state';
 import { ItemsService } from '../shared/items.service';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { merge } from 'rxjs/observable/merge';
-import { of as observableOf } from 'rxjs/observable/of';
-import { Observable } from 'rxjs/Observable';
+import { merge ,  of,  Observable } from 'rxjs';
+import { map, flatMap, catchError } from 'rxjs/operators';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DataTableParams } from '../../core/data-table-params';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/catch';
+
 import { Column } from "../../core/form.service";
 import { FocusService } from "../../core/focus.service";
 import { ItemService } from "../shared/item.service";
@@ -43,7 +40,7 @@ export class ItemSearchPageComponent implements AfterViewInit {
 
   displayedColumns = ['barcode', 'status', 'title', 'author', 'subject', 'category'];
   dataSource = new MatTableDataSource();
-  count = 0;
+  count = -1;
   loading = false;
 
   /** Wrapper for pagination and sorting. */
@@ -76,29 +73,30 @@ export class ItemSearchPageComponent implements AfterViewInit {
 
     // Load new data when route changes.
     this.route.queryParams
-      .map(params => { this.criteria = this.params.parseParams(params) })
-      .flatMap(() => {
-        this.loading = true;
-        return Object.keys(this.criteria).length === 0
-          ? Observable.of(null)
-          : this.itemsService.getMany(
-            this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
-      })
-      .map(result => {
-        this.loading = false;
-        if (result != null) {
-          this.count = result.count;
-          return result.rows;
-        } else {
-          this.count = -1;
-          this.focusService.setFocus('search');
-          return [];
-        }
-      })
-      .catch(() => {
-        this.loading = false;
-        return observableOf([]);
-      })
+      .pipe(
+        map(params => { this.criteria = this.params.parseParams(params) }),
+        flatMap(() => {
+          this.loading = true;
+          return Object.keys(this.criteria).length === 0
+            ? of(null)
+            : this.itemsService.getMany(
+              this.params.query(this.criteria), this.params.offset(), this.params.limit(), true);
+        }),
+        map(result => {
+          this.loading = false;
+          if (result != null) {
+            this.count = result.count;
+            return result.rows;
+          } else {
+            this.count = -1;
+            this.focusService.setFocus('search');
+            return [];
+          }
+        }),
+        catchError(() => {
+          this.loading = false;
+          return of([]);
+      }))
       .subscribe(data => this.dataSource.data = data);
   }
 

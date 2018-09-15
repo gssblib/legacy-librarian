@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Subject } from "rxjs/Subject";
-import 'rxjs/add/operator/map'
+import { Observable ,  Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 /**
  * JWT JSON object returned by the server.
@@ -64,7 +64,7 @@ export class AuthenticationService {
    */
   login(username: string, password: string, type: string): Observable<boolean> {
     return this.httpClient.post('/api/authenticate', { username, password, type })
-      .map((response: JwtResponse) => {
+      .pipe(map((response: JwtResponse) => {
         // login successful if there's a jwt token in the response
         const token = response.token;
         if (token) {
@@ -75,7 +75,7 @@ export class AuthenticationService {
         } else {
           return false;
         }
-      });
+      }));
   }
 
   private toUser(username: string, response: JwtResponse): User {

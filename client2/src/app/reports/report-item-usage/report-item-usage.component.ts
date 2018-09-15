@@ -1,19 +1,17 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 import { RpcService } from '../../core/rpc.service';
 import { ItemsService } from '../../items/shared/items.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { of as observableOf } from 'rxjs/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/catch';
+import { Observable, of } from 'rxjs';
+import { catchError, flatMap, map } from 'rxjs/operators';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../core/notification-service';
-import { Observable } from 'rxjs/Observable';
 import { ParamsUtil } from '../../core/params-util';
 import { TableFetchResult } from '../../core/table-fetcher';
 import { FormlyFields } from '../../core/form.service';
+import * as FileSaver from "file-saver";
 
 const SEARCH_FIELDS = ['subject', 'classification', 'category'];
 
@@ -43,11 +41,11 @@ export class ReportItemUsageComponent implements AfterViewInit {
               private itemsService: ItemsService,
               private route: ActivatedRoute,
               private router: Router) {
-    this.searchFields = this.itemsService.getFormlyFields(SEARCH_FIELDS).map(
+    this.searchFields = this.itemsService.getFormlyFields(SEARCH_FIELDS).pipe(map(
       fields => {
         fields.push(FormlyFields.date('lastCheckoutDate', 'Last Checkout Date', true));
         return fields;
-      });
+      }));
   }
 
   ngAfterViewInit(): void {
@@ -56,23 +54,24 @@ export class ReportItemUsageComponent implements AfterViewInit {
 
     // Load new data when route changes.
     this.route.queryParams
-      .map(params => {
-        const p = new ParamsUtil(params);
-        this.criteria = p.getValues(SEARCH_FIELDS.concat(['lastCheckoutDate']));
-      })
-      .flatMap(() => {
-        const criteria = this.normalizeCriteria(Object.assign({}, this.criteria));
-        if (!this.criteria.lastCheckoutDate) {
-          return observableOf(TableFetchResult.EMPTY);
-        }
-        this.loading = true;
-        return this.rpc.httpGet('reports/itemUsage', criteria);
-      })
-      .catch(err => {
-        this.notificationService.showError('error loading report', err);
-        this.loading = false;
-        return observableOf(TableFetchResult.EMPTY);
-      })
+      .pipe(
+        map(params => {
+          const p = new ParamsUtil(params);
+          this.criteria = p.getValues(SEARCH_FIELDS.concat(['lastCheckoutDate']));
+        }),
+        flatMap(() => {
+          const criteria = this.normalizeCriteria(Object.assign({}, this.criteria));
+          if (!this.criteria.lastCheckoutDate) {
+            return of(TableFetchResult.EMPTY);
+          }
+          this.loading = true;
+          return this.rpc.httpGet('reports/itemUsage', criteria);
+        }),
+        catchError(err => {
+          this.notificationService.showError('error loading report', err);
+          this.loading = false;
+          return of(TableFetchResult.EMPTY);
+        }))
       .subscribe(result => {
         this.loading = false;
         this.data = result.rows;
@@ -103,14 +102,13 @@ export class ReportItemUsageComponent implements AfterViewInit {
     });
   }
 
-  downloadCsv() {
-    new Angular2Csv(
-      this.data, 'item_usage_report.csv',
-      {
-        showTitle: true,
-        showLabels: true,
-        title: 'Item Usage Report',
-      }
-    );
+  saveAsCsv() {
+    const data = this.data.map(borrower => this.toCsvRow(borrower)).join('\n');
+    const blob = new Blob([data], {type: 'text/csv'});
+    FileSaver.saveAs(blob, "report.csv");
+  }
+
+  private toCsvRow(row: any): string {
+    return `${row.barcode},${row.title},${row.author},${row.category},${row.last_checkout_date}`;
   }
 }

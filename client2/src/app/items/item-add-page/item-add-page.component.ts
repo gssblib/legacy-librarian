@@ -7,7 +7,7 @@ import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 import { ItemService } from "../shared/item.service";
 import { RpcError } from "../../core/rpc-error";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'gsl-item-add-page',

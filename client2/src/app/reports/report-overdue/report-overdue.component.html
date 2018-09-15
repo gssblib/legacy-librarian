@@ -9,9 +9,7 @@
   </div>
   <div *ngIf="data.length > 0">
     Borrowers found: <b>{{ data.length }}</b>
-    <div class="download">
-      <button mat-raised-button color="primary" (click)="downloadCsv()">Download CSV</button>
-    </div>
+    <button mat-icon-button (click)="saveAsCsv()"><mat-icon>save</mat-icon></button>
   </div>
   <div class="container mat-elevation-z8">
     <div *ngIf="loading" class="spinner">

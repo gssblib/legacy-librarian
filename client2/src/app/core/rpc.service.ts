@@ -1,9 +1,10 @@
+import { Observable, throwError as observableThrowError } from 'rxjs';
+import { map, catchError } from "rxjs/operators";
 import { Injectable } from '@angular/core';
 import { Router } from "@angular/router";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { RequestOptionsArgs, RequestOptions } from "@angular/http";
-import { Observable } from "rxjs";
-import 'rxjs/add/operator/catch';
+import { RequestOptions } from "@angular/http";
+
 import { ConfigService } from "./config.service";
 import { RpcError } from "./rpc-error";
 
@@ -63,7 +64,7 @@ export class RpcService {
    * Handles the HTTP response containing the JSON payload.
    */
   private handleHttpResult(observable: Observable<Object>): Observable<Object> {
-    return observable.catch(this.handleError.bind(this));
+    return observable.pipe(catchError(response => this.handleError(response)));
   }
 
   /**
@@ -161,7 +162,7 @@ export class RpcService {
       // 401 unauthorized response so log user out of client
       this.router.navigate(['/login']);
     }
-    return Observable.throw(this.toRpcError(response));
+    return observableThrowError(this.toRpcError(response));
   }
 
   private toRpcError(response: HttpErrorResponse) {

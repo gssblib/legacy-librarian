@@ -1,6 +1,5 @@
 import { ModelsService } from "./models.service";
-import { Subject } from "rxjs/Subject";
-import { Subscription } from "rxjs/Subscription";
+import { Subject ,  Subscription } from "rxjs";
 
 /**
  * Keeps the current model object (item, borrower) of type T and manages

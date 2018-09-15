@@ -16,9 +16,9 @@ export class MultiFieldSearchBarComponent implements OnInit, OnChanges {
   criteria: Object;
 
   @Input('fields')
-  fieldsObservable: Observable<Array<FormlyFieldConfig>>;
+  fieldsObservable: Observable<FormlyFieldConfig[]>;
 
-  fields: Array<FormlyFieldConfig> = [];
+  fields: FormlyFieldConfig[] = [];
 
   @Output()
   search: EventEmitter<Object> = new EventEmitter();

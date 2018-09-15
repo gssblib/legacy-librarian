@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ItemsService } from '../shared/items.service';
 import { Item } from '../shared/item';
 import { RpcError } from '../../core/rpc-error';
@@ -38,7 +39,7 @@ export class ReturnPageComponent implements OnInit {
 
   returnItem(barcode: string) {
     this.itemsService.returnItem(barcode)
-      .catch((error: RpcError) => this.onError(barcode, error))
+      .pipe(catchError((error: RpcError) => this.onError(barcode, error)))
       .subscribe((item: Item) => this.onSuccess(item));
   }
 

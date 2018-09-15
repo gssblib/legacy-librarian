@@ -5,11 +5,11 @@ import { TableFetchResult } from '../../core/table-fetcher';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { DataTableParams } from '../../core/data-table-params';
-import { merge } from 'rxjs/observable/merge';
-import { of as observableOf } from 'rxjs/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/catch';
+import { merge ,  of as observableOf } from 'rxjs';
+
+import { map, flatMap, catchError } from 'rxjs/operators';
+
+
 
 @Component({
   selector: 'gsl-fees-table',
@@ -45,21 +45,22 @@ export class FeesTableComponent implements AfterViewInit {
 
     // Load new data when route changes.
     this.route.queryParams
-      .map(params => { this.params.parseParams(params) })
-      .flatMap(() => {
-        this.loading = true;
-        return this.feesService.getFees(
-          this.params.query({}), this.params.offset(), this.params.limit(), true);
-      })
-      .map(result => {
-        this.loading = false;
-        this.count = result.count;
-        return result.rows;
-      })
-      .catch(() => {
-        this.loading = false;
-        return observableOf([]);
-      })
+      .pipe(
+        map(params => { this.params.parseParams(params) }),
+        flatMap(() => {
+          this.loading = true;
+          return this.feesService.getFees(
+            this.params.query({}), this.params.offset(), this.params.limit(), true);
+        }),
+        map(result => {
+          this.loading = false;
+          this.count = result.count;
+          return result.rows;
+        }),
+        catchError(() => {
+          this.loading = false;
+          return observableOf([]);
+        }))
       .subscribe(data => this.dataSource.data = data);
   }
 

@@ -2,15 +2,12 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemsService } from '../../items/shared/items.service';
 import { ItemState } from '../../items/shared/item-state';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
+import { map, flatMap, catchError } from "rxjs/operators";
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DataTableParams } from '../../core/data-table-params';
 import { MatPaginator } from '@angular/material';
 import { NotificationService } from '../../core/notification-service';
-import { of as observableOf } from 'rxjs/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/catch';
 
 const SEARCH_FIELDS = ['title', 'seriestitle', 'author', 'category', 'age'];
 
@@ -55,21 +52,22 @@ export class ItemBrowserPageComponent implements AfterViewInit {
 
     // Load new data when route changes.
     this.route.queryParams
-      .map(params => { this.criteria = this.params.parseParams(params) })
-      .flatMap(() => {
-        this.loading = true;
-        const criteria = Object.assign({}, this.criteria, this.extraCriteria);
-        return this.itemsService.getMany(this.params.query(criteria), this.params.offset(), this.params.limit(), true);
-      })
-      .map(result => {
-        this.loading = false;
-        this.count = result.count;
-        return result.rows;
-      })
-      .catch(() => {
-        this.loading = false;
-        return observableOf([]);
-      })
+      .pipe(
+        map(params => { this.criteria = this.params.parseParams(params) }),
+        flatMap(() => {
+          this.loading = true;
+          const criteria = Object.assign({}, this.criteria, this.extraCriteria);
+          return this.itemsService.getMany(this.params.query(criteria), this.params.offset(), this.params.limit(), true);
+        }),
+        map(result => {
+          this.loading = false;
+          this.count = result.count;
+          return result.rows;
+        }),
+        catchError(() => {
+          this.loading = false;
+          return of([]);
+        }))
       .subscribe(data => this.items = data);
   }
 

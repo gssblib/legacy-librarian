@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { RpcService } from '../../core/rpc.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Borrower } from './borrower';
 import { FormService } from '../../core/form.service';
 import { Item } from '../../items/shared/item';
 import { TableFetchResult } from '../../core/table-fetcher';
-import 'rxjs/add/operator/do';
+
 import { DateService } from "../../core/date-service";
 import { ModelsService } from "../../core/models.service";
 
@@ -57,7 +58,7 @@ export class BorrowersService extends ModelsService<Borrower> {
 
   getBorrowerHistory(id: number, params: any) : Observable<TableFetchResult<ItemCheckout>> {
     return this.rpc.httpGet(`borrowers/${id}/history`, params)
-      .map(result => new TableFetchResult(result.rows, result.count));
+      .pipe(map(result => new TableFetchResult(result.rows, result.count)));
   }
 
   checkOutItem(barcode, borrowerNumber) {
@@ -65,6 +66,6 @@ export class BorrowersService extends ModelsService<Borrower> {
   }
 
   getMyBorrower() {
-    return this.rpc.httpGet('me').map(obj => this.toModel(obj));
+    return this.rpc.httpGet('me').pipe(map(obj => this.toModel(obj)));
   }
 }

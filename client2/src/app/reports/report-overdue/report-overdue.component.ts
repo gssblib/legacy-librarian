@@ -1,14 +1,15 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { FormlyFields } from '../../core/form.service';
-import { of as observableOf } from 'rxjs/observable/of';
+import { of } from 'rxjs';
+import { catchError, flatMap, map } from "rxjs/operators";
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../core/notification-service';
 import { RpcService } from '../../core/rpc.service';
 import { ParamsUtil } from '../../core/params-util';
 import { TableFetchResult } from '../../core/table-fetcher';
-import { Angular2Csv } from 'angular2-csv';
 import { Borrower } from '../../borrowers/shared/borrower';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'gsl-report-overdue',
@@ -17,7 +18,7 @@ import { Borrower } from '../../borrowers/shared/borrower';
 })
 export class ReportOverdueComponent implements AfterViewInit {
   /** Formly config for the search form. */
-  searchFields = observableOf([FormlyFields.date('last_checkout_date', 'Last Checkout Date')]);
+  searchFields = of([FormlyFields.date('last_checkout_date', 'Last Checkout Date')]);
 
   /** Model of the search form. */
   criteria: any = {};
@@ -43,23 +44,24 @@ export class ReportOverdueComponent implements AfterViewInit {
 
     // Load new data when route changes.
     this.route.queryParams
-      .map(params => {
-        const p = new ParamsUtil(params);
-        this.criteria = p.getValues(['last_checkout_date']);
-      })
-      .flatMap(() => {
-        const criteria = this.normalizeCriteria(Object.assign({}, this.criteria));
-        if (!this.criteria.last_checkout_date) {
-          return observableOf(TableFetchResult.EMPTY);
-        }
-        this.loading = true;
-        return this.rpc.httpGet('reports/overdue', criteria);
-      })
-      .catch(err => {
-        this.notificationService.showError('error loading report', err);
-        this.loading = false;
-        return observableOf(TableFetchResult.EMPTY);
-      })
+      .pipe(
+        map(params => {
+          const p = new ParamsUtil(params);
+          this.criteria = p.getValues(['last_checkout_date']);
+        }),
+        flatMap(() => {
+          const criteria = this.normalizeCriteria(Object.assign({}, this.criteria));
+          if (!this.criteria.last_checkout_date) {
+            return of(TableFetchResult.EMPTY);
+          }
+          this.loading = true;
+          return this.rpc.httpGet('reports/overdue', criteria);
+        }),
+        catchError(err => {
+          this.notificationService.showError('error loading report', err);
+          this.loading = false;
+          return of(TableFetchResult.EMPTY);
+        }))
       .subscribe(result => {
         this.loading = false;
         this.data = result.rows;
@@ -84,14 +86,13 @@ export class ReportOverdueComponent implements AfterViewInit {
     });
   }
 
-  downloadCsv() {
-    new Angular2Csv(
-      this.data, 'overdue_report.csv',
-      {
-        showTitle: true,
-        showLabels: true,
-        title: 'Overdue Report',
-      }
-    );
+  saveAsCsv() {
+    const data = this.data.map(borrower => this.toCsvRow(borrower)).join('\n');
+    const blob = new Blob([data], {type: 'text/csv'});
+    FileSaver.saveAs(blob, "report.csv");
+  }
+
+  private toCsvRow(borrower: any): string {
+    return `${borrower.borrowernumber},${borrower.surname},${borrower.count}`;
   }
 }
