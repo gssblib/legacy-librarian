@@ -108,7 +108,7 @@ export class FormService {
   static toFormlyField(col: Column): FormlyFieldConfig {
     const domain: Domain = col.domain || {type: 'string'};
     const title = col.label || FormService.capitalizeFirst(col.name);
-    const required = col.required;
+    const required = col.required || false;
 
     const field: FormlyFieldConfig = {
       key: col.name,
