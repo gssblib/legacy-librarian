@@ -94,7 +94,7 @@ httpcall.handlePaths([
     fn: function (call) {
       return library.history.payFee(call.param('id'));
     },
-    action: {resource: 'fees', operation: 'update'},
+    action: {resource: 'borrowers', operation: 'payFees'}
   },
   { post: '/checkouts/:barcode/payFee',
     fn: function (call) {
