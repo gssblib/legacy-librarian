@@ -45,7 +45,7 @@
 
   "sycamore-auth": {
     "school-id": "2132",
-    "url": "http://app.sycamoreeducation.com/index.php",
+    "url": "http://app.sycamoreschool.com/index.php",
     "success-text": "schoolhome.php"
   },
 
