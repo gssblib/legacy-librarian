@@ -101,12 +101,12 @@ client-dev:
 ##> public-client-dist : Build public client distribution
 public-client-dist:
 	cd client2; \
-	ng build --prod --app public --base-href "/public/"
+	ng build public --prod --base-href "/public/"
 
 ##> public-client-dev : Start the public client dev server on port 5200.
 public-client-dev:
 	cd client2; \
-	ng serve --proxy-config proxy.conf.json --port 5200 --app public
+	ng serve public --proxy-config proxy.conf.json --port 5200
 
 
 ####> Scripts <###############################################################
