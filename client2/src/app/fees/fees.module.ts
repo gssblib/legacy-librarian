@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   MatButtonModule,
   MatCardModule,
@@ -46,8 +46,6 @@ import { FeesTableComponent } from './fees-table/fees-table.component';
     FeesTableComponent,
   ],
   providers: [
-    DatePipe,
-    CurrencyPipe,
     FeesService,
   ],
   exports: [

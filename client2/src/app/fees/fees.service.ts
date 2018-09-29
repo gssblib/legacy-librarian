@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { DatePipe } from '@angular/common'
+import { Injectable, Inject, LOCALE_ID } from '@angular/core';
+import { formatDate } from '@angular/common'
 import { RpcService } from '../core/rpc.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class Fee {
 export class FeesService {
 
   constructor(private rpc: RpcService,
-              private datePipe: DatePipe) {}
+              @Inject(LOCALE_ID) private locale:string) {}
 
   getFees(criteria, offset, limit, returnCount): Observable<TableFetchResult<Fee>> {
     return this.rpc.fetch('fees', criteria, offset, limit, returnCount)
@@ -27,7 +27,7 @@ export class FeesService {
   }
 
   updateFees(date) {
-    var dateStr = this.datePipe.transform(date, 'yyyy-MM-dd');
+    var dateStr = formatDate(date, 'yyyy-MM-dd', this.locale);
     return this.rpc.httpPost('checkouts/updateFees', {date: dateStr});
   }
 }

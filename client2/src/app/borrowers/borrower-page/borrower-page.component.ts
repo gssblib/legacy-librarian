@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
+import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import { formatCurrency } from '@angular/common';
 import { Borrower } from '../shared/borrower';
 import { ActivatedRoute } from '@angular/router';
 import { BorrowerService } from '../shared/borrower.service';
@@ -22,9 +22,9 @@ export class BorrowerPageComponent implements OnInit {
 
   borrower: Borrower;
 
-  constructor(private currencyPipe: CurrencyPipe,
-              private borrowerService: BorrowerService,
-              private route: ActivatedRoute) {
+  constructor(private borrowerService: BorrowerService,
+              private route: ActivatedRoute,
+              @Inject(LOCALE_ID) private locale:string) {
     borrowerService.subscribe(borrower => this.setBorrower(borrower));
   }
 
@@ -35,7 +35,7 @@ export class BorrowerPageComponent implements OnInit {
   private setBorrower(borrower: Borrower) {
     this.borrower = borrower;
     // Update the fee tab title to reflect the total fee amount due.
-    var fees = this.currencyPipe.transform(borrower.fees.total);
+    var fees = formatCurrency(borrower.fees.total, this.locale, '$');
     this.navLinks[1]['label'] = `Fees (${fees})`;
     delete this.navLinks[1]['class']
     if (borrower.fees.total > 3.0) {
