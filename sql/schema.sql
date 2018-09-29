@@ -50,7 +50,7 @@ CREATE TABLE `items` (
   `replacementprice` float DEFAULT NULL,
   `added` datetime DEFAULT NULL,
   `antolin` int DEFAULT NULL,
-  `state` enum('CIRCULATING', 'STORED', 'DELETED', 'LOST') NOT NULL DEFAULT 'CIRCULATING',
+  `state` enum('CIRCULATING', 'STORED', 'DELETED', 'LOST', 'IN_REPAIR') NOT NULL DEFAULT 'CIRCULATING',
   PRIMARY KEY (`id`),
   UNIQUE KEY `barcode` (`barcode`),
   KEY `barcode_2` (`barcode`)

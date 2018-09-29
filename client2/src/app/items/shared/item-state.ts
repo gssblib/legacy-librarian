@@ -7,5 +7,6 @@ export enum ItemState {
   STORED = 'STORED',
   DELETED = 'DELETED',
   LOST = 'LOST',
+  IN_REPAIR = 'IN_REPAIR',
 }
 

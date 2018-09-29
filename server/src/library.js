@@ -36,7 +36,7 @@ module.exports = {
     addDomain({
       name: 'ItemState',
       type: 'enum',
-      options: ['CIRCULATING', 'STORED', 'DELETED', 'LOST']
+      options: ['CIRCULATING', 'STORED', 'DELETED', 'LOST', 'IN_REPAIR']
     });
     addDomain({
       name: 'ItemDescription',
@@ -309,10 +309,6 @@ module.exports = {
         feeQuery('`out`') + ' union ' + feeQuery('issue_history') + ') fees';
       return db.selectRows(sql, [], limit, query._order);
     };
-
-    const states = [
-      'CIRCULATING', 'STORED', 'DELETED', 'LOST'
-    ];
 
     // items table/entity
     var items = entity(db, {
