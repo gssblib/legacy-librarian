@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Inject, LOCALE_ID } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from 'rxjs/operators';
 
@@ -7,7 +7,7 @@ import { RpcService } from "../../core/rpc.service";
 import { FormService } from '../../core/form.service';
 import { Borrower } from '../../borrowers/shared/borrower';
 import { ModelsService } from "../../core/models.service";
-import { DatePipe } from "@angular/common";
+import { formatDate } from "@angular/common";
 
 /**
  * Service for fetching and manipulating items.
@@ -15,7 +15,7 @@ import { DatePipe } from "@angular/common";
 @Injectable()
 export class ItemsService extends ModelsService<Item> {
   constructor(rpc: RpcService, formService: FormService,
-              private datePipe: DatePipe) {
+              @Inject(LOCALE_ID) private locale:string) {
     super('items', item => item.barcode, rpc, formService);
   }
 
@@ -51,7 +51,7 @@ export class ItemsService extends ModelsService<Item> {
 
   beforeAdd(item: Item) {
     const now = new Date();
-    item.added = this.datePipe.transform(now, 'yyyy-MM-ddTHH:mm:ss');
+    item.added = formatDate(now, 'yyyy-MM-ddTHH:mm:ss', this.locale);
   }
 
   deleteCover(item) {

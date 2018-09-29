@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { NotificationService } from '../../core/notification-service';
 import { Borrower } from '../shared/borrower';
 import { BorrowersService } from '../shared/borrowers.service';
@@ -24,8 +23,7 @@ export class BorrowerFeesComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private datePipe: DatePipe,
-              private notificationService: NotificationService,
+  constructor(private notificationService: NotificationService,
               private borrowersService: BorrowersService,
               private borrowerService: BorrowerService) {
     borrowerService.subscribe(borrower => this.updateBorrower(borrower));
