@@ -15,3 +15,7 @@
   color: red;
 }
 
+.checkout-limit-reached {
+  font-size: 120%;
+  color: red;
+}

@@ -24,6 +24,12 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   borrower: Borrower;
   itemCountClass: string = '';
 
+  readonly checkoutLimit = 40;
+
+  get checkoutLimitReached(): boolean {
+    return this.borrower && this.borrower.items.length >= this.checkoutLimit;
+  }
+
   @Output()
   borrowerChange: EventEmitter<any> = new EventEmitter();
 
@@ -68,6 +74,10 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
         this.barcode.barcode = '';
         focus();
       })
+    } else if (this.checkoutLimitReached) {
+      this.notificationService.show("Checkout limit reached. Please return an item before checking out a new one.");
+      this.barcode.barcode = '';
+      focus();
     } else {
       this.borrowersService.checkOutItem(barcode, this.borrower.borrowernumber)
         .subscribe(

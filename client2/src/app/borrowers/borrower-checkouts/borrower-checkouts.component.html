@@ -1,6 +1,9 @@
 <div class="checkout">
   <div *ngIf="borrower">
-    <p>Scan or enter barcode to check out, renew, or return item.</p>
+    <p>Scan or enter barcode to check out, renew, or return an item.</p>
+    <p *ngIf="checkoutLimitReached" class="checkout-limit-reached">
+      The checkout limit of {{checkoutLimit}} items has been reached.
+    </p>
     <div>
       <gsl-barcode-field icon="add" #barcode [focus]="true" class="barcode"
                          (barcodeSubmit)="checkout($event)"></gsl-barcode-field>
