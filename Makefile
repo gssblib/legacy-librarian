@@ -111,6 +111,10 @@ public-client-dev:
 
 ####> Scripts <###############################################################
 
+##> open-db: Opens the database.
+open-db:
+	mysql spils
+
 ##> scripts : Install/build the scripts environment.
 scripts: scripts/requirements.txt | python-ve
 	$(PIP) install -r scripts/requirements.txt
