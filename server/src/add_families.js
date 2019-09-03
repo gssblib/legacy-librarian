@@ -49,20 +49,24 @@ Drop.prototype._transform = function (data, encoding, done) {
  * Returns the borrower object for the row from the CSV input file.
  *
  * The row contains:
- *   - contact name
- *   - last name
- *   - student first names (comma separated)
- *   - phone number
- *   - email addresses (comma separated)
+ *   0. FamilyID              example: SIM1234
+ *   1. FirstName             example: Bart
+ *   2. LastName              example: Simpson
+ *   3. ParentName            example: "Simpson, Homer & Marge"
+ *   4. ParentName2           example: "Homer & Marge Simpson"
+ *   5. ParentLastName        example: Simpson (often empty in the data)
+ *   6. PrimaryParentEmail    example: homer.simpson@example.com
+ *   7. SecondaryParentEmail
+ *   8. TertiaryParentEmail
  */
 function csvFamilyToBorrower(row) {
   const data = row.map(val => val.trim());
   return {
     sycamoreid: data[0],
-    contactname: data[1],
-    surname: data[1].split(",")[0],
-    firstname: data[2],
-    emailaddress: data[3]
+    firstname: data[1],
+    surname: data[2],
+    contactname: data[3],
+    emailaddress: data[6]
   };
 }
 
