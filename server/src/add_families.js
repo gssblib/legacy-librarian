@@ -16,6 +16,7 @@ const fs = require('fs'),
       // We need sprintf for %05d which is not supported by util.format.
       sprintf = require('sprintf-js').sprintf,
       stream = require('stream'),
+      toArray = require('stream-to-array'),
       Transform = stream.Transform,
       csv = require('csv'),
 
@@ -85,6 +86,22 @@ function parseFamiliesCsvFile(filename) {
 }
 
 /**
+ * Merges borrowers with the same family id.
+ */
+function mergeFamilies(borrowers) {
+  const families = new Map();
+  for (const borrower of borrowers) {
+    const oldFamily = families.get(borrower.sycamoreid);
+    if (oldFamily) {
+      oldFamily.firstname += " and " + borrower.firstname;
+    } else {
+      families.set(borrower.sycamoreid, borrower);
+    }
+  }
+  return Array.from(families.values());
+}
+
+/**
  * Returns the promise of the next available borrower number.
  */
 function nextBorrowerNumber() {
@@ -127,21 +144,23 @@ function parseAndInsertBorrowers(filename, borrowernumber, ref) {
   // records have been processed.
   ref.inc();
 
-  parseFamiliesCsvFile(filename)
-    .on('data', function(borrower) {
-      ref.inc();
-      borrower.borrowernumber = borrowernumber++;
-      library.borrowers.create(borrower)
-        .then(function (borrower) {
-          console.log('inserted borrower: ', borrower.contactname);
-        })
-        .catch(function (error) {
-          console.log('failed to insert borrower: ', borrower, ' ', error);
-        })
-        .fin(ref.dec);
+  toArray(parseFamiliesCsvFile(filename))
+    .then(mergeFamilies)
+    .then(borrowers => {
+      for (const borrower of borrowers) {
+        ref.inc();
+        borrower.borrowernumber = borrowernumber++;
+        library.borrowers.create(borrower)
+          .then(function (borrower) {
+            console.log('inserted borrower: ', borrower.contactname);
+          })
+          .catch(function (error) {
+            console.log('failed to insert borrower: ', borrower, ' ', error);
+          })
+          .fin(ref.dec);
+      }
     })
-    // All records have been parsed and the insertion tasks started.
-    .on('end', ref.dec);
+    .finally(ref.dec);
 }
 
 /**
@@ -161,10 +180,9 @@ function insertBorrowers(filename) {
  * Shows all the parsed borrowers in the file.
  */
 function showBorrowers(filename) {
-  parseFamiliesCsvFile(filename)
-    .on('data', function(borrower) {
-      console.log(borrower);
-    });
+  toArray(parseFamiliesCsvFile(filename))
+    .then(mergeFamilies)
+    .then(borrowers => console.log(borrowers));
 }
 
 function main() {
