@@ -66,7 +66,7 @@ function csvFamilyToBorrower(row) {
     sycamoreid: data[0],
     firstname: data[1],
     surname: data[2],
-    contactname: data[3],
+    contactname: data[4],
     emailaddress: data[6]
   };
 }
