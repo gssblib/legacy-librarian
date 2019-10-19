@@ -147,9 +147,8 @@ module.exports = {
      * Sets the renewable flag in the 'checkout'.
      */
     function setRenewable(checkout) {
-      const dvdCheckoutLimit = addDays(time.now(), -config.renewalDays);
-      checkout.renewable = checkout.category != 'DVD'
-        || checkout.checkout_date > dvdCheckoutLimit;
+      const checkoutLimit = addDays(time.now(), -config.renewalDays);
+      checkout.renewable = checkout.checkout_date > checkoutLimit;
       return checkout;
     }
 
@@ -256,14 +255,14 @@ module.exports = {
      * Renews all items of a borrower.
      */
     borrowers.renewAllItems = function (borrowerNumber) {
-      newDueDate = addDays(time.now(), config.renewalDays);
-      dvdCheckoutLimit = addDays(time.now(), -config.renewalDays);
+      const newDueDate = addDays(time.now(), config.renewalDays);
+      const checkoutLimit = addDays(time.now(), -config.renewalDays);
       return db.query(
         "update `out` a, items b " +
         "set a.date_due = ? " +
         "where borrowernumber = ? and a.barcode = b.barcode " +
-        "and (b.category != 'DVD' or a.checkout_date > ?)",
-        [newDueDate, borrowerNumber, dvdCheckoutLimit]);
+        "and a.checkout_date > ?",
+        [newDueDate, borrowerNumber, checkoutLimit]);
     };
 
     function feeQuery(table) {
