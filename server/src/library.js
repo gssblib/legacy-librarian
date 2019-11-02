@@ -18,7 +18,7 @@ module.exports = {
    * @return library service with entities borrowers, items, checkouts, and history
    */
   create: function (db, config, time) {
-    config = merge({ borrowDays: 21, renewalDays: 21 }, config);
+    config = merge({ borrowDays: 21, renewalDays: 30 }, config);
     time = time || { now: function() { return new Date(); }};
 
     // custom column domains used for the library entities.
