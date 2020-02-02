@@ -18,7 +18,7 @@ module.exports = {
    * @return library service with entities borrowers, items, checkouts, and history
    */
   create: function (db, config, time) {
-    config = merge({ borrowDays: 21, renewalDays: 30 }, config);
+    config = merge({ borrowDays: 21, renewalDays: 21, renewalLimitDays: 30 }, config);
     time = time || { now: function() { return new Date(); }};
 
     // custom column domains used for the library entities.
@@ -147,7 +147,7 @@ module.exports = {
      * Sets the renewable flag in the 'checkout'.
      */
     function setRenewable(checkout) {
-      const checkoutLimit = addDays(time.now(), -config.renewalDays);
+      const checkoutLimit = addDays(time.now(), -config.renewalLimitDays);
       checkout.renewable = checkout.checkout_date > checkoutLimit;
       return checkout;
     }
@@ -256,7 +256,7 @@ module.exports = {
      */
     borrowers.renewAllItems = function (borrowerNumber) {
       const newDueDate = addDays(time.now(), config.renewalDays);
-      const checkoutLimit = addDays(time.now(), -config.renewalDays);
+      const checkoutLimit = addDays(time.now(), -config.renewalLimitDays);
       return db.query(
         "update `out` a, items b " +
         "set a.date_due = ? " +
