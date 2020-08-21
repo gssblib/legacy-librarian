@@ -30,6 +30,7 @@ $ cp config/template.json config/prod.json
 $ <edit config/prod.json>
 $ make run-server
 $ make client-dev
+```
 
 You can now access the application via `http://localhost:4200`.
 
