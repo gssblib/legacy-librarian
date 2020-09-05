@@ -61,7 +61,7 @@ export class FormService {
    * controlling the dynamic forms.
    */
   formlyFields(cols: Column[], selected?: string[]): FormlyFieldConfig[] {
-    return FormService.select(FormService.toFormlyFields(cols), selected, field => field.key);
+    return FormService.select(FormService.toFormlyFields(cols), selected, field => field.key as string);
   }
 
   static select<T>(fields: T[], selected?: string[], key?: (field: T) => string): T[] {

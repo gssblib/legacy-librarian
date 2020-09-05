@@ -1,7 +1,8 @@
 import { Params } from '@angular/router';
 import { ParamsUtil } from './params-util';
-import { MatPaginator, MatSort } from '@angular/material';
 import { SortKey } from './sort-key';
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 export class DataTableParams {
 

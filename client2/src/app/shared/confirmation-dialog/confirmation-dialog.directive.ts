@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, HostListener, Inject, Input, Output } from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
+import {MatDialog} from "@angular/material/dialog";
 
 export interface ConfirmCancelEvent {
   clickEvent: MouseEvent;

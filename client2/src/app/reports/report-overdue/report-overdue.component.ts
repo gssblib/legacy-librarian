@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { FormlyFields } from '../../core/form.service';
 import { of } from 'rxjs';
 import { catchError, flatMap, map } from "rxjs/operators";
@@ -10,6 +9,9 @@ import { ParamsUtil } from '../../core/params-util';
 import { TableFetchResult } from '../../core/table-fetcher';
 import { Borrower } from '../../borrowers/shared/borrower';
 import * as FileSaver from 'file-saver';
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'gsl-report-overdue',

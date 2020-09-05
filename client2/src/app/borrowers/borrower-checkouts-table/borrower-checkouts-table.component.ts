@@ -4,9 +4,10 @@ import { BorrowerService } from '../shared/borrower.service';
 import { RpcError } from '../../core/rpc-error';
 import { Observable } from 'rxjs';
 import { Item } from '../../items/shared/item';
-import { MatSort, MatTableDataSource } from '@angular/material';
 import { FocusService } from "../../core/focus.service";
 import { NotificationService } from "../../core/notification-service";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'gsl-borrower-checkouts-table',
@@ -24,7 +25,7 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
   items: Object[] = [];
   dataSource = new MatTableDataSource<Object>([]);
 
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatSort) sort: MatSort;
 
   @Input()
   set checkouts(checkouts) {

@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
-import {
-  MatCardModule,
-} from '@angular/material';
 import { HomeComponent } from './home.component';
+import {MatCardModule} from "@angular/material/card";
 
 @NgModule({
   declarations: [

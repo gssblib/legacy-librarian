@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable, Output } from "@angular/core";
+import { EventEmitter, Injectable, Output, Directive } from "@angular/core";
 
 /**
  * Central service for notifications (completed operations, errors).
@@ -7,6 +7,7 @@ import { EventEmitter, Injectable, Output } from "@angular/core";
  * message as a notication event that gets picked up in a central place of the
  * application.
  */
+@Directive()
 @Injectable()
 export class NotificationService {
   @Output()

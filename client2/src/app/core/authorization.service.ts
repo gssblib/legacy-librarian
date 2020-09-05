@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from './auth.service';
 
+@Injectable()
 export class Action {
   resource: string;
   operation: string;

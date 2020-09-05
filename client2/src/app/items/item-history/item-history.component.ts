@@ -2,7 +2,9 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ItemService } from '../shared/item.service';
 import { ItemsService } from '../shared/items.service';
 import { Item } from '../shared/item';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'gsl-item-history',

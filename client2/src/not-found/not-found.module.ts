@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
-import {
-  MatCardModule,
-} from '@angular/material';
 import { NotFoundComponent } from './not-found.component';
+import {MatCardModule} from "@angular/material/card";
 
 @NgModule({
   declarations: [

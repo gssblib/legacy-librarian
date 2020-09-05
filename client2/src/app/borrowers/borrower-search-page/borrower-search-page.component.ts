@@ -2,12 +2,14 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { BorrowersService } from '../shared/borrowers.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../core/notification-service';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { merge ,  of as observableOf ,  Observable } from 'rxjs';
 import { map, flatMap, catchError } from 'rxjs/operators';
 import { DataTableParams } from '../../core/data-table-params';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Column } from "../../core/form.service";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatSort} from "@angular/material/sort";
 
 const SEARCH_FIELDS = ['surname', 'firstname', 'contactname', 'emailaddress', 'state'];
 

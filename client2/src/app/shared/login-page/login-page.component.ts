@@ -49,11 +49,21 @@ export class LoginPageComponent implements OnInit {
 }
 
 
+@Component({
+    selector: 'gsl-login-page',
+    templateUrl: './login-page.component.html',
+    styleUrls: ['./login-page.component.css']
+})
 export class SycamoreLoginPageComponent extends LoginPageComponent {
   type = 'sycamore';
 }
 
 
+@Component({
+    selector: 'gsl-login-page',
+    templateUrl: './login-page.component.html',
+    styleUrls: ['./login-page.component.css']
+})
 export class InternalLoginPageComponent extends LoginPageComponent {
   type = 'internal';
 }

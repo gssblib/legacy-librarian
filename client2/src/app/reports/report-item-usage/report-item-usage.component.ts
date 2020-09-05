@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { RpcService } from '../../core/rpc.service';
 import { ItemsService } from '../../items/shared/items.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Observable, of } from 'rxjs';
 import { catchError, flatMap, map } from 'rxjs/operators';
 
@@ -12,6 +11,9 @@ import { ParamsUtil } from '../../core/params-util';
 import { TableFetchResult } from '../../core/table-fetcher';
 import { FormlyFields } from '../../core/form.service';
 import * as FileSaver from "file-saver";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 const SEARCH_FIELDS = ['subject', 'classification', 'category'];
 

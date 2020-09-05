@@ -3,11 +3,13 @@ import { NotificationService } from '../../core/notification-service';
 import { Fee, FeesService } from '../fees.service';
 import { TableFetchResult } from '../../core/table-fetcher';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { DataTableParams } from '../../core/data-table-params';
 import { merge ,  of as observableOf } from 'rxjs';
 
 import { map, flatMap, catchError } from 'rxjs/operators';
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 
 

@@ -6,8 +6,8 @@ import { Observable ,  of } from 'rxjs';
 import { map, flatMap, catchError } from "rxjs/operators";
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DataTableParams } from '../../core/data-table-params';
-import { MatPaginator } from '@angular/material';
 import { NotificationService } from '../../core/notification-service';
+import {MatPaginator} from "@angular/material/paginator";
 
 const SEARCH_FIELDS = ['title', 'seriestitle', 'author', 'category', 'age'];
 

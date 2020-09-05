@@ -8,9 +8,9 @@ import { BorrowerService } from '../shared/borrower.service';
 import { ItemsService } from "../../items/shared/items.service";
 import { DateService } from "../../core/date-service";
 import { FocusService } from "../../core/focus.service";
-import { MatDialog } from "@angular/material";
 import { RenewReturnDialogComponent } from "./renew-return-dialog.component";
 import { NotificationService } from "../../core/notification-service";
+import {MatDialog} from "@angular/material/dialog";
 
 /**
  * Presents the items that a borrower has currently checked out.
@@ -33,7 +33,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   @Output()
   borrowerChange: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('barcode', { static: false })
+  @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
   constructor(private notificationService: NotificationService,

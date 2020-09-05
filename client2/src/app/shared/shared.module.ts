@@ -9,13 +9,6 @@ import { BarcodeFieldComponent } from './barcode-field/barcode-field.component';
 import { IsbnFieldComponent } from './isbn-field/isbn-field.component';
 import { AutofocusDirective } from './focus/autofocus.directive';
 import { FocusDirective } from './focus/focus.directive';
-import {
-  MatCardModule,
-  MatButtonModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule
-} from '@angular/material';
 import { MultiFieldSearchBarComponent } from './multi-field-search-bar/multi-field-search-bar.component';
 import {
   LoginPageComponent,
@@ -23,6 +16,11 @@ import {
   InternalLoginPageComponent,
 } from './login-page/login-page.component';
 import { ReadonlyFieldListComponent } from './readonly-field-list/readonly-field-list.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
   imports: [

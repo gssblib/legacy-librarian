@@ -3,8 +3,9 @@ import { NotificationService } from '../../core/notification-service';
 import { Borrower } from '../shared/borrower';
 import { BorrowersService } from '../shared/borrowers.service';
 import { BorrowerService } from '../shared/borrower.service';
-import { MatSort, MatTableDataSource } from '@angular/material';
 import { Observable } from 'rxjs';
+import {MatTableDataSource} from "@angular/material/table";
+import {MatSort} from "@angular/material/sort";
 
 /**
  * Presents the fees owed by a borrower.
@@ -21,7 +22,7 @@ export class BorrowerFeesComponent implements OnInit, AfterViewInit {
   items: Object[] = [];
   dataSource = new MatTableDataSource<Object>([]);
 
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private notificationService: NotificationService,
               private borrowersService: BorrowersService,

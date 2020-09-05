@@ -52,8 +52,9 @@ export class MultiFieldSearchBarComponent implements OnInit, OnChanges {
   private toCriteria(query) {
     const criteria: any = {};
     for (let field of this.fields) {
-      if (query[field.key] !== '') {
-        criteria[field.key] = query[field.key];
+      const key = field.key as string;
+      if (query[key] !== '') {
+        criteria[key] = query[key];
       }
     }
     return criteria;

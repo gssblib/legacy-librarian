@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../core/notification-service';
 import { ItemState } from '../shared/item-state';
 import { ItemsService } from '../shared/items.service';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { merge ,  of,  Observable } from 'rxjs';
 import { map, flatMap, catchError } from 'rxjs/operators';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -12,6 +11,9 @@ import { DataTableParams } from '../../core/data-table-params';
 import { Column } from "../../core/form.service";
 import { FocusService } from "../../core/focus.service";
 import { ItemService } from "../shared/item.service";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 const SEARCH_FIELDS = ['title', 'author', 'category', 'subject', 'state', 'seriestitle'];
 
