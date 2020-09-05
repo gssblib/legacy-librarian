@@ -24,7 +24,7 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
   items: Object[] = [];
   dataSource = new MatTableDataSource<Object>([]);
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   @Input()
   set checkouts(checkouts) {

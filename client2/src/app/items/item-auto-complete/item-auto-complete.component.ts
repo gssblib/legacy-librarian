@@ -34,7 +34,7 @@ export class ItemAutoCompleteComponent implements OnInit, AfterViewInit, OnDestr
   @Input()
   size: number = 20;
 
-  @ViewChild('input')
+  @ViewChild('input', { static: true })
   input: ElementRef;
 
   constructor(private focusService: FocusService,

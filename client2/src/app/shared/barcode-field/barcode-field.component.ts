@@ -33,7 +33,7 @@ export class BarcodeFieldComponent implements OnInit {
   @Output()
   barcodeSubmit: EventEmitter<string> = new EventEmitter();
 
-  @ViewChild('input')
+  @ViewChild('input', { static: true })
   input: ElementRef;
 
   ngOnInit() {

@@ -17,8 +17,8 @@ export class ItemHistoryComponent implements OnInit, AfterViewInit {
   count = 0;
   loading = false;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   constructor(private itemService: ItemService,
               private itemsService: ItemsService) {

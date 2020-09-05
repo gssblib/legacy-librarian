@@ -1,12 +1,11 @@
-import { Observable, throwError as observableThrowError } from 'rxjs';
-import { map, catchError } from "rxjs/operators";
-import { Injectable } from '@angular/core';
-import { Router } from "@angular/router";
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { RequestOptions } from "@angular/http";
+import {Observable, throwError as observableThrowError} from 'rxjs';
+import {catchError} from "rxjs/operators";
+import {Injectable} from '@angular/core';
+import {Router} from "@angular/router";
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 
-import { ConfigService } from "./config.service";
-import { RpcError } from "./rpc-error";
+import {ConfigService} from "./config.service";
+import {RpcError} from "./rpc-error";
 
 /**
  * Support for RPC (REST over HTTP) calls.
@@ -32,7 +31,7 @@ export class RpcService {
 
   private addJwt(options?) {
     // ensure request options and headers are not null
-    options = options || new RequestOptions();
+    options = options || {};
     options.headers = options.headers || new HttpHeaders();
 
     // add authorization header with jwt token

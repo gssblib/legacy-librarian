@@ -33,7 +33,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   @Output()
   borrowerChange: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('barcode')
+  @ViewChild('barcode', { static: false })
   barcode: BarcodeFieldComponent;
 
   constructor(private notificationService: NotificationService,

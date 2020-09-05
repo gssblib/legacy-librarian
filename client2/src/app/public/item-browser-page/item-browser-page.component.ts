@@ -35,7 +35,7 @@ export class ItemBrowserPageComponent implements AfterViewInit {
   /** Wrapper for pagination and sorting. */
   params: DataTableParams;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private notificationService: NotificationService,
               private itemsService: ItemsService,

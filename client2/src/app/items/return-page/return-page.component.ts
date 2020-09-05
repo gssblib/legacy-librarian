@@ -19,7 +19,7 @@ export class ReturnPageComponent implements OnInit {
   returnedItem?: Item = null;
   dataSource = new MatTableDataSource<Object>([]);
 
-  @ViewChild('barcode')
+  @ViewChild('barcode', { static: true })
   barcode: BarcodeFieldComponent;
 
   constructor(private itemsService: ItemsService,

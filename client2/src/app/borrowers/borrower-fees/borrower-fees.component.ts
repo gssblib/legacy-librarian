@@ -21,7 +21,7 @@ export class BorrowerFeesComponent implements OnInit, AfterViewInit {
   items: Object[] = [];
   dataSource = new MatTableDataSource<Object>([]);
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   constructor(private notificationService: NotificationService,
               private borrowersService: BorrowersService,

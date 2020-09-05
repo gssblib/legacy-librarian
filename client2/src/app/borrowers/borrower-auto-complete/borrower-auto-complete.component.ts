@@ -13,7 +13,7 @@ import { BorrowersService } from '../shared/borrowers.service';
   styleUrls: ['./borrower-auto-complete.component.css']
 })
 export class BorrowerAutoCompleteComponent implements OnInit, AfterViewInit {
-  @ViewChild('borrowerInput')
+  @ViewChild('borrowerInput', { static: true })
   inputElementRef: ElementRef;
 
   /** FormControl for the borrower name input field. */
