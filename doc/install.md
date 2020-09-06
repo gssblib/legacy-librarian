@@ -75,7 +75,7 @@ mysql> select count(*) from items;
 
 The server and node based tools get their configuration using the [node config
 module][node-config-module].  As shown in the template file
-`server/config/template.json`, the configuration contains the server port, the
+`config/template.json.in`, the configuration contains the server port, the
 database connection data, and the salt strings for the session and
 authentication.  After creating a `prod.json` configuration file in the same
 directory, it can be referenced by setting the `NODE_ENV` environment variable
@@ -86,9 +86,10 @@ when running the server or tools.
 ### Setting up config file
 
 ```
-$ cd $GSSBLIB_HOME/server/config
-$ cp template.json prod.json
-$ nano prod.json
+$ export GSSBLIB_HOME=${HOME}/github/gssb/librarian
+$ cd $GSSBLIB_HOME/config
+$ cp template.json.in prod.json
+$ editor prod.json
 ```
 
 ### Add usersq
