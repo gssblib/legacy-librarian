@@ -26,8 +26,8 @@ Makefile. You can see the list of available commands using `make help`.
 
 ```
 $ make
-$ cp config/template.json config/prod.json
-$ <edit config/prod.json>
+$ cp config/template.json.in config/prod.json
+$ editor config/prod.json
 $ make run-server
 $ make client-dev
 ```
