@@ -44,3 +44,9 @@ $ npm install express --save
 $ npm install express-session --save
 ...
 ```
+
+### More Documentation
+
+- [API](doc/api.md)
+- [Install](doc/install.md)
+- [Use-Cases](doc/use-cases.md)
