@@ -110,7 +110,7 @@ script and accessed using `http://localhost:<port>/`.
 
 ```
 $ cd $GSSBLIB_HOME/server
-$ NODE_ENV=prod ./library_server.js
+$ NODE_CONFIG_DIR=${GSSBLIB_HOME}/config NODE_ENV=prod ./src/library_server.js
 ```
 
 ## Work environment (optional)
