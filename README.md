@@ -26,8 +26,8 @@ Makefile. You can see the list of available commands using `make help`.
 
 ```
 $ make
-$ cp config/template.json config/prod.json
-$ <edit config/prod.json>
+$ cp config/template.json.in config/prod.json
+$ editor config/prod.json
 $ make run-server
 $ make client-dev
 ```
@@ -44,3 +44,9 @@ $ npm install express --save
 $ npm install express-session --save
 ...
 ```
+
+### More Documentation
+
+- [API](doc/api.md)
+- [Install](doc/install.md)
+- [Use-Cases](doc/use-cases.md)

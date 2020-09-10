@@ -1,7 +1,7 @@
 # Angular 2 Client for the GSSB Library Application
 
 The skeleton of this project was create with [Angular
-CLI](https://github.com/angular/angular-cli), see [./README_CLI.md].
+CLI](https://github.com/angular/angular-cli), see [README_CLI](./README_CLI.md).
 
 ## Steps
 
