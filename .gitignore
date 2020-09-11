@@ -8,6 +8,7 @@ tags
 
 backups/
 python-ve/
+python3-ve/
 covers
 
 config/*.json
