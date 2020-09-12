@@ -101,8 +101,8 @@ def get_new_borrower_number(cursor):
   return cursor.fetchone()["new_borrower_number"]
 
 
-def update_or_create_borrower(conn, borrower):
-    cursor = conn.cursor()
+def update_or_create_borrower(cursor, borrower):
+
     #keys to identify the record:
     id_dict = { k: borrower[k] for k in [DBCOL_BORROWER_SYCAMODE_ID] }
 
@@ -131,12 +131,13 @@ if __name__ == '__main__':
     parsed_args = parser.parse_args()
 
     conn = dbtools.init_connection(parsed_args)
+    cursor = conn.cursor()
 
     created=0
     updated=0
 
     for borrower in _get_borrowers(parsed_args.input).values():
-        if update_or_create_borrower(conn, borrower):
+        if update_or_create_borrower(cursor, borrower):
           created+=1
         else:
           updated+=1
