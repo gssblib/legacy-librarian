@@ -13,6 +13,7 @@ class ItemNotUniqueException(Exception):
 #If multiple rows exist, an exception will be raised.
 #If no rows exist, then a new item will be created using id_dict, create_only_dict, and update_dict.
 #Note that create_only_dict is optional and will only be used if a new item is created.
+#returns: True if a new item was created, False if the item was updated.
 def update_or_create(cursor, table, id_dict, update_dict, create_only_dict={}, pk_name="id"):
 
     where_clause= "WHERE " + (" AND ".join([ str(k) + "=%(" + k + ")s" for k in id_dict.keys()]))
@@ -29,7 +30,7 @@ def update_or_create(cursor, table, id_dict, update_dict, create_only_dict={}, p
                 " VALUES (" + ",".join(["%(" + k + ")s" for k in final_dict.keys()]) + ")" 
 
         cursor.execute(query, final_dict)
-
+        return True
     elif len(rows)>=2:
         raise ItemNotUniqueException("Found more than 1 item matching this query dict: " + str(id_dict))
     else:
@@ -45,6 +46,7 @@ def update_or_create(cursor, table, id_dict, update_dict, create_only_dict={}, p
         final_dict=update_dict.copy()
         final_dict[pk_name]=item[pk_name]
         cursor.execute(query, final_dict)
+        return False
 
 
 def init_connection(parsed_args):

@@ -117,7 +117,7 @@ def update_or_create_borrower(conn, borrower):
     create_dict = { DBCOL_BORROWER_NUMBER: get_new_borrower_number(cursor) }
 
     #actually do it.
-    dbtools.update_or_create( cursor=cursor,
+    return dbtools.update_or_create( cursor=cursor,
                               table="borrowers",
                               id_dict=id_dict,
                               update_dict=update_dict,
@@ -132,7 +132,15 @@ if __name__ == '__main__':
 
     conn = dbtools.init_connection(parsed_args)
 
+    created=0
+    updated=0
+
     for borrower in _get_borrowers(parsed_args.input).values():
-        update_or_create_borrower(conn, borrower)
+        if update_or_create_borrower(conn, borrower):
+          created+=1
+        else:
+          updated+=1
 
     conn.commit()
+
+    print(f"All Done. Created {created} new borrowers and updated {updated} existing ones.")
