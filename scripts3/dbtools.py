@@ -14,7 +14,7 @@ class ItemNotUniqueException(Exception):
 #If no rows exist, then a new item will be created using id_dict, create_only_dict, and update_dict.
 #Note that create_only_dict is optional and will only be used if a new item is created.
 def update_or_create(cursor, table, id_dict, update_dict, create_only_dict={}, pk_name="id"):
-    #print(id_dict)
+
     where_clause= "WHERE " + (" AND ".join([ str(k) + "=%(" + k + ")s" for k in id_dict.keys()]))
     query = "SELECT * FROM " + table + " " + where_clause + " LIMIT 2" #we're expecting one row. Ask for 2. if we get 2, the query is too broad.
 
@@ -27,7 +27,7 @@ def update_or_create(cursor, table, id_dict, update_dict, create_only_dict={}, p
         final_dict.update(create_only_dict)
         query = "INSERT INTO " + table + "(" + ",".join(final_dict.keys()) + ")"\
                 " VALUES (" + ",".join(["%(" + k + ")s" for k in final_dict.keys()]) + ")" 
-        print(query)
+
         cursor.execute(query, final_dict)
 
     elif len(rows)>=2:

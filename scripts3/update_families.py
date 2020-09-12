@@ -5,7 +5,6 @@
 
 import sys
 import csv
-from enum import Enum
 import dbtools
 import argparse
 
@@ -16,6 +15,7 @@ SRC_CHILD_EMAIL      = "Student Email"
 SRC_LAST_NAME        = "Last Name"
 SRC_FAMILY_EMAILS    = "Family Email"
 SRC_FAMILY_NAME      = "Family Name"
+SRC_PHONE            = "Cell Phone"
 
 DBCOL_BORROWER_ID="id"
 DBCOL_BORROWER_NUMBER="borrowernumber"
@@ -30,7 +30,7 @@ DBCOL_BORROWER_EMAIL="emailaddress"
 def _csv_row_to_borrower(row, borrower_dict):
     
     """
-    Converts a row (given as a list) to a borrower dictionary.
+    Converts a row (given as a dict) to a borrower dictionary.
     """
     borrower = {}
 
@@ -48,8 +48,7 @@ def _csv_row_to_borrower(row, borrower_dict):
     # There may be three phone number columns in the CSV file for home, work,
     # and cell phone. Each of these columns may contain multiple phone numbers
     # separated by a pipe. We only take the first home phone number.
-    #borrower['phone'] = row[5].split('|')[0].strip()
-    print("FIXME: phone is missing")
+    borrower[DBCOL_BORROWER_PHONE] = row[SRC_PHONE].split('|')[0].strip()
 
     # The email address are separated by a pipe in the CSV Email column and by a
     # comma in the database column.
@@ -85,7 +84,7 @@ def _get_borrowers(csv_filename):
     for __, borrower in borrower_dict.items():
 
       #clean up the comma-separated list of childrens names so it follows the
-      #"a and b" or "a, b, and e" pattern
+      #"a and b" or "a, b and c" pattern
       clist=[cn.strip() for cn in borrower[DBCOL_BORROWER_FIRSTNAME].split(",")]
       if len(clist) >= 2:
         borrower[DBCOL_BORROWER_FIRSTNAME]=", ".join(clist[:-1]) + " and " + clist[-1]
@@ -111,9 +110,9 @@ def update_or_create_borrower(conn, borrower):
     update_dict = { k: borrower[k] for k in [ DBCOL_BORROWER_FIRSTNAME,
                                             DBCOL_BORROWER_CONTACTNAME,
                                             DBCOL_BORROWER_SURNAME,
-                                            DBCOL_BORROWER_EMAIL
-                                             ]}
-    print("TODO: add DBCOL_BORROWER_PHONE above!")
+                                            DBCOL_BORROWER_EMAIL,
+                                            DBCOL_BORROWER_PHONE ]}
+
     #which rows to only define if a new item is being inserted:
     create_dict = { DBCOL_BORROWER_NUMBER: get_new_borrower_number(cursor) }
 
