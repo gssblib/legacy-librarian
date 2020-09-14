@@ -1,8 +1,7 @@
 bs4
 captcha-solver
-fuzzywuzzy
 lxml
 mysql-connector == 2.1.4
 pymysql
-python-Levenshtein
+rapidfuzz
 requests

@@ -2,7 +2,7 @@ import pymysql
 import re
 import requests
 from bs4 import BeautifulSoup
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 # INSERT INTO table1 VALUES(1, LOAD_FILE('data.png'));
 
