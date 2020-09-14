@@ -2,6 +2,8 @@ CONFIG_DIR = $(shell pwd)/config
 BACKUPS_DIR = $(shell pwd)/backups
 PYTHON = $(shell pwd)/python-ve/bin/python
 PIP = $(shell pwd)/python-ve/bin/pip
+PYTHON3 = $(shell pwd)/python3-ve/bin/python
+PIP3 = $(shell pwd)/python3-ve/bin/pip
 NODE_DEB_URL = https://deb.nodesource.com/setup_8.x
 
 ##> all : Build all components
@@ -14,6 +16,9 @@ help:
 
 python-ve:
 	virtualenv python-ve
+
+python3-ve:
+	python3 -m venv python3-ve
 
 /usr/bin/node:
 	curl -sL $(NODE_DEB_URL) | sudo -E bash -
@@ -38,6 +43,7 @@ database:
 ##> clean : Cleans the build from any generated files.
 clean:
 	rm -rf python-ve
+	rm -rf python3-ve
 	rm -rf client2/dist
 	rm -rf client2/dist-public
 	rm -rf client2/node_modules
@@ -118,6 +124,10 @@ open-db:
 ##> scripts : Install/build the scripts environment.
 scripts: scripts/requirements.txt | python-ve
 	$(PIP) install -r scripts/requirements.txt
+
+##> scripts3 : Install/build the python3 scripts3 environment.
+scripts3: scripts3/requirements.txt | python3-ve
+	$(PIP3) install -r scripts3/requirements.txt
 
 ##> backup : Create a backup of the database.
 .PHONY: backup
