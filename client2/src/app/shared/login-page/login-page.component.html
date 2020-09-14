@@ -1,7 +1,11 @@
 <mat-card>
   <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
     <h2>Login</h2>
-    <p>Please use your Sycamore credentials to log in.</p>
+    <div [ngSwitch]="type">
+      <p *ngSwitchCase="'sycamore'">Please use your Sycamore credentials to log in.</p>
+      <p *ngSwitchCase="'internal'">Please use your internal credentials to log in.</p>
+      <p *ngSwitchDefault>No idea which credentials you should use. Good luck!</p>
+    </div>
     <p *ngIf="error" class="error">
       {{error}}
     </p>
