@@ -89,6 +89,6 @@
     "sender": "GSSB Library <library-reminder@gssb.org>",
     "subject": "German Saturday School Library Status",
     "reply_to": "library-reminder@gssb.org",
-    "test_recipients": [],
+    "test_recipients": []
   }
 }
