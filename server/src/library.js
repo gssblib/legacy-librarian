@@ -12,13 +12,22 @@ module.exports = {
    * If provided, the 'time' object must have a function 'now' that returns
    * the current time as a JavaScript Date object.
    *
+   * Configuration parameters:
+   *
+   *   borrowDays: initial borrowing period, dueDate = checkoutDate + borrowDays
+   *   renewalDays: number of days added when renewing an item, dueDate = now + renewalDays
+   *   renewalLimitDays: checkoutDay > now - renewalDays <=> renewal allowed
+   *
+   * The normal defaults are 21, 21, and 30. We switched to 28, 28, 0 (no renewals)
+   * during the online-only check-out.
+   *
    * @param db mysql-promise database object
-   * @param config optional configuration with borrowDays and renewalDays
+   * @param config optional configuration
    * @param time optional time source that can be used to override time functions
    * @return library service with entities borrowers, items, checkouts, and history
    */
   create: function (db, config, time) {
-    config = merge({ borrowDays: 21, renewalDays: 21, renewalLimitDays: 30 }, config);
+    config = merge({ borrowDays: 28, renewalDays: 28, renewalLimitDays: 0 }, config);
     time = time || { now: function() { return new Date(); }};
 
     // custom column domains used for the library entities.

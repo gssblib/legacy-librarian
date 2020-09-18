@@ -24,7 +24,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   borrower: Borrower;
   itemCountClass: string = '';
 
-  readonly checkoutLimit = 40;
+  readonly checkoutLimit = 65;
 
   get checkoutLimitReached(): boolean {
     return this.borrower && this.borrower.items.length >= this.checkoutLimit;
