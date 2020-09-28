@@ -1,4 +1,4 @@
-{% set node_deb_url = 'https://deb.nodesource.com/setup_8.x' %}
+{% set node_deb_url = 'https://deb.nodesource.com/setup_12.x' %}
 
 node pre-install:
   pkg.installed:
