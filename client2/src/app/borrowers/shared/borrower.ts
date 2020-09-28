@@ -1,4 +1,5 @@
 import { ItemCheckout } from "./borrowers.service";
+import { Order } from "../../orders/shared/order";
 
 export class Borrower {
   borrowernumber: number;
@@ -8,6 +9,7 @@ export class Borrower {
   state: string;
   items: ItemCheckout[];
   fees: any;
+  orders: Order[];
 
   get fullName(): string {
     return `${this.surname}, ${this.firstname}, ${this.contactname}`;

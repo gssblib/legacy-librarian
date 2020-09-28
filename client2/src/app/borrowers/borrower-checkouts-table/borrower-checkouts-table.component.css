@@ -2,6 +2,15 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+table {
+  width: 100%;
+}
+
+td + td, th + th {
+  padding-left: .5em;
+}
+
 button:first-of-type {
   margin-right: 1em;
 }
@@ -9,24 +18,35 @@ button:first-of-type {
 gsl-item-antolin {
   margin-left: 1em;
 }
+
 .mat-column-barcode {
   max-width: 100px;
 }
+
+.mat-column-title {
+}
+
 .mat-column-category {
-  max-width: 120px;
+  width: 6em;
 }
+
 .mat-column-checkout_date {
-  max-width: 150px;
+  width: 10em;
 }
+
 .mat-column-date_due {
-  max-width: 120px;
+  width: 6em;
 }
+
 .mat-column-fine_due {
-  max-width: 80px;
+  width: 5em;
 }
+
 .mat-column-actions {
-  min-width: 200px;
+  text-align: right;
+  width: 12em;
 }
+
 .overdue {
   background: #fdd;
 }

@@ -1,0 +1,30 @@
+header {
+  display: flex;
+}
+
+.actions {
+  margin-left: auto;
+}
+
+.orders-table {
+  width: 100%;
+}
+
+.mat-column-start {
+  width: 10em;
+  cursor: pointer;
+}
+
+.mat-column-end {
+  width: 10em;
+  cursor: pointer;
+}
+
+.mat-column-state {
+  width: 10em;
+  cursor: pointer;
+}
+
+.mat-column-actions {
+  text-align: end;
+}

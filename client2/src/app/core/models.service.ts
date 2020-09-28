@@ -14,7 +14,17 @@ export abstract class ModelsService<T> {
   /** Cached field fetched from server. */
   private cols: Column[];
 
-  constructor(protected basePath: string, public id: (T) => any, protected rpc: RpcService, protected formService: FormService) {
+  /**
+   * @param basePath base path for the REST API for the model
+   * @param id function returning the id of a model object
+   * @param rpc RPC service wrapper
+   * @param formService access to the form definitions (using formly forms)
+   */
+  protected constructor(
+    protected basePath: string,
+    public id: (T) => any,
+    protected rpc: RpcService,
+    protected formService: FormService) {
   }
 
   getColumns(): Observable<Column[]> {

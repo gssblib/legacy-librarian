@@ -3,14 +3,13 @@
     <formly-form [model]="borrower" [fields]="fields" [form]="form">
     </formly-form>
   </div>
-  <div>
-    <button type="submit" mat-raised-button color="primary"
+  <div class="actions">
+    <button type="submit" mat-raised-button color="primary" class="action"
             [disabled]="form.invalid"
             *gslAuthorized="'borrowers.update'">
-      Submit
+      Save
     </button>
-    <button
-       color="primary" type="submit" color="warn"
+    <button color="primary" color="warn" class="action"
        mat-raised-button
        gslConfirmationDialog
        title="Confirm Deletion"

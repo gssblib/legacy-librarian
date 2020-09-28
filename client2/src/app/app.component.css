@@ -1,21 +1,27 @@
 .flex {
   flex: 1 1 auto;
 }
+
 .accesskey {
   text-decoration: underline;
 }
+
 .title {
   padding-left: 0.5em;
 }
+
 .gssb-logo {
   padding-top: 8px;
 }
+
 .sidenav-container {
-  min-height: 25em;
+  height: calc(100vh - 80px);
 }
+
 .main {
   padding: 1em;
 }
+
 /deep/ .main mat-card.content {
   min-height: 20em;
 }
@@ -23,17 +29,35 @@
 .active {
   background: #f5f5f5;
 }
+
 .profile-info {
   display: inline-block;
   font-size: 65%;
   margin-right: 1.3em;
- }
+}
+
 .menu mat-icon {
   padding-right: 0.5em;
 }
-.menu {
-  width: 160px;
+
+@media screen {
+  .menu {
+    width: 180px;
+  }
 }
+
 .sandwich {
   width: 160px;
+}
+
+@media print {
+  .toolbar {
+    display: none;
+  }
+  .menu {
+    display: none;
+  }
+  /deep/ mat-sidenav-content {
+    margin-left: 0 !important;
+  }
 }

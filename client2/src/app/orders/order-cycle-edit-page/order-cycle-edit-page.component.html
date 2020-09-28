@@ -1,0 +1,20 @@
+<mat-card>
+  <h3>Edit order cycle</h3>
+  <form [formGroup]="form" (ngSubmit)="submit()"
+        (keydown.enter)="$event.preventDefault()">
+    <div class="fields">
+      <formly-form [model]="orderCycle" [fields]="fields" [form]="form">
+      </formly-form>
+    </div>
+    <div class="actions">
+      <button mat-raised-button
+              [routerLink]="['/ordercycles']">Cancel
+      </button>
+      <button type="submit" mat-raised-button color="primary"
+              [disabled]="form.invalid"
+              *gslAuthorized="'items.update'">
+        Submit
+      </button>
+    </div>
+  </form>
+</mat-card>

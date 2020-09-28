@@ -1,0 +1,27 @@
+<mat-card>
+  <div *ngIf="cycle">
+    <h2>Order cycle {{cycle?.id}} ({{state}})</h2>
+    <h3>
+      Order window: {{cycle.order_window_start | date:'short'}} to {{cycle.order_window_end | date:'short'}}
+    </h3>
+    <p *ngIf="dateSource.data.length === 0">
+      No orders
+    </p>
+    <table *ngIf="dateSource.data.length > 0" mat-table [dataSource]="dateSource" class="orders">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Id</th>
+        <td mat-cell *matCellDef="let order" [routerLink]="['/orders', order.id]">
+          {{order.id}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="borrower">
+        <th mat-header-cell *matHeaderCellDef>Borrower</th>
+        <td mat-cell *matCellDef="let order" [routerLink]="['/orders', order.id]">
+          {{order.borrower?.contactname}}
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let order; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</mat-card>

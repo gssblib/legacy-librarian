@@ -1,0 +1,40 @@
+.container {
+  margin-top: 1em;
+}
+
+.order-item {
+  margin-top: 1em;
+}
+
+table {
+  width: 100%;
+}
+
+th + th,
+td + td {
+  padding-left: 1em;
+}
+
+.mat-column-id {
+  width: 4em;
+  cursor: pointer;
+}
+
+.mat-column-start {
+  width: 10em;
+  cursor: pointer;
+}
+
+.mat-column-end {
+  width: 10em;
+  cursor: pointer;
+}
+
+.mat-column-item_count {
+  width: 10em;
+  cursor: pointer;
+}
+
+.mat-column-actions {
+  text-align: right;
+}

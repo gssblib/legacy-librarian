@@ -13,19 +13,31 @@ import { ItemDetailsComponent } from './item-details/item-details.component';
 @NgModule({
   imports: [
     RouterModule.forChild([
-      {path: 'return', component: ReturnPageComponent},
-      {path: 'items/add', component: ItemAddPageComponent},
-      {path: 'items/:id', component: ItemPageComponent,
-       resolve: {
-         item: ItemResolverService,
-       },
-       children: [
+      {
+        path: 'return',
+        component: ReturnPageComponent,
+      },
+      {
+        path: 'items/add',
+        component: ItemAddPageComponent,
+      },
+      {
+        path: 'items/:id',
+        component: ItemPageComponent,
+        resolve: {
+          item: ItemResolverService,
+        },
+        children: [
+          {path: '', pathMatch: 'full', redirectTo: 'details'},
           {path: 'details', component: ItemDetailsComponent},
           {path: 'history', component: ItemHistoryComponent},
           {path: 'labels', component: ItemLabelsComponent},
         ]
       },
-      {path: 'items', component: ItemSearchPageComponent},
+      {
+        path: 'items',
+        component: ItemSearchPageComponent,
+      },
     ])
   ],
   exports: [

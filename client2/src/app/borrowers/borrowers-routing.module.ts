@@ -8,11 +8,16 @@ import { BorrowerFeesComponent } from './borrower-fees/borrower-fees.component';
 import { BorrowerResolverService } from 'app/borrowers/shared/borrower.resolver.service';
 import { BorrowerProfileComponent } from "./borrower-profile/borrower-profile.component";
 import { BorrowerHistoryComponent } from './borrower-history/borrower-history.component';
+import { BorrowerOrdersComponent } from "./borrower-orders/borrower-orders.component";
+import { BorrowerOrderComponent } from "./borrower-order/borrower-order.component";
 
 @NgModule({
   imports: [
     RouterModule.forChild([
-      {path: 'borrowers/add', component: BorrowerAddPageComponent},
+      {
+        path: 'borrowers/add',
+        component: BorrowerAddPageComponent,
+      },
       {
         path: 'borrowers/:id',
         component: BorrowerPageComponent,
@@ -20,13 +25,43 @@ import { BorrowerHistoryComponent } from './borrower-history/borrower-history.co
           borrower: BorrowerResolverService,
         },
         children: [
-          {path: 'checkouts', component: BorrowerCheckoutsComponent},
-          {path: 'fees', component: BorrowerFeesComponent},
-          {path: 'profile', component: BorrowerProfileComponent},
-          {path: 'history', component: BorrowerHistoryComponent},
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'checkouts',
+          },
+          {
+            path: 'checkouts',
+            component: BorrowerCheckoutsComponent,
+          },
+          {
+            path: 'fees',
+            component: BorrowerFeesComponent,
+          },
+          {
+            path: 'orders',
+            pathMatch: 'full',
+            component: BorrowerOrdersComponent,
+          },
+          {
+            path: 'orders/:order_id',
+            component: BorrowerOrderComponent,
+          },
+          {
+            path: 'profile',
+            component: BorrowerProfileComponent,
+          },
+          {
+            path: 'history',
+            component: BorrowerHistoryComponent,
+          },
         ]
       },
-      {path: 'borrowers', component: BorrowerSearchPageComponent},
+      {
+        path: 'borrowers',
+        pathMatch: 'full',
+        component: BorrowerSearchPageComponent,
+      },
     ])
   ],
   exports: [

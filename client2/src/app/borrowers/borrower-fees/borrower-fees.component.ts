@@ -45,7 +45,7 @@ export class BorrowerFeesComponent implements OnInit, AfterViewInit {
   }
 
   allItems() {
-    var items = [];
+    const items = [];
     for (let item of this.borrower.fees.items) {
       item.type = 'checkouts';
       items.push(item);

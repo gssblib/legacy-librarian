@@ -113,8 +113,37 @@ module.exports = {
       options: ['ACTIVE', 'INACTIVE']
     });
 
+    // order cycles table/entity
+    const orderCycles = entity(db, {
+      name: 'ordercycles',
+      tableName: 'order_cycles',
+      columns: [
+        {name: 'order_window_start', label: 'Start', domain: entity.domains.Datetime},
+        {name: 'order_window_end', label: 'End', domain: entity.domains.Datetime},
+      ],
+    });
+
+    // order table/entity
+    const orders = entity(db, {
+      name: 'orders',
+      columns: [
+        {name: 'borrower_id'},
+        {name: 'order_cycle_id'},
+      ],
+    });
+
+    // order item table/entity
+    const orderItems = entity(db, {
+      name: 'orderitems',
+      tableName: 'order_items',
+      columns: [
+        {name: 'order_id'},
+        {name: 'item_id'},
+      ],
+    });
+
     // borrowers table/entity
-    var borrowers = entity(db, {
+    const borrowers = entity(db, {
       name: 'borrowers',
       columns: [
         {name: 'borrowernumber', label: 'Borrower Number',
@@ -131,6 +160,15 @@ module.exports = {
       naturalKey: 'borrowernumber'});
 
     /**
+     * Fake card number derived from borrower number.
+     *
+     * TODO: remove obsolete card number from schema.
+     */
+    function createBorrowerCardNumber(borrowerNumber) {
+      return 100000000 + obj.borrowernumber;
+    }
+
+    /**
      * Override the 'create' method to first compute the next borrowernumber
      * and cardnumber if not provided.
      */
@@ -138,7 +176,7 @@ module.exports = {
       var self = this;
       if (obj.borrowernumber) {
         if (!obj.cardnumber) {
-          obj.cardnumber = 100000000 + obj.borrowernumber;
+          obj.cardnumber = createBorrowerCardNumber(obj.borrowernumber);
         }
         return borrowers.constructor.prototype.create.call(self, obj);
       } else {
@@ -146,7 +184,7 @@ module.exports = {
             'select max(borrowernumber) as max_borrowernumber from borrowers')
           .then(function (data) {
             obj.borrowernumber = 1 + data.max_borrowernumber;
-            obj.cardnumber = 100000000 + obj.borrowernumber;
+            obj.cardnumber = createBorrowerCardNumber(obj.borrowernumber);
             return borrowers.constructor.prototype.create.call(self, obj);
           });
       }
@@ -185,6 +223,30 @@ module.exports = {
       return getCheckouts('`out`', borrowerNumber, feesOnly, limit);
     };
 
+    borrowers.orders = function (borrowerNumber, limit) {
+      const sql = `
+        select c.*, o.*, count(i.id) as item_count
+        from orders o
+          inner join borrowers b on o.borrower_id = b.id
+          inner join order_cycles c on c.id = o.order_cycle_id
+          left join order_items i on i.order_id = o.id
+        where b.borrowernumber = ?
+        group by o.id
+      `;
+      return db.selectRows(sql, [borrowerNumber], limit)
+        .then(result => {
+          result.rows = result.rows.map(row => ({
+            id: row.id,
+            item_count: row.item_count,
+            cycle: {
+              ...orderCycles.fromDb(row, true),
+              id: row.order_cycle_id,
+            },
+          }));
+          return result;
+        });
+    };
+
     borrowers.history = function (borrowerNumber, feesOnly, limit, order) {
       return getCheckouts('issue_history', borrowerNumber, feesOnly, limit, order);
     };
@@ -220,7 +282,7 @@ module.exports = {
 
     /**
      * Override the borrowers' get method to optionally fetch the checked out
-     * items, history, and fees.
+     * items, history, orders, and fees.
      */
     borrowers.get = function (borrowernumber, options) {
       options = options || {};
@@ -238,6 +300,10 @@ module.exports = {
           if (options.fees) {
             extras.push(this.fees(borrowernumber)
               .then(result => borrower.fees = result));
+          }
+          if (options.orders) {
+            extras.push(this.orders(borrowernumber)
+              .then(result => borrower.orders = result.rows));
           }
           return Q.all(extras).then(() => borrower);
         });
@@ -389,22 +455,52 @@ module.exports = {
      */
     items.get = function (barcode, options) {
       options = options || {};
+      const sql = `
+        select o.*, o.id as checkout_id, oi.*, oi.id as order_item_id, i.*
+        from items i
+        left join \`out\` o on o.barcode = i.barcode
+        left join order_items oi on oi.item_id = i.id
+        where i.barcode = ?
+      `;
       var result;
-      return items.constructor.prototype.get.call(this, barcode)
-        .then(item => {
-          result = item;
-          return checkouts.find(barcode);
+      return db.selectRow(sql, [barcode])
+        .then(row => {
+          if (!row) {
+            throw {
+              httpStatusCode: 400, code: 'ENTITY_NOT_FOUND', errno: 1200,
+            };
+          }
+          result = this.fromDb(row, true);
+          if (row.checkout_id) {
+            result.checkout = checkouts.fromDb(row, true);
+            result.checkout.id = row.checkout_id;
+          }
+          if (row.order_item_id) {
+            result.order_item = orderItems.fromDb(row, true);
+            result.order_item.id = row.order_item_id;
+          }
         })
-        .then(checkout => {
+        .then(() => {
+          const checkout = result.checkout;
           if (checkout) {
-            result.checkout = checkout;
             return borrowers.get(checkout.borrowernumber).then(borrower => {
               result.borrower = borrower;
               return result;
             });
-          } else {
-            return result;
           }
+          const order_item = result.order_item;
+          if (order_item) {
+            const sql = `
+              select o.*, b.*
+              from orders o join borrowers b on o.borrower_id = b.id
+              where o.id = ?
+            `;
+            return db.selectRow(sql, [order_item.order_id]).then(row => {
+              result.borrower = borrowers.fromDb(row, true);
+              return result;
+            });
+          }
+          return result;
         })
         .then(() => {
           if (options['history']) {
@@ -507,8 +603,8 @@ module.exports = {
      * the item, checkout, and borrower.
      */
     items.checkout = function (barcode, params) {
-      var borrowerNumber = params.borrower;
-      var result = {};
+      const borrowerNumber = params.borrower;
+      const result = {};
       return borrowers.get(borrowerNumber)
         .then(function (borrower) {
           result.borrower = borrower;
@@ -549,6 +645,191 @@ module.exports = {
         });
     };
 
+    function mapErrorCode(from, to) {
+      return err => {
+        if (err.code === from) {
+          err.code = to;
+        }
+        throw err;
+      }
+    }
+
+    /**
+     * Returns the promise of adding an item to a borrowers current order.
+     *
+     * The current order is the order associated with the current order cycle. If the borrower's
+     * current order does not exist yet, it is created before adding the item.
+     *
+     * If there is no current order cycle, an exception is throws.
+     */
+    items.order = function (barcode, params) {
+      const borrowerNumber = params.borrower;
+      const now = time.now();
+
+      const fetchItem = items.find(barcode);
+      const fetchBorrower = borrowers.find(borrowerNumber);
+      const fetchCycle = orderCycles.getByDate(now);
+
+      let result = {};
+
+      return Q.all([fetchItem, fetchBorrower, fetchCycle])
+        .then(([item, borrower, cycle]) => {
+          if (!item) {
+            throw { httpStatusCode: 400, code: 'ITEM_NOT_FOUND', errno: 1106, };
+          }
+          if (!borrower) {
+            throw { httpStatusCode: 400, code: 'BORROWER_NOT_FOUND', errno: 1106, };
+          }
+          result.borrower = borrower;
+          if (!cycle) {
+            throw { httpStatusCode: 400, code: 'CYCLE_NOT_FOUND', errno: 1106, };
+          }
+          result = {item, borrower, cycle};
+          return orders.getOrCreate(borrower.id, cycle.id);
+        })
+        .then(order => {
+          result.order = order;
+          return orderItems.create({
+            order_id: order.id,
+            item_id: result.item.id,
+          });
+        })
+        .then(orderItem => {
+          result.orderItem = orderItem;
+          return result;
+        });
+    };
+
+    /**
+     * Extension of the order cycle entity 'get' method adding the borrower
+     * and orders to the order cycle.
+     */
+    orderCycles.get = function (id) {
+      const fetchCycle = this.constructor.prototype.get.call(this, id);
+      const ordersSql = `
+        select b.*, o.*
+        from orders o
+        inner join borrowers b on b.id = o.borrower_id
+        where o.order_cycle_id = ?
+      `;
+      const fetchOrders = db.selectRows(ordersSql, [id])
+        .then(result => result.rows.map(row => {
+          const order = orders.fromDb(row, true);
+          order.borrower = borrowers.fromDb(row, true);
+          order.borrower.id = row.borrower_id;
+          return order;
+        }));
+      return Q.all([fetchCycle, fetchOrders]).then(([cycle, orders]) => ({
+        ...cycle,
+        orders,
+      }));
+    };
+
+    /**
+     * Extension of the order cycle entity 'create' method that checks if the
+     * new cycle does not overlap with any existing cycles.
+     */
+    orderCycles.create = function (cycle) {
+      const startCheck = this.readByDate(cycle.order_window_start);
+      const endCheck = this.readByDate(cycle.order_window_end);
+      return Q.all([startCheck, endCheck])
+        .then(([startResult, endResult]) => {
+          if (startResult.rows.length > 0 || endResult.rows.length > 0) {
+            throw {
+              httpStatusCode: 400, code: 'ORDER_CYCLE_OVERLAP', errno: 1200,
+              cycle: cycle,
+            };
+          }
+          return this.constructor.prototype.create.call(this, cycle);
+        })
+    };
+
+    const orderCycleByDate = `
+      select c.*
+      from order_cycles c
+      where c.order_window_start <= ? and c.order_window_end >= ?
+    `;
+
+    /**
+     * Returns the promise of the order cycles whose order window contains
+     * the given date.
+     *
+     * The resulting set of order cycles should contain at most one cycle.
+     */
+    orderCycles.readByDate = function (date) {
+      const arg = entity.dateToIsoStringWithoutTimeZone(date);
+      return db.selectRows(orderCycleByDate, [arg, arg]);
+    };
+
+    /**
+     * Returns the promise of the order cycle whose order window contains
+     * the given date.
+     *
+     * Throws an error if there is not exactly one order cycle containing
+     * the date.
+     */
+    orderCycles.getByDate = function (date) {
+      const arg = entity.dateToIsoStringWithoutTimeZone(date);
+      return db.selectRow(orderCycleByDate, [arg, arg]);
+    };
+
+    /**
+     * Returns the promise of an order together with its order cycle, borrower,
+     * and order items.
+     */
+    orders.get = function (id) {
+      // Note: order columns are selected last to that the id is the order id
+      const orderSql = `
+        select c.*, b.*, o.*
+        from orders o
+        inner join order_cycles c on o.order_cycle_id = c.id
+        inner join borrowers b on o.borrower_id = b.id
+        where o.id = ?
+      `;
+      const orderItemsSql = `
+        select oi.*, i.*
+        from order_items oi
+        inner join items i on oi.item_id = i.id
+        where oi.order_id = ?
+      `;
+      const result = {};
+      const fetchOrder = db.selectRow(orderSql, [id])
+        .then(row => {
+          result.id = row.id;
+          result.cycle = orderCycles.fromDb(row, true);
+          result.cycle.id = row.order_cycle_id;
+          result.borrower = borrowers.fromDb(row);
+          result.borrower.id = row.borrower_id;
+          return result;
+        });
+      const fetchOrderItems = db.selectRows(orderItemsSql, [id])
+        .then(itemResult => {
+          result.items = itemResult.rows.map(row => items.fromDb(row));
+        });
+      return Q.all([fetchOrder, fetchOrderItems]).then(() => result);
+    };
+
+    /**
+     * Returns the promise of the order associated with a borrower and order cyclde.
+     */
+    orders.getOrCreate = function (borrowerId, orderCycleId) {
+      const sql = `
+        select o.*
+        from orders o
+        where o.borrower_id = ? and o.order_cycle_id = ?
+      `;
+      return db.selectRow(sql, [borrowerId, orderCycleId])
+        .then(order => {
+          if (order) {
+            return order;
+          }
+          return orders.create({
+            borrower_id: borrowerId,
+            order_cycle_id: orderCycleId,
+          });
+        });
+    };
+
     var reports = {};
 
     reports.getItemUsage = function(query) {
@@ -576,6 +857,8 @@ module.exports = {
       items: items,
       checkouts: checkouts,
       history: history,
+      orderCycles: orderCycles,
+      orders: orders,
       reports: reports,
     };
   }

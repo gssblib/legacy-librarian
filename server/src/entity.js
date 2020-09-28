@@ -60,6 +60,7 @@ function dbEscape(name) { return '`' + name + '`'; }
  *            sqlTerm method below).
  * - type: an object containing
  *      fromDb: (optional) converts from db value to javascript value
+ *      toDb:   (optional) converts from javascript value to db value
  */
 function Entity(db, config) {
   var self = this;
@@ -78,6 +79,7 @@ function Entity(db, config) {
   config.columns.map(addColumn);
   addColumn('id');
   this.fromDb = createFromDb(this);
+  this.toDb = createToDb(this);
 }
 
 function capitalizeFirst(s) {
@@ -96,36 +98,73 @@ function identity(x) {
  * there are exceptions. For example, boolean columns are implemented as
  * tinyint(1) by mysql and therefore returned as javascript integers.
  *
+ * The returned function takes the row and an optional `tableOnly` parameter
+ * and returns the object corresponding to the row.
+ *
  * The returned function applies the fromDb functions defined in any
  * column types of the entity to the corresponding column values.
+ *
+ * If `tableOnly` is true, only the properties corresponding to table columns
+ * are copied to the result. This is useful when constructing objects from the
+ * result of database joins where the rows returned from the database contain
+ * the properties of multiple objects.
  */
 function createFromDb(entity) {
-  var fromDbColumns =
-    entity.columns.filter(column => column.domain && column.domain.fromDb);
-  if (fromDbColumns.length === 0) {
+  return (row, tableOnly) => {
+    if (row === undefined) {
+      return row;
+    }
+    if (tableOnly) {
+      const result = {};
+      for (const {name, fromDb} of entity.columns) {
+        const value = row[name];
+        result[name] = fromDb ? fromDb(value) : value;
+      }
+      return result;
+    } else {
+      const result = {...row};
+      for (const {name, fromDb} of entity.columns) {
+        if (fromDb) {
+          result[name] = fromDb(result[name]);
+        }
+      }
+      return result;
+    }
+  };
+}
+
+/**
+ * Returns the function that is applied to objects before storing the
+ * in the database.
+ */
+function createToDb(entity) {
+  const toDbColumns =
+    entity.columns.filter(column => column.domain && column.domain.toDb);
+  if (toDbColumns.length === 0) {
     return identity;
   }
   return function(data) {
     if (data !== undefined) {
-      fromDbColumns.forEach(function(column) {
-        data[column.name] = column.domain.fromDb(data[column.name]);
+      toDbColumns.forEach(function(column) {
+        data[column.name] = column.domain.toDb(data[column.name]);
       });
     }
     return data;
-  };
+  }
 }
 
 /**
  * Returns the promise of saving a new object in the table.
  */
-Entity.prototype.create = function (obj) {
-  var self = this;
+Entity.prototype.create = function(obj) {
+  const self = this;
+  const dbObj = self.toDb(obj);
   var columns = [];
   var placeholders = [];
   var params = [];
 
   self.columns.forEach(function (column) {
-    var value = obj[column.name];
+    var value = dbObj[column.name];
     if (value !== undefined) {
       columns.push(column.name);
       placeholders.push('?');
@@ -311,6 +350,21 @@ var entity = function (db, config) {
 };
 
 /**
+ * Returns the `value` as an ISO string representation of a datetime without fractional
+ * seconds and timezone, for example, `2020-08-15T10:30:30`.
+ *
+ * We use UTC as the mysql timezone (as default timezone on the server and connections).
+ * This implies that `datetime` strings are interpreted as UTC when reading and writing
+ * to the database.
+ */
+function dateToIsoStringWithoutTimeZone(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  return date.toISOString().replace(/\.[0-9]*Z/, '');
+}
+
+entity.dateToIsoStringWithoutTimeZone = dateToIsoStringWithoutTimeZone;
+
+/**
  * Predefined column domains (restricted types).
  *
  * These domains can be used as values for the 'domain' property of a column.
@@ -326,7 +380,12 @@ entity.domains = {
   'Integer': {
     name: 'Integer',
     type: 'int'
-  }
+  },
+  'Datetime': {
+    name: 'Datetime',
+    type: 'datetime',
+    toDb: dateToIsoStringWithoutTimeZone,
+  },
 }
 
 module.exports = entity;

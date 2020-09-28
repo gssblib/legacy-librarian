@@ -1,5 +1,5 @@
 import { ModelsService } from "./models.service";
-import { Subject ,  Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 
 /**
  * Keeps the current model object (item, borrower) of type T and manages
@@ -10,10 +10,10 @@ export class ModelService<T> {
   /** Current model object. */
   private model: T;
 
-  private modelSubject = new Subject<T>();
+  private readonly modelSubject = new Subject<T>();
   modelObservable = this.modelSubject.asObservable();
 
-  constructor(private modelsService: ModelsService<T>, private loadParams?: any) {
+  constructor(private readonly modelsService: ModelsService<T>, private readonly loadParams?: any) {
     this.modelObservable.subscribe(model => this.model = model);
   }
 

@@ -26,19 +26,19 @@ import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
 import { ItemEditCoverComponent } from './item-edit-cover/item-edit-cover.component';
 import { ItemCardComponent } from './item-card/item-card.component';
 import { ItemDetailsComponent } from './item-details/item-details.component';
-import {MatCardModule} from "@angular/material/card";
-import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {MatGridListModule} from "@angular/material/grid-list";
-import {MatChipsModule} from "@angular/material/chips";
-import {MatIconModule} from "@angular/material/icon";
-import {MatSelectModule} from "@angular/material/select";
-import {MatOptionModule} from "@angular/material/core";
-import {MatInputModule} from "@angular/material/input";
-import {MatTabsModule} from "@angular/material/tabs";
-import {MatButtonModule} from "@angular/material/button";
-import {MatTableModule} from "@angular/material/table";
-import {MatSortModule} from "@angular/material/sort";
-import {MatPaginatorModule} from "@angular/material/paginator";
+import { MatCardModule } from "@angular/material/card";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatGridListModule } from "@angular/material/grid-list";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSelectModule } from "@angular/material/select";
+import { MatOptionModule } from "@angular/material/core";
+import { MatInputModule } from "@angular/material/input";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatButtonModule } from "@angular/material/button";
+import { MatTableModule } from "@angular/material/table";
+import { MatSortModule } from "@angular/material/sort";
+import { MatPaginatorModule } from "@angular/material/paginator";
 
 /**
  * Angular module for the items (books, CDs) in the library.

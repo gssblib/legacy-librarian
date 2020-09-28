@@ -1,16 +1,21 @@
 .checkout {
   margin-top: 1em;
 }
+
 .number-checked-out {
   font-size: 120%;
+  margin-right: .5em;
 }
+
 .barcode {
   display: inline-block;
 }
+
 .actions {
   margin-left: 1em;
   display: inline-block;
 }
+
 .overdue {
   color: red;
 }

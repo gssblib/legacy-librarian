@@ -1,0 +1,40 @@
+<header>
+<h2>Order {{order.id}}</h2>
+<button mat-icon-button class="print-button" (click)="print()"><mat-icon>print</mat-icon></button>
+</header>
+
+<div class="field">
+  <label>Borrower</label> <a [routerLink]="['/borrowers', order.borrower.borrowernumber]">{{order.borrower.contactname}}</a>
+</div>
+<div class="field">
+  <label>Order cycle</label> <a [routerLink]="['/ordercycles', order.cycle.id]"
+    >{{order.cycle.order_window_start | date:'short'}} to {{order.cycle.order_window_end | date:'short'}}</a>
+</div>
+
+<p *ngIf="dataSource.data.length === 0">
+  No items
+</p>
+<table *ngIf="dataSource.data.length > 0" mat-table [dataSource]="dataSource" class="items">
+  <ng-container matColumnDef="barcode">
+    <th mat-header-cell *matHeaderCellDef>Barcode</th>
+    <td mat-cell *matCellDef="let item">{{item.barcode}}</td>
+  </ng-container>
+  <ng-container matColumnDef="title">
+    <th mat-header-cell *matHeaderCellDef>Title</th>
+    <td mat-cell *matCellDef="let item">{{item.title}}</td>
+  </ng-container>
+  <ng-container matColumnDef="subject">
+    <th mat-header-cell *matHeaderCellDef>Subject</th>
+    <td mat-cell *matCellDef="let item">{{item.subject}}</td>
+  </ng-container>
+  <ng-container matColumnDef="author">
+    <th mat-header-cell *matHeaderCellDef>Author</th>
+    <td mat-cell *matCellDef="let item">{{item.author}}</td>
+  </ng-container>
+  <ng-container matColumnDef="classification">
+    <th mat-header-cell *matHeaderCellDef>Classification</th>
+    <td mat-cell *matCellDef="let item">{{item.classification}}</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let item; columns: displayedColumns" [routerLink]="['/items', item.barcode]"></tr>
+</table>

@@ -3,6 +3,8 @@
 @import '~@angular/material/theming';
 @include mat-core();
 
+@import '~@mat-datetimepicker/core/datetimepicker/datetimepicker-theme.scss';
+
 $gssb-theme-primary: mat-palette($mat-blue);
 $gssb-theme-accent: mat-palette($mat-amber, A200, A100, A400);
 $gssb-theme-warn: mat-palette($mat-red);
@@ -19,6 +21,7 @@ $gssb-theme: (
 );
 
 @include angular-material-theme($gssb-theme);
+@include mat-datetimepicker-theme($gssb-theme);
 
 .formly-checkbox .mat-form-field-infix {
   border-top: 0.5em solid transparent;

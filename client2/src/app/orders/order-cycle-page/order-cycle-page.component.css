@@ -1,0 +1,13 @@
+.orders {
+  width: 100%;
+}
+
+.mat-column-id {
+  width: 5em;
+  cursor: pointer;
+}
+
+.mat-column-borrower {
+  width: 10em;
+  cursor: pointer;
+}

@@ -1,10 +1,11 @@
 .fields {
   column-count: 2;
 }
+
 .form-actions {
   display: inline-block;
 }
-.item-actions {
-  display: inline-block;
-  margin-left: 1em;
+
+.form-actions button + button {
+  margin-left: .5em;
 }

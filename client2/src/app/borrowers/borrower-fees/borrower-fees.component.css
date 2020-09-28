@@ -1,22 +1,32 @@
+.container {
+  margin-top: 1em;
+}
+
 a {
   text-decoration: none;
   color: inherit;
 }
+
 button:first-of-type {
   margin-right: 1em;
 }
+
 form {
   margin-bottom: 10px;
 }
+
 .mat-column-fee {
   max-width: 80px;
 }
+
 .mat-column-checkout_date {
   max-width: 150px;
 }
+
 .mat-column-date_due {
   max-width: 120px;
 }
+
 .mat-column-returndate {
   max-width: 150px;
 }

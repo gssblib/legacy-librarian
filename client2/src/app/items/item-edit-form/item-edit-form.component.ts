@@ -20,7 +20,7 @@ export class ItemEditFormComponent implements OnInit {
   fields: Array<FormlyFieldConfig> = [];
 
   @Output()
-  cancel = new EventEmitter();
+  readonly done = new EventEmitter();
 
   constructor(private router: Router,
               private notificationService: NotificationService,
@@ -37,12 +37,15 @@ export class ItemEditFormComponent implements OnInit {
 
   submit() {
     this.itemsService.save(this.item).subscribe(
-      item => this.notificationService.show("Item saved."),
+      item => {
+        this.notificationService.show("Item saved.");
+        this.done.next();
+      },
       error => this.notificationService.showError("Failed to save item: " + this.toErrorMessage(error)));
   }
 
   onCancel() {
-    this.cancel.emit(null);
+    this.done.emit();
   }
 
   private toErrorMessage(error: RpcError) {

@@ -1,45 +1,45 @@
 <div *ngIf="items">
-  <mat-table #table [dataSource]="dataSource"
+  <table mat-table #table [dataSource]="dataSource"
              matSort matSortActive="checkout_date" matSortDisableClear matSortDirection="desc">
     <ng-container matColumnDef="barcode">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</mat-header-cell>
-      <mat-cell *matCellDef="let row">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</th>
+      <td mat-cell *matCellDef="let row">
         <a [routerLink]="['/items', row.barcode, 'details']">{{ row.barcode }}</a>
-      </mat-cell>
+      </td>
     </ng-container>
     <ng-container matColumnDef="title">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-      <mat-cell *matCellDef="let row">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+      <td mat-cell *matCellDef="let row">
         <a [routerLink]="['/items', row.barcode, 'details']">{{ row.title }}</a>
         <gsl-item-antolin [antolin]="row.antolin"></gsl-item-antolin>
-      </mat-cell>
+      </td>
     </ng-container>
     <ng-container matColumnDef="category">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row.category}}</mat-cell>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+      <td mat-cell *matCellDef="let row">{{row.category}}</td>
     </ng-container>
     <ng-container matColumnDef="checkout_date">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Checked Out</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row.checkout_date | date:'MMM dd, yyyy, hh:mm'}}</mat-cell>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Checked Out</th>
+      <td mat-cell *matCellDef="let row">{{row.checkout_date | date:'MMM dd, yyyy, hh:mm'}}</td>
     </ng-container>
     <ng-container matColumnDef="date_due">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Date Due</mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row.date_due | date}}</mat-cell>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Date Due</th>
+      <td mat-cell *matCellDef="let row">{{row.date_due | date}}</td>
     </ng-container>
     <ng-container matColumnDef="fine_due">
-      <mat-header-cell *matHeaderCellDef>Fine Due</mat-header-cell>
-      <mat-cell *matCellDef="let row">
+      <th mat-header-cell *matHeaderCellDef>Fine Due</th>
+      <td mat-cell *matCellDef="let row">
         <span *ngIf="value">{{row.fine_due | currency}}</span>
-      </mat-cell>
+      </td>
     </ng-container>
     <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
-      <mat-cell *matCellDef="let row">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+      <td mat-cell *matCellDef="let row">
         <button mat-raised-button color="primary" (click)="onRenew(row)" [disabled]="!row.renewable">Renew</button>
         <button mat-raised-button color="primary" (click)="onReturn(row)">Return</button>
-      </mat-cell>
+      </td>
     </ng-container>
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" [class.overdue]="row.overdue"></mat-row>
-  </mat-table>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.overdue]="row.overdue"></tr>
+  </table>
 </div>

@@ -1,0 +1,49 @@
+header {
+  display: flex;
+  align-items: center;
+}
+
+.print-button {
+  margin-left: auto;
+}
+
+.items {
+  margin-top: 2em;
+  width: 100%;
+}
+
+.field label {
+  display: inline-block;
+  width: 6em;
+  font-weight: bold;
+}
+
+.field + .field {
+  margin-top: .5em;
+}
+
+.mat-column-barcode {
+  width: 7em;
+}
+
+.mat-column-subject {
+  width: 10em;
+}
+
+.mat-column-classification {
+  width: 8em;
+}
+
+.mat-column-author {
+  width: 9em;
+}
+
+td {
+  cursor: pointer;
+}
+
+@media print {
+  .print-button {
+    display: none;
+  }
+}

@@ -65,6 +65,10 @@ export class BorrowersService extends ModelsService<Borrower> {
     return this.rpc.httpPost('items/' + barcode + '/checkout', {borrower: borrowerNumber});
   }
 
+  orderItem(barcode, borrowerNumber) {
+    return this.rpc.httpPost('items/' + barcode + '/order', {borrower: borrowerNumber});
+  }
+
   getMyBorrower() {
     return this.rpc.httpGet('me').pipe(map(obj => this.toModel(obj)));
   }

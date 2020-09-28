@@ -1,0 +1,7 @@
+:host ::ng-deep formly-field + formly-field {
+  margin-left: 1em;
+}
+
+.actions button + button {
+  margin-left: 1em;
+}

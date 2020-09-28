@@ -1,4 +1,4 @@
-<mat-toolbar>
+<mat-toolbar class="toolbar">
   <div class="sandwich">
     <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>menu</mat-icon>
@@ -36,6 +36,11 @@
         <mat-icon>people</mat-icon>
         <span class="accesskey">B</span>orrowers
       </a>
+      <a mat-list-item routerLink="/ordercycles" accesskey="y" routerLinkActive="active"
+         *gslAuthorized="'ordercycles.read'">
+        <mat-icon>history</mat-icon>
+        Order c<span class="accesskey">y</span>cles
+      </a>
       <a mat-list-item routerLink="/fees" accesskey="s" routerLinkActive="active"
          *gslAuthorized="'fees.read'">
         <mat-icon>local_atm</mat-icon>
@@ -60,4 +65,3 @@
     <router-outlet></router-outlet>
   </div>
 </mat-sidenav-container>
-

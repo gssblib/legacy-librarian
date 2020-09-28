@@ -1,10 +1,7 @@
-<div *ngIf="borrower">
-  <br />
-
+<div *ngIf="borrower" class="container">
   <p *ngIf="borrower.fees.total == 0">
     No fees due.
   </p>
-
   <div *ngIf="borrower.fees.total > 0">
     <form name="fineForm" class="form-inline" (ngSubmit)="payAllFees()">
       <button type="submit" mat-raised-button color="primary">

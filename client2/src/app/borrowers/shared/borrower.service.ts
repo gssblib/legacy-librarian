@@ -15,7 +15,7 @@ import { Observable } from "rxjs";
 export class BorrowerService extends ModelService<Borrower> {
 
   constructor(private rpc: RpcService, private borrowersService: BorrowersService) {
-    super(borrowersService, {options: 'items,fees'});
+    super(borrowersService, {options: 'items,orders,fees'});
   }
 
   renewAll(): Observable<Object> {

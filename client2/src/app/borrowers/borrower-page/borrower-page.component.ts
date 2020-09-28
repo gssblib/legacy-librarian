@@ -16,6 +16,7 @@ export class BorrowerPageComponent implements OnInit {
   navLinks = [
     { link: 'checkouts', label: 'Checkouts', action: 'borrowers.read' },
     { link: 'fees', label: 'Fees', action: 'borrowers.payFees' },
+    { link: 'orders', label: 'Orders', action: 'borrowers.read' },
     { link: 'profile', label: 'Profile', action: 'borrowers.view' },
     { link: 'history', label: 'History', action: 'borrowers.view' },
   ];

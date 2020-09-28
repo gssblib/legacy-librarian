@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { AuthenticationService } from './core/auth.service';
 import { NotificationService } from "./core/notification-service";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'gsl-root',
@@ -10,11 +10,10 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-
-  constructor(private router: Router,
-              private snackbar: MatSnackBar,
-              private authenticationService: AuthenticationService,
-              private notificationService: NotificationService) {
+  constructor(private readonly router: Router,
+              private readonly snackbar: MatSnackBar,
+              private readonly authenticationService: AuthenticationService,
+              private readonly notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -26,7 +25,6 @@ export class AppComponent implements OnInit {
   }
 
   get user() {
-    var user = this.authenticationService.getUser();
     return this.authenticationService.getUser();
   }
 

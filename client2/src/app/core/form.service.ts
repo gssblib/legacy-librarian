@@ -128,9 +128,13 @@ export class FormService {
         field.templateOptions.placeholder = undefined;
         field.className = 'formly-checkbox';
         break;
+      case 'datetime':
+        field.type = 'datetimepicker';
+        break;
       default:
         field.type = 'input';
         field.templateOptions.type = 'text';
+        break;
     }
     if (domain.validation) {
       field.templateOptions.minLength = domain.validation.minLength;

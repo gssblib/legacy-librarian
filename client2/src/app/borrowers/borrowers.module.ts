@@ -40,6 +40,8 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatButtonModule} from "@angular/material/button";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatTableModule} from "@angular/material/table";
+import { BorrowerOrdersComponent } from './borrower-orders/borrower-orders.component';
+import { BorrowerOrderComponent } from './borrower-order/borrower-order.component';
 
 @NgModule({
   imports: [
@@ -85,6 +87,8 @@ import {MatTableModule} from "@angular/material/table";
     BorrowerAddPageComponent,
     BorrowerStatusComponent,
     RenewReturnDialogComponent,
+    BorrowerOrdersComponent,
+    BorrowerOrderComponent,
   ],
   providers: [
     BorrowerService,

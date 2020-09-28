@@ -23,4 +23,20 @@ export class DateService {
     result.setDate(date.getDate() + days);
     return result;
   }
+
+  static toDate(value?: string|Date): Date|undefined {
+    if (!value) {
+      return undefined;
+    }
+    if (value instanceof Date) {
+      return value;
+    }
+    const date = new Date(value);
+    return isNaN(date.getTime()) ? undefined : date;
+  }
+
+  static toString(value?: string|Date): string|undefined {
+    const date = DateService.toDate(value);
+    return date?.toISOString();
+  }
 }

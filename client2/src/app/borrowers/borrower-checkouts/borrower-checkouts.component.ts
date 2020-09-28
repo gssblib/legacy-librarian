@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { RpcError } from "../../core/rpc-error";
 import { BarcodeFieldComponent } from "../../shared/barcode-field/barcode-field.component";
 import { Borrower } from '../shared/borrower';
@@ -10,7 +10,7 @@ import { DateService } from "../../core/date-service";
 import { FocusService } from "../../core/focus.service";
 import { RenewReturnDialogComponent } from "./renew-return-dialog.component";
 import { NotificationService } from "../../core/notification-service";
-import {MatDialog} from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 
 /**
  * Presents the items that a borrower has currently checked out.
@@ -36,13 +36,13 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
   @ViewChild('barcode')
   barcode: BarcodeFieldComponent;
 
-  constructor(private notificationService: NotificationService,
-              private borrowerService: BorrowerService,
-              private borrowersService: BorrowersService,
-              private itemsService: ItemsService,
-              private dateService: DateService,
-              private focusService: FocusService,
-              private matDialog: MatDialog) {
+  constructor(private readonly notificationService: NotificationService,
+              private readonly borrowerService: BorrowerService,
+              private readonly borrowersService: BorrowersService,
+              private readonly itemsService: ItemsService,
+              private readonly dateService: DateService,
+              private readonly focusService: FocusService,
+              private readonly matDialog: MatDialog) {
     this.borrowerService.subscribe(borrower => {
       this.borrower = borrower;
     });
@@ -61,7 +61,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
     setTimeout(() => { this.itemCountClass = ''; }, 1000);
   }
 
-  checkout(barcode) {
+  checkout(barcode: string): void {
     const item = this.borrower.items.find(item => item.barcode === barcode);
     if (item) {
       const dialog = this.matDialog.open(RenewReturnDialogComponent, {});
@@ -136,7 +136,7 @@ export class BorrowerCheckoutsComponent implements OnInit, AfterViewInit {
     this.notificationService.showError(this.toErrorMessage(barcode, error));
     this.barcode.barcode = '';
     // Resolve the error.
-    return Observable.create(() => {});
+    return of(() => {});
   }
 
   private toErrorMessage(barcode: string, error: RpcError) {

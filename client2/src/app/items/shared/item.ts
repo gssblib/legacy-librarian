@@ -2,6 +2,8 @@ import { Checkout } from "./checkout";
 import { ItemState } from "./item-state";
 import { ItemStatus } from "./item-status";
 import { Borrower } from '../../borrowers/shared/borrower';
+import { OrderItem } from "../../orders/shared/order-item";
+
 /**
  * Represents an item (as stored in the database).
  */
@@ -23,13 +25,21 @@ export class Item {
   isbn13: string;
   state: ItemState;
   checkout?: Checkout;
+  order_item?: OrderItem;
   history: Array<any>;
   borrower?: Borrower;
   added?: Date|string;
 
   get status(): ItemStatus {
-    return this.state === ItemState.CIRCULATING
-        ? this.checkout ? ItemStatus.CHECKED_OUT : ItemStatus.AVAILABLE
-        : ItemStatus[this.state];
+    if (this.state !== ItemState.CIRCULATING) {
+      return ItemStatus[this.state];
+    }
+    if (this.checkout) {
+      return ItemStatus.CHECKED_OUT;
+    }
+    if (this.order_item) {
+      return ItemStatus.ORDERED;
+    }
+    return ItemStatus.AVAILABLE;
   }
 }

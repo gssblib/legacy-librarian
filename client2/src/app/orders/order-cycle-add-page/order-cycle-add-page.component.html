@@ -1,0 +1,15 @@
+<mat-card>
+  <h3>Add order cycle</h3>
+  <form [formGroup]="form" novalidate (ngSubmit)="submitForm(orderCycle)"
+        (keydown.enter)="$event.preventDefault()">
+    <div class="fields">
+      <formly-form [model]="orderCycle" [form]="form" [fields]="fields"></formly-form>
+    </div>
+    <div class="actions">
+      <button mat-raised-button
+              [routerLink]="['/ordercycles']">Cancel</button>
+      <button type="submit" mat-raised-button color="primary"
+              [disabled]="form.invalid">Add</button>
+    </div>
+  </form>
+</mat-card>

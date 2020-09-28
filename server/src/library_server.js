@@ -159,8 +159,10 @@ httpcall.handlePaths([
   },
 ]);
 
-httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew']);
+httpcall.handleEntity(library.items, ['checkout', 'checkin', 'renew', 'order']);
 httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
+httpcall.handleEntity(library.orderCycles, []);
+httpcall.handleEntity(library.orders, []);
 
 // Serve the client web application as static content.
 config['clients'].forEach(function(clientConfig) {

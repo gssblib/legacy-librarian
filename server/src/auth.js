@@ -6,9 +6,9 @@ const config = require('config'),
       http = require('request-promise'),
       Q = require('q');
 
-var crud = ['create', 'read', 'update', 'delete'];
+const crud = ['create', 'read', 'update', 'delete'];
 
-var roles = {
+const roles = {
   anonymous: {
     permissions: []
   },
@@ -26,11 +26,13 @@ var roles = {
   },
   librarian: {
     permissions: [
-      {resource: 'items', operations: crud.concat('checkin', 'checkout', 'renew')},
+      {resource: 'items', operations: crud.concat('checkin', 'checkout', 'renew', 'order')},
       {resource: 'borrowers', operations: crud.concat('payFees', 'renewAllItems')},
       {resource: 'fees', operations: crud},
       {resource: 'checkouts', operations: crud},
-      {resource: 'reports', operations: crud}
+      {resource: 'reports', operations: crud},
+      {resource: 'ordercycles', operations: crud},
+      {resource: 'orders', operations: crud},
     ]
   },
   admin: {

@@ -7,8 +7,10 @@ import { ItemsService } from "../shared/items.service";
 import { Item } from "../shared/item";
 import { ItemService } from "../shared/item.service";
 import { RpcError } from "../../core/rpc-error";
-import { Observable } from "rxjs";
 
+/**
+ * Page for adding a new item.
+ */
 @Component({
   selector: 'gsl-item-add-page',
   templateUrl: './item-add-page.component.html',
@@ -19,10 +21,10 @@ export class ItemAddPageComponent implements OnInit {
   item: Item;
   fields: Array<FormlyFieldConfig> = [];
 
-  constructor(private notificationService: NotificationService,
-              private itemsService: ItemsService,
-              private itemService: ItemService,
-              private router: Router) {
+  constructor(private readonly notificationService: NotificationService,
+              private readonly itemsService: ItemsService,
+              private readonly itemService: ItemService,
+              private readonly router: Router) {
   }
 
   ngOnInit() {

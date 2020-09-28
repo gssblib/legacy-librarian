@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="order-item">
+    <p>Scan or enter barcode to order an item in the current order cycle</p>
+    <gsl-barcode-field icon="add" #barcode [focus]="true" class="barcode"
+                       (barcodeSubmit)="order($event)"></gsl-barcode-field>
+  </div>
+  <h3>Existing Orders</h3>
+  <p *ngIf="dataSource.data.length === 0">
+    No orders found
+  </p>
+  <table *ngIf="dataSource.data.length > 0" mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>Id</th>
+      <td mat-cell *matCellDef="let order" [routerLink]="['/orders', order.id]">
+        {{order.id}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef>Start</th>
+      <td mat-cell *matCellDef="let order" [routerLink]="['/orders', order.id]">
+        {{order.cycle?.order_window_start | date:'short'}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="end">
+      <th mat-header-cell *matHeaderCellDef>End</th>
+      <td mat-cell *matCellDef="let order" [routerLink]="['/orders', order.id]">
+        {{order.cycle?.order_window_end | date:'short'}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="item_count">
+      <th mat-header-cell *matHeaderCellDef>Items</th>
+      <td mat-cell *matCellDef="let order" [routerLink]="['/orders', order.id]">
+        {{order.item_count}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let order">
+        <button mat-icon-button color="warn" matTooltip="Delete order cycle"
+                gslConfirmationDialog
+                title="Confirm deletion"
+                message="Are you sure you want to delete the order cycle?"
+                (confirm)="delete(order)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let order; columns: displayedColumns"></tr>
+  </table>
+</div>

@@ -21,9 +21,9 @@ export class ItemPageComponent implements OnInit {
 
   item: Item;
 
-  constructor(private itemsService: ItemsService,
-              private itemService: ItemService,
-              private route: ActivatedRoute) {
+  constructor(private readonly itemsService: ItemsService,
+              private readonly itemService: ItemService,
+              private readonly route: ActivatedRoute) {
     this.item = this.itemService.get();
     this.itemService.subscribe(item => this.item = item);
   }

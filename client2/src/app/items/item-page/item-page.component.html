@@ -10,6 +10,11 @@
       {{item.borrower.studentNames}}</a>
     since {{item.checkout.checkout_date | date:'MMM d, y, h:mm'}}
   </div>
+  <div *ngIf="item.order_item">
+    This item is ordered by
+    <a [routerLink]="['/borrowers', item.borrower?.borrowernumber, 'checkouts']">
+      {{item.borrower?.studentNames}}</a>
+  </div>
   <nav mat-tab-nav-bar>
     <ng-container *ngFor="let link of navLinks">
       <a mat-tab-link
