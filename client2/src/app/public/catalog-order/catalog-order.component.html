@@ -9,23 +9,23 @@
 <table *ngIf="dataSource.data.length > 0" mat-table [dataSource]="dataSource" class="items">
   <ng-container matColumnDef="barcode">
     <th mat-header-cell *matHeaderCellDef>Barcode</th>
-    <td mat-cell *matCellDef="let item" [routerLink]="['/items', item.barcode]">{{item.barcode}}</td>
+    <td mat-cell *matCellDef="let item">{{item.barcode}}</td>
   </ng-container>
   <ng-container matColumnDef="title">
     <th mat-header-cell *matHeaderCellDef>Title</th>
-    <td mat-cell *matCellDef="let item" [routerLink]="['/items', item.barcode]">{{item.title}}</td>
+    <td mat-cell *matCellDef="let item">{{item.title}}</td>
   </ng-container>
   <ng-container matColumnDef="subject">
     <th mat-header-cell *matHeaderCellDef>Subject</th>
-    <td mat-cell *matCellDef="let item" [routerLink]="['/items', item.barcode]">{{item.subject}}</td>
+    <td mat-cell *matCellDef="let item">{{item.subject}}</td>
   </ng-container>
   <ng-container matColumnDef="author">
     <th mat-header-cell *matHeaderCellDef>Author</th>
-    <td mat-cell *matCellDef="let item" [routerLink]="['/items', item.barcode]">{{item.author}}</td>
+    <td mat-cell *matCellDef="let item">{{item.author}}</td>
   </ng-container>
   <ng-container matColumnDef="classification">
     <th mat-header-cell *matHeaderCellDef>Classification</th>
-    <td mat-cell *matCellDef="let item" [routerLink]="['/items', item.barcode]">{{item.classification}}</td>
+    <td mat-cell *matCellDef="let item">{{item.classification}}</td>
   </ng-container>
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>

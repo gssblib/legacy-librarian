@@ -10,10 +10,8 @@
     This next order cycle opens {{scheduledOrderCycle.order_window_start | date:'short'}}.
   </span>
   </div>
-
   <gsl-catalog-item-card *ngFor="let item of items"
                          [item]="item" [showOrderButton]="openOrderCycle"
                          (orderItem)="order($event)"></gsl-catalog-item-card>
-  <mat-paginator [length]="count" [pageSize]="10">
-  </mat-paginator>
+  <mat-paginator [length]="count" [pageSize]="10"></mat-paginator>
 </mat-card>
