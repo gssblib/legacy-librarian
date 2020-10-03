@@ -2,10 +2,12 @@
   <mat-card-title>
     {{ borrower.surname }}, {{ borrower.firstname }}, {{ borrower.contactname }}
   </mat-card-title>
-  <div>
+  <p *ngIf="!hasItems">You have no items checked out.</p>
+  <div *ngIf="hasItems">
+    <p>You have the following items checked out:</p>
     <gsl-borrower-checkouts-table
-       [checkouts]="borrower.items"
-       [showActions]="false">
+      [checkouts]="borrower.items"
+      [showActions]="false">
     </gsl-borrower-checkouts-table>
   </div>
 </mat-card>

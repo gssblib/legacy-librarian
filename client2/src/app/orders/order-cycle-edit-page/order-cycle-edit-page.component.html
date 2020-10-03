@@ -1,6 +1,6 @@
 <mat-card>
   <h3>Edit order cycle</h3>
-  <form [formGroup]="form" (ngSubmit)="submit()"
+  <form [formGroup]="form" (ngSubmit)="save(orderCycle)"
         (keydown.enter)="$event.preventDefault()">
     <div class="fields">
       <formly-form [model]="orderCycle" [fields]="fields" [form]="form">

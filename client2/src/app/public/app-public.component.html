@@ -20,12 +20,16 @@
   <mat-sidenav #sidenav mode="side" opened="true" class="menu">
     <mat-nav-list>
       <a mat-list-item routerLink="/items" accesskey="i" routerLinkActive="active">
-        <mat-icon>book</mat-icon>
-        <span class="accesskey">I</span>tems
+        <mat-icon>search</mat-icon>
+        Catalog
       </a>
       <a mat-list-item routerLink="/checkedout" accesskey="c" routerLinkActive="active">
-        <mat-icon>person</mat-icon>
+        <mat-icon>library_books</mat-icon>
         <span class="accesskey">C</span>hecked Out
+      </a>
+      <a mat-list-item routerLink="/order" accesskey="c" routerLinkActive="active">
+        <mat-icon>shopping_cart</mat-icon>
+        <span class="accesskey">O</span>rder
       </a>
     </mat-nav-list>
   </mat-sidenav>

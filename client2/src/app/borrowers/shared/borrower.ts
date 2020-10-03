@@ -10,6 +10,7 @@ export class Borrower {
   items: ItemCheckout[];
   fees: any;
   orders: Order[];
+  order?: Order;
 
   get fullName(): string {
     return `${this.surname}, ${this.firstname}, ${this.contactname}`;

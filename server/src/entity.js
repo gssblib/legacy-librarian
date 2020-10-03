@@ -19,10 +19,10 @@
  * 
  * Usage:
  *
- *   var db = require('mysqlq'),
+ *   const db = require('mysqlq'),
  *       entity = require('entity');
  *
- *   var persons = entity(db, {
+ *   const persons = entity(db, {
  *       name: 'persons', tableName: 'person', columns: ['first_name', 'last_name']
  *   });
  *
@@ -63,7 +63,7 @@ function dbEscape(name) { return '`' + name + '`'; }
  *      toDb:   (optional) converts from javascript value to db value
  */
 function Entity(db, config) {
-  var self = this;
+  const self = this;
   this.db = db;
   this.name = config.name;
   this.table = dbEscape(config.tableName || config.name);
@@ -72,7 +72,7 @@ function Entity(db, config) {
   this.columns = [];
 
   function addColumn(column) {
-    var col = typeof(column) === 'object' ? column : {name: column};
+    const col = typeof(column) === 'object' ? column : {name: column};
     self.columns.push(col);
     self.columnsByName[col.name] = col;
   }
@@ -159,19 +159,19 @@ function createToDb(entity) {
 Entity.prototype.create = function(obj) {
   const self = this;
   const dbObj = self.toDb(obj);
-  var columns = [];
-  var placeholders = [];
-  var params = [];
+  const columns = [];
+  const placeholders = [];
+  const params = [];
 
   self.columns.forEach(function (column) {
-    var value = dbObj[column.name];
+    const value = dbObj[column.name];
     if (value !== undefined) {
       columns.push(column.name);
       placeholders.push('?');
       params.push(value);
     }
   });
-  var sql = 'insert into ' + self.table +
+  const sql = 'insert into ' + self.table +
     ' (' + columns.join(', ') + ') values (' + placeholders.join(', ') + ')';
   return self.db.query(sql, params).then(function (data) {
     // node-mysql returns the auto increment primary key in the 'insertId' field.
@@ -193,11 +193,11 @@ Entity.prototype.create = function(obj) {
  * @param value Value to compare to or object with 'value' and 'op' properties
  */
 Entity.prototype.sqlTerm = function(field, value) {
-  var column = this.columnsByName[field];
+  const column = this.columnsByName[field];
   if (column === undefined) {
     return undefined;
   }
-  var op = (column && column.queryOp) || 'equals';
+  const op = (column && column.queryOp) || 'equals';
 
   if (typeof(value) === 'object') {
     op = value.op;
@@ -219,19 +219,17 @@ Entity.prototype.sqlTerm = function(field, value) {
  * Translates a query to an array of terms.
  */
 Entity.prototype.sqlTerms = function(query) {
-  var terms = [];
+  const terms = [];
   if (query !== undefined) {
     if (typeof(query) !== 'object') {
-      var value = query;
+      const value = query;
       query = {};
       query[this.naturalKey || 'id'] = value;
     }
-    for (var name in query) {
-      if (query.hasOwnProperty(name)) {
-        var term = this.sqlTerm(name, query[name]);
-        if (term) {
-          terms.push(term);
-        }
+    for (const [name, value] of Object.entries(query)) {
+      const term = this.sqlTerm(name, value);
+      if (term) {
+        terms.push(term);
       }
     }
   }
@@ -241,16 +239,17 @@ Entity.prototype.sqlTerms = function(query) {
 /**
  * Constructs the where clause and parameter array for the query.
  */
-Entity.prototype.sqlWhere = function(query, op) {
+Entity.prototype.sqlWhere = function(query, op, prefix) {
   op = op === undefined ? 'and' : op;
-  var terms = this.sqlTerms(query);
-  var sql = '';
-  var params = [];
+  prefix = prefix === undefined ? '' : prefix;
+  const terms = this.sqlTerms(query);
+  let sql = '';
+  const params = [];
   if (terms.length !== 0) {
     sql += ' where ';
     terms.forEach(function (clause, index) {
       if (index > 0) sql += ' ' + op + ' ';
-      sql += clause.field + ' ' + clause.op + ' ?';
+      sql += prefix + clause.field + ' ' + clause.op + ' ?';
       params.push(clause.value);
     });
   }
@@ -262,9 +261,9 @@ Entity.prototype.sqlWhere = function(query, op) {
  * undefined if not found.
  */
 Entity.prototype.find = function (query) {
-  var self = this;
-  var whereClause = this.sqlWhere(query);
-  var sql = 'select * from ' + this.table + whereClause.sql;
+  const self = this;
+  const whereClause = this.sqlWhere(query);
+  const sql = 'select * from ' + this.table + whereClause.sql;
   return this.db.selectRow(sql, whereClause.params).then(self.fromDb);
 };
 
@@ -272,7 +271,7 @@ Entity.prototype.find = function (query) {
  * Returns the promise of a single object (row) identified by the query.
  */
 Entity.prototype.get = function (query) {
-  var self = this;
+  const self = this;
   return self.constructor.prototype.find.call(self, query).then(function (data) {
     if (data === undefined) {
       throw { httpStatusCode: 400, code: 'ENTITY_NOT_FOUND' };
@@ -285,9 +284,9 @@ Entity.prototype.get = function (query) {
  * Returns the promise of the objects (rows) identified by the query.
  */
 Entity.prototype.read = function (query, op, limit) {
-  var self = this;
-  var whereClause = this.sqlWhere(query, op);
-  var sql = 'select * from ' + this.table + whereClause.sql;
+  const self = this;
+  const whereClause = this.sqlWhere(query, op);
+  const sql = 'select * from ' + this.table + whereClause.sql;
   return this.db.selectRows(sql, whereClause.params, limit, query._order).then(
       function(data) {
         if (data.rows) {
@@ -302,11 +301,12 @@ Entity.prototype.read = function (query, op, limit) {
  * is, its id) must already exist in the table.
  */
 Entity.prototype.update = function (obj) {
-  var self = this;
-  var params = [];
-  var sql = '';
+  const self = this;
+  const dbObj = self.toDb(obj);
+  const params = [];
+  let sql = '';
   self.columns.forEach(function (column) {
-    var value = obj[column.name];
+    const value = dbObj[column.name];
     if (value !== undefined) {
       if (sql.length > 0) sql += ', ';
       sql += column.name + ' = ?';
@@ -322,7 +322,7 @@ Entity.prototype.update = function (obj) {
  * Returns the promise of deleting an object identified by id.
  */
 Entity.prototype.remove = function (id) {
-  var keyCol = this.naturalKey || 'id';
+  const keyCol = this.naturalKey || 'id';
   return this.db.query('delete from ' + this.table + ' where ' + keyCol + ' = ?', id);
 };
 
@@ -336,7 +336,7 @@ Entity.prototype.fields = function () {
     // Remove all internal fields.
     .filter(field => field.internal !== true)
     .map(origField => {
-      var field = clone(origField);
+      const field = clone(origField);
       // Remove domain converters, since they are functions that cannot be serialized anyways.
       if ('domain' in field) {
         delete field.domain.fromDb;
@@ -345,7 +345,7 @@ Entity.prototype.fields = function () {
     });
 };
 
-var entity = function (db, config) {
+const entity = function (db, config) {
   return new Entity(db, config);
 };
 

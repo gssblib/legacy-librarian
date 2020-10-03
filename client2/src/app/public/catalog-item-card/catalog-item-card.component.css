@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  margin: 2em 0;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button.order {
+  margin-top: .5em;
+}
+
+.cover {
+  max-width: 100px;
+  max-height: 150px;
+}
+
+.missing-cover-image mat-icon {
+  font-size: 100px;
+  width: 100px;
+  color: #eee;
+  display: inline-block;
+}
+
+.details {
+  flex: 1;
+  padding-left: 15px;
+  font-size: 85%;
+  line-height: 1.7em;
+}
+
+.info {
+  width: 75%;
+  columns: 2;
+}
+
+.status {
+  margin-top: 5px;
+  font-size: 80%;
+  text-align: center;
+}

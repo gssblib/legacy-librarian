@@ -5,7 +5,7 @@ import { RpcService } from './rpc.service';
 import { NotificationService } from './notification-service';
 import { FormService } from './form.service';
 import { AuthenticationService } from './auth.service';
-import { Action, AuthorizationService } from './authorization.service';
+import { AuthorizationService } from './authorization.service';
 import { AuthorizedDirective } from './authorized.directive';
 import { DateService } from "./date-service";
 import { FocusService } from "./focus.service";
@@ -23,7 +23,6 @@ import { FocusService } from "./focus.service";
     AuthenticationService,
     AuthorizationService,
     DateService,
-    Action,
     FocusService
   ],
   declarations: [

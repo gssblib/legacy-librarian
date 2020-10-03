@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="side">
+    <img *ngIf="hasCover" [src]="coverImg(item)" class="cover" (error)="noCover()"/>
+    <div *ngIf="!hasCover" class="missing-cover-image">
+      <mat-icon>broken_image</mat-icon>
+    </div>
+    <div class="order">
+      <gsl-item-availability
+        *ngIf="!available(item)"
+        [availability]="item.availability" [size]="'normal'"></gsl-item-availability>
+      <button *ngIf="available(item)" mat-raised-button color="primary" class="order"
+              (click)="order(item)">Order</button>
+    </div>
+  </div>
+  <div class="details">
+    <mat-card-title>
+      {{item.title}}
+      <gsl-item-antolin [antolin]="item.antolin"></gsl-item-antolin>
+    </mat-card-title>
+    <mat-card-subtitle *ngIf="item.author">
+      by {{item.author}}
+    </mat-card-subtitle>
+    <div class="info">
+      <div><b>Barcode:</b> {{item.barcode}}</div>
+      <div *ngIf="item.category"><b>Category:</b> {{item.category}}</div>
+      <div *ngIf="item.isbn10"><b>ISBN-10:</b> {{item.isbn10}}</div>
+      <div *ngIf="item.isbn13"><b>ISBN-13:</b> {{item.isbn13}}</div>
+      <div *ngIf="item.age"><b>Reading Age:</b> {{item.age}}</div>
+      <div *ngIf="item.subject"><b>Subject:</b> {{item.subject}}</div>
+      <div *ngIf="item.seriestitle"><b>Serie:</b> {{item.seriestitle}}</div>
+    </div>
+  </div>
+</div>

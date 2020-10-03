@@ -265,8 +265,7 @@ module.exports = {
      * items (currently checked out or already returned).
      */
     borrowers.fees = function (borrowerNumber) {
-      var self = this;
-      var result = {};
+      const self = this;
       return Q.all([
           self.checkouts(borrowerNumber, true),
           self.history(borrowerNumber, true)]).then(function (data) {
@@ -279,6 +278,42 @@ module.exports = {
         };
       });
     };
+
+    /**
+     * Returns the promise of removing an order item from an order.
+     *
+     * This method checks if the order belongs to the borrower.
+     */
+    borrowers.removeOrderItem = function (borrowerNumber, orderId, itemId) {
+      const orderSql = `
+        select o.*
+        from borrowers b inner join orders o on b.id = o.borrower_id
+        where b.borrowernumber = ? and o.id = ?
+      `;
+      const itemSql = `
+        delete from order_items where order_id = ? and item_id = ?
+      `;
+      return db.selectRow(orderSql, [borrowerNumber, orderId])
+        .then(row => {
+          if (!row) {
+            throw {
+              httpStatusCode: 400, code: 'ENTITY_NOT_FOUND', errno: 1200,
+            };
+          }
+          return db.query(itemSql, [orderId, itemId]);
+        });
+    }
+
+    borrowers.lastOrder = function (borrowerId) {
+      const sql = 'select max(id) as order_id from orders where borrower_id = ?';
+      return db.selectRow(sql, [borrowerId])
+        .then(row => {
+          if (!row) {
+            return undefined;
+          }
+          return orders.get(row.order_id);
+        });
+    }
 
     /**
      * Override the borrowers' get method to optionally fetch the checked out
@@ -304,6 +339,10 @@ module.exports = {
           if (options.orders) {
             extras.push(this.orders(borrowernumber)
               .then(result => borrower.orders = result.rows));
+          }
+          if (options.order) {
+            extras.push(this.lastOrder(borrower.id)
+              .then(order => borrower.order = order));
           }
           return Q.all(extras).then(() => borrower);
         });
@@ -449,6 +488,16 @@ module.exports = {
       return db.selectRows(sql, barcode);
     }
 
+    function getItemAvailability(item) {
+      if (item.checkout) {
+        return 'CHECKED_OUT';
+      } else if (item.order_item) {
+        return 'ORDERED';
+      } else {
+        return 'AVAILABLE';
+      }
+    }
+
     /**
      * Returns the promise of an item together with its checkout information.
      * Throws an error if the item does not exist.
@@ -479,6 +528,7 @@ module.exports = {
             result.order_item = orderItems.fromDb(row, true);
             result.order_item.id = row.order_item_id;
           }
+          result.availability = getItemAvailability(result);
         })
         .then(() => {
           const checkout = result.checkout;
@@ -518,21 +568,31 @@ module.exports = {
      * Returns promise to result containing items and their checkout status.
      */
     items.read = function (query, op, limit) {
-      var self = this;
-      var result;
-      return items.constructor.prototype.read.call(self, query, op, limit)
-        .then(function (items) {
-          result = items;
-          return Q.all(
-            items.rows.map(function(item) {
-              return checkouts.find(item.barcode);
-            }))
-            .then(function(checkouts) {
-              for (i=0; i < result.rows.length; ++i) {
-                result.rows[i].checkout = checkouts[i];
-              }
-              return result;
-            });
+      const self = this;
+
+      const where = items.sqlWhere(query, op, 'i.');
+      const sql = `
+        select o.*, o.id as checkout_id, oi.*, oi.id as order_item_id, i.*
+        from items i
+        left join \`out\` o on i.barcode = o.barcode
+        left join order_items oi on i.id = oi.item_id
+      ` + where.sql;
+
+      return db.selectRows(sql, where.params, limit)
+        .then(result => {
+          result.rows = result.rows.map(row => {
+            const item = items.fromDb(row, true);
+            if (row.checkout_id) {
+              item.checkout = checkouts.fromDb(row, true);
+              item.checkout.id = row.checkout_id;
+            } else if (row.order_item_id) {
+              item.order_item = orderItems.fromDb(row, true);
+              item.order_item.id = row.order_item_id;
+            }
+            item.availability = getItemAvailability(item);
+            return item;
+          });
+          return result;
         });
     };
 
@@ -741,7 +801,37 @@ module.exports = {
             };
           }
           return this.constructor.prototype.create.call(this, cycle);
-        })
+        });
+    };
+
+    /**
+     * Extension of the order cycle entity 'create' method that checks if the
+     * updated cycle does not overlap with any other existing cycles.
+     */
+    orderCycles.update = function (cycle) {
+      const startCheck = this.readByDate(cycle.order_window_start);
+      const endCheck = this.readByDate(cycle.order_window_end);
+
+      const isEmptyOrSame = (rows) => {
+        if (rows.length === 0) {
+          return true;
+        }
+        if (rows.length > 1) {
+          return false;
+        }
+        return rows[0].id === cycle.id;
+      };
+
+      return Q.all([startCheck, endCheck])
+        .then(([startResult, endResult]) => {
+          if (!isEmptyOrSame(startResult.rows) || !isEmptyOrSame(endResult.rows)) {
+            throw {
+              httpStatusCode: 400, code: 'ORDER_CYCLE_OVERLAP', errno: 1200,
+              cycle: cycle,
+            };
+          }
+          return this.constructor.prototype.update.call(this, cycle);
+        });
     };
 
     const orderCycleByDate = `
@@ -830,11 +920,23 @@ module.exports = {
         });
     };
 
-    var reports = {};
+    /**
+     * Returns the promise of removing the item identified by the `itemId` from the
+     * order identified by the `orderId` and fetching the updated order.
+     */
+    orders.removeItem = function(orderId, itemId) {
+      const sql = `
+        delete from order_items
+        where order_id = ? and item_id = ?
+      `;
+      return db.query(sql, [orderId, itemId]).then(() => orders.get(orderId));
+    }
+
+    const reports = {};
 
     reports.getItemUsage = function(query) {
-      var itemsWhere = items.sqlWhere(query);
-      var sql = 'select a.*, max(h.checkout_date) as last_checkout_date ' +
+      const itemsWhere = items.sqlWhere(query);
+      const sql = 'select a.*, max(h.checkout_date) as last_checkout_date ' +
                 'from items a, issue_history h ' +
                 (itemsWhere.sql ? itemsWhere.sql + ' and ' : ' where ') +
                 ' a.barcode = h.barcode ' +

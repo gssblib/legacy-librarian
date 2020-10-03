@@ -16,18 +16,22 @@ import { ItemBrowserPageComponent } from './item-browser-page/item-browser-page.
 import { RouterModule } from '@angular/router';
 import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.component';
 import { SharedModule } from '../shared/shared.module';
-import {MatButtonModule} from "@angular/material/button";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatCardModule} from "@angular/material/card";
-import {MatInputModule} from "@angular/material/input";
-import {MatSelectModule} from "@angular/material/select";
-import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {MatSidenavModule} from "@angular/material/sidenav";
-import {MatToolbarModule} from "@angular/material/toolbar";
-import {MatIconModule} from "@angular/material/icon";
-import {MatListModule} from "@angular/material/list";
-import {MatPaginatorModule} from "@angular/material/paginator";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatCardModule } from "@angular/material/card";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { CatalogItemCardComponent } from './catalog-item-card/catalog-item-card.component';
+import { CatalogOrderPageComponent } from './catalog-order-page/catalog-order-page.component';
+import { CatalogOrderComponent } from './catalog-order/catalog-order.component';
+import { MatTableModule } from "@angular/material/table";
 
 @NgModule({
   imports: [
@@ -41,15 +45,16 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    MatSidenavModule,
-    MatToolbarModule,
     MatIconModule,
+    MatInputModule,
     MatListModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSnackBarModule,
+    MatTableModule,
+    MatToolbarModule,
     NotFoundModule,
     HomeModule,
     SharedModule,
@@ -62,6 +67,9 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     ItemBrowserPageComponent,
     AppSearchBarComponent,
     CheckedOutPageComponent,
+    CatalogItemCardComponent,
+    CatalogOrderPageComponent,
+    CatalogOrderComponent,
   ],
   providers: [
   ],

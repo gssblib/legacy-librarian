@@ -14,36 +14,99 @@ const roles = {
   },
   borrower: {
     permissions: [
-      {resource: "items", operations: ['read']},
-      {resource: "profile", operations: ['read']}
+      {
+        resource: 'items',
+        operations: ['read'],
+      },
+      {
+        resource: 'profile',
+        operations: ['read'],
+      },
+      {
+        resource: 'items',
+        operations: ['order'],
+        restrictions: [
+          (user, permission, action) => {
+            return Number(user.id) === Number(action.params.borrower);
+          },
+        ],
+      },
     ]
   },
   clerk: {
     permissions: [
-      {resource: 'items', operations: ['read', 'checkin', 'checkout', 'renew']},
-      {resource: 'borrowers', operations: ['read', 'payFees', 'renewAllItems']}
+      {
+        resource: 'items',
+        operations: ['read', 'checkin', 'checkout', 'renew'],
+      },
+      {
+        resource: 'borrowers',
+        operations: ['read', 'payFees', 'renewAllItems'],
+      },
     ]
   },
   librarian: {
     permissions: [
-      {resource: 'items', operations: crud.concat('checkin', 'checkout', 'renew', 'order')},
-      {resource: 'borrowers', operations: crud.concat('payFees', 'renewAllItems')},
-      {resource: 'fees', operations: crud},
-      {resource: 'checkouts', operations: crud},
-      {resource: 'reports', operations: crud},
-      {resource: 'ordercycles', operations: crud},
-      {resource: 'orders', operations: crud},
+      {
+        resource: 'items',
+        operations: [...crud, 'checkin', 'checkout', 'renew', 'order'],
+      },
+      {
+        resource: 'borrowers',
+        operations: [...crud, 'payFees', 'renewAllItems'],
+      },
+      {
+        resource: 'fees',
+        operations: crud,
+      },
+      {
+        resource: 'checkouts',
+        operations: crud,
+      },
+      {
+        resource: 'reports',
+        operations: crud,
+      },
+      {
+        resource: 'ordercycles',
+        operations: crud,
+      },
+      {
+        resource: 'orders',
+        operations: crud,
+      },
     ]
   },
   admin: {
     permissions: [
-      {resource: 'users', operations: crud},
-      {resource: 'items', operations: crud.concat('checkin', 'checkout', 'renew')},
-      {resource: 'borrowers', operations: crud},
-      {resource: 'reports', operations: crud}
+      {
+        resource: 'users',
+        operations: crud,
+      },
+      {
+        resource: 'items',
+        operations: [...crud, 'checkin', 'checkout', 'renew'],
+      },
+      {
+        resource: 'borrowers',
+        operations: crud,
+      },
+      {
+        resource: 'reports',
+        operations: crud,
+      },
     ]
   }
 };
+
+function getPermissions(roleNames) {
+  if (!Array.isArray(roleNames)) {
+    roleNames = roleNames.split();
+  }
+  return roleNames
+    .map(roleName => roles[roleName])
+    .flatMap(role => role && role.permissions || []);
+}
 
 module.exports = function (db) {
 
@@ -145,6 +208,7 @@ module.exports = function (db) {
     'sycamore': authenticateSycamore
   };
 
+
   function authenticate(login) {
     var auth = AuthenticationMethods[login.type];
     if (auth === undefined)
@@ -157,17 +221,30 @@ module.exports = function (db) {
   }
 
   /**
+   * Returns true if the `permission` permits the `action`.
+   */
+  function checkPermission(user, permission, action) {
+    console.log('checkPermission, user:', user, ', permission:', permission, ', action:', action);
+    if (permission.resource !== action.resource) {
+      return false;
+    }
+    if (!permission.operations.includes(action.operation)) {
+      return false;
+    }
+    const restrictions = permission.restrictions || [];
+    if (restrictions.length === 0) {
+      return true;
+    }
+    return restrictions.every(restriction => restriction(user, permission, action));
+  }
+
+
+  /**
    * Returns true if the action is authorized by the permissions.
    */
-  function isAuthorized(permissions, action) {
-    for (var i = 0; i < permissions.length; ++i) {
-      var permission = permissions[i];
-      if (action.resource === permission.resource
-	  && permission.operations.indexOf(action.operation) >= 0) {
-	return true;
-      }
-    }
-    return false;
+  function isAuthorized(user, action) {
+    const permissions = getPermissions(user.roles);
+    return permissions.some(permission => checkPermission(user, permission, action));
   };
 
   return {

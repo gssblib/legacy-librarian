@@ -21,7 +21,7 @@ mat-chip.normal {
   font-size: 100%;
 }
 
-mat-chip.available, mat-chip.circulating {
+mat-chip.available {
   background-color: #5cb85c;
 }
 
@@ -29,6 +29,6 @@ mat-chip.checked_out {
   background-color: #f0ad4e;
 }
 
-mat-chip.unavailable, mat-chip.lost, mat-chip.deleted {
-  background-color: #d9534f;
+mat-chip.ordered {
+  background-color: #f0ad4e;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ConfigService } from "../../core/config.service";
 import { Item } from "../shared/item";
 import { ItemState } from "../shared/item-state";
@@ -8,18 +8,14 @@ import { ItemState } from "../shared/item-state";
   templateUrl: './item-card.component.html',
   styleUrls: ['./item-card.component.css']
 })
-export class ItemCardComponent implements OnInit {
+export class ItemCardComponent {
   @Input('item') item: Item;
 
-  ItemState = ItemState;
+  readonly ItemState = ItemState;
 
   hasCover: boolean = true;
 
-  constructor(
-    private config: ConfigService,
-  ) { }
-
-  ngOnInit() {
+  constructor(public readonly config: ConfigService) {
   }
 
   noCover() {

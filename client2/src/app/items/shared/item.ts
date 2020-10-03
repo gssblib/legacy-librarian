@@ -1,6 +1,6 @@
 import { Checkout } from "./checkout";
 import { ItemState } from "./item-state";
-import { ItemStatus } from "./item-status";
+import { Availability, ItemStatus } from "./item-status";
 import { Borrower } from '../../borrowers/shared/borrower';
 import { OrderItem } from "../../orders/shared/order-item";
 
@@ -29,6 +29,7 @@ export class Item {
   history: Array<any>;
   borrower?: Borrower;
   added?: Date|string;
+  availability?: Availability;
 
   get status(): ItemStatus {
     if (this.state !== ItemState.CIRCULATING) {

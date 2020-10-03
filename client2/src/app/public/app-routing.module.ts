@@ -6,16 +6,38 @@ import { HomeComponent } from "../../home/home.component";
 import { SycamoreLoginPageComponent } from "../shared/login-page/login-page.component";
 import { ItemBrowserPageComponent } from './item-browser-page/item-browser-page.component';
 import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.component';
+import { CatalogOrderPageComponent } from "./catalog-order-page/catalog-order-page.component";
 
 @NgModule({
   imports: [
     RouterModule.forRoot([
-      { path: '', component: HomeComponent},
-      { path: 'items', component: ItemBrowserPageComponent, canActivate: [AuthGuard] },
-      { path: 'checkedout', component:  CheckedOutPageComponent, canActivate: [AuthGuard]},
-
-      { path: 'login', component: SycamoreLoginPageComponent },
-      { path: '**', component: NotFoundComponent },
+      {
+        path: '',
+        component: HomeComponent,
+      },
+      {
+        path: 'items',
+        component: ItemBrowserPageComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'checkedout',
+        component:  CheckedOutPageComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'order',
+        component:  CatalogOrderPageComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'login',
+        component: SycamoreLoginPageComponent
+      },
+      {
+        path: '**',
+        component: NotFoundComponent
+      },
     ])
   ],
   exports: [

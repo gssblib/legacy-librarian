@@ -39,6 +39,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatTableModule } from "@angular/material/table";
 import { MatSortModule } from "@angular/material/sort";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { ItemAvailabilityComponent } from './item-availability/item-availability.component';
 
 /**
  * Angular module for the items (books, CDs) in the library.
@@ -88,6 +89,7 @@ import { MatPaginatorModule } from "@angular/material/paginator";
     ItemEditCoverComponent,
     ItemCardComponent,
     ItemDetailsComponent,
+    ItemAvailabilityComponent,
   ],
   providers: [
     ItemResolverService,
@@ -104,6 +106,7 @@ import { MatPaginatorModule } from "@angular/material/paginator";
     ItemCardComponent,
     ItemSearchPageComponent,
     ItemDetailsComponent,
+    ItemAvailabilityComponent,
   ]
 })
 export class ItemsModule { }

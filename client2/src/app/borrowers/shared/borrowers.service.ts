@@ -61,12 +61,17 @@ export class BorrowersService extends ModelsService<Borrower> {
       .pipe(map(result => new TableFetchResult(result.rows, result.count)));
   }
 
-  checkOutItem(barcode, borrowerNumber) {
+  checkOutItem(barcode: string, borrowerNumber: number) {
     return this.rpc.httpPost('items/' + barcode + '/checkout', {borrower: borrowerNumber});
   }
 
-  orderItem(barcode, borrowerNumber) {
-    return this.rpc.httpPost('items/' + barcode + '/order', {borrower: borrowerNumber});
+  orderItem(barcode: string, borrowerNumber: number) {
+    return this.rpc.httpPost(`items/${barcode}/order`, {borrower: borrowerNumber});
+  }
+
+  removeOrderedItem(borrowerNumber: number, orderId: number, itemId: number) {
+    const resourcePath = `borrowers/${borrowerNumber}/orders/${orderId}/items/${itemId}`;
+    return this.rpc.httpDelete(resourcePath);
   }
 
   getMyBorrower() {

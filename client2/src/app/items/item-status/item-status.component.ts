@@ -17,7 +17,7 @@ export class ItemStatusComponent {
   @Input('size') size = Size.SMALL;
 
   get name(): string {
-    return ItemStatus[this.status].toLowerCase();
+    return this.status.toLowerCase();
   }
 
   get label(): string {

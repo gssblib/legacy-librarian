@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 /**
  * JWT JSON object returned by the server.
  */
-class JwtResponse {
+interface JwtResponse {
   username: string;
   token: string;
   roles: string;
@@ -20,7 +20,7 @@ class JwtResponse {
 /**
  * User information stored in local storage.
  */
-class User {
+export interface User {
   username: string;
   token: string;
   roles: string;
@@ -68,7 +68,7 @@ export class AuthenticationService {
         // login successful if there's a jwt token in the response
         const token = response.token;
         if (token) {
-          var user = this.toUser(username, response);
+          const user = this.toUser(username, response);
           AuthenticationService.setLocalUser(user);
           this.userSubject.next(user);
           return true;
@@ -79,14 +79,10 @@ export class AuthenticationService {
   }
 
   private toUser(username: string, response: JwtResponse): User {
-    return Object.assign(new User(), {
-      username: username,
-      token: response.token,
-      roles: response.roles,
-      permissions: response.permissions,
-      surname: response.surname,
-      id: response.id,
-    });
+    return {
+      ...response,
+      username,
+    };
   }
 
   logout(): void {

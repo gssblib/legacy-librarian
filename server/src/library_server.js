@@ -153,9 +153,22 @@ httpcall.handlePaths([
   },
   { get: '/me',
     fn: call => {
-      return library.borrowers.get(call.req.user.id, {items: true, fees: true});
+      return library.borrowers.get(call.req.user.id, {items: true, fees: true, order: true});
     },
     action: {resource: 'profile', operation: 'read'},
+  },
+  { delete: '/orders/:id/items/:itemId',
+    fn: function (call) {
+      return library.orders.removeItem(call.param('id'), call.param('itemId'));
+    },
+    action: {resource: 'orders', operation: 'update'},
+  },
+  { delete: '/borrowers/:borrower/orders/:order/items/:item',
+    fn: function (call) {
+      return library.borrowers
+        .removeOrderItem(call.param('borrower'), call.param('order'), call.param('item'));
+    },
+    action: {resource: 'items', operation: 'order'},
   },
 ]);
 
@@ -178,14 +191,14 @@ config['clients'].forEach(function(clientConfig) {
       '*',
       (req, res) => {
         res.sendFile('index.html', {'root': path});
-    });
+      });
   } else {
     server.use(clientConfig.endpoint, express.static(path));
     server.get(
       clientConfig.endpoint + '/*',
       (req, res) => {
         res.sendFile('index.html', {'root': path});
-    });
+      });
   }
 });
 

@@ -10,22 +10,28 @@ module.exports = function(server, api_prefix, auth) {
     next();
   }
 
-  function authorize(action) {
-    if (action === undefined)
+  function authorize(handlerAction) {
+    if (handlerAction === undefined) {
         return nullMiddleware;
+    }
 
-    var authz = function(req, res, next) {
-      /* Look at either the JWT stored user. */
-      var user = req.user;
-      if (user === undefined)
+    return function(req, res, next) {
+      const user = req.user;
+      if (user === undefined) {
         return res.status(401).send('NO_USER');
-      if (user.permissions === undefined)
+      }
+      if (user.permissions === undefined) {
         return res.status(401).send('NO_PERMISSIONS');
-      if (!auth.isAuthorized(user.permissions, action))
+      }
+      const action = {
+        ...handlerAction,
+        params: {...req.params, ...req.body},
+      };
+      if (!auth.isAuthorized(user, action)) {
         return res.status(401).send('NOT_AUTHORIZED');
+      }
       return next();
     };
-    return authz;
   }
 
   /**
@@ -41,7 +47,7 @@ module.exports = function(server, api_prefix, auth) {
    * Returns a request parameter (with converter function and default value).
    */
   HttpCall.prototype.param = function (name, converter, defaultValue) {
-    var value = this.req.param(name);
+    const value = this.req.param(name);
     converter = converter || String;
     return value === undefined ? defaultValue : converter(value);
   };
@@ -50,10 +56,10 @@ module.exports = function(server, api_prefix, auth) {
    * Returns the named request parameters as an object.
    */
   HttpCall.prototype.params = function (names) {
-    var self = this;
-    var values = {};
+    const self = this;
+    const values = {};
     names.forEach(function (name) {
-      var value = self.param(name);
+      const value = self.param(name);
       if (value !== undefined) {
         values[name] = value;
       }
@@ -62,8 +68,8 @@ module.exports = function(server, api_prefix, auth) {
   };
 
   HttpCall.prototype.flags = function (param) {
-    var names = this.param(param, function (s) { return s.split(','); }, []);
-    var flags = {};
+    const names = this.param(param, function (s) { return s.split(','); }, []);
+    const flags = {};
     for (var i = 0; i < names.length; ++i) {
       flags[names[i]] = true;
     }
@@ -92,7 +98,7 @@ module.exports = function(server, api_prefix, auth) {
    * Translates the result of a service promise to an HTTP response.
    */
   HttpCall.prototype.handlePromise = function (promise) {
-    var self = this;
+    const self = this;
     promise.then(
       function (result) {
         self.res.status(200).json(result);
@@ -109,14 +115,14 @@ module.exports = function(server, api_prefix, auth) {
    */
   function httpHandler(handler) {
     return function (req, res) {
-      var call = new HttpCall(req, res);
-      var promise = handler.fn(call);
+      const call = new HttpCall(req, res);
+      const promise = handler.fn(call);
       call.handlePromise(promise);
     };
   }
 
   function handlePath(handler) {
-    var mw = (handler.middleware !== undefined) ? handler.middleware : nullMiddleware;
+    const mw = (handler.middleware !== undefined) ? handler.middleware : nullMiddleware;
     if (handler.get) {
       server.get(api_prefix + handler.get, mw, authorize(handler.action), httpHandler(handler));
     } else if (handler.put) {
@@ -133,8 +139,8 @@ module.exports = function(server, api_prefix, auth) {
    * path and a call handler function.
    */
   function handlePaths(handlers) {
-    for (var i = 0; i < handlers.length; ++i) {
-      handlePath(handlers[i]);
+    for (const handler of handlers) {
+      handlePath(handler);
     }
   }
 
@@ -142,8 +148,8 @@ module.exports = function(server, api_prefix, auth) {
    * Registers the RESTful handlers for the entity.
    */
   function handleEntity(entity, methods) {
-    var basePath = '/' + entity.name;
-    var keyPath = basePath + '/:key';
+    const basePath = '/' + entity.name;
+    const keyPath = basePath + '/:key';
     handlePath({
       get: basePath + '/fields',
       fn: function (call) { return Q(entity.fields()); },

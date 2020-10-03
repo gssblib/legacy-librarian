@@ -1,7 +1,14 @@
 /**
  * Stati of an item.
- *
  */
+
+export enum Availability {
+  AVAILABLE = 'AVAILABLE',
+  CHECKED_OUT = 'CHECKED_OUT',
+  ORDERED = 'ORDERED',
+}
+
+
 export enum ItemStatus {
   AVAILABLE = 'AVAILABLE',
   CHECKED_OUT = 'CHECKED_OUT',
@@ -10,6 +17,14 @@ export enum ItemStatus {
   DELETED = 'DELETED',
   LOST = 'LOST',
   IN_REPAIR = 'IN_REPAIR',
+}
+
+export function getAvailabilityLabel(availability: Availability): string {
+  switch (availability) {
+    case Availability.AVAILABLE: return 'Available';
+    case Availability.CHECKED_OUT: return 'Checked Out';
+    case Availability.ORDERED: return 'Ordered';
+  }
 }
 
 export function getItemStatusLabel(status: ItemStatus): string {

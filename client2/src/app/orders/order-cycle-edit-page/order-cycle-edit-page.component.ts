@@ -6,6 +6,7 @@ import { NotificationService } from "../../core/notification-service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { OrderCycle } from "../shared/order-cycle";
+import { RpcError } from "../../core/rpc-error";
 
 @Component({
   selector: 'gsl-order-cycle-edit-page',
@@ -29,7 +30,23 @@ export class OrderCycleEditPageComponent implements OnInit {
     this.orderCycle = this.orderCycleService.get();
   }
 
-  submit(): void {}
+  save(orderCycle: OrderCycle): void {
+    this.orderCyclesService.save(orderCycle).subscribe(
+      cycle => this.router.navigate(['ordercycles']),
+      (error: RpcError) => this.notificationService.showError(this.toErrorMessage(error)));
 
-  cancel(): void {}
+  }
+
+  cancel(): void {
+    this.router.navigate(['ordercycles']).then();
+  }
+
+  private toErrorMessage(error: RpcError): string {
+    switch (error.errorCode) {
+      case 'ORDER_CYCLE_OVERLAP':
+        return 'New order cycle overlaps with existing one';
+      default:
+        return `Server error: ${error.errorCode}`;
+    }
+  }
 }

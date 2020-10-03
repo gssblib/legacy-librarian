@@ -1,6 +1,6 @@
 <mat-card>
   <h3>Add order cycle</h3>
-  <form [formGroup]="form" novalidate (ngSubmit)="submitForm(orderCycle)"
+  <form [formGroup]="form" novalidate (ngSubmit)="save(orderCycle)"
         (keydown.enter)="$event.preventDefault()">
     <div class="fields">
       <formly-form [model]="orderCycle" [form]="form" [fields]="fields"></formly-form>

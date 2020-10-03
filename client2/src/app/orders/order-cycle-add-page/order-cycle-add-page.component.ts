@@ -42,7 +42,7 @@ export class OrderCycleAddPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  submitForm(orderCycle: OrderCycle) {
+  save(orderCycle: OrderCycle) {
     this.orderCyclesService.add(orderCycle).subscribe(
       cycle => this.router.navigate(['ordercycles']),
       (error: RpcError) => this.notificationService.showError(this.toErrorMessage(error)));

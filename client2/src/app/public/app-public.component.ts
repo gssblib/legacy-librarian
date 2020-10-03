@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../core/auth.service';
 import { Router } from "@angular/router";
 import { NotificationService } from "../core/notification-service";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
+/**
+ * Entry point for the online catalog.
+ */
 @Component({
   selector: 'gsl-root',
   templateUrl: './app-public.component.html',
-  styleUrls: ['./app-public.component.css']
+  styleUrls: ['./app-public.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppPublicComponent implements OnInit {
   constructor(private snackBar: MatSnackBar,
@@ -25,13 +29,12 @@ export class AppPublicComponent implements OnInit {
   }
 
   get user() {
-    var user = this.authenticationService.getUser();
     return this.authenticationService.getUser();
   }
 
   logout() {
     this.authenticationService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']).then();
   }
 }
 

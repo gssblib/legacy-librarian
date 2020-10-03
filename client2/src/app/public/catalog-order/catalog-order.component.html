@@ -1,14 +1,6 @@
-<header>
-<h2>Order {{order.id}}</h2>
-<button mat-icon-button class="print-button" (click)="print()"><mat-icon>print</mat-icon></button>
-</header>
-
 <div class="field">
-  <label>Borrower</label> <a [routerLink]="['/borrowers', order.borrower.borrowernumber]">{{order.borrower.contactname}}</a>
-</div>
-<div class="field">
-  <label>Order cycle</label> <a [routerLink]="['/ordercycles', order.cycle.id]"
-    >{{order.cycle.order_window_start | date:'short'}} to {{order.cycle.order_window_end | date:'short'}}</a>
+  <label>Order cycle</label>
+{{order.cycle.order_window_start | date:'short'}} to {{order.cycle.order_window_end | date:'short'}}
 </div>
 
 <p *ngIf="dataSource.data.length === 0">

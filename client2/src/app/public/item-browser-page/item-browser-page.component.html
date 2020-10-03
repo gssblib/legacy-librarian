@@ -3,7 +3,9 @@
      [criteria]="criteria" [fields]="searchFields" (search)="navigate()">
   </gsl-multi-field-search-bar>
 
-  <gsl-item-card *ngFor="let item of items" [item]="item"></gsl-item-card>
+  <gsl-catalog-item-card *ngFor="let item of items"
+                         [item]="item"
+                         (orderItem)="order($event)"></gsl-catalog-item-card>
   <mat-paginator [length]="count" [pageSize]="10">
   </mat-paginator>
 </mat-card>
