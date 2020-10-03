@@ -228,7 +228,6 @@ module.exports = function (db) {
    * Returns true if the `permission` permits the `action`.
    */
   function checkPermission(user, permission, action) {
-    console.log('checkPermission, user:', user, ', permission:', permission, ', action:', action);
     if (permission.resource !== action.resource) {
       return false;
     }
