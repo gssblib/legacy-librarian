@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ItemsService } from '../../items/shared/items.service';
 import { ItemState } from '../../items/shared/item-state';
 import { Observable, of } from 'rxjs';
-import { catchError, finalize, map, mergeMap, switchMap } from "rxjs/operators";
+import { catchError, finalize, map } from "rxjs/operators";
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DataTableParams } from '../../core/data-table-params';
 import { NotificationService } from '../../core/notification-service';
@@ -20,15 +20,21 @@ import { BorrowersService } from "../../borrowers/shared/borrowers.service";
 
 const SEARCH_FIELDS = ['title', 'seriestitle', 'author', 'subject', 'category', 'age'];
 
+/**
+ * Search page of the online catalog.
+ *
+ * This page shows the search form fields and the result table.
+ */
 @Component({
-  selector: 'gsl-item-browser-page',
-  templateUrl: './item-browser-page.component.html',
-  styleUrls: ['./item-browser-page.component.css'],
+  selector: 'gsl-catalog-search-page',
+  templateUrl: './catalog-search-page.component.html',
+  styleUrls: ['./catalog-search-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ItemBrowserPageComponent implements AfterViewInit {
-
+export class CatalogSearchPageComponent implements AfterViewInit {
+  /** Search criteria that are automatically added to every query. */
   extraCriteria: Object = {'state': 'CIRCULATING'}
+
   ItemState = ItemState;
 
   items: Item[] = [];
@@ -45,7 +51,7 @@ export class ItemBrowserPageComponent implements AfterViewInit {
   /** Wrapper for pagination and sorting. */
   params: DataTableParams;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(private readonly notificationService: NotificationService,
               private readonly itemsService: ItemsService,

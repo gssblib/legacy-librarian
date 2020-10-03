@@ -11,7 +11,7 @@ import { ItemsModule } from '../items/items.module';
 import { BorrowersModule } from '../borrowers/borrowers.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppPublicComponent } from './app-public.component';
-import { ItemBrowserPageComponent } from './item-browser-page/item-browser-page.component';
+import { CatalogSearchPageComponent } from './catalog-search-page/catalog-search-page.component';
 import { RouterModule } from '@angular/router';
 import { CheckedOutPageComponent } from './checked-out-page/checked-out-page.component';
 import { SharedModule } from '../shared/shared.module';
@@ -63,7 +63,7 @@ import { MatTableModule } from "@angular/material/table";
   ],
   declarations: [
     AppPublicComponent,
-    ItemBrowserPageComponent,
+    CatalogSearchPageComponent,
     CheckedOutPageComponent,
     CatalogItemCardComponent,
     CatalogOrderPageComponent,
