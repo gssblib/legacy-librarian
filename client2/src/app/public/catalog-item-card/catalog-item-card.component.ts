@@ -25,6 +25,7 @@ import { NotificationService } from "../../core/notification-service";
 })
 export class CatalogItemCardComponent {
   @Input() item: Item;
+  @Input() showOrderButton = false;
   @Output() orderItem = new EventEmitter<Item>();
 
   hasCover: boolean = true;

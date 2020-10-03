@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ModelsService } from "../../core/models.service";
-import { OrderCycle } from "./order-cycle";
+import { OrderCycle, OrderCycleState } from "./order-cycle";
 import { RpcService } from "../../core/rpc.service";
 import { FormService } from "../../core/form.service";
 import { DateService } from "../../core/date-service";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 /**
  * Service for accessing the order cycles in the backend.
@@ -11,7 +13,8 @@ import { DateService } from "../../core/date-service";
 @Injectable({providedIn: 'root'})
 export class OrderCyclesService extends ModelsService<OrderCycle> {
 
-  constructor(rpc: RpcService, formService: FormService) {
+  constructor(rpc: RpcService, formService: FormService,
+              private readonly dateService: DateService) {
     super('ordercycles', orderCycle => orderCycle.id, rpc, formService);
   }
 
@@ -26,5 +29,11 @@ export class OrderCyclesService extends ModelsService<OrderCycle> {
   beforeSave(model: OrderCycle) {
     model.order_window_start = DateService.toString(model.order_window_start);
     model.order_window_end = DateService.toString(model.order_window_end);
+  }
+
+  getPresentAndFutureCycles(): Observable<OrderCycle[]> {
+    const now = this.dateService.now();
+    return this.getAll()
+      .pipe(map(cycles => cycles.filter(cycle => cycle.getState(now) !== OrderCycleState.CLOSED)));
   }
 }

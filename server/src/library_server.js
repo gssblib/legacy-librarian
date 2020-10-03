@@ -42,7 +42,8 @@ server.use(expressJwt(
     {secret: config['jwt']['secret'], credentialsRequired: false}));
 
 httpcall.handlePaths([
-  { post: '/authenticate',
+  {
+    post: '/authenticate',
     fn: function(call)  {
       var login = call.req.body;
       return auth.authenticate(login)
@@ -76,51 +77,60 @@ httpcall.handlePaths([
           });
     },
   },
-  { get: '/fees',
+  {
+    get: '/fees',
     fn: call => library.getFees(call.req.query, call.limit()),
     action: {resource: 'fees', operation: 'read'},
   },
-  { get: '/borrowers/fees',
+  {
+    get: '/borrowers/fees',
     fn: function (call) {
       return library.borrowers.allFees();
     },
     action: {resource: 'fees', operation: 'read'},
   },
-  { get: '/borrowers/:id/history',
+  {
+    get: '/borrowers/:id/history',
     fn: call => library.borrowers.history(call.param('id'), false, call.limit(), call.req.query._order),
     action: {resource: 'borrowers', operation: 'read'},
   },
-  { post: '/history/:id/payFee',
+  {
+    post: '/history/:id/payFee',
     fn: function (call) {
       return library.history.payFee(call.param('id'));
     },
     action: {resource: 'borrowers', operation: 'payFees'}
   },
-  { post: '/checkouts/:barcode/payFee',
+  {
+    post: '/checkouts/:barcode/payFee',
     fn: function (call) {
       return library.checkouts.payFee(call.param('barcode'));
     },
     action: {resource: 'borrowers', operation: 'payFees'}
   },
-  { post: '/checkouts/updateFees',
+  {
+    post: '/checkouts/updateFees',
     fn: function (call) {
       return library.checkouts.updateFees(call.req.body.date);
     },
     action: {resource: 'checkouts', operation: 'update'}
   },
-  { get: '/reports/itemUsage',
+  {
+    get: '/reports/itemUsage',
     fn: function (call) {
         return library.reports.getItemUsage(call.req.query);
     },
     action: {resource: 'reports', operation: 'read'},
   },
-  { get: '/reports/overdue',
+  {
+    get: '/reports/overdue',
     fn: function (call) {
         return library.reports.getOverdue(call.req.query);
     },
     action: {resource: 'reports', operation: 'read'},
   },
-  { get: '/items/:key/cover',
+  {
+    get: '/items/:key/cover',
     fn: function (call) {
       var img_path = img_root_path + '/' + call.param('key') + '.jpg';
       if (!fs.existsSync(img_path)) {
@@ -132,7 +142,8 @@ httpcall.handlePaths([
       return Q();
     },
   },
-  { post: '/items/:key/cover',
+  {
+    post: '/items/:key/cover',
     fn: function (call) {
       var img_path = img_root_path + '/' + call.param('key') + '.jpg';
       fs.writeFileSync(img_path, call.req.files['file'][0].buffer);
@@ -141,7 +152,8 @@ httpcall.handlePaths([
     middleware: multer().fields([{name: 'file'}]),
     action: {resource: 'items', operation: 'update'},
   },
-  { delete: '/items/:key/cover',
+  {
+    delete: '/items/:key/cover',
     fn: function (call) {
       var img_path = img_root_path + '/' + call.param('key') + '.jpg';
       if (fs.existsSync(img_path)) {
@@ -151,19 +163,22 @@ httpcall.handlePaths([
     },
     action: {resource: 'items', operation: 'update'},
   },
-  { get: '/me',
+  {
+    get: '/me',
     fn: call => {
       return library.borrowers.get(call.req.user.id, {items: true, fees: true, order: true});
     },
     action: {resource: 'profile', operation: 'read'},
   },
-  { delete: '/orders/:id/items/:itemId',
+  {
+    delete: '/orders/:id/items/:itemId',
     fn: function (call) {
       return library.orders.removeItem(call.param('id'), call.param('itemId'));
     },
     action: {resource: 'orders', operation: 'update'},
   },
-  { delete: '/borrowers/:borrower/orders/:order/items/:item',
+  {
+    delete: '/borrowers/:borrower/orders/:order/items/:item',
     fn: function (call) {
       return library.borrowers
         .removeOrderItem(call.param('borrower'), call.param('order'), call.param('item'));

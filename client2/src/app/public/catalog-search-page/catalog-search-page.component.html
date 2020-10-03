@@ -1,10 +1,18 @@
 <mat-card>
   <gsl-multi-field-search-bar
-     [criteria]="criteria" [fields]="searchFields" (search)="navigate()">
+    [criteria]="criteria" [fields]="searchFields$" (search)="navigate()">
   </gsl-multi-field-search-bar>
+  <div class="order-cycle-info">
+  <span *ngIf="openOrderCycle">
+    This current order cycle closes {{openOrderCycle.order_window_end | date:'short'}}.
+  </span>
+    <span *ngIf="scheduledOrderCycle">
+    This next order cycle opens {{scheduledOrderCycle.order_window_start | date:'short'}}.
+  </span>
+  </div>
 
   <gsl-catalog-item-card *ngFor="let item of items"
-                         [item]="item"
+                         [item]="item" [showOrderButton]="openOrderCycle"
                          (orderItem)="order($event)"></gsl-catalog-item-card>
   <mat-paginator [length]="count" [pageSize]="10">
   </mat-paginator>

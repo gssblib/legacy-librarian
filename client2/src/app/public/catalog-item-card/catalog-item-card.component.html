@@ -6,9 +6,10 @@
     </div>
     <div class="order">
       <gsl-item-availability
-        *ngIf="!available(item)"
+        *ngIf="!available(item) || !showOrderButton"
         [availability]="item.availability" [size]="'normal'"></gsl-item-availability>
-      <button *ngIf="available(item)" mat-raised-button color="primary" class="order"
+      <button *ngIf="showOrderButton && available(item)" mat-raised-button color="primary" class="order"
+              matTooltip="Add this item to your current order"
               (click)="order(item)">Order</button>
     </div>
   </div>

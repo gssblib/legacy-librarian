@@ -19,6 +19,10 @@ const roles = {
         operations: ['read'],
       },
       {
+        resource: 'ordercycles',
+        operations: ['read'],
+      },
+      {
         resource: 'profile',
         operations: ['read'],
       },

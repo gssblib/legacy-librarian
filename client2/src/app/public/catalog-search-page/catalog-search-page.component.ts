@@ -3,20 +3,23 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy, OnInit,
   ViewChild
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemsService } from '../../items/shared/items.service';
 import { ItemState } from '../../items/shared/item-state';
-import { Observable, of } from 'rxjs';
-import { catchError, finalize, map } from "rxjs/operators";
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, finalize, map, takeUntil } from "rxjs/operators";
 import { DataTableParams } from '../../core/data-table-params';
 import { NotificationService } from '../../core/notification-service';
 import { MatPaginator } from "@angular/material/paginator";
 import { Item } from "../../items/shared/item";
 import { AuthenticationService, User } from "../../core/auth.service";
 import { BorrowersService } from "../../borrowers/shared/borrowers.service";
+import { OrderCyclesService } from "../../orders/shared/order-cycles.service";
+import { OrderCycle, OrderCycleState } from "../../orders/shared/order-cycle";
+import { DateService } from "../../core/date-service";
 
 const SEARCH_FIELDS = ['title', 'seriestitle', 'author', 'subject', 'category', 'age'];
 
@@ -31,16 +34,32 @@ const SEARCH_FIELDS = ['title', 'seriestitle', 'author', 'subject', 'category', 
   styleUrls: ['./catalog-search-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CatalogSearchPageComponent implements AfterViewInit {
+export class CatalogSearchPageComponent implements AfterViewInit, OnInit, OnDestroy {
+  private readonly destroyed = new Subject<void>();
+
   /** Search criteria that are automatically added to every query. */
   extraCriteria: Object = {'state': 'CIRCULATING'}
 
-  ItemState = ItemState;
+  readonly ItemState = ItemState;
 
+  /** Items shown in the results table. */
   items: Item[] = [];
 
+  /**
+   * Order cycles received from the server.
+   *
+   * We need the order cycles to determine if one currently order items, and to show the start of
+   * the next order cycle.
+   */
+  orderCycles: OrderCycle[] = [];
+
+  openOrderCycle?: OrderCycle;
+  scheduledOrderCycle?: OrderCycle;
+
+  nextOrderCycle?: OrderCycle;
+
   /** Formly config for the search form. */
-  searchFields: Observable<FormlyFieldConfig[]>;
+  readonly searchFields$ = this.itemsService.getFormlyFields(SEARCH_FIELDS);
 
   /** Model of the search form. */
   criteria = {};
@@ -56,11 +75,30 @@ export class CatalogSearchPageComponent implements AfterViewInit {
   constructor(private readonly notificationService: NotificationService,
               private readonly itemsService: ItemsService,
               private readonly borrowersService: BorrowersService,
+              private readonly orderCyclesService: OrderCyclesService,
               private readonly authenticationService: AuthenticationService,
+              private readonly dateService: DateService,
               private readonly changeDetectorRef: ChangeDetectorRef,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
-    this.searchFields = this.itemsService.getFormlyFields(SEARCH_FIELDS);
+  }
+
+  ngOnInit(): void {
+    this.orderCyclesService.getPresentAndFutureCycles().subscribe(orderCycles => {
+      this.setOrderCycles(orderCycles);
+    });
+  }
+
+  private setOrderCycles(orderCycles: OrderCycle[]): void {
+    this.orderCycles = orderCycles;
+    this.changeDetectorRef.markForCheck();
+    this.openOrderCycle = this.getOrderCycle(OrderCycleState.OPEN);
+    this.scheduledOrderCycle = this.getOrderCycle(OrderCycleState.SCHEDULED);
+  }
+
+  private getOrderCycle(state: OrderCycleState): OrderCycle|undefined {
+    const now = this.dateService.now();
+    return this.orderCycles.find(orderCycle => orderCycle.getState(now) === state);
   }
 
   ngAfterViewInit(): void {
@@ -72,6 +110,7 @@ export class CatalogSearchPageComponent implements AfterViewInit {
     // Load new data when route changes.
     this.route.queryParams
       .pipe(
+        takeUntil(this.destroyed),
         map(params => {
           this.criteria = this.params.parseParams(params);
         }),
@@ -131,5 +170,9 @@ export class CatalogSearchPageComponent implements AfterViewInit {
     }).catch(err => {
       this.notificationService.showError('navigation error', err);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed.next();
   }
 }

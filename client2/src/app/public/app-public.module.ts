@@ -31,6 +31,7 @@ import { CatalogItemCardComponent } from './catalog-item-card/catalog-item-card.
 import { CatalogOrderPageComponent } from './catalog-order-page/catalog-order-page.component';
 import { CatalogOrderComponent } from './catalog-order/catalog-order.component';
 import { MatTableModule } from "@angular/material/table";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @NgModule({
   imports: [
@@ -60,6 +61,7 @@ import { MatTableModule } from "@angular/material/table";
     AppRoutingModule,
     ItemsModule,
     BorrowersModule,
+    MatTooltipModule,
   ],
   declarations: [
     AppPublicComponent,

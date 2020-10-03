@@ -89,6 +89,10 @@ export abstract class ModelsService<T> {
       .pipe(map(result => this.toTableFetchResult(result)));
   }
 
+  getAll(): Observable<T[]> {
+    return this.rpc.httpGet(this.basePath).pipe(map( result => this.toModels(result.rows)));
+  }
+
   save(model: T) {
     const storedModel = Object.assign({}, model);
     this.beforeSave(storedModel);
