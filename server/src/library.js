@@ -308,7 +308,8 @@ module.exports = {
       const sql = 'select max(id) as order_id from orders where borrower_id = ?';
       return db.selectRow(sql, [borrowerId])
         .then(row => {
-          if (!row) {
+          console.log('lastOrder', row);
+          if (!row || !row.order_id) {
             return undefined;
           }
           return orders.get(row.order_id);
@@ -885,6 +886,11 @@ module.exports = {
       const result = {};
       const fetchOrder = db.selectRow(orderSql, [id])
         .then(row => {
+          if (!row) {
+            throw {
+              httpStatusCode: 400, code: 'ENTITY_NOT_FOUND', errno: 1200,
+            };
+          }
           result.id = row.id;
           result.cycle = orderCycles.fromDb(row, true);
           result.cycle.id = row.order_cycle_id;
