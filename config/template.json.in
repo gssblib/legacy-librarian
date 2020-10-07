@@ -9,7 +9,8 @@
     "database": "spils",
     "host": "localhost",
     "user": "gssb",
-    "password": "<passwd>"
+    "password": "<passwd>",
+    "timezone": "UTC"
   },
 
   // Client registrations.
