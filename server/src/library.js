@@ -787,15 +787,37 @@ module.exports = {
     };
 
     /**
+     * Returns the order cycles that overlap the date-time range from `start` to `end`.
+     */
+    orderCycles.getOverlapping = function (start, end) {
+      const sql = `
+        select o.* from order_cycles o
+        where o.order_window_start between ? and ?
+        or    o.order_window_end between ? and ?
+        or    ? between o.order_window_start and o.order_window_end
+        or    ? between o.order_window_start and o.order_window_end
+      `;
+      const dbStart = entity.domains.Datetime.toDb(start);
+      const dbEnd = entity.domains.Datetime.toDb(end);
+      return db.selectRows(sql, [dbStart, dbEnd, dbStart, dbEnd, dbStart, dbEnd]);
+    }
+
+    /**
      * Extension of the order cycle entity 'create' method that checks if the
      * new cycle does not overlap with any existing cycles.
      */
     orderCycles.create = function (cycle) {
-      const startCheck = this.readByDate(cycle.order_window_start);
-      const endCheck = this.readByDate(cycle.order_window_end);
-      return Q.all([startCheck, endCheck])
-        .then(([startResult, endResult]) => {
-          if (startResult.rows.length > 0 || endResult.rows.length > 0) {
+      const start = new Date(cycle.order_window_start);
+      const end = new Date(cycle.order_window_end);
+      if (start.getTime() > end.getTime()) {
+        return Q.reject({
+          httpStatusCode: 400, code: 'ORDER_CYCLE_START_AFTER_END', errno: 1200,
+          cycle: cycle,
+        });
+      }
+      return orderCycles.getOverlapping(cycle.order_window_start, cycle.order_window_end)
+        .then(result => {
+          if (result.rows.length > 0) {
             throw {
               httpStatusCode: 400, code: 'ORDER_CYCLE_OVERLAP', errno: 1200,
               cycle: cycle,
@@ -810,22 +832,19 @@ module.exports = {
      * updated cycle does not overlap with any other existing cycles.
      */
     orderCycles.update = function (cycle) {
-      const startCheck = this.readByDate(cycle.order_window_start);
-      const endCheck = this.readByDate(cycle.order_window_end);
-
-      const isEmptyOrSame = (rows) => {
-        if (rows.length === 0) {
-          return true;
-        }
-        if (rows.length > 1) {
-          return false;
-        }
-        return rows[0].id === cycle.id;
-      };
-
-      return Q.all([startCheck, endCheck])
-        .then(([startResult, endResult]) => {
-          if (!isEmptyOrSame(startResult.rows) || !isEmptyOrSame(endResult.rows)) {
+      const start = new Date(cycle.order_window_start);
+      const end = new Date(cycle.order_window_end);
+      if (start.getTime() > end.getTime()) {
+        return Q.reject({
+          httpStatusCode: 400, code: 'ORDER_CYCLE_START_AFTER_END', errno: 1200,
+          cycle: cycle,
+        });
+      }
+      return orderCycles.getOverlapping(cycle.order_window_start, cycle.order_window_end)
+        .then(result => {
+          console.log('result:', result);
+          const rows = result.rows;
+          if (rows.length > 1 || rows.length === 1 && rows[0].id !== cycle.id) {
             throw {
               httpStatusCode: 400, code: 'ORDER_CYCLE_OVERLAP', errno: 1200,
               cycle: cycle,
