@@ -59,7 +59,10 @@ export class CatalogSearchPageComponent implements AfterViewInit, OnInit, OnDest
   nextOrderCycle?: OrderCycle;
 
   /** Formly config for the search form. */
-  readonly searchFields$ = this.itemsService.getFormlyFields(SEARCH_FIELDS);
+  readonly searchFields$ = this.itemsService.getFormlyFields(SEARCH_FIELDS, column => ({
+    ...column,
+    required: false,
+  }));
 
   /** Model of the search form. */
   criteria = {};
@@ -96,7 +99,7 @@ export class CatalogSearchPageComponent implements AfterViewInit, OnInit, OnDest
     this.scheduledOrderCycle = this.getOrderCycle(OrderCycleState.SCHEDULED);
   }
 
-  private getOrderCycle(state: OrderCycleState): OrderCycle|undefined {
+  private getOrderCycle(state: OrderCycleState): OrderCycle | undefined {
     const now = this.dateService.now();
     return this.orderCycles.find(orderCycle => orderCycle.getState(now) === state);
   }
@@ -105,7 +108,9 @@ export class CatalogSearchPageComponent implements AfterViewInit, OnInit, OnDest
     this.params = new DataTableParams(SEARCH_FIELDS, this.paginator, null);
 
     // Navigate if pagination or sort order changes.
-    this.paginator.page.subscribe(() => this.navigate());
+    this.paginator.page
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(() => this.navigateToCurrentPage());
 
     // Load new data when route changes.
     this.route.queryParams
@@ -161,12 +166,26 @@ export class CatalogSearchPageComponent implements AfterViewInit, OnInit, OnDest
   }
 
   /**
+   * Navigate to the first search result page for the given search `criteria`.
+   */
+  search(criteria: object): void {
+    this.navigate(criteria);
+  }
+
+  /**
+   * Navigates to the search result page specified in the paginator.
+   */
+  private navigateToCurrentPage() {
+    this.navigate(this.params.toQueryParams(this.criteria));
+  }
+
+  /**
    * Changes the route to the route reflecting the current state of the search.
    */
-  navigate() {
+  private navigate(queryParams: object) {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: this.params.toQueryParams(this.criteria),
+      queryParams: queryParams,
     }).catch(err => {
       this.notificationService.showError('navigation error', err);
     });

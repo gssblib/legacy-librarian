@@ -1,7 +1,18 @@
-import { Component, EventEmitter, OnInit, Input, Output, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Input,
+  Output,
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+  OnDestroy
+} from '@angular/core';
 import { FormBuilder, FormGroup} from '@angular/forms';
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 /**
  * Search bar with formly form fields.
@@ -11,7 +22,9 @@ import { Observable } from "rxjs";
   templateUrl: './multi-field-search-bar.component.html',
   styleUrls: ['./multi-field-search-bar.component.css']
 })
-export class MultiFieldSearchBarComponent implements OnInit, OnChanges {
+export class MultiFieldSearchBarComponent implements OnInit, OnChanges, OnDestroy {
+  private readonly destroyed = new Subject<void>();
+
   @Input()
   criteria: Object;
 
@@ -29,8 +42,16 @@ export class MultiFieldSearchBarComponent implements OnInit, OnChanges {
     this.form = fb.group({});
   }
 
+  ngOnDestroy(): void {
+    this.destroyed.next();
+  }
+
   ngOnInit() {
-    this.fieldsObservable.subscribe(fields => this.fields = fields);
+    this.fieldsObservable
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(fields => {
+        this.fields = fields;
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

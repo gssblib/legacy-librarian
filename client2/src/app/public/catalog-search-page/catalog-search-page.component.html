@@ -1,6 +1,6 @@
 <mat-card>
   <gsl-multi-field-search-bar
-    [criteria]="criteria" [fields]="searchFields$" (search)="navigate()">
+    [criteria]="criteria" [fields]="searchFields$" (search)="search($event)">
   </gsl-multi-field-search-bar>
   <div class="order-cycle-info">
   <span *ngIf="openOrderCycle">
