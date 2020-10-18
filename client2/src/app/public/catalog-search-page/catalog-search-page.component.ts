@@ -38,7 +38,7 @@ export class CatalogSearchPageComponent implements AfterViewInit, OnInit, OnDest
   private readonly destroyed = new Subject<void>();
 
   /** Search criteria that are automatically added to every query. */
-  extraCriteria: Object = {'state': 'CIRCULATING'}
+  extraCriteria: Object = {'state': 'CIRCULATING', '_order': 'title'};
 
   readonly ItemState = ItemState;
 

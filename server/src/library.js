@@ -566,6 +566,16 @@ module.exports = {
     };
 
     /**
+     * Puts the `prefix` in front of the column name in the `order` string.
+     *
+     * Ascending orders contain just the column name whereas descending orders start
+     * with a `-` sign.
+     */
+    function addOrderPrefix(order, prefix) {
+      return order[0] === '-' ? '-' + prefix + order.substring(1) : prefix + order;
+    }
+
+    /**
      * Returns promise to result containing items and their checkout status.
      */
     items.read = function (query, op, limit) {
@@ -579,7 +589,9 @@ module.exports = {
         left join order_items oi on i.id = oi.item_id
       ` + where.sql;
 
-      return db.selectRows(sql, where.params, limit)
+      const order = query._order ? addOrderPrefix(query._order, 'i.') : 'i.title';
+
+      return db.selectRows(sql, where.params, limit, order)
         .then(result => {
           result.rows = result.rows.map(row => {
             const item = items.fromDb(row, true);
