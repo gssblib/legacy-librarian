@@ -308,7 +308,6 @@ module.exports = {
       const sql = 'select max(id) as order_id from orders where borrower_id = ?';
       return db.selectRow(sql, [borrowerId])
         .then(row => {
-          console.log('lastOrder', row);
           if (!row || !row.order_id) {
             return undefined;
           }
@@ -447,7 +446,9 @@ module.exports = {
         { name: 'state', required: true, domain: domains.ItemState },
         { name: 'antolin', label: 'Antolin Book ID' },
         { name: 'isbn10', label: 'ISBN-10' },
-        { name: 'isbn13', label: 'ISBN-13' }],
+        { name: 'isbn13', label: 'ISBN-13' },
+        { name: 'has_cover_image', domain: entity.domains.Boolean },
+      ],
       naturalKey: 'barcode'});
 
     var checkoutColumns = [
@@ -854,7 +855,6 @@ module.exports = {
       }
       return orderCycles.getOverlapping(cycle.order_window_start, cycle.order_window_end)
         .then(result => {
-          console.log('result:', result);
           const rows = result.rows;
           if (rows.length > 1 || rows.length === 1 && rows[0].id !== cycle.id) {
             throw {
