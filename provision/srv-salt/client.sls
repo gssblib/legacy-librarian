@@ -42,6 +42,18 @@ client public:
         test -e .public.git-rev && test `git rev-parse HEAD` = `cat .public.git-rev`
     - require:
       - git install
+client admin:
+  cmd.run:
+    - name: |
+        ng build --prod --base-href "/admin/" --progress false && \
+        git rev-parse HEAD > .public.git-rev
+    - cwd: {{ client_dir }}
+    - runas: gssblib
+    - unless: |
+        test -e {{ client_dir }}/dist && \
+        test -e .volunteers.git-rev && test `git rev-parse HEAD` = `cat .volunteers.git-rev`
+    - require:
+      - git install
 {% endif %}
 
 {% if salt['grains.get']('server_type') == 'prod' %}

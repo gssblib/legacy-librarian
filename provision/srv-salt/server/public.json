@@ -21,7 +21,7 @@
     {
       "name": "volunteers",
       "endpoint": "/admin",
-      "path": "../../client2/dist"
+      "path": "{{ root_path }}/client2/dist"
     }
   ],
 
