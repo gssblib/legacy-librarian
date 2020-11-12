@@ -17,6 +17,11 @@
       "name": "parents",
       "endpoint": "",
       "path": "{{ root_path }}/client2/dist-public"
+    },
+    {
+      "name": "volunteers",
+      "endpoint": "/admin",
+      "path": "../../client2/dist"
     }
   ],
 
