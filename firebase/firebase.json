@@ -1,16 +1,35 @@
 {
-  "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "/timestamp",
-        "function": "app"
-      }
-    ]
-  }
+  "hosting": [
+    {
+      "site": "gssb-library-c7c5e",
+      "public": "hosting/gssb-library-c7c5e",
+      "ignore": [
+	"firebase.json",
+	"**/.*",
+	"**/node_modules/**"
+      ],
+      "rewrites": [
+	{
+          "source": "/timestamp",
+          "function": "app"
+	},
+	{
+          "source": "/db",
+          "function": "app"
+	}
+      ]
+    },
+    {
+      "site": "gssb-library-public",
+      "public": "hosting/gssb-library-public"
+    },
+    {
+      "site": "gssb-library-admin",
+      "public": "hosting/gssb-library-admin"
+    },
+    {
+      "site": "gssb-library-static",
+      "public": "hosting/gssb-library-static"
+    }
+  ]
 }
