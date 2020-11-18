@@ -1,10 +1,7 @@
-#!/usr/bin/env node
-
 /**
  * HTTP server for the GSSB library system.
  *
- * This server serves the client web application as static content
- * and responds to the AJAX requests from the client.
+ * This server serves can be used by Firebase Cloud Functions.
  *
  * The AJAX requests are translated to calls to the library service
  * (defined in library.js).
@@ -155,30 +152,4 @@ httpcall.handleEntity(library.borrowers, ['payFees', 'renewAllItems']);
 httpcall.handleEntity(library.orderCycles, []);
 httpcall.handleEntity(library.orders, []);
 
-// Serve the client web application as static content.
-config['clients'].forEach(function(clientConfig) {
-  var path = clientConfig.path;
-  if (path[0] != '/') {
-    path = __dirname + '/' + path;
-  }
-  if (clientConfig.endpoint === '') {
-    server.use(express.static(path));
-    // This needs to be the last registration, otherwise it will catch
-    // everything else.
-    server.get(
-      '*',
-      (req, res) => {
-        res.sendFile('index.html', {'root': path});
-      });
-  } else {
-    server.use(clientConfig.endpoint, express.static(path));
-    server.get(
-      clientConfig.endpoint + '/*',
-      (req, res) => {
-        res.sendFile('index.html', {'root': path});
-      });
-  }
-});
-
-console.log("exporting library server");
 exports.server = server
