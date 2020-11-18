@@ -1,5 +1,5 @@
 {
-  "name": "gssblib-serer",
+  "name": "gssblib-server",
   "version": "0.7.0",
   "description": "GSSB Library System -- Server",
   "private": true,
