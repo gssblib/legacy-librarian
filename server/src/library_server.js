@@ -217,12 +217,16 @@ config['clients'].forEach(function(clientConfig) {
   }
 });
 
-
 // Start server.
-const port = config.get('server').port;
-server.listen(port, function() {
-  console.log("library server is listening on port", port);
-});
+if (config.has('server')) {
+  const port = config.get('server').port;
+  server.listen(port, function() {
+    console.log("library server is listening on port", port);
+  });
+} else {
+  console.log("exporting library server");
+  exports.server = server
+}
 
 // Shutdown connection pool on exit.
 process.on('exit', function() {
