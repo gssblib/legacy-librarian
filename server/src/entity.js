@@ -117,7 +117,7 @@ function createFromDb(entity) {
     if (tableOnly) {
       const result = {};
       for (const {name, domain} of entity.columns) {
-        const fromDb = domain?.fromDb;
+        const fromDb = domain ? domain.fromDb : undefined;
         const value = row[name];
         result[name] = fromDb ? fromDb(value) : value;
       }
@@ -125,7 +125,7 @@ function createFromDb(entity) {
     } else {
       const result = {...row};
       for (const {name, domain} of entity.columns) {
-        const fromDb = domain?.fromDb;
+        const fromDb = domain ? domain.fromDb : undefined;
         if (fromDb) {
           result[name] = fromDb(result[name]);
         }
