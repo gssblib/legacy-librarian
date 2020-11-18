@@ -1,4 +1,4 @@
-const server = require('gssblib-server');
+const server = require('./server/src/library_server_function');
 const functions = require('firebase-functions');
 const express = require('express');
 

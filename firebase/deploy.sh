@@ -13,5 +13,4 @@ export NODE_ENV=production
 
 echo "Using ${NODE_CONFIG_DIR}/${NODE_ENV}.json"
 
-# TODO(kbolay): remove "--only functions"
-firebase deploy --only functions
+firebase deploy
