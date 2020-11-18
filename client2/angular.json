@@ -249,5 +249,8 @@
     "@schematics/angular:directive": {
       "prefix": "gsl"
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
