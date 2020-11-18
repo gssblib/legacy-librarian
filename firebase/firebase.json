@@ -7,21 +7,57 @@
     {
       "site": "gssb-library-public",
       "public": "hosting/gssb-library-public",
+      "ignore": [
+        "**/.*"
+      ],
+      "headers": [
+        {
+          "source": "*.[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].+(css|js)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        }
+      ],
       "rewrites": [
 	{
           "source": "/api/**",
           "function": "api"
-	}
+	},
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
       ]
     },
     {
       "site": "gssb-library-admin",
       "public": "hosting/gssb-library-admin",
+      "ignore": [
+        "**/.*"
+      ],
+      "headers": [
+        {
+          "source": "*.[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].+(css|js)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        }
+      ],
       "rewrites": [
 	{
           "source": "/api/**",
           "function": "api"
-	}
+	},
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
       ]
     },
     {
