@@ -1,9 +1,13 @@
 <div class="container">
   <div class="side">
-    <img *ngIf="hasCover" [src]="coverImg(item)" class="cover" (error)="noCover()"/>
-    <div *ngIf="!hasCover" class="missing-cover-image">
-      <mat-icon>broken_image</mat-icon>
-    </div>
+    <ng-container *ngIf="url | async; let url; else missingImage">
+      <img [src]="url" class="cover"/>
+    </ng-container>
+    <ng-template #missingImage>
+      <div class="missing-cover-image">
+        <mat-icon>broken_image</mat-icon>
+      </div>
+    </ng-template>
     <div class="order">
       <gsl-item-availability
         *ngIf="!available(item) || !showOrderButton"
