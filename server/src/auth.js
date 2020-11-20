@@ -4,7 +4,10 @@
 const config = require('config'),
       crypto = require('crypto'),
       http = require('request-promise'),
+      admin = require('firebase-admin'),
       Q = require('q');
+
+var app = admin.initializeApp();
 
 const crud = ['create', 'read', 'update', 'delete'];
 
@@ -150,15 +153,27 @@ module.exports = function (db) {
             permissions = permissions.concat(role.permissions);
           }
         });
-        return {
-          authenticated: true,
-          user: {
-            type: 'internal',
-            username: user.username,
-            roles: user.roles,
-            permissions: permissions
-          }
-        };
+	let additionalClaims = {
+	  type: 'internal',
+	  roles: user.roles,
+	};
+	return admin.auth().createCustomToken(user.username, additionalClaims)
+	    .then(function(customToken) {
+	      console.log('Created custom token with additional claims:',customToken, additionalClaims);
+              return {
+		authenticated: true,
+		user: {
+		  type: 'internal',
+		  username: user.username,
+		  roles: user.roles,
+		  permissions: permissions,
+		  customToken: customToken
+		}
+              };
+	    })
+	    .catch(function(error) {
+	      console.log('Error creating custom token:', error);
+	    });
       });
   }
 
@@ -184,21 +199,33 @@ module.exports = function (db) {
         }
         if (body.indexOf(config['sycamore-auth']['success-text']) >= 0) {
           return db.selectRow('select * from borrowers where sycamoreid = ?', login.username, true)
-            .then(function(borrower) {
-              return {
-                authenticated: true,
-                user: {
-                  type: 'sycamore',
-                  username: login.username,
-                  roles: 'borrower',
-                  permissions: roles['borrower'].permissions,
-                  // Sycamore user specific.
-                  id: borrower.borrowernumber,
-                  surname: borrower.surname,
-                }
-              };
-            });
-        } else {
+              .then(function(borrower) {
+		let additionalClaims = {
+		  type: 'sycamore',
+		  roles: 'borrower',
+		};
+		return admin.auth().createCustomToken(login.username, additionalClaims)
+		    .then(function(customToken) {
+		      console.log('Created custom token with additional claims:',customToken, additionalClaims);
+		      return {
+			authenticated: true,
+			user: {
+			  type: 'sycamore',
+			  username: login.username,
+			  roles: 'borrower',
+			  permissions: roles['borrower'].permissions,
+			  customToken: customToken,
+			  // Sycamore user specific.
+			  id: borrower.borrowernumber,
+			  surname: borrower.surname,
+			}
+		      };
+		    })
+		    .catch(function(error) {
+		      console.log('Error creating custom token:', error);
+		    });
+              });
+	}  else {
           return {
             authenticated: false,
             message: 'AUTHENTICATION_FAILED'

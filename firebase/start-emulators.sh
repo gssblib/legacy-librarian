@@ -10,6 +10,7 @@ npm install
 
 export NODE_CONFIG_DIR=${DIR}/functions/config
 export NODE_ENV=sqlproxy
+export GOOGLE_APPLICATION_CREDENTIALS=${DIR}/functions/config/gssb-library-c7c5e-firebase-adminsdk-1gafi-a5c1873ec3.json
 
 echo "Using ${NODE_CONFIG_DIR}/${NODE_ENV}.json"
 
