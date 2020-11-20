@@ -1,8 +1,6 @@
 <div class="cover">
   <div ng2FileDrop
-       [ngClass]="{'file-over': hasDropZoneOver}"
-       (fileOver)="fileOver($event)"
-       [uploader]="uploader"
+      (ng2FileDropFilesDropped)="dragFilesDropped($event)"
        class="cover-drop-zone">
 
     <ng-container *ngIf="url | async; let url; else missingImage">

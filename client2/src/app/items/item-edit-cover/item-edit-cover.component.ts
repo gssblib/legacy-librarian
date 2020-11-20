@@ -1,28 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FileUploader } from 'ng2-file-upload';
 import { ConfigService } from "../../core/config.service";
 import { RpcService } from "../../core/rpc.service";
 import { NotificationService } from "../../core/notification-service";
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
-import { AngularFireStorage } from '@angular/fire/storage';
-import { Observable } from 'rxjs';
-
-class CoverUploader extends FileUploader {
-  itemCoverEdit;
-
-  constructor(itemCoverEdit, options) {
-    super(options)
-    this.itemCoverEdit = itemCoverEdit;
-  }
-
-  public onSuccessItem(item:any, response:any, status:any, headers:any):any {
-    // Force image reload.
-    this.itemCoverEdit.urlHash = Math.random().toString();
-    this.itemCoverEdit.hasCover = true;
-    return {item, response, status, headers};
-  }
-}
+import { AngularFireStorage, AngularFireStorageReference } from '@angular/fire/storage';
+import { Observable, of} from 'rxjs';
+import { catchError,tap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'gsl-item-edit-cover',
@@ -31,10 +15,9 @@ class CoverUploader extends FileUploader {
 })
 export class ItemEditCoverComponent implements OnInit {
   @Input('item') item: Item;
-  url?: Observable<string|null>;
 
-  public uploader: CoverUploader;
-  public hasDropZoneOver:boolean = false;
+  private ref: AngularFireStorageReference;
+  public url: Observable<string|null>;
 
   constructor(
     private rpc: RpcService,
@@ -45,26 +28,27 @@ export class ItemEditCoverComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const ref = this.storage.ref('covers/' + this.item.barcode + '.jpg');
-    this.url = ref.getDownloadURL();
-    this.uploader = new CoverUploader(
-      this, {
-        url: "TODO(kbolay): WIP",
-        authToken: this.rpc.getJWTAuthToken(),
-        isHTML5: true,
-        disableMultipart: false,
-        removeAfterUpload: true,
-        autoUpload: true,
-    });
+    this.ref = this.storage.ref('covers/' + this.item.barcode + '.jpg');
+    this.url = this.ref.getDownloadURL();
   }
 
-  /* Hover and Drop state management */
-  public fileOver(e:any):void {
-    this.hasDropZoneOver = e;
+  dragFilesDropped(droppedFile: any) {
+    console.log("dropped", droppedFile);
   }
 
   /* Actions */
   deleteCover() {
-    this.notificationService.showError("TODO(kbolay): implement");
+    this.ref.delete().pipe(
+      take(1),
+      tap(()=>{
+        console.log('delete the image successfully');
+        this.url= of(null);
+      }),
+      catchError((error)=> {
+        console.log('fail to delete', error);
+        this.notificationService.showError("Failed to delete image");
+        return of(null);
+      }),
+    ).subscribe();
   }
 }
