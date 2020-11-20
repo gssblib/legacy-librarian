@@ -5,7 +5,8 @@ import { RpcService } from "../../core/rpc.service";
 import { NotificationService } from "../../core/notification-service";
 import { Item } from "../shared/item";
 import { ItemsService } from "../shared/items.service";
-
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Observable } from 'rxjs';
 
 class CoverUploader extends FileUploader {
   itemCoverEdit;
@@ -29,44 +30,32 @@ class CoverUploader extends FileUploader {
   styleUrls: ['./item-edit-cover.component.css'],
 })
 export class ItemEditCoverComponent implements OnInit {
-  @Input('item')
-  item: Item;
-  urlHash: string = Math.random().toString();
-
-  public hasCover:boolean = true;
+  @Input('item') item: Item;
+  url?: Observable<string|null>;
 
   public uploader: CoverUploader;
   public hasDropZoneOver:boolean = false;
-
-  get coverUrl(): string {
-    return this.config.apiPath('items/' + this.item.barcode + '/cover');
-  }
-
-  get coverUrlShown(): string {
-    return this.coverUrl + '?random=' + this.urlHash;
-  }
 
   constructor(
     private rpc: RpcService,
     private notificationService: NotificationService,
     private itemsService: ItemsService,
-    private config: ConfigService
+    private config: ConfigService,
+    private readonly storage: AngularFireStorage
   ) {}
 
   ngOnInit() {
+    const ref = this.storage.ref('covers/' + this.item.barcode + '.jpg');
+    this.url = ref.getDownloadURL();
     this.uploader = new CoverUploader(
       this, {
-        url: this.coverUrl,
+        url: "TODO(kbolay): WIP",
         authToken: this.rpc.getJWTAuthToken(),
         isHTML5: true,
         disableMultipart: false,
         removeAfterUpload: true,
         autoUpload: true,
     });
-  }
-
-  handleMissingImage() {
-    this.hasCover = false;
   }
 
   /* Hover and Drop state management */
@@ -76,14 +65,6 @@ export class ItemEditCoverComponent implements OnInit {
 
   /* Actions */
   deleteCover() {
-    this.itemsService.deleteCover(this.item).subscribe(
-      () => {
-        this.notificationService.show('Cover deleted.');
-        this.handleMissingImage();
-      },
-      error => {
-        this.notificationService.showError(error.data.status);
-      }
-    );
+    this.notificationService.showError("TODO(kbolay): implement");
   }
 }

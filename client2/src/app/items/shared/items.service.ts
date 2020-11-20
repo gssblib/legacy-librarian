@@ -54,10 +54,6 @@ export class ItemsService extends ModelsService<Item> {
     item.added = formatDate(now, 'yyyy-MM-ddTHH:mm:ss', this.locale);
   }
 
-  deleteCover(item) {
-    return this.rpc.httpDelete(`items/${item.barcode}/cover`);
-  }
-
   getLabelCategories(item): Observable<any> {
     return this.rpc.labelsHttpGet(item.barcode + '/categories')
       .pipe(map(obj => obj.categories));

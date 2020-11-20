@@ -24,7 +24,6 @@ import { ItemLabelsComponent } from './item-labels/item-labels.component';
 import { ItemStatusComponent } from './item-status/item-status.component';
 import { ItemAntolinComponent } from './item-antolin/item-antolin.component';
 import { ItemEditCoverComponent } from './item-edit-cover/item-edit-cover.component';
-import { ItemCardComponent } from './item-card/item-card.component';
 import { ItemDetailsComponent } from './item-details/item-details.component';
 import { MatCardModule } from "@angular/material/card";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
@@ -87,7 +86,6 @@ import { ItemAvailabilityComponent } from './item-availability/item-availability
     ItemStatusComponent,
     ItemAntolinComponent,
     ItemEditCoverComponent,
-    ItemCardComponent,
     ItemDetailsComponent,
     ItemAvailabilityComponent,
   ],
@@ -103,7 +101,6 @@ import { ItemAvailabilityComponent } from './item-availability/item-availability
     ItemEditCoverComponent,
     ItemStatusComponent,
     ItemAntolinComponent,
-    ItemCardComponent,
     ItemSearchPageComponent,
     ItemDetailsComponent,
     ItemAvailabilityComponent,

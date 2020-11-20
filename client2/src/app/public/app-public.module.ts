@@ -32,6 +32,9 @@ import { CatalogOrderPageComponent } from './catalog-order-page/catalog-order-pa
 import { CatalogOrderComponent } from './catalog-order/catalog-order.component';
 import { MatTableModule } from "@angular/material/table";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { environment } from '../../environments/environment';
 
 @NgModule({
   imports: [
@@ -62,6 +65,8 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     ItemsModule,
     BorrowersModule,
     MatTooltipModule,
+    AngularFireModule.initializeApp(environment.firebase.public),
+    AngularFireStorageModule,
   ],
   declarations: [
     AppPublicComponent,
