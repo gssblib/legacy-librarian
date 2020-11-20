@@ -156,17 +156,18 @@ module.exports = function (db) {
 	let additionalClaims = {
 	  type: 'internal',
 	  roles: user.roles,
-	  permissions: permissions,
 	};
 	return admin.auth().createCustomToken(user.username, additionalClaims)
 	    .then(function(customToken) {
+	      console.log('Created custom token with additional claims:',customToken, additionalClaims);
               return {
 		authenticated: true,
 		user: {
 		  type: 'internal',
 		  username: user.username,
 		  roles: user.roles,
-		  permissions: permissions
+		  permissions: permissions,
+		  customToken: customToken
 		}
               };
 	    })
@@ -202,10 +203,10 @@ module.exports = function (db) {
 		let additionalClaims = {
 		  type: 'sycamore',
 		  roles: 'borrower',
-		  permissions: roles['borrower'].permissions,
 		};
 		return admin.auth().createCustomToken(login.username, additionalClaims)
 		    .then(function(customToken) {
+		      console.log('Created custom token with additional claims:',customToken, additionalClaims);
 		      return {
 			authenticated: true,
 			user: {
@@ -213,6 +214,7 @@ module.exports = function (db) {
 			  username: login.username,
 			  roles: 'borrower',
 			  permissions: roles['borrower'].permissions,
+			  customToken: customToken,
 			  // Sycamore user specific.
 			  id: borrower.borrowernumber,
 			  surname: borrower.surname,

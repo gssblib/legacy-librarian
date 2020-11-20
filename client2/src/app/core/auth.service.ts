@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable ,  Subject } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { Observable, Subject, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 
@@ -12,6 +13,7 @@ interface JwtResponse {
   token: string;
   roles: string;
   permissions: any;
+  customToken: string; // Firebase Auth custom token
   // Sycamore user specified
   id?: string;  // borrower number
   surname?: string; // Surname as stored on borrower
@@ -51,7 +53,7 @@ export class AuthenticationService {
     return this.user.token;
   }
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private auth: AngularFireAuth) {
     this.user = this.getUser();
     this.userSubject.next(this.user);
     this.userObservable.subscribe(user => this.user = user);
@@ -68,11 +70,22 @@ export class AuthenticationService {
         // login successful if there's a jwt token in the response
         const token = response.token;
         if (token) {
-          const user = this.toUser(username, response);
-          AuthenticationService.setLocalUser(user);
-          this.userSubject.next(user);
-          return true;
+          console.log("API login successful");
+          // TODO(kbolay): The next statement needs to return something, but it's a promise, not an observable, so from() something, something
+          this.auth.signInWithCustomToken(response.customToken)
+          .then(userCreds => {
+            console.log("Firebase login successful");
+            const user = this.toUser(username, response);
+            AuthenticationService.setLocalUser(user);
+            this.userSubject.next(user);
+            return true;
+          })
+          .catch((error) => {
+            console.log("Firebase login failure:", error);
+            return false;
+          })
         } else {
+          console.log("API login failure");
           return false;
         }
       }));
@@ -88,6 +101,11 @@ export class AuthenticationService {
   logout(): void {
     AuthenticationService.removeLocalUser();
     this.userSubject.next(null);
+    this.auth.signOut().then(function() {
+      console.log("Firebase logout successful");
+    }).catch(function(error) {
+      console.log("Firebase logout failure:", error);
+    });
   }
 
   getUser(): User {

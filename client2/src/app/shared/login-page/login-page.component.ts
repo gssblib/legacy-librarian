@@ -36,11 +36,13 @@ export class LoginPageComponent implements OnInit {
           this.activatedRoute.queryParams.subscribe(params => {
             this.router.navigate([params['returnUrl'] || '/'])});
         } else {
+          console.log("Auth returned false");
           this.error = 'Username or password is incorrect';
           this.loading = false;
         }
       },
       error => {
+        console.log("Auth service failure:", error);
         this.error = 'Username or password is incorrect';
         this.loading = false;
       }
