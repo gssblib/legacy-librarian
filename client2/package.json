@@ -35,7 +35,7 @@
     "firebase": "^7.0.0 || ^8.0.0",
     "font-awesome": "^4.7.0",
     "ng": "0.0.0-rc6",
-    "ng2-file-upload": "^1.4.0",
+    "ngx-file-drop": "^10.1.1",
     "rxjs": "^6.4.0",
     "terser": "^3.14.1",
     "tslib": "^2.0.0",

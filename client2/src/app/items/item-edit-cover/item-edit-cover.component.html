@@ -1,22 +1,19 @@
 <div class="cover">
-  <div ng2FileDrop
-      (ng2FileDropFilesDropped)="dragFilesDropped($event)"
-       class="cover-drop-zone">
+  <div class="cover-drop-zone">
 
     <ng-container *ngIf="url | async; let url; else missingImage">
-      <img [src]="url">
+      <img class="coverImage" [src]="url">
       <div class="cover-image-actions" *gslAuthorized="'items.update'">
-        <a mat-raised-button color="primary"
-           gslConfirmationDialog
-           title="Confirm Cover Deletion"
-           message="Are you sure you want to delete the cover of the item?"
-           (confirm)="deleteCover()">Delete Cover</a>
+        <a mat-raised-button color="primary" gslConfirmationDialog title="Confirm Cover Deletion"
+          message="Are you sure you want to delete the cover of the item?" (confirm)="deleteCover()">Delete Cover</a>
       </div>
     </ng-container>
     <ng-template #missingImage>
-      <div class="missing-cover-image">
+      <ngx-file-drop [multiple]="false" dropZoneLabel="Drop cover image here" (onFileDrop)="dropped($event)">
+      </ngx-file-drop>
+      <!-- <div class="missing-cover-image">
         <mat-icon>broken_image</mat-icon>
-      </div>
+      </div> -->
     </ng-template>
   </div>
 </div>
