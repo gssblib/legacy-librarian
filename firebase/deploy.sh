@@ -1,7 +1,14 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 DIR=`dirname $0`
 DIR=`cd ${DIR}; pwd`
+
+echo "Compiling Angular"
+
+cd ${DIR}/../client2
+npm install
+node_modules/@angular/cli/bin/ng build --prod --base-href "/"
+node_modules/@angular/cli/bin/ng build public --prod --base-href "/"
 
 echo "Deploying for ${DIR}"
 
