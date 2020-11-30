@@ -2,7 +2,7 @@
   <div class="cover-drop-zone">
 
     <ng-container *ngIf="url | async; let url; else missingImage">
-      <img class="coverImage" [src]="url">
+      <img class="cover" [src]="url">
       <div class="cover-image-actions" *gslAuthorized="'items.update'">
         <a mat-raised-button color="primary" gslConfirmationDialog title="Confirm Cover Deletion"
           message="Are you sure you want to delete the cover of the item?" (confirm)="deleteCover()">Delete Cover</a>

@@ -1,6 +1,6 @@
-.coverImage {
-  width: 200px;
-  height: 500px;
+.cover img {
+  max-width: 200px;
+  max-height: 500px;
 }
 
 .missing-cover-image {
