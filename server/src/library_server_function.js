@@ -117,13 +117,6 @@ httpcall.handlePaths([
     action: {resource: 'reports', operation: 'read'},
   },
   {
-    get: '/items/:key/cover',
-    fn: function (call) {
-      var img_url = config['resources']['coversUrl'] + call.param('key') + '.jpg';
-      call.res.redirect(img_url);
-    },
-  },
-  {
     get: '/me',
     fn: call => {
       return library.borrowers.get(call.req.user.id, {items: true, fees: true, order: true});
