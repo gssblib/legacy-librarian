@@ -15,7 +15,9 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 
-const SEARCH_FIELDS = ['title', 'author', 'category', 'subject', 'state', 'seriestitle'];
+const SEARCH_FIELDS = [
+  'title', 'author', 'category', 'subject', 'state', 'seriestitle', 'age', 'classification',
+];
 
 /**
  * Item search page with search form and result table.
