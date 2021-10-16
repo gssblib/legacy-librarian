@@ -2,7 +2,7 @@ import * as express from 'express';
 import mysql from 'mysql2/promise';
 import {Borrowers} from './borrowers';
 import {Checkouts, History} from './checkouts';
-import {Db} from './db';
+import {Db} from '../common/db';
 import {Items} from './items';
 import config from 'config';
 

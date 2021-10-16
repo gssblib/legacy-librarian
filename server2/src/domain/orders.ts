@@ -1,6 +1,6 @@
-import {BaseEntity} from './base_entity';
-import {Db} from './db';
-import {EntityConfig, EntityTable} from './table';
+import {BaseEntity} from '../common/base_entity';
+import {Db} from '../common/db';
+import {EntityConfig, EntityTable} from '../common/table';
 
 export interface OrderCycle {
   order_window_start: string;

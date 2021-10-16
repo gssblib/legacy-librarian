@@ -1,5 +1,5 @@
 import {Column, ColumnConfig, toFrontendColumnConfig} from './column';
-import { Db } from './db';
+import {Db} from './db';
 import {EntityQuery, LogicalOp, mapQueryResult, QueryResult} from './query';
 import {SqlParams, SqlQuery, SqlSelect, SqlTerm, WhereClause} from './sql';
 
@@ -141,7 +141,8 @@ export class EntityTable<T> {
     return mapQueryResult(result, row => this.fromDb(row));
   }
 
-  async find(db: Db, fields: Partial<T>, op: LogicalOp = 'and'): Promise<T|undefined> {
+  async find(db: Db, fields: Partial<T>, op: LogicalOp = 'and'):
+      Promise<T|undefined> {
     const sqlSelect = this.sqlSelect(fields, op);
     const row = await db.selectRow(sqlSelect.sql, sqlSelect.params);
     return row && this.fromDb(row);

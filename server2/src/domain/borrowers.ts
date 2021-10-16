@@ -1,11 +1,11 @@
-import {BaseEntity} from './base_entity';
+import {BaseEntity} from '../common/base_entity';
+import {ColumnDomain, DomainTypeEnum} from '../common/column';
+import {Db} from '../common/db';
+import {Flags} from '../common/entity';
+import {EntityQuery} from '../common/query';
+import {EntityConfig, EntityTable} from '../common/table';
+import {sum} from '../common/util';
 import {Checkout, checkoutsTable, historyTable} from './checkouts';
-import {ColumnDomain, DomainTypeEnum} from './column';
-import {Db} from './db';
-import { Flags } from './entity';
-import {EntityQuery} from './query';
-import {EntityConfig, EntityTable} from './table';
-import {sum} from './util';
 
 export interface Borrower {
   id: number;

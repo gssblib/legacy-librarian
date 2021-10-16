@@ -3,8 +3,8 @@ import config from 'config';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import expressJwt from 'express-jwt';
-import * as library from './library';
-import * as login from './login';
+import * as library from './domain/library';
+import * as login from './domain/login';
 
 const serverConfig: {port: number} = config.get('server');
 const port = serverConfig.port;

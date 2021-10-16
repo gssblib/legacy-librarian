@@ -1,12 +1,12 @@
-import {BaseEntity} from './base_entity';
+import {BaseEntity} from '../common/base_entity';
+import {ColumnDomain, DomainTypeEnum} from '../common/column';
+import {Db} from '../common/db';
+import {Flags} from '../common/entity';
+import {SqlQuery} from '../common/sql';
+import {EntityConfig, EntityTable} from '../common/table';
 import {Borrower, borrowersTable} from './borrowers';
 import {Checkout, checkoutsTable} from './checkouts';
-import {ColumnDomain, DomainTypeEnum} from './column';
-import {Db} from './db';
-import { Flags } from './entity';
 import {OrderItem, orderItemsTable} from './orders';
-import {SqlQuery} from './sql';
-import {EntityConfig, EntityTable} from './table';
 
 const ItemState: ColumnDomain<string> = {
   type: DomainTypeEnum.ENUM,
@@ -141,7 +141,7 @@ const config: EntityConfig<Item> = {
     {name: 'isbn10', label: 'ISBN-10'},
     {name: 'isbn13', label: 'ISBN-13'},
     {name: 'antolin', label: 'Antolin book ID'},
-    {name: 'has_cover_image', label: 'Antolin book ID'},
+    {name: 'has_cover_image', internal: true},
     {name: 'added', label: 'Date added', internal: true},
   ],
 };

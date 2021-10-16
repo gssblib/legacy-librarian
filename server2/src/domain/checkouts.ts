@@ -1,7 +1,7 @@
-import {BaseEntity} from './base_entity';
-import {ColumnConfig} from './column';
-import {Db} from './db';
-import {EntityConfig, EntityTable} from './table';
+import {BaseEntity} from '../common/base_entity';
+import {ColumnConfig} from '../common/column';
+import {Db} from '../common/db';
+import {EntityConfig, EntityTable} from '../common/table';
 
 export interface Checkout {
   id: number;

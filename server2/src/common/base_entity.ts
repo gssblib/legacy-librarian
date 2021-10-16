@@ -1,6 +1,6 @@
 import * as express from 'express';
 import qs from 'qs';
-import * as db from './db';
+import {Db} from './db';
 import {Entity, Flags} from './entity';
 import {getBooleanParam, getNumberParam} from './express_util';
 import {EntityQuery, LogicalOp, QueryOptions, QueryResult} from './query';
@@ -15,8 +15,9 @@ import {EntityTable} from './table';
  * Derived class often implement additional methods or override the CRUD
  * methods, for example, using joins to fetch more data for the read methods.
  */
-export abstract class BaseEntity<T, F extends string = ''> implements Entity<T, F> {
-  constructor(readonly db: db.Db, protected readonly table: EntityTable<T>) {}
+export abstract class BaseEntity<T, F extends string = ''> implements
+    Entity<T, F> {
+  constructor(readonly db: Db, protected readonly table: EntityTable<T>) {}
 
   async find(fields: Partial<T>, op: LogicalOp = 'and'): Promise<T|undefined> {
     return await this.table.find(this.db, fields, op);
