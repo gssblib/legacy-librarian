@@ -1,4 +1,4 @@
-
+import {SqlWhere} from './sql';
 /**
  * Generic query options.
  * 
@@ -60,6 +60,14 @@ export interface EntityQuery<T> {
 
   /** Operator to use when combining the fields. */
   op?: LogicalOp;
+
+  /**
+   * Optional custom where clause.
+   * 
+   * This allows for adding any SQL where clause to the query in addition to
+   * the conditions generated for the `fields`.
+   */
+  sqlWhere?: SqlWhere;
 
   /** Options controlling which of the matching fields to return. */
   options?: QueryOptions;

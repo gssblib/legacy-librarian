@@ -1,7 +1,7 @@
 import {Column, ColumnConfig, toFrontendColumnConfig} from './column';
 import {Db} from './db';
 import {EntityQuery, LogicalOp, mapQueryResult, QueryResult} from './query';
-import {SqlParams, SqlQuery, SqlSelect, SqlTerm, WhereClause} from './sql';
+import {SqlParams, SqlQuery, SqlSelect, SqlTerm, SqlWhere} from './sql';
 
 /**
  * Configuration of an `Entity` that maps a database table to a TS type `T`.
@@ -85,19 +85,12 @@ export class EntityTable<T> {
     return terms;
   }
 
-  /**
-   * Returns the where clause and placeholder value for the `fields`.
-   *
-   * @param fields fields to filter by
-   * @param prefix prefix to add to the field names
-   */
-  sqlWhere(fields: Partial<T>, op: LogicalOp = 'and', prefix = ''):
-      WhereClause {
+  sqlWhereFields(fields: Partial<T>, op: LogicalOp = 'and', prefix = ''):
+      SqlWhere {
     const terms = this.sqlTerms(fields);
     let where = '';
     const params: SqlParams = [];
     if (terms.length > 0) {
-      where += 'where ';
       terms.forEach((term, index) => {
         if (index > 0) where += ` ${op} `;
         where += prefix + term.field + ' ' + term.op + ' ?';
@@ -107,29 +100,46 @@ export class EntityTable<T> {
     return {where, params};
   }
 
-  sqlSelect(fields: Partial<T>, op: LogicalOp = 'and'): SqlSelect {
-    const whereClause = this.sqlWhere(fields, op);
-    const sql = `select * from ${this.tableName} ${whereClause.where}`;
-    return {
-      sql,
-      params: whereClause.params,
-    };
+  /**
+   * Returns the where clause and placeholder value for the `fields`.
+   *
+   * @param fields fields to filter by
+   * @param prefix prefix to add to the field names
+   */
+  sqlWhere(query: EntityQuery<T>, prefix = ''): SqlWhere {
+    const whereFields: SqlWhere = this.sqlWhereFields(query.fields ?? {}, query.op);
+    const conditions: string[] = [];
+    const params: SqlParams = [];
+    if (whereFields.where.length > 0) {
+      conditions.push(whereFields.where);
+      params.push(...(whereFields.params ?? []));
+    }
+    if (query.sqlWhere?.where) {
+      conditions.push(query.sqlWhere.where);
+      params.push(...(query.sqlWhere?.params ?? []));
+    }
+    const where =
+        conditions.length === 0 ? '' : `where ${conditions.join(' and ')}`;
+    return {where, params};
   }
 
   /**
    * Converts the entity `query` to a `SqlQuery`.
+   *
+   * @param selector From clause, default is "* from ${tableName}".
    */
-  toSqlQuery(query: EntityQuery<T>): SqlQuery {
+  toSqlQuery(query: EntityQuery<T>, selector?: string): SqlQuery {
+    const from = selector ?? `* from ${this.tableName}`;
     if (query.fields) {
-      const whereClause = this.sqlWhere(query.fields, query.op);
+      const whereClause = this.sqlWhere(query);
       return {
-        sql: `select * from ${this.tableName} ${whereClause.where}`,
+        sql: `select ${from} ${whereClause.where}`,
         params: whereClause.params,
         options: query.options,
       };
     } else {
       return {
-        sql: `select * from ${this.tableName}`,
+        sql: `select ${from}`,
         options: query.options,
       };
     }
@@ -141,9 +151,8 @@ export class EntityTable<T> {
     return mapQueryResult(result, row => this.fromDb(row));
   }
 
-  async find(db: Db, fields: Partial<T>, op: LogicalOp = 'and'):
-      Promise<T|undefined> {
-    const sqlSelect = this.sqlSelect(fields, op);
+  async find(db: Db, query: EntityQuery<T>): Promise<T|undefined> {
+    const sqlSelect = this.toSqlQuery(query);
     const row = await db.selectRow(sqlSelect.sql, sqlSelect.params);
     return row && this.fromDb(row);
   }

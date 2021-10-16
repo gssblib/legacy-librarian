@@ -17,10 +17,12 @@ import {EntityTable} from './table';
  */
 export abstract class BaseEntity<T, F extends string = ''> implements
     Entity<T, F> {
+  readonly basePath = `/api/${this.table.config.name}`;
+
   constructor(readonly db: Db, protected readonly table: EntityTable<T>) {}
 
-  async find(fields: Partial<T>, op: LogicalOp = 'and'): Promise<T|undefined> {
-    return await this.table.find(this.db, fields, op);
+  async find(query: EntityQuery<T>): Promise<T|undefined> {
+    return await this.table.find(this.db, query);
   }
 
   async get(key: string, flags?: Flags<F>): Promise<T|undefined> {
@@ -139,9 +141,8 @@ export abstract class BaseEntity<T, F extends string = ''> implements
    * `Application`.
    */
   initRoutes(app: express.Application): void {
-    const basePath = `/api/${this.table.config.name}`;
-    const keyPath = `${basePath}/:key`;
-    app.get(`${basePath}/fields`, (req, res) => {
+    const keyPath = `${this.basePath}/:key`;
+    app.get(`${this.basePath}/fields`, (req, res) => {
       res.send(this.table.getFields());
     });
     app.get(keyPath, async (req, res) => {
@@ -150,15 +151,15 @@ export abstract class BaseEntity<T, F extends string = ''> implements
       const result = await this.get(key, this.toFlags(options));
       res.send(result);
     });
-    app.get(basePath, async (req, res) => {
+    app.get(this.basePath, async (req, res) => {
       const result = await this.list(this.toEntityQuery(req.query));
       res.send(result);
     });
-    app.post(basePath, async (req, res) => {
+    app.post(this.basePath, async (req, res) => {
       const result = await this.create(req.body);
       res.send(result);
     });
-    app.put(basePath, async (req, res) => {
+    app.put(this.basePath, async (req, res) => {
       const result = await this.update(req.body);
       res.send(result);
     });

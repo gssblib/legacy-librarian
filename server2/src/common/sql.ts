@@ -11,7 +11,7 @@ export interface SqlSelect {
   params?: SqlParams;
 }
 
-export interface WhereClause {
+export interface SqlWhere {
   /** SQL where clause string (possibly with ? placeholders). */
   where: string;
   /** Values to insert into the placeholders. */
@@ -26,7 +26,7 @@ export interface SqlQuery extends SqlSelect {
   options?: QueryOptions;
 }
 
-export type SqlComparison = 'like'|'=';
+export type SqlComparison = 'like'|'='|'>'|'<'|'>='|'<=';
 
 /**
  * Term in a SQL where clause.
