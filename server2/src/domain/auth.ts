@@ -2,24 +2,24 @@
 /**
  * A `Role` is a set of `Permissions`.
  */
-export interface Role {
+export interface AuthRole {
   permissions: Permission[];
 }
 
 /**
  * Describes an action that a user wants to perform.
  */
-export interface Action {
+export interface AuthAction {
   resource: string;
   operation: string;
-  params: any;
+  params?: any;
 }
 
 /**
  * Function that allows adding arbitrary conditions to a `Permission`.
  */
-type Restriction = (user: any, permission: Permission, action: Action) =>
-    boolean;
+type AuthRestriction =
+    (user: any, permission: Permission, action: AuthAction) => boolean;
 
 /**
  * A `Permission` allows to perform some operations on a resource.
@@ -27,13 +27,13 @@ type Restriction = (user: any, permission: Permission, action: Action) =>
 export interface Permission {
   resource: string;
   operations: string[];
-  restrictions?: Restriction[];
+  restrictions?: AuthRestriction[];
 }
 
-export type RoleRepository = Map<string, Role>;
+export type AuthRoleRepository = Map<string, AuthRole>;
 
 export function getPermissions(
-    repository: RoleRepository, roleNames: string[]|string): Permission[] {
+    repository: AuthRoleRepository, roleNames: string[]|string): Permission[] {
   if (!Array.isArray(roleNames)) {
     roleNames = roleNames.split(',');
   }

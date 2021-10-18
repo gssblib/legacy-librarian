@@ -62,8 +62,8 @@ export class Db {
    */
   async execute(
       sql: string, params: SqlParams = [],
-      connection?: mysql.Connection): Promise<mysql.RowDataPacket[]> {
-    console.log('execute', sql, params);
+      connection?: mysql.Connection): Promise<mysql.ResultSetHeader|mysql.RowDataPacket[]> {
+    console.log(`execute: sql=${sql} params=${params}`);
     return this.withConnection(connection, async (connection) => {
       const result = await connection.execute(sql, params);
       const rows = result[0] as mysql.RowDataPacket[];
@@ -82,7 +82,7 @@ export class Db {
   async query(
       sql: string, params: SqlParams = [],
       connection?: mysql.Connection): Promise<mysql.RowDataPacket[]> {
-    console.log('query', sql, params);
+    console.log(`query: sql=${sql} params=${params}`);
     return this.withConnection(connection, async (connection) => {
       const result = await connection.query(sql, params);
       const rows = result[0] as mysql.RowDataPacket[];

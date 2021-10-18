@@ -1,8 +1,8 @@
-import { Role, RoleRepository } from './auth';
+import { AuthRole, AuthRoleRepository } from './auth';
 
 const crud = ['create', 'read', 'update', 'delete'];
 
-export const roleRepository: RoleRepository = new Map<string, Role>([
+export const roleRepository: AuthRoleRepository = new Map<string, AuthRole>([
   ['anonymous', {permissions: []}],
   [
     'borrower',

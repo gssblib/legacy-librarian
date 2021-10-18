@@ -1,9 +1,11 @@
-import * as express from 'express';
+import mysql from 'mysql2/promise';
 import qs from 'qs';
 import {Db} from './db';
 import {Entity, Flags} from './entity';
+import {httpError} from './error';
+import {ExpressApp, HttpMethod} from './express_app';
 import {getBooleanParam, getNumberParam} from './express_util';
-import {EntityQuery, LogicalOp, QueryOptions, QueryResult} from './query';
+import {EntityQuery, QueryOptions, QueryResult} from './query';
 import {EntityTable} from './table';
 
 /**
@@ -17,40 +19,35 @@ import {EntityTable} from './table';
  */
 export abstract class BaseEntity<T, F extends string = ''> implements
     Entity<T, F> {
-  readonly basePath = `/api/${this.table.config.name}`;
+  readonly apiPath = '/api';
+  readonly name = this.table.config.name;
+  readonly basePath = `${this.apiPath}/${this.name}`;
+  readonly keyPath = `${this.basePath}/:key`;
 
   constructor(readonly db: Db, protected readonly table: EntityTable<T>) {}
 
-  async find(query: EntityQuery<T>): Promise<T|undefined> {
-    return await this.table.find(this.db, query);
+  find(query: EntityQuery<T>): Promise<T|undefined> {
+    return this.table.find(this.db, query);
   }
 
-  async get(key: string, flags?: Flags<F>): Promise<T|undefined> {
-    return this.find(this.toKeyFields(key));
-  }
-
-  async list(query: EntityQuery<T>): Promise<QueryResult<T>> {
-    return await this.table.list(this.db, query);
-  }
-
-  async create(obj: T): Promise<T> {
-    const columns: string[] = [];
-    const placholders: string[] = [];
-    const params: any[] = [];
-
-    for (const column of this.table.columns) {
-      const value = obj[column.name];
-      if (value != undefined) {
-        columns.push(column.name as string);
-        placholders.push('?');
-        params.push(value);
-      }
+  async get(key: string, flags?: Flags<F>): Promise<T> {
+    const object = await this.find(this.toKeyFields(key));
+    if (!object) {
+      throw httpError({
+        code: 'ENTITY_NOT_FOUND',
+        message: `${this.name} ${key} not found`,
+        httpStatusCode: 404,
+      });
     }
-    const sql = `insert into ${this.table.tableName} (${columns.join(', ')}) ` +
-        `values (${placholders.join(', ')})`;
-    const rows = await this.db.execute(sql, params);
-    this.setId(obj, rows[0].insertId);
-    return obj;
+    return object;
+  }
+
+  list(query: EntityQuery<T>): Promise<QueryResult<T>> {
+    return this.table.list(this.db, query);
+  }
+
+  create(obj: T): Promise<T> {
+    return this.table.create(this.db, obj);
   }
 
   async update(obj: Partial<T>): Promise<T|undefined> {
@@ -66,17 +63,13 @@ export abstract class BaseEntity<T, F extends string = ''> implements
     }
     sql = `update ${this.table.tableName} set ${sql} where id = ?`;
     params.push(this.getId(obj));
-    const rows = await this.db.execute(sql, params);
+    const rows = await this.db.execute(sql, params) as mysql.RowDataPacket[];
     const row = rows[0];
     return row && this.table.fromDb(row);
   }
 
   async remove(key: string): Promise<T> {
-    const keyColumn = this.table.config.naturalKey ?? 'id';
-    const sql = `delete from ${this.table.tableName} where ${keyColumn} = ?`;
-    const rows = await this.db.execute(sql, [key]);
-    const row = rows[0];
-    return row && this.table.fromDb(row);
+    return this.table.remove(this.db, key);
   }
 
   private toFields(params: qs.ParsedQs): Partial<T> {
@@ -97,10 +90,11 @@ export abstract class BaseEntity<T, F extends string = ''> implements
    * This takes care of the generic query option parameters `offset`, `limit`,
    * and `returnCount`.
    */
-  private toQueryOptions(params: qs.ParsedQs): QueryOptions {
+  toQueryOptions(params: qs.ParsedQs): QueryOptions {
     return {
       offset: getNumberParam(params, 'offset'),
       limit: getNumberParam(params, 'limit'),
+      order: params['_order'] as string | undefined,
       returnCount: getBooleanParam(params, 'returnCount'),
     };
   }
@@ -128,45 +122,88 @@ export abstract class BaseEntity<T, F extends string = ''> implements
     (obj as unknown as {id: number}).id = id;
   }
 
-  protected toFlags(options: F[]): Flags<F> {
-    const flags: Flags<F> = {};
-    for (const flag of options) {
-      flags[flag] = true;
-    }
-    return flags;
-  }
-
   /**
    * Adds the routes for the REST API for this entity to the express
    * `Application`.
    */
-  initRoutes(app: express.Application): void {
-    const keyPath = `${this.basePath}/:key`;
-    app.get(`${this.basePath}/fields`, (req, res) => {
-      res.send(this.table.getFields());
+  initRoutes(application: ExpressApp): void {
+    // GET the fields metadata for the entity.
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: `${this.basePath}/fields`,
+      handle: (req, res) => {
+        res.send(this.table.getFields());
+      },
     });
-    app.get(keyPath, async (req, res) => {
-      const key = req.params['key'] ?? '';
-      const options = (req.query['options'] as string ?? '').split(',') as F[];
-      const result = await this.get(key, this.toFlags(options));
-      res.send(result);
+
+    // GET a single entity object.
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: this.keyPath,
+      handle: async (req, res) => {
+        const key = req.params['key'] ?? '';
+        const result =
+            await this.get(key, toFlags(req.query['options'] as string));
+        res.send(result);
+      },
+      authAction: {resource: this.name, operation: 'read'}
     });
-    app.get(this.basePath, async (req, res) => {
-      const result = await this.list(this.toEntityQuery(req.query));
-      res.send(result);
+
+    // GET the collection of entities matching the query.
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: this.basePath,
+      handle: async (req, res) => {
+        const result = await this.list(this.toEntityQuery(req.query));
+        res.send(result);
+      },
+      authAction: {resource: this.name, operation: 'read'}
     });
-    app.post(this.basePath, async (req, res) => {
-      const result = await this.create(req.body);
-      res.send(result);
+
+    // POST a new entity.
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: this.basePath,
+      handle: async (req, res) => {
+        const result = await this.create(req.body);
+        res.send(result);
+      },
+      authAction: {resource: this.name, operation: 'write'}
     });
-    app.put(this.basePath, async (req, res) => {
-      const result = await this.update(req.body);
-      res.send(result);
+
+    // PUT partial updates (should be PATCH).
+    application.addHandler({
+      method: HttpMethod.PUT,
+      path: this.basePath,
+      handle: async (req, res) => {
+        const result = await this.update(req.body);
+        res.send(result);
+      },
+      authAction: {resource: this.name, operation: 'write'}
     });
-    app.delete(keyPath, async (req, res) => {
-      const key = req.params['key'] ?? '';
-      const result = await this.remove(key);
-      res.send(result);
+
+    // DELETE an entity.
+    application.addHandler({
+      method: HttpMethod.DELETE,
+      path: this.keyPath,
+      handle: async (req, res) => {
+        const key = req.params['key'] ?? '';
+        const result = await this.remove(key);
+        res.send(result);
+      },
+      authAction: {resource: this.name, operation: 'write'}
     });
   }
+}
+
+function toFlags<F extends string>(param?: string): Flags<F> {
+  if (!param) {
+    return {};
+  }
+  const options = param.split(',') as F[];
+  const flags: Flags<F> = {};
+  for (const flag of options) {
+    flags[flag] = true;
+  }
+  return flags;
 }

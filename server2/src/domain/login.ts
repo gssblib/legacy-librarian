@@ -30,6 +30,8 @@ interface AuthenticationResult {
 interface UserRow {
   username: string;
   hashed_password: string;
+
+  /** Comma-separated list of role of the user. */
   roles: string;
 }
 
@@ -68,8 +70,7 @@ export function initRoutes(app: express.Application): void {
     const result = await authenticate(login);
     if (result.authenticated) {
       const user = result.user!;
-      const token = jwt.sign(user, jwtConfig.secret, {algorithm: 'HS256'});
-      user.token = token;
+      user.token = jwt.sign(user, jwtConfig.secret, {algorithm: 'HS256'});
       res.send(user);
     } else {
       res.status(401);

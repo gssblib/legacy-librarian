@@ -3,6 +3,7 @@ import {Db} from '../common/db';
 import {EntityConfig, EntityTable} from '../common/table';
 
 export interface OrderCycle {
+  id: number;
   order_window_start: string;
   order_window_end: string;
 }
@@ -19,6 +20,7 @@ const orderCyclesConfig: EntityConfig<OrderCycle> = {
 export const orderCyclesTable = new EntityTable<OrderCycle>(orderCyclesConfig);
 
 export interface OrderItem {
+  id: number;
   borrower_id: number;
   order_id: number;
   order_cycle_id: number;
@@ -32,7 +34,11 @@ const orderItemsConfig: EntityConfig<OrderItem> = {
 
 export const orderItemsTable = new EntityTable<OrderItem>(orderItemsConfig);
 
-export interface Order {}
+export interface Order {
+  id: number;
+  order_cycle_id: number;
+  borrower_id: number;
+}
 
 const ordersConfig: EntityConfig<Order> = {
   name: 'orders',

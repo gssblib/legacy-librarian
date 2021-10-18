@@ -1,4 +1,4 @@
-import { Action, getPermissions, Permission } from "./auth";
+import { AuthAction, getPermissions, Permission } from "./auth";
 import { roleRepository } from "./roles";
 
 export interface User {
@@ -12,7 +12,7 @@ export interface User {
 /**
  * Returns true if the `permission` permits the `action`.
  */
-export function checkPermission(user: User, permission: Permission, action: Action): boolean {
+export function checkPermission(user: User, permission: Permission, action: AuthAction): boolean {
   if (permission.resource !== action.resource) {
     return false;
   }
@@ -30,7 +30,7 @@ export function checkPermission(user: User, permission: Permission, action: Acti
 /**
  * Returns true if the action is authorized by the permissions.
  */
-export function isAuthorized(user: User, action: Action): boolean {
+export function isAuthorized(user: User, action: AuthAction): boolean {
   const permissions = getPermissions(roleRepository, user.roles);
   return permissions.some(
       permission => checkPermission(user, permission, action));

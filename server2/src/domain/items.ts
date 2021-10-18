@@ -1,89 +1,82 @@
 import {BaseEntity} from '../common/base_entity';
-import {ColumnDomain, DomainTypeEnum} from '../common/column';
+import {EnumColumnDomain} from '../common/column';
 import {Db} from '../common/db';
 import {Flags} from '../common/entity';
+import {httpError} from '../common/error';
+import {ExpressApp, HttpMethod} from '../common/express_app';
 import {SqlQuery} from '../common/sql';
 import {EntityConfig, EntityTable} from '../common/table';
+import {addDays} from '../common/util';
 import {Borrower, borrowersTable} from './borrowers';
-import {Checkout, checkoutsTable} from './checkouts';
+import {Checkout, checkoutsTable, historyTable} from './checkouts';
 import {OrderItem, orderItemsTable} from './orders';
 
-const ItemState: ColumnDomain<string> = {
-  type: DomainTypeEnum.ENUM,
-  options: [
-    'CIRCULATING',
-    'STORED',
-    'DELETED',
-    'LOST',
-    'IN_REPAIR',
-  ],
-};
+const borrowDays = 28;
 
-const ItemDescription: ColumnDomain<string> = {
-  type: DomainTypeEnum.ENUM,
-  options: [
-    'Buch',
-    'CD',
-    'DVD',
-    'Comic',
-    'Multimedia',
-    'Zeitschrift',
-  ],
-};
+const ItemState = new EnumColumnDomain([
+  'CIRCULATING',
+  'STORED',
+  'DELETED',
+  'LOST',
+  'IN_REPAIR',
+]);
 
-const ItemSubject: ColumnDomain<string> = {
-  type: DomainTypeEnum.ENUM,
-  options: [
-    'Bilderbuch B - gelb',
-    'CD',
-    'Comic C - orange',
-    'DVD',
-    'Erzaehlung E - dunkelgruen',
-    'Fasching',
-    'Halloween',
-    'Klassik',
-    'Leseleiter LL - klar',
-    'Maerchen Mae - rot',
-    'Multimedia MM - rosa',
-    'Musik',
-    'Ostern',
-    'Sachkunde S - blau',
-    'Sachkunde Serie - hellblau',
-    'St. Martin',
-    'Teen T - hellgruen',
-    'Uebergroesse - lila',
-    'Weihnachten',
-    'Zeitschrift',
-  ],
-};
+const ItemDescription = new EnumColumnDomain([
+  'Buch',
+  'CD',
+  'DVD',
+  'Comic',
+  'Multimedia',
+  'Zeitschrift',
+]);
 
-const ItemAge: ColumnDomain<string> = {
-  type: DomainTypeEnum.ENUM,
-  options: [
-    'All Ages',
-    'K-1',
-    'K-2',
-    'T-12',
-    'T-17',
-    'Leseleiter-1A',
-    'Leseleiter-1B',
-    'Leseleiter-1C',
-    'Leseleiter-2',
-    'Leseleiter-3',
-    'Leseleiter-4',
-    'Leseleiter-5',
-    'Leseleiter-6',
-    'Leseleiter-7',
-    'Leseleiter-8',
-    'Leseleiter-9',
-    'Leseleiter-10',
-  ],
-};
+const ItemSubject = new EnumColumnDomain([
+  'Bilderbuch B - gelb',
+  'CD',
+  'Comic C - orange',
+  'DVD',
+  'Erzaehlung E - dunkelgruen',
+  'Fasching',
+  'Halloween',
+  'Klassik',
+  'Leseleiter LL - klar',
+  'Maerchen Mae - rot',
+  'Multimedia MM - rosa',
+  'Musik',
+  'Ostern',
+  'Sachkunde S - blau',
+  'Sachkunde Serie - hellblau',
+  'St. Martin',
+  'Teen T - hellgruen',
+  'Uebergroesse - lila',
+  'Weihnachten',
+  'Zeitschrift',
+]);
+
+const ItemAge = new EnumColumnDomain([
+  'All Ages',
+  'K-1',
+  'K-2',
+  'T-12',
+  'T-17',
+  'Leseleiter-1A',
+  'Leseleiter-1B',
+  'Leseleiter-1C',
+  'Leseleiter-2',
+  'Leseleiter-3',
+  'Leseleiter-4',
+  'Leseleiter-5',
+  'Leseleiter-6',
+  'Leseleiter-7',
+  'Leseleiter-8',
+  'Leseleiter-9',
+  'Leseleiter-10',
+]);
 
 type ItemAvailability = 'CHECKED_OUT'|'ORDERED'|'AVAILABLE';
 
 export interface Item {
-  id: number;
+  id?: number;
   barcode: string;
   category: string;
   title: string;
@@ -125,19 +118,19 @@ const config: EntityConfig<Item> = {
   columns: [
     {name: 'id'},
     {name: 'barcode', required: true},
-    {name: 'category', required: true},
+    {name: 'category', required: true, domain: ItemDescription},
     {name: 'title', required: true, queryOp: 'contains'},
     {name: 'author', queryOp: 'contains'},
-    {name: 'subject', required: true},
+    {name: 'subject', required: true, domain: ItemSubject},
     {name: 'publicationyear', label: 'Publication year'},
     {name: 'publisher'},
-    {name: 'age', label: 'Reading age'},
+    {name: 'age', label: 'Reading age', domain: ItemAge},
     {name: 'serial', label: 'Number in series'},
     {name: 'seriestitle', label: 'Series title'},
     {name: 'classification'},
     {name: 'itemnotes', label: 'Notes'},
     {name: 'replacementprice', label: 'Replacement price'},
-    {name: 'state', required: true},
+    {name: 'state', required: true, domain: ItemState},
     {name: 'isbn10', label: 'ISBN-10'},
     {name: 'isbn13', label: 'ISBN-13'},
     {name: 'antolin', label: 'Antolin book ID'},
@@ -183,8 +176,8 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     return result.rows.map(row => checkoutsTable.fromDb(row));
   }
 
-  async get(barcode: string, flags: ItemFlags):
-      Promise<ExtendedItem|undefined> {
+  override async get(barcode: string, flags: ItemFlags = {}):
+      Promise<ExtendedItem> {
     const sql = `
         select o.*, o.id as checkout_id, oi.*, oi.id as order_item_id, i.*
         from items i
@@ -194,18 +187,24 @@ export class Items extends BaseEntity<Item, ItemFlag> {
       `;
     const row = await this.db.selectRow(sql, [barcode]);
     if (!row) {
-      return undefined;
+      throw httpError({
+        code: 'ENTITY_NOT_FOUND',
+        message: `item ${barcode} not found`,
+        httpStatusCode: 404,
+      });
     }
     const item: ExtendedItem = this.table.fromDb(row);
     if (row.checkout_id) {
       item.checkout = checkoutsTable.fromDb(row);
+      item.checkout.id = row['checkout_id'];
     }
     if (row.order_item_id) {
       item.order_item = orderItemsTable.fromDb(row);
+      item.order_item.id = row['order_item_id'];
     }
     item.availability = getItemAvailability(item);
     if (item.checkout) {
-      const sql = `select * from borrowers where borrowernumber ?`;
+      const sql = `select * from borrowers where borrowernumber = ?`;
       const borrowerRow =
           await this.db.selectRow(sql, [item.checkout.borrowernumber]);
       if (borrowerRow) {
@@ -229,4 +228,92 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     }
     return item;
   }
+
+  async checkout(barcode: string, borrowernumber: number):
+      Promise<CheckoutResult> {
+    const [item, borrower] = await Promise.all([
+      this.get(barcode),
+      borrowersTable.find(this.db, {fields: {borrowernumber}}),
+    ]);
+    if (!borrower) {
+      throw httpError({
+        code: 'BORROWER_NOT_FOUND',
+        message: `borrower ${borrowernumber} not found`,
+        httpStatusCode: 404,
+      });
+    }
+    if (item?.checkout) {
+      throw httpError({
+        code: 'ITEM_ALREADY_CHECKED_OUT',
+        message: `item ${barcode} already checked out`,
+      });
+    }
+    if (item.state !== 'CIRCULATING') {
+      throw httpError({
+        code: 'ITEM_NOT_CIRCULATING',
+        message: `item ${barcode} is ${item.state}`,
+      });
+    }
+    let checkout = createCheckout(barcode, borrowernumber);
+    checkout = await checkoutsTable.create(this.db, checkout);
+    return {item, borrower, checkout};
+  }
+
+  async checkin(barcode: string): Promise<ExtendedItem> {
+    const item = await this.get(barcode);
+    const checkout = item.checkout;
+    if (!checkout) {
+      throw httpError({
+        code: `ITEM_NOT_CHECKED_OUT`,
+      });
+    }
+    const checkoutId = checkout.id!;
+    delete checkout.id;
+    checkout.returndate = new Date();
+    await historyTable.create(this.db, checkout);
+    await checkoutsTable.remove(this.db, checkoutId);
+    return item;
+  }
+
+  initRoutes(application: ExpressApp): void {
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: `${this.keyPath}/checkout`,
+      handle: async (req, res) => {
+        const barcode = req.params['key'];
+        const borrowernumber = parseInt(req.body.borrower, 10);
+        const result = await this.checkout(barcode, borrowernumber);
+        res.send(result);
+      },
+    });
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: `${this.keyPath}/checkin`,
+      handle: async (req, res) => {
+        const barcode = req.params['key'];
+        const result = await this.checkin(barcode);
+        res.send(result);
+      },
+    });
+    super.initRoutes(application);
+  }
+}
+
+function createCheckout(barcode: string, borrowernumber: number): Checkout {
+  const checkoutDate = new Date();
+  const dueDate = addDays(checkoutDate, borrowDays);
+  return {
+    barcode,
+    borrowernumber,
+    checkout_date: checkoutDate,
+    date_due: dueDate,
+    fine_due: 0,
+    fine_paid: 0,
+  };
+}
+
+export interface CheckoutResult {
+  item: Item;
+  borrower: Borrower;
+  checkout: Checkout;
 }

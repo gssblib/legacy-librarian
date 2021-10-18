@@ -1,3 +1,4 @@
+import mysql from 'mysql2/promise';
 import {Column, ColumnConfig, toFrontendColumnConfig} from './column';
 import {Db} from './db';
 import {EntityQuery, LogicalOp, mapQueryResult, QueryResult} from './query';
@@ -155,5 +156,41 @@ export class EntityTable<T> {
     const sqlSelect = this.toSqlQuery(query);
     const row = await db.selectRow(sqlSelect.sql, sqlSelect.params);
     return row && this.fromDb(row);
+  }
+
+  async create(db: Db, obj: T): Promise<T> {
+    const columns: string[] = [];
+    const placholders: string[] = [];
+    const params: any[] = [];
+
+    for (const column of this.columns) {
+      const value = obj[column.name];
+      if (value != undefined) {
+        columns.push(column.name as string);
+        placholders.push('?');
+        params.push(value);
+      }
+    }
+    const sql = `
+        insert into ${this.tableName} (${columns.join(', ')})
+        values (${placholders.join(', ')})
+      `;
+    const result = await db.execute(sql, params) as mysql.ResultSetHeader;
+    console.log('EntityTable.create', result);
+    this.setId(obj, result.insertId);
+    return obj;
+  }
+
+  async remove(db: Db, key: string|number): Promise<T> {
+    const keyColumn = this.config.naturalKey ?? 'id';
+    const sql = `delete from ${this.tableName} where ${keyColumn} = ?`;
+    const rows = await db.execute(sql, [key]) as mysql.RowDataPacket[];
+    console.log('EntityTable.remove', rows);
+    const row = rows[0];
+    return row && this.fromDb(row);
+  }
+
+  protected setId(obj: T, id: number): void {
+    (obj as unknown as {id: number}).id = id;
   }
 }

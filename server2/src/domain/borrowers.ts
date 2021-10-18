@@ -1,36 +1,71 @@
-import * as express from 'express';
 import {BaseEntity} from '../common/base_entity';
-import {ColumnDomain, DomainTypeEnum} from '../common/column';
+import {EnumColumnDomain} from '../common/column';
 import {Db} from '../common/db';
 import {Flags} from '../common/entity';
-import {EntityQuery, QueryResult} from '../common/query';
+import {httpError} from '../common/error';
+import {ExpressApp, HttpMethod} from '../common/express_app';
+import {mapQueryResult, QueryOptions, QueryResult} from '../common/query';
+import {SqlQuery} from '../common/sql';
 import {EntityConfig, EntityTable} from '../common/table';
 import {sum} from '../common/util';
 import {Checkout, checkoutsTable, historyTable} from './checkouts';
 
-export interface Borrower {
-  id: number;
-  borrowernumber: number;
-  surname: string;
-  firstname: string;
-  contactname: string;
-  phone: string;
-  emailaddress: string;
-  sycamoreid: string;
-  state: string;
-  cardnumber: string;
-  items?: Checkout[];
-  history?: Checkout[];
-  fees?: FeeInfo;
+/**
+ * Collection of checkouts (current or history) with fees.
+ */
+interface FeeInfo {
+  /** Total of all outstanding fees. */
+  total: number;
+
+  /** Current check-outs with outstanding fees. */
+  items: Checkout[];
+
+  /** Returned items with outstanding fees. */
+  history: Checkout[];
 }
 
-const BorrowerState: ColumnDomain<string> = {
-  type: DomainTypeEnum.ENUM,
-  options: [
-    'ACTIVE',
-    'INACTIVE',
-  ],
-};
+const BorrowerStateDomain = new EnumColumnDomain([
+  'ACTIVE',
+  'INACTIVE',
+]);
+
+type BorrowerState = 'ACTIVE'|'INACTIVE';
+
+export interface Borrower {
+  /** Auto-generated id. */
+  id: number;
+
+  /** Natural key of this borrower. */
+  borrowernumber: number;
+
+  /** Child surname. */
+  surname: string;
+
+  /** List of first names of the children. */
+  firstname: string;
+
+  /** Contact names of the parents. */
+  contactname: string;
+
+  phone: string;
+
+  /** Comma-separated list of email addresses. */
+  emailaddress: string;
+
+  /** Id of the family in the Sycamore system. */
+  sycamoreid: string;
+
+  state: BorrowerState;
+
+  /** List of currently checked-out items. */
+  items?: Checkout[];
+
+  /** Check-out history. */
+  history?: Checkout[];
+
+  /** Information about outstanding fees. */
+  fees?: FeeInfo;
+}
 
 const config: EntityConfig<Borrower> = {
   name: 'borrowers',
@@ -43,21 +78,23 @@ const config: EntityConfig<Borrower> = {
     {name: 'phone', label: 'Phone number'},
     {name: 'emailaddress', required: true, label: 'Email', queryOp: 'contains'},
     {name: 'sycamoreid', label: 'Sycamore ID'},
-    {name: 'state', required: true},
+    {name: 'state', required: true, domain: BorrowerStateDomain},
   ],
   naturalKey: 'borrowernumber',
 };
 
 export const borrowersTable = new EntityTable<Borrower>(config);
 
-interface FeeInfo {
-  total: number;
-  items: Checkout[];
-  history: Checkout[];
-}
-
 type BorrowerFlag = 'items'|'history'|'fees';
 type BorrowerFlags = Flags<BorrowerFlag>;
+
+interface BorrowerFeeSummary {
+  borrowernumber: number;
+  surname: string;
+  contactname: string;
+  firstname: string;
+  fee: number;
+}
 
 export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
   constructor(db: Db) {
@@ -68,39 +105,91 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     return {borrowernumber: parseInt(key, 10)};
   }
 
-  async checkouts(borrowernumber: number, feesOnly?: boolean): Promise<Checkout[]> {
-    const query: EntityQuery<Checkout> = {
-      fields: {borrowernumber},
-    };
-    return (await checkoutsTable.listCheckoutItems(this.db, query)).rows;
+  checkouts(borrowernumber: number, feesOnly?: boolean):
+      Promise<QueryResult<Checkout>> {
+    return checkoutsTable.listBorrowerCheckoutItems(
+        this.db, {borrowernumber, feesOnly});
   }
 
-  history(borrowernumber: number): Promise<QueryResult<Checkout>> {
-    const query: EntityQuery<Checkout> = {
-      fields: {borrowernumber},
-    };
-    return historyTable.listCheckoutItems(this.db, query);
+  history(borrowernumber: number, feesOnly?: boolean, options?: QueryOptions):
+      Promise<QueryResult<Checkout>> {
+    return historyTable.listBorrowerCheckoutItems(
+        this.db, {borrowernumber, feesOnly, options});
   }
 
+  /**
+   * Returns the information about the fees (total and items with fines) of a
+   * borrower.
+   */
   async fees(borrowerNumber: number): Promise<FeeInfo> {
-    const [items, history] = await Promise.all(
-        [this.checkouts(borrowerNumber), this.history(borrowerNumber)]);
-    const historyItems = history.rows;
+    const [checkouts, history] = await Promise.all([
+      this.checkouts(borrowerNumber, true), this.history(borrowerNumber, true)
+    ]);
     return {
-      total: totalFine(items) + totalFine(historyItems),
-      items,
-      history: historyItems,
+      total: totalFine(checkouts.rows) + totalFine(history.rows),
+      items: checkouts.rows,
+      history: history.rows,
     };
   }
 
-  async get(key: string, flags: BorrowerFlags): Promise<Borrower|undefined> {
+  async getFeeSummaries(options?: QueryOptions):
+      Promise<QueryResult<BorrowerFeeSummary>> {
+    delete options?.returnCount;
+    const query: SqlQuery = {
+      sql: `
+        select
+          b.borrowernumber, b.surname, b.contactname, b.firstname,
+          sum(if(c.fine_due <= c.fine_paid, 0, c.fine_due - c.fine_paid)) as fee
+        from
+          ((select id, borrowernumber, fine_due, fine_paid from ${
+          checkoutsTable.tableName}) union
+           (select id, borrowernumber, fine_due, fine_paid from ${
+          historyTable.tableName})) c
+        inner join borrowers b on c.borrowernumber = b.borrowernumber
+        group by borrowernumber
+        having fee > 0
+      `,
+      options,
+    };
+    const countSql = `
+      select count(1) as count from (
+        select
+          b.borrowernumber,
+          sum(if(c.fine_due <= c.fine_paid, 0, c.fine_due - c.fine_paid)) as fee
+        from
+          ((select id, borrowernumber, fine_due, fine_paid from ${
+        checkoutsTable.tableName}) union
+           (select id, borrowernumber, fine_due, fine_paid from ${
+        historyTable.tableName})) c
+        inner join borrowers b on c.borrowernumber = b.borrowernumber
+        group by borrowernumber
+        having fee > 0
+      ) d
+    `;
+    const [feeResult, countResult] = await Promise.all([
+      this.db.selectRows(query),
+      this.db.selectRow(countSql),
+    ])
+    feeResult.count = countResult && countResult['count'];
+    return mapQueryResult(feeResult, row => row as BorrowerFeeSummary);
+  }
+
+  /**
+   * Returns a `Borrower` with optional information subh as the checked-out
+   * items and checkout history.
+   */
+  override async get(key: string, flags: BorrowerFlags): Promise<Borrower> {
     const borrowernumber = parseInt(key, 10);
     const borrower = await this.table.find(this.db, {fields: {borrowernumber}});
     if (!borrower) {
-      return undefined;
+      throw httpError({
+        code: 'BORROWER_NOT_FOUND',
+        message: `borrower ${borrowernumber} not found`,
+        httpStatusCode: 404
+      });
     }
     if (flags.items) {
-      borrower.items = await this.checkouts(borrowernumber);
+      borrower.items = (await this.checkouts(borrowernumber)).rows;
     }
     if (flags.history) {
       borrower.history = (await this.history(borrowernumber)).rows;
@@ -111,16 +200,35 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     return borrower;
   }
 
-  initRoutes(app: express.Application): void {
-    app.get(`${this.basePath}/:key/history`, async (req, res) => {
-      const key = req.params['key'] ?? '';
-      const result = await this.history(parseInt(key, 10));
-      res.send(result);
+  initRoutes(application: ExpressApp): void {
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: `${this.basePath}/:key/history`,
+      handle: async (req, res) => {
+        const key = req.params['key'] ?? '';
+        const borrowernumber = parseInt(key, 10);
+        const result = await this.history(
+            borrowernumber, false, this.toQueryOptions(req.query));
+        res.send(result);
+      },
     });
-    super.initRoutes(app);
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: `${this.apiPath}/fees`,
+      handle: async (req, res) => {
+        const result =
+            await this.getFeeSummaries(this.toQueryOptions(req.query));
+        res.send(result);
+      },
+    });
+    super.initRoutes(application);
   }
 }
 
+/**
+ * Returns the total of unpaid fines of the `checkouts`.
+ */
 function totalFine(checkouts: Checkout[]): number {
-  return sum(checkouts.map(item => item.fine_due - item.fine_paid));
+  return sum(
+      checkouts.map(item => Math.max(0, item.fine_due - item.fine_paid)));
 }

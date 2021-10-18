@@ -1,4 +1,4 @@
-import * as express from 'express';
+import {ExpressApp} from './express_app';
 import {EntityQuery, LogicalOp, QueryResult} from './query';
 
 export type Flags<F extends string> = Partial<{[flag in F]: boolean}>;
@@ -17,9 +17,12 @@ export interface Entity<T, F extends string = ''> {
   /**
    * Gets an object by natural key.
    *
+   * If the object is not found, this method should throw an `ENTITY_NOT_FOUND`
+   * error.
+   *
    * @param flags Flags controlling which data is returned
    */
-  get(key: string, flags?: Flags<F>): Promise<T|undefined>;
+  get(key: string, flags?: Flags<F>): Promise<T>;
 
   /**
    * Fetches the objects matching the `query`.
@@ -51,5 +54,5 @@ export interface Entity<T, F extends string = ''> {
    * Adds the routes for the REST API for this entity to the express
    * `Application`.
    */
-  initRoutes(app: express.Application): void;
+  initRoutes(application: ExpressApp): void;
 }

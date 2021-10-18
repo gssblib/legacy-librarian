@@ -1,10 +1,10 @@
-import * as express from 'express';
+import config from 'config';
 import mysql from 'mysql2/promise';
+import {Db} from '../common/db';
+import {ExpressApp} from '../common/express_app';
 import {Borrowers} from './borrowers';
 import {Checkouts, History} from './checkouts';
-import {Db} from '../common/db';
 import {Items} from './items';
-import config from 'config';
 
 export const pool = mysql.createPool(config.get('db'));
 
@@ -15,9 +15,9 @@ const borrowers = new Borrowers(db);
 const checkouts = new Checkouts(db);
 const history = new History(db);
 
-export function initRoutes(app: express.Application): void {
-  items.initRoutes(app);
-  borrowers.initRoutes(app);
-  checkouts.initRoutes(app);
-  history.initRoutes(app);
+export function initRoutes(application: ExpressApp): void {
+  items.initRoutes(application);
+  borrowers.initRoutes(application);
+  checkouts.initRoutes(application);
+  history.initRoutes(application);
 }

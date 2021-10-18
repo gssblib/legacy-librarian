@@ -3,41 +3,69 @@ import {capitalizeFirst} from './util';
 
 export type QueryOp = 'contains'|'equals'|'startswith'|'endswith';
 
-export enum DomainTypeEnum {
+export enum DomainType {
   STRING = 'string',
   ENUM = 'enum',
 }
 
-export type DomainType = DomainTypeEnum.ENUM|DomainTypeEnum.STRING;
-
-/**
- * Properties of the value type of a column.
- */
-export interface ColumnDomain<T> {
-  type: DomainType;
-
-  /** Conversion of a column value to a field value (default is identity). */
-  fromDb?: (dbValue: SqlParamValue) => T | undefined;
-
-  /** Conversion of a field value to a column value (default is identity). */
-  toDb?: (value: T) => SqlParamValue;
-
-  options?: string[];
+export interface FrontendColumnDomain {
+  readonly type: DomainType;
+  readonly options?: string[];
 }
 
-class Domains {
-  static STRING: ColumnDomain<string> = {
-    type: DomainTypeEnum.STRING,
-    fromDb: (dbValue: SqlParamValue) =>
-        dbValue === null ? undefined : dbValue as string,
-    toDb: (value: string) => value,
+/**
+ * A `ColumnDomain` describes the mapping between the values in a column and
+ * the values of the property of the entity (TS object) that the column is
+ * mapped to.
+ *
+ * `V` is the type of the property mapped to the column and `C` the type of
+ * the column (as used by mysql2).
+ */
+export interface ColumnDomain<V = string, C extends SqlParamValue = string> {
+  readonly type: DomainType;
+
+  /** Conversion of a column value to a field value (default is identity). */
+  fromDb(dbValue: C|null): V | undefined;
+
+  /** Conversion of a field value to a column value (default is identity). */
+  toDb(value: V|undefined): C | null;
+
+  readonly options?: string[];
+}
+
+/**
+ * Most common domain for a string-to-string mapping.
+ *
+ * This domain maps `null` column values as used by mysql2 (for null columns) to
+ * `undefined` property values.
+ */
+export class StringColumnDomain implements ColumnDomain<string, string> {
+  fromDb(dbValue: string|null): string|undefined {
+    return dbValue ?? undefined;
+  }
+
+  toDb(value: string|undefined): string|null {
+    return value ?? null;
+  }
+
+  constructor(readonly type: DomainType = DomainType.STRING) {}
+}
+
+export class EnumColumnDomain extends StringColumnDomain {
+  constructor(readonly options: string[]) {
+    super(DomainType.ENUM);
   }
 }
 
 /**
  * Config for a column of an entity table.
+ *
+ * `T` is the type of the entity (the TS object), `K` the type of the key of the
+ * property of `T` that is mapped to the column, and `C` the type of the column
+ * (as used by mysql2).
  */
-export interface ColumnConfig<T, K extends keyof T> {
+export interface ColumnConfig<T, K extends keyof T,
+                                           C extends SqlParamValue = string> {
   /** Name of the column and field. */
   name: K;
 
@@ -81,9 +109,5 @@ export function toFrontendColumnConfig<T>(
     columnConfig: ColumnConfig<T, keyof T>): ColumnConfig<T, keyof T> {
   const config = {...columnConfig};
   delete config.fromParam;
-  if (config.domain) {
-    config.domain = {...config.domain};
-    delete config.domain.fromDb;
-  }
   return config;
 }
