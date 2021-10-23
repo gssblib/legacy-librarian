@@ -1,10 +1,35 @@
+import mysql from 'mysql2/promise';
 import {BaseEntity} from '../common/base_entity';
 import {ColumnConfig} from '../common/column';
 import {Db} from '../common/db';
 import {ExpressApp, HttpMethod} from '../common/express_app';
 import {EntityQuery, mapQueryResult, QueryOptions, QueryResult} from '../common/query';
 import {EntityConfig, EntityTable} from '../common/table';
+import {addDays} from '../common/util';
 import {Item, itemsTable} from './items';
+
+export interface CheckoutConfig {
+  /** Initial borrowing period in days: dueDate = checkoutDate + borrowDays. */
+  readonly borrowDays: number;
+
+  /**
+   * Number of days added when renewing an item: dueDate = now + renewalDays.
+   */
+  readonly renewalDays: number;
+
+  /**
+   * Period when an item can be renewed.
+   *
+   *   checkoutDay > now - renewalLimitDays <=> renewal allowed
+   */
+  readonly renewalLimitDays: number;
+}
+
+export const checkoutConfig: CheckoutConfig = {
+  borrowDays: 28,
+  renewalDays: 28,
+  renewalLimitDays: 15,
+}
 
 export interface Checkout {
   id?: number;
@@ -15,6 +40,17 @@ export interface Checkout {
   returndate?: Date|string;
   fine_due: number;
   fine_paid: number;
+  renewable?: boolean;
+}
+
+/**
+ * Sets the renewable flag in the 'checkout'.
+ */
+function setRenewable(checkout: Checkout) {
+  const now = new Date();
+  const checkoutLimit = addDays(now, -checkoutConfig.renewalLimitDays);
+  checkout.renewable = checkout.checkout_date > checkoutLimit;
+  return checkout;
 }
 
 export interface CheckoutItem extends Checkout, Item {}
@@ -59,6 +95,12 @@ class CheckoutTable extends EntityTable<Checkout> {
     this.addColumn({name: 'returndate'});
     this.addColumn({name: 'fine_due'});
     this.addColumn({name: 'fine_paid'});
+  }
+
+  override fromDb(row: mysql.RowDataPacket): Checkout {
+    const checkout = super.fromDb(row);
+    setRenewable(checkout);
+    return checkout;
   }
 
   /**
@@ -122,6 +164,26 @@ class BaseCheckouts extends BaseEntity<Checkout> {
       Promise<QueryResult<CheckoutItem>> {
     return this.checkoutTable.listCheckoutItems(this.db, query);
   }
+
+  async payFee(id: number): Promise<any> {
+    return await this.db.query(
+        `update ${
+            this.table.tableName} set fine_paid = fine_due where id = ?`,
+        [id]);
+  }
+
+  override initRoutes(application: ExpressApp): void {
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: `${this.basePath}/:id/payFee`,
+      handle: async (req, res) => {
+        const result = await this.payFee(parseInt(req.params['id']));
+        res.send(result);
+      },
+      authAction: {resource: 'fees', operation: 'update'},
+    });
+    super.initRoutes(application);
+  }
 }
 
 export const checkoutsTable = new CheckoutTable({
@@ -151,6 +213,7 @@ export class Checkouts extends BaseCheckouts {
         const result = await this.updateFees(date);
         res.send(result);
       },
+      authAction: {resource: 'fees', operation: 'update'},
     });
     super.initRoutes(application);
   }

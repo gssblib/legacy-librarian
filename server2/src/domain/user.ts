@@ -2,12 +2,13 @@ import {AuthAction, getPermissions, Permission} from './auth';
 import {roleRepository} from './roles';
 
 export interface User {
-  id?: string;
   type: string;
   username: string;
   roles: string[];
   permissions: Permission[];
   token?: string;
+  id?: string;
+  surname?: string;
 }
 
 /**

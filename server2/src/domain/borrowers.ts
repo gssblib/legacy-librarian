@@ -6,11 +6,11 @@ import {httpError} from '../common/error';
 import {ExpressApp, HttpMethod} from '../common/express_app';
 import {mapQueryResult, QueryOptions, QueryResult} from '../common/query';
 import {SqlQuery} from '../common/sql';
-import {EntityConfig, EntityTable} from '../common/table';
-import {sum} from '../common/util';
-import {Checkout, checkoutsTable, historyTable} from './checkouts';
+import {EntityTable} from '../common/table';
+import {addDays, sum} from '../common/util';
+import {Checkout, checkoutConfig, checkoutsTable, historyTable} from './checkouts';
 import {ordersTable, OrderSummary} from './orders';
-import { User } from './user';
+import {User} from './user';
 
 /**
  * Collection of checkouts (current or history) with fees.
@@ -75,14 +75,23 @@ export class BorrowerTable extends EntityTable<Borrower> {
   constructor() {
     super({name: 'borrowers', naturalKey: 'borrowernumber'});
     this.addColumn({name: 'id'});
-    this.addColumn({name: 'borrowernumber', label: 'Borrower number', internal: true});
+    this.addColumn(
+        {name: 'borrowernumber', label: 'Borrower number', internal: true});
     this.addColumn({name: 'surname', label: 'Last name', queryOp: 'contains'});
-    this.addColumn({name: 'firstname', label: 'First name', queryOp: 'contains'});
-    this.addColumn({name: 'contactname', label: 'Contact name', queryOp: 'contains'});
+    this.addColumn(
+        {name: 'firstname', label: 'First name', queryOp: 'contains'});
+    this.addColumn(
+        {name: 'contactname', label: 'Contact name', queryOp: 'contains'});
     this.addColumn({name: 'phone', label: 'Phone number'});
-    this.addColumn({name: 'emailaddress', required: true, label: 'Email', queryOp: 'contains'});
+    this.addColumn({
+      name: 'emailaddress',
+      required: true,
+      label: 'Email',
+      queryOp: 'contains'
+    });
     this.addColumn({name: 'sycamoreid', label: 'Sycamore ID'});
-    this.addColumn({name: 'state', required: true, domain: BorrowerStateDomain});
+    this.addColumn(
+        {name: 'state', required: true, domain: BorrowerStateDomain});
   }
 }
 
@@ -177,6 +186,20 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     return mapQueryResult(feeResult, row => row as BorrowerFeeSummary);
   }
 
+  async payFees(borrowernumber: number): Promise<any> {
+    const result = await Promise.all([
+      this.db.execute(
+          'update `out` set fine_paid = fine_due ' +
+              'where fine_due > fine_paid and borrowernumber = ?',
+          [borrowernumber]),
+      this.db.query(
+          'update issue_history set fine_paid = fine_due ' +
+              'where fine_due > fine_paid and borrowernumber = ?',
+          [borrowernumber]),
+    ]);
+    return result;
+  }
+
   /**
    * Returns a `Borrower` with optional information subh as the checked-out
    * items and checkout history.
@@ -208,6 +231,21 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     return borrower;
   }
 
+  async renewAllItems(borrowernumber: number): Promise<any> {
+    const now = new Date();
+    const newDueDate = addDays(now, checkoutConfig.renewalDays);
+    const checkoutLimit = addDays(now, -checkoutConfig.renewalLimitDays);
+    const sql = `
+        update \`out\` a, items b 
+        set a.date_due = ? 
+        where borrowernumber = ? and a.barcode = b.barcode 
+        and a.checkout_date > ?
+      `;
+    const result =
+        await this.db.execute(sql, [newDueDate, borrowernumber, checkoutLimit]);
+    return result;
+  }
+
   initRoutes(application: ExpressApp): void {
     application.addHandler({
       method: HttpMethod.GET,
@@ -219,6 +257,29 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
             borrowernumber, false, this.toQueryOptions(req.query));
         res.send(result);
       },
+      authAction: {resource: 'borrowers', operation: 'read'},
+    });
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: `${this.basePath}/:key/renewAllItems`,
+      handle: async (req, res) => {
+        const key = req.params['key'] ?? '';
+        const borrowernumber = parseInt(key, 10);
+        const result = await this.renewAllItems(borrowernumber);
+        res.send(result);
+      },
+      authAction: {resource: 'borrowers', operation: 'renewAllItems'},
+    });
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: `${this.basePath}/:key/payFees`,
+      handle: async (req, res) => {
+        const key = req.params['key'] ?? '';
+        const borrowernumber = parseInt(key, 10);
+        const result = await this.payFees(borrowernumber);
+        res.send(result);
+      },
+      authAction: {resource: 'borrowers', operation: 'renewAllItems'},
     });
     application.addHandler({
       method: HttpMethod.GET,
@@ -228,16 +289,19 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
             await this.getFeeSummaries(this.toQueryOptions(req.query));
         res.send(result);
       },
+      authAction: {resource: 'fees', operation: 'read'},
     });
     application.addHandler({
       method: HttpMethod.GET,
-      path: `${this.basePath}/me`,
+      path: `${this.apiPath}/me`,
       handle: async (req, res) => {
         const user = req.user;
         const appUser = user as User;
         const id = appUser.id;
-        return await this.get(id ?? '', {items: true, fees:true});
+        const borrower = await this.get(id ?? '', {items: true, fees:true});
+        res.send(borrower);
       },
+      authAction: {resource: 'profile', operation: 'read'},
     });
     super.initRoutes(application);
   }

@@ -1,3 +1,4 @@
+import mysql from 'mysql2/promise';
 import {BaseEntity} from '../common/base_entity';
 import {booleanColumnDomain, EnumColumnDomain} from '../common/column';
 import {Db} from '../common/db';
@@ -8,10 +9,9 @@ import {SqlQuery} from '../common/sql';
 import {EntityTable} from '../common/table';
 import {addDays} from '../common/util';
 import {Borrower, borrowersTable} from './borrowers';
-import {Checkout, checkoutsTable, historyTable} from './checkouts';
+import {Checkout, checkoutConfig, checkoutsTable, historyTable} from './checkouts';
 import {Order, OrderCycle, orderCyclesTable, OrderItem, orderItemsTable, ordersTable} from './orders';
 
-const borrowDays = 28;
 
 const ItemState = new EnumColumnDomain([
   'CIRCULATING',
@@ -111,6 +111,16 @@ export interface Item {
   history?: Checkout[];
 }
 
+function getItemAvailability(item: Item): ItemAvailability {
+  if (item.checkout) {
+    return 'CHECKED_OUT';
+  } else if (item.order_item) {
+    return 'ORDERED';
+  } else {
+    return 'AVAILABLE';
+  }
+}
+
 export class ItemTable extends EntityTable<Item> {
   constructor() {
     super({name: 'items'});
@@ -134,19 +144,15 @@ export class ItemTable extends EntityTable<Item> {
     this.addColumn({name: 'antolin', label: 'Antolin book ID'});
     this.addColumn({name: 'has_cover_image', domain: booleanColumnDomain});
   }
+
+  override fromDb(row: mysql.RowDataPacket): Item {
+    const item = super.fromDb(row);
+    item.availability = getItemAvailability(item);
+    return item;
+  }
 }
 
 export const itemsTable = new ItemTable();
-
-function getItemAvailability(item: Item): ItemAvailability {
-  if (item.checkout) {
-    return 'CHECKED_OUT';
-  } else if (item.order_item) {
-    return 'ORDERED';
-  } else {
-    return 'AVAILABLE';
-  }
-}
 
 type ItemFlag = 'history';
 type ItemFlags = Flags<ItemFlag>;
@@ -198,7 +204,6 @@ export class Items extends BaseEntity<Item, ItemFlag> {
       item.order_item = orderItemsTable.fromDb(row);
       item.order_item.id = row['order_item_id'];
     }
-    item.availability = getItemAvailability(item);
     if (item.checkout) {
       const sql = `select * from borrowers where borrowernumber = ?`;
       const borrowerRow =
@@ -266,7 +271,8 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     const checkout = item.checkout;
     if (!checkout) {
       throw httpError({
-        code: `ITEM_NOT_CHECKED_OUT`,
+        code: 'ITEM_NOT_CHECKED_OUT',
+        message: `trying to check in item ${barcode} that is not checked out`,
       });
     }
     const checkoutId = checkout.id!;
@@ -274,6 +280,21 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     checkout.returndate = new Date();
     await historyTable.create(this.db, checkout);
     await checkoutsTable.remove(this.db, checkoutId);
+    return item;
+  }
+
+  async renew(barcode: string): Promise<Item> {
+    const item = await this.get(barcode);
+    const checkout = item.checkout;
+    if (!checkout) {
+      throw httpError({
+        code: 'ITEM_NOT_CHECKED_OUT',
+        message: `trying to check in item ${barcode} that is not checked out`,
+      });
+    }
+    const now = new Date();
+    checkout.date_due = addDays(now, checkoutConfig.renewalDays);
+    await checkoutsTable.update(this.db, {id: checkout.id, date_due: checkout.date_due});
     return item;
   }
 
@@ -332,6 +353,15 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     });
     application.addHandler({
       method: HttpMethod.POST,
+      path: `${this.keyPath}/renew`,
+      handle: async (req, res) => {
+        const barcode = req.params['key'];
+        const result = await this.renew(barcode);
+        res.send(result);
+      },
+    });
+    application.addHandler({
+      method: HttpMethod.POST,
       path: `${this.keyPath}/order`,
       handle: async (req, res) => {
         const barcode = req.params['key'];
@@ -346,7 +376,7 @@ export class Items extends BaseEntity<Item, ItemFlag> {
 
 function createCheckout(barcode: string, borrowernumber: number): Checkout {
   const checkoutDate = new Date();
-  const dueDate = addDays(checkoutDate, borrowDays);
+  const dueDate = addDays(checkoutDate, checkoutConfig.borrowDays);
   return {
     barcode,
     borrowernumber,

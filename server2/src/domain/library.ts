@@ -11,8 +11,8 @@ export const pool = mysql.createPool(config.get('db'));
 
 export const db = new Db(pool);
 
+export const borrowers = new Borrowers(db);
 const items = new Items(db);
-const borrowers = new Borrowers(db);
 const checkouts = new Checkouts(db);
 const history = new History(db);
 const orderCycles = new OrderCycles(db);
