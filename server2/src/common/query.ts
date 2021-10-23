@@ -1,7 +1,8 @@
 import {SqlWhere} from './sql';
+
 /**
  * Generic query options.
- * 
+ *
  * These options are independent of the specific form of the query (SQL query or
  * filter).
  */
@@ -34,7 +35,7 @@ export interface QueryResult<T> {
   /** Selected values (rows or converted rows). */
   rows: T[];
 
-  /** Total number of result (in case of query with limit). */
+  /** Total number of results (in case of query with limit). */
   count?: number;
 }
 
@@ -63,7 +64,7 @@ export interface EntityQuery<T> {
 
   /**
    * Optional custom where clause.
-   * 
+   *
    * This allows for adding any SQL where clause to the query in addition to
    * the conditions generated for the `fields`.
    */

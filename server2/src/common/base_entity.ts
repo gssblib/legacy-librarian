@@ -50,25 +50,11 @@ export abstract class BaseEntity<T, F extends string = ''> implements
     return this.table.create(this.db, obj);
   }
 
-  async update(obj: Partial<T>): Promise<T|undefined> {
-    const params: any[] = [];
-    let sql = '';
-    for (const column of this.table.columns) {
-      const value = obj[column.name];
-      if (value != undefined) {
-        if (sql.length > 0) sql += ', ';
-        sql += column.name + ' = ?';
-        params.push(value);
-      }
-    }
-    sql = `update ${this.table.tableName} set ${sql} where id = ?`;
-    params.push(this.getId(obj));
-    const rows = await this.db.execute(sql, params) as mysql.RowDataPacket[];
-    const row = rows[0];
-    return row && this.table.fromDb(row);
+  update(obj: Partial<T>): Promise<T|undefined> {
+    return this.table.update(this.db, obj);
   }
 
-  async remove(key: string): Promise<T> {
+  remove(key: string): Promise<T> {
     return this.table.remove(this.db, key);
   }
 
@@ -168,7 +154,7 @@ export abstract class BaseEntity<T, F extends string = ''> implements
         const result = await this.create(req.body);
         res.send(result);
       },
-      authAction: {resource: this.name, operation: 'write'}
+      authAction: {resource: this.name, operation: 'create'}
     });
 
     // PUT partial updates (should be PATCH).
@@ -179,7 +165,7 @@ export abstract class BaseEntity<T, F extends string = ''> implements
         const result = await this.update(req.body);
         res.send(result);
       },
-      authAction: {resource: this.name, operation: 'write'}
+      authAction: {resource: this.name, operation: 'update'}
     });
 
     // DELETE an entity.
@@ -191,7 +177,7 @@ export abstract class BaseEntity<T, F extends string = ''> implements
         const result = await this.remove(key);
         res.send(result);
       },
-      authAction: {resource: this.name, operation: 'write'}
+      authAction: {resource: this.name, operation: 'delete'}
     });
   }
 }

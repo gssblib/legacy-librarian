@@ -9,6 +9,8 @@ import {SqlQuery} from '../common/sql';
 import {EntityConfig, EntityTable} from '../common/table';
 import {sum} from '../common/util';
 import {Checkout, checkoutsTable, historyTable} from './checkouts';
+import {ordersTable, OrderSummary} from './orders';
+import { User } from './user';
 
 /**
  * Collection of checkouts (current or history) with fees.
@@ -23,11 +25,6 @@ interface FeeInfo {
   /** Returned items with outstanding fees. */
   history: Checkout[];
 }
-
-const BorrowerStateDomain = new EnumColumnDomain([
-  'ACTIVE',
-  'INACTIVE',
-]);
 
 type BorrowerState = 'ACTIVE'|'INACTIVE';
 
@@ -65,27 +62,33 @@ export interface Borrower {
 
   /** Information about outstanding fees. */
   fees?: FeeInfo;
+
+  orders?: OrderSummary[];
 }
 
-const config: EntityConfig<Borrower> = {
-  name: 'borrowers',
-  columns: [
-    {name: 'id'},
-    {name: 'borrowernumber', label: 'Borrower number', internal: true},
-    {name: 'surname', label: 'Last name', queryOp: 'contains'},
-    {name: 'firstname', label: 'First name', queryOp: 'contains'},
-    {name: 'contactname', label: 'Contact name', queryOp: 'contains'},
-    {name: 'phone', label: 'Phone number'},
-    {name: 'emailaddress', required: true, label: 'Email', queryOp: 'contains'},
-    {name: 'sycamoreid', label: 'Sycamore ID'},
-    {name: 'state', required: true, domain: BorrowerStateDomain},
-  ],
-  naturalKey: 'borrowernumber',
-};
+const BorrowerStateDomain = new EnumColumnDomain<BorrowerState>([
+  'ACTIVE',
+  'INACTIVE',
+]);
 
-export const borrowersTable = new EntityTable<Borrower>(config);
+export class BorrowerTable extends EntityTable<Borrower> {
+  constructor() {
+    super({name: 'borrowers', naturalKey: 'borrowernumber'});
+    this.addColumn({name: 'id'});
+    this.addColumn({name: 'borrowernumber', label: 'Borrower number', internal: true});
+    this.addColumn({name: 'surname', label: 'Last name', queryOp: 'contains'});
+    this.addColumn({name: 'firstname', label: 'First name', queryOp: 'contains'});
+    this.addColumn({name: 'contactname', label: 'Contact name', queryOp: 'contains'});
+    this.addColumn({name: 'phone', label: 'Phone number'});
+    this.addColumn({name: 'emailaddress', required: true, label: 'Email', queryOp: 'contains'});
+    this.addColumn({name: 'sycamoreid', label: 'Sycamore ID'});
+    this.addColumn({name: 'state', required: true, domain: BorrowerStateDomain});
+  }
+}
 
-type BorrowerFlag = 'items'|'history'|'fees';
+export const borrowersTable = new BorrowerTable();
+
+type BorrowerFlag = 'items'|'history'|'fees'|'orders';
 type BorrowerFlags = Flags<BorrowerFlag>;
 
 interface BorrowerFeeSummary {
@@ -197,6 +200,11 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     if (flags.fees) {
       borrower.fees = await this.fees(borrowernumber);
     }
+    if (flags.orders) {
+      const orderResult =
+          await ordersTable.listBorrowerOrderSummaries(this.db, borrowernumber);
+      borrower.orders = orderResult.rows;
+    }
     return borrower;
   }
 
@@ -219,6 +227,16 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
         const result =
             await this.getFeeSummaries(this.toQueryOptions(req.query));
         res.send(result);
+      },
+    });
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: `${this.basePath}/me`,
+      handle: async (req, res) => {
+        const user = req.user;
+        const appUser = user as User;
+        const id = appUser.id;
+        return await this.get(id ?? '', {items: true, fees:true});
       },
     });
     super.initRoutes(application);

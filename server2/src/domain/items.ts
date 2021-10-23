@@ -1,15 +1,15 @@
 import {BaseEntity} from '../common/base_entity';
-import {EnumColumnDomain} from '../common/column';
+import {booleanColumnDomain, EnumColumnDomain} from '../common/column';
 import {Db} from '../common/db';
 import {Flags} from '../common/entity';
 import {httpError} from '../common/error';
 import {ExpressApp, HttpMethod} from '../common/express_app';
 import {SqlQuery} from '../common/sql';
-import {EntityConfig, EntityTable} from '../common/table';
+import {EntityTable} from '../common/table';
 import {addDays} from '../common/util';
 import {Borrower, borrowersTable} from './borrowers';
 import {Checkout, checkoutsTable, historyTable} from './checkouts';
-import {OrderItem, orderItemsTable} from './orders';
+import {Order, OrderCycle, orderCyclesTable, OrderItem, orderItemsTable, ordersTable} from './orders';
 
 const borrowDays = 28;
 
@@ -97,9 +97,7 @@ export interface Item {
   has_cover_image: boolean;
   added: string;
   availability?: ItemAvailability;
-}
 
-export interface ExtendedItem extends Item {
   /** Current check-out of this item (if any). */
   checkout?: Checkout;
 
@@ -113,35 +111,34 @@ export interface ExtendedItem extends Item {
   history?: Checkout[];
 }
 
-const config: EntityConfig<Item> = {
-  name: 'items',
-  columns: [
-    {name: 'id'},
-    {name: 'barcode', required: true},
-    {name: 'category', required: true, domain: ItemDescription},
-    {name: 'title', required: true, queryOp: 'contains'},
-    {name: 'author', queryOp: 'contains'},
-    {name: 'subject', required: true, domain: ItemSubject},
-    {name: 'publicationyear', label: 'Publication year'},
-    {name: 'publisher'},
-    {name: 'age', label: 'Reading age', domain: ItemAge},
-    {name: 'serial', label: 'Number in series'},
-    {name: 'seriestitle', label: 'Series title'},
-    {name: 'classification'},
-    {name: 'itemnotes', label: 'Notes'},
-    {name: 'replacementprice', label: 'Replacement price'},
-    {name: 'state', required: true, domain: ItemState},
-    {name: 'isbn10', label: 'ISBN-10'},
-    {name: 'isbn13', label: 'ISBN-13'},
-    {name: 'antolin', label: 'Antolin book ID'},
-    {name: 'has_cover_image', internal: true},
-    {name: 'added', label: 'Date added', internal: true},
-  ],
-};
+export class ItemTable extends EntityTable<Item> {
+  constructor() {
+    super({name: 'items'});
+    this.addColumn({name: 'id'});
+    this.addColumn({name: 'barcode', required: true});
+    this.addColumn({name: 'category', required: true, domain: ItemDescription});
+    this.addColumn({name: 'title', required: true, queryOp: 'contains'});
+    this.addColumn({name: 'author', queryOp: 'contains'});
+    this.addColumn({name: 'subject', required: true, domain: ItemSubject});
+    this.addColumn({name: 'publicationyear', label: 'Publication year'});
+    this.addColumn({name: 'publisher'});
+    this.addColumn({name: 'age', label: 'Reading age', domain: ItemAge});
+    this.addColumn({name: 'serial', label: 'Number in series'});
+    this.addColumn({name: 'seriestitle', label: 'Series title'});
+    this.addColumn({name: 'classification'});
+    this.addColumn({name: 'itemnotes', label: 'Notes'});
+    this.addColumn({name: 'replacementprice', label: 'Replacment price'});
+    this.addColumn({name: 'state', required: true, domain: ItemState});
+    this.addColumn({name: 'isbn10', label: 'ISBN-10'});
+    this.addColumn({name: 'isbn13', label: 'ISBN-13'});
+    this.addColumn({name: 'antolin', label: 'Antolin book ID'});
+    this.addColumn({name: 'has_cover_image', domain: booleanColumnDomain});
+  }
+}
 
-export const itemsTable = new EntityTable<Item>(config);
+export const itemsTable = new ItemTable();
 
-function getItemAvailability(item: ExtendedItem): ItemAvailability {
+function getItemAvailability(item: Item): ItemAvailability {
   if (item.checkout) {
     return 'CHECKED_OUT';
   } else if (item.order_item) {
@@ -176,8 +173,7 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     return result.rows.map(row => checkoutsTable.fromDb(row));
   }
 
-  override async get(barcode: string, flags: ItemFlags = {}):
-      Promise<ExtendedItem> {
+  override async get(barcode: string, flags: ItemFlags = {}): Promise<Item> {
     const sql = `
         select o.*, o.id as checkout_id, oi.*, oi.id as order_item_id, i.*
         from items i
@@ -193,7 +189,7 @@ export class Items extends BaseEntity<Item, ItemFlag> {
         httpStatusCode: 404,
       });
     }
-    const item: ExtendedItem = this.table.fromDb(row);
+    const item: Item = this.table.fromDb(row);
     if (row.checkout_id) {
       item.checkout = checkoutsTable.fromDb(row);
       item.checkout.id = row['checkout_id'];
@@ -229,6 +225,9 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     return item;
   }
 
+  /**
+   * Adds an item to the checked-out items of a borrower.
+   */
   async checkout(barcode: string, borrowernumber: number):
       Promise<CheckoutResult> {
     const [item, borrower] = await Promise.all([
@@ -259,7 +258,10 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     return {item, borrower, checkout};
   }
 
-  async checkin(barcode: string): Promise<ExtendedItem> {
+  /**
+   * Returns an item.
+   */
+  async checkin(barcode: string): Promise<Item> {
     const item = await this.get(barcode);
     const checkout = item.checkout;
     if (!checkout) {
@@ -275,7 +277,40 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     return item;
   }
 
-  initRoutes(application: ExpressApp): void {
+  /**
+   * Returns the promise of adding an item to a borrowers current order.
+   *
+   * The current order is the order associated with the current order cycle. If
+   * the borrower's current order does not exist yet, it is created before
+   * adding the item.
+   *
+   * If there is no current order cycle, an exception is throws.
+   */
+  async order(barcode: string, borrowernumber: number): Promise<OrderResult> {
+    const now = new Date();
+    const [item, borrower, cycle] = await Promise.all([
+      this.find({fields: {barcode}}),
+      borrowersTable.find(this.db, {fields: {borrowernumber}}),
+      orderCyclesTable.getByDate(this.db, now),
+    ]);
+    if (!item) {
+      throw httpError({code: 'ITEM_NOT_FOUND', httpStatusCode: 404});
+    }
+    if (!borrower) {
+      throw httpError({code: 'BORROWER_NOT_FOUND', httpStatusCode: 404});
+    }
+    if (!cycle) {
+      throw httpError({code: 'CYCLE_NOT_FOUND', httpStatusCode: 404});
+    }
+    const order = await ordersTable.getOrCreateBorrowerOrder(
+        this.db, borrower.id, cycle.id);
+    const orderItem = await orderItemsTable.create(
+        this.db, {order_id: order.id!, item_id: item.id!});
+
+    return {item, borrower, cycle, order, orderItem};
+  }
+
+  override initRoutes(application: ExpressApp): void {
     application.addHandler({
       method: HttpMethod.POST,
       path: `${this.keyPath}/checkout`,
@@ -292,6 +327,16 @@ export class Items extends BaseEntity<Item, ItemFlag> {
       handle: async (req, res) => {
         const barcode = req.params['key'];
         const result = await this.checkin(barcode);
+        res.send(result);
+      },
+    });
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: `${this.keyPath}/order`,
+      handle: async (req, res) => {
+        const barcode = req.params['key'];
+        const borrowernumber = req.body.borrower;
+        const result = await this.order(barcode, borrowernumber);
         res.send(result);
       },
     });
@@ -316,4 +361,12 @@ export interface CheckoutResult {
   item: Item;
   borrower: Borrower;
   checkout: Checkout;
+}
+
+export interface OrderResult {
+  item: Item;
+  borrower: Borrower;
+  cycle: OrderCycle;
+  order: Order;
+  orderItem: OrderItem;
 }

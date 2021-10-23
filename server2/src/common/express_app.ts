@@ -76,7 +76,7 @@ export class ExpressApp {
       try {
         await handler.handle(req, res);
       } catch (e) {
-        console.log(`uncaught eception: ${e}`);
+        console.log(`uncaught exception: ${JSON.stringify(e)}`);
         if (isHttpError(e)) {
           res.status(e.httpStatusCode);
           res.send({errorCode: e.code});

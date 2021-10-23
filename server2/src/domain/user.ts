@@ -1,7 +1,8 @@
-import { AuthAction, getPermissions, Permission } from "./auth";
-import { roleRepository } from "./roles";
+import {AuthAction, getPermissions, Permission} from './auth';
+import {roleRepository} from './roles';
 
 export interface User {
+  id?: string;
   type: string;
   username: string;
   roles: string[];
@@ -12,7 +13,8 @@ export interface User {
 /**
  * Returns true if the `permission` permits the `action`.
  */
-export function checkPermission(user: User, permission: Permission, action: AuthAction): boolean {
+export function checkPermission(
+    user: User, permission: Permission, action: AuthAction): boolean {
   if (permission.resource !== action.resource) {
     return false;
   }
@@ -32,6 +34,12 @@ export function checkPermission(user: User, permission: Permission, action: Auth
  */
 export function isAuthorized(user: User, action: AuthAction): boolean {
   const permissions = getPermissions(roleRepository, user.roles);
-  return permissions.some(
-      permission => checkPermission(user, permission, action));
+  const authorized =
+      permissions.some(permission => checkPermission(user, permission, action));
+  if (!authorized) {
+    console.log(
+        `user ${JSON.stringify(user)} not authorized to perform action ${
+            JSON.stringify(action)}`);
+  }
+  return authorized;
 };

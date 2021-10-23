@@ -1,11 +1,13 @@
 import {SqlParamValue} from './sql';
-import {capitalizeFirst} from './util';
+import {capitalizeFirst, dateToIsoStringWithoutTimeZone} from './util';
 
 export type QueryOp = 'contains'|'equals'|'startswith'|'endswith';
 
 export enum DomainType {
   STRING = 'string',
   ENUM = 'enum',
+  DATETIME = 'datetime',
+  BOOLEAN = 'boolean',
 }
 
 export interface FrontendColumnDomain {
@@ -30,6 +32,7 @@ export interface ColumnDomain<V = string, C extends SqlParamValue = string> {
   /** Conversion of a field value to a column value (default is identity). */
   toDb(value: V|undefined): C | null;
 
+  /** List of values of an enum domain. */
   readonly options?: string[];
 }
 
@@ -51,9 +54,57 @@ export class StringColumnDomain implements ColumnDomain<string, string> {
   constructor(readonly type: DomainType = DomainType.STRING) {}
 }
 
-export class EnumColumnDomain extends StringColumnDomain {
+/**
+ * Domain for date-time values.
+ * 
+ * The mysql column type is `datetime`, the field type `string|Date`.
+ */
+export class DateTimeColumnDomain implements ColumnDomain<Date|string, string> {
+  fromDb(dbValue: string|null): Date|string|undefined {
+    return dbValue ?? undefined;
+  }
+
+  toDb(value: Date|string|undefined): string|null {
+    return value ? dateToIsoStringWithoutTimeZone(value) : null;
+  }
+
+  constructor(readonly type: DomainType = DomainType.DATETIME) {}
+}
+
+export const dateTimeColumnDomain: ColumnDomain<Date|string, string> = new DateTimeColumnDomain();
+
+/**
+ * Domain for boolean values.
+ * 
+ * The mysql column type is `tinyint`, the field type `boolean`.
+ */
+export class BooleanColumnDomain implements ColumnDomain<boolean, number> {
+  fromDb(dbValue: number|null): boolean|undefined {
+    return dbValue === null ? undefined : dbValue === 1;
+  }
+
+  toDb(value: boolean|undefined): number|null {
+    return value === undefined ? null : value ? 1 : 0;
+  }
+
+  constructor(readonly type: DomainType = DomainType.BOOLEAN) {}
+}
+
+export const booleanColumnDomain: ColumnDomain<boolean, number> = new BooleanColumnDomain();
+
+
+export class EnumColumnDomain<T extends string = string> implements ColumnDomain<T, string> {
+  readonly type: DomainType = DomainType.ENUM;
+
   constructor(readonly options: string[]) {
-    super(DomainType.ENUM);
+  }
+
+  fromDb(dbValue: string|null): T|undefined {
+    return dbValue === null ? undefined : dbValue as T;
+  }
+
+  toDb(value: string|undefined): string|null {
+    return value === undefined ? null : value;
   }
 }
 
@@ -78,7 +129,7 @@ export interface ColumnConfig<T, K extends keyof T,
   /** Conversion of a query parameter to a field value. */
   fromParam?: (param: string) => T[K];
 
-  domain?: ColumnDomain<T[K]>;
+  domain?: ColumnDomain<T[K], C>;
 
   /** If true, this column is required when creating the containing object. */
   required?: boolean;
@@ -92,13 +143,20 @@ export interface ColumnConfig<T, K extends keyof T,
  *
  * This class defines the defaults for the optional parts of the `ColumnConfig`.
  */
-export class Column<T, K extends keyof T> {
+export class Column<T, K extends keyof T, C extends SqlParamValue = string> {
   name: K = this.config.name;
+
+  /** Default query operation is 'equals'. */
   queryOp: QueryOp = this.config.queryOp ?? 'equals';
+
+  /** Default label is the capitalized name. */
   label = this.config.label ?? capitalizeFirst(this.config.name as string);
 
-  constructor(readonly config: ColumnConfig<T, K>) {}
+  constructor(readonly config: ColumnConfig<T, K, C>) {}
 
+  /**
+   * The default parameter conversion casts the parameter to the field type.
+   */
   fromParam(param: string): T[K] {
     return this.config.fromParam ? this.config.fromParam(param) :
                                    param as unknown as T[K];
@@ -106,7 +164,7 @@ export class Column<T, K extends keyof T> {
 }
 
 export function toFrontendColumnConfig<T>(
-    columnConfig: ColumnConfig<T, keyof T>): ColumnConfig<T, keyof T> {
+    columnConfig: ColumnConfig<T, keyof T, SqlParamValue>): ColumnConfig<T, keyof T, SqlParamValue> {
   const config = {...columnConfig};
   delete config.fromParam;
   return config;

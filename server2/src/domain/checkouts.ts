@@ -51,6 +51,14 @@ interface CheckoutQuery {
 class CheckoutTable extends EntityTable<Checkout> {
   constructor(config: EntityConfig<Checkout>) {
     super(config);
+    this.addColumn({name: 'id'});
+    this.addColumn({name: 'barcode'});
+    this.addColumn({name: 'borrowernumber'});
+    this.addColumn({name: 'checkout_date'});
+    this.addColumn({name: 'date_due'});
+    this.addColumn({name: 'returndate'});
+    this.addColumn({name: 'fine_due'});
+    this.addColumn({name: 'fine_paid'});
   }
 
   /**
@@ -116,13 +124,10 @@ class BaseCheckouts extends BaseEntity<Checkout> {
   }
 }
 
-const checkoutsConfig: EntityConfig<Checkout> = {
+export const checkoutsTable = new CheckoutTable({
   name: 'checkouts',
   tableName: '`out`',
-  columns: checkoutColumns,
-};
-
-export const checkoutsTable = new CheckoutTable(checkoutsConfig);
+});
 
 export class Checkouts extends BaseCheckouts {
   constructor(db: Db) {
@@ -151,13 +156,10 @@ export class Checkouts extends BaseCheckouts {
   }
 }
 
-const historyConfig: EntityConfig<Checkout> = {
+export const historyTable = new CheckoutTable({
   name: 'history',
   tableName: 'issue_history',
-  columns: checkoutColumns,
-};
-
-export const historyTable = new CheckoutTable(historyConfig);
+});
 
 export class History extends BaseCheckouts {
   constructor(db: Db) {
