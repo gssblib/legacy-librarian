@@ -58,7 +58,7 @@ export const roleRepository: AuthRoleRepository = new Map<string, AuthRole>([
         },
         {
           resource: 'borrowers',
-          operations: [...crud, 'payFees', 'renewAllItems'],
+          operations: [...crud, 'payFees', 'renewAllItems', 'sendEmail'],
         },
         {
           resource: 'fees',

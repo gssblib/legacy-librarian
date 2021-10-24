@@ -1,0 +1,37 @@
+{%- if test %}
+This is a test - ignore.
+
+{% endif -%}
+Dear {{borrower.surname}} Family,
+
+This automated email is sent from an unmonitored email account. Please do
+not reply. If you have any questions regarding your account, please bring
+a copy of this e-mail to the library on Saturday so we can fix any errors
+or send an email to {{config.reply_to}}.
+
+{% if borrower.fees.total > 0 %}
+Our records show you currently owe fines of ${{borrower.fees.total | fixed}}.
+{% endif %}
+Our records indicate you have the following {{borrower.items|length}} item(s) checked out:
+{% for item in borrower.items %}
+ Title:        {{item.title}}
+ Item Type:    {{item.category}}
+ Author:       {{item.author}}
+ Barcode:      {{item.barcode}}
+ Due Date:     {{item.date_due | date}}
+{% if item.fine_due > 0 %} Item Fine:    ${{item.fine_due | fixed}}
+{% endif %}
+{%- endfor %}
+
+You can also view your checked out library items and see all of the
+library's items at https://library.gssb.org. Please use
+your Sycamore credentials to log in.
+{% if borrower.sycamoreid %}
+As a reminder, your user id is "{{borrower.sycamoreid}}".
+{% endif %}
+{% if not borrower.sycamoreid %}
+IMPORTANT: We do not have your Sycamore login id. Please send it to us
+by replying to this E-mail or by E-mailing library-reminder@gssb.org.
+{% endif %}
+Thank you for using the GSSB library.
+

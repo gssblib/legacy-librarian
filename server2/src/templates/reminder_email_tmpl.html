@@ -1,0 +1,68 @@
+<html>
+  <body>
+{% if test %}
+<p>
+  This is a test - ignore.
+</p>
+{% endif %}
+<p>
+  Dear {{borrower.surname}} Family,
+</p>
+<p>
+  This automated email is sent from an unmonitored email account. Please do
+  not reply. If you have any questions regarding your account, please bring
+  a copy of this e-mail to the library on Saturday so we can fix any errors
+  or send an email to {{config.reply_to}}.
+</p>
+
+{% if borrower.fees.total > 0 %}
+<p>
+  Our records show you currently owe fines of ${{borrower.fees.total | fixed}}.
+</p>
+{% endif %}
+
+<p>
+  Our records indicate you have the following {{borrower.items|length}}
+  item(s) checked out:
+</p>
+<br />
+{% for item in borrower.items %}
+<table>
+  <tr><td style="padding: 0px 1em">Title</td><td>{{item.title}}</td></tr>
+  <tr><td style="padding: 0px 1em">Item Type</td><td>{{item.category}}</td></tr>
+  <tr><td style="padding: 0px 1em">Author</td><td>{{item.author}}</td></tr>
+  <tr><td style="padding: 0px 1em">Barcode</td><td>{{item.barcode}}</td></tr>
+  <tr><td style="padding: 0px 1em">Due Date</td><td>{{item.date_due | date}}</td></tr>
+{% if item.fine_due > 0 %}
+  <tr><td style="padding: 0px 1em">Item Fine</td><td>{{item.fine_due | fixed}}</td></tr>
+{% endif %}
+</table>
+<br />
+{% endfor %}
+
+<p>
+  You can also view your checked out library items and see all of the
+  library's items <a href="https://library.gssb.org">online</a>. Please use
+  your Sycamore credentials to log in.
+  {% if borrower.sycamoreid %}
+  As a reminder, your user id is "{{borrower.sycamoreid}}".
+  {% endif %}
+</p>
+
+{% if not borrower.sycamoreid %}
+<p>
+  <b>
+    IMPORTANT: We do not have your Sycamore login id. Please send it to us
+    by replying to this E-mail or by E-mailing
+    <a href="mailto:library-reminder@gssb.org">us</a>.
+  </b>
+</p>
+{% endif %}
+
+<p>
+  Thank you for using the GSSB library.
+</p>
+
+  </body>
+</html>
+

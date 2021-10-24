@@ -32,3 +32,22 @@ export function dateToIsoStringWithoutTimeZone(value: Date|string): string {
   return date.toISOString().replace(/\.[0-9]*Z/, '');
 }
 
+export function putIfAbsent<K, V>(map: Map<K, V>, key: K, fn: (key: K) => V) {
+  let value = map.get(key);
+  if (value === undefined) {
+    value = fn(key);
+    map.set(key, value);
+  }
+  return value;
+}
+
+export async function putIfAbsentAsync<K, V>(map: Map<K, V>, key: K, fn: (key: K) => Promise<V>) {
+  let value = map.get(key);
+  if (value === undefined) {
+    value = await fn(key);
+    map.set(key, value);
+  }
+  return value;
+}
+
+

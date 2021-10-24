@@ -5,11 +5,13 @@ import {Flags} from '../common/entity';
 import {httpError} from '../common/error';
 import {ExpressApp, HttpMethod} from '../common/express_app';
 import {mapQueryResult, QueryOptions, QueryResult} from '../common/query';
-import {SqlQuery} from '../common/sql';
 import {EntityTable} from '../common/table';
 import {addDays, sum} from '../common/util';
 import {Checkout, checkoutConfig, checkoutsTable, historyTable} from './checkouts';
+import {Email, emailer} from './emailer';
+import {BorrowerEmail, createReminderEmailTemplate, reminderEmailConfig, ReminderEmailConfig} from './emails';
 import {ordersTable, OrderSummary} from './orders';
+import {createTemplateRenderer} from './templates';
 import {User} from './user';
 
 /**
@@ -75,23 +77,45 @@ export class BorrowerTable extends EntityTable<Borrower> {
   constructor() {
     super({name: 'borrowers', naturalKey: 'borrowernumber'});
     this.addColumn({name: 'id'});
-    this.addColumn(
-        {name: 'borrowernumber', label: 'Borrower number', internal: true});
-    this.addColumn({name: 'surname', label: 'Last name', queryOp: 'contains'});
-    this.addColumn(
-        {name: 'firstname', label: 'First name', queryOp: 'contains'});
-    this.addColumn(
-        {name: 'contactname', label: 'Contact name', queryOp: 'contains'});
-    this.addColumn({name: 'phone', label: 'Phone number'});
+    this.addColumn({
+      name: 'borrowernumber',
+      label: 'Borrower number',
+      internal: true,
+    });
+    this.addColumn({
+      name: 'surname',
+      label: 'Last name',
+      queryOp: 'contains',
+    });
+    this.addColumn({
+      name: 'firstname',
+      label: 'First name',
+      queryOp: 'contains',
+    });
+    this.addColumn({
+      name: 'contactname',
+      label: 'Contact name',
+      queryOp: 'contains',
+    });
+    this.addColumn({
+      name: 'phone',
+      label: 'Phone number',
+    });
     this.addColumn({
       name: 'emailaddress',
       required: true,
       label: 'Email',
-      queryOp: 'contains'
+      queryOp: 'contains',
     });
-    this.addColumn({name: 'sycamoreid', label: 'Sycamore ID'});
-    this.addColumn(
-        {name: 'state', required: true, domain: BorrowerStateDomain});
+    this.addColumn({
+      name: 'sycamoreid',
+      label: 'Sycamore ID',
+    });
+    this.addColumn({
+      name: 'state',
+      required: true,
+      domain: BorrowerStateDomain,
+    });
   }
 }
 
@@ -108,6 +132,44 @@ interface BorrowerFeeSummary {
   fee: number;
 }
 
+/**
+ * Data passed to the templates for the reminder emails.
+ */
+interface BorrowerReminderData {
+  /** Borrower data with checked-out items and outstanding fees. */
+  borrower: Borrower;
+  /** Global configuration for the reminder emails. */
+  config: ReminderEmailConfig;
+}
+
+enum BorrowerReminderResultCode {
+  OK = 'OK',
+  /**
+   * Email skipped because borrower has no items checked out and no outstanding
+   * fees.
+   */
+  NO_ITEMS_OR_FEES = 'NO_ITEMS_OR_FEES',
+
+  /**
+   * Email skipped because borrower has no email address.
+   */
+  NO_EMAIL_ADDRESS = 'NO_EMAIL_ADDRESS',
+
+  /**
+   * Email skipped because an email has already been sent within the last 24
+   * hours.
+   */
+  EXITING_EMAIL_IN_WINDOW = 'EXITING_EMAIL_IN_WINDOW',
+}
+
+interface BorrowerReminderEmailResult {
+  resultCode: BorrowerReminderResultCode;
+  email?: BorrowerEmail;
+}
+
+const reminderEmailRenderer =
+    createTemplateRenderer<BorrowerReminderData>('src/templates');
+
 export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
   constructor(db: Db) {
     super(db, borrowersTable);
@@ -117,12 +179,24 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     return {borrowernumber: parseInt(key, 10)};
   }
 
-  checkouts(borrowernumber: number, feesOnly?: boolean):
+  /**
+   * Returns the current check-outs of a borrower.
+   *
+   * @param feesOnly If true, only the items with open fees are returned
+   * @param options Query options (order, pagination) used
+   */
+  checkouts(borrowernumber: number, feesOnly?: boolean, options?: QueryOptions):
       Promise<QueryResult<Checkout>> {
     return checkoutsTable.listBorrowerCheckoutItems(
-        this.db, {borrowernumber, feesOnly});
+        this.db, {borrowernumber, feesOnly, options});
   }
 
+  /**
+   * Returns the history of check-outs (returned items) of a borrower.
+   *
+   * @param feesOnly If true, only the items with open fees are returned
+   * @param options Query options (order, pagination) used
+   */
   history(borrowernumber: number, feesOnly?: boolean, options?: QueryOptions):
       Promise<QueryResult<Checkout>> {
     return historyTable.listBorrowerCheckoutItems(
@@ -144,48 +218,44 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     };
   }
 
+  /**
+   * Returns the fee information of borrowers with outstanding fees.
+   *
+   * @param options Query options (order, pagination) used
+   */
   async getFeeSummaries(options?: QueryOptions):
       Promise<QueryResult<BorrowerFeeSummary>> {
     delete options?.returnCount;
-    const query: SqlQuery = {
-      sql: `
-        select
-          b.borrowernumber, b.surname, b.contactname, b.firstname,
-          sum(if(c.fine_due <= c.fine_paid, 0, c.fine_due - c.fine_paid)) as fee
-        from
-          ((select id, borrowernumber, fine_due, fine_paid from ${
-          checkoutsTable.tableName}) union
-           (select id, borrowernumber, fine_due, fine_paid from ${
-          historyTable.tableName})) c
-        inner join borrowers b on c.borrowernumber = b.borrowernumber
-        group by borrowernumber
-        having fee > 0
-      `,
-      options,
-    };
-    const countSql = `
-      select count(1) as count from (
-        select
-          b.borrowernumber,
-          sum(if(c.fine_due <= c.fine_paid, 0, c.fine_due - c.fine_paid)) as fee
-        from
-          ((select id, borrowernumber, fine_due, fine_paid from ${
-        checkoutsTable.tableName}) union
-           (select id, borrowernumber, fine_due, fine_paid from ${
-        historyTable.tableName})) c
-        inner join borrowers b on c.borrowernumber = b.borrowernumber
-        group by borrowernumber
-        having fee > 0
-      ) d
+    // Note that the sub-selects in the union must specify the columns
+    // explicitly and include a unique key so that the union matches the correct
+    // columns and does not merge rows with the same borrower number and fines.
+    const sql = `
+      select
+        b.borrowernumber, b.surname, b.contactname, b.firstname,
+        sum(greatest(0, c.fine_due - c.fine_paid)) as fee
+      from (
+        (select 'checkout', id, borrowernumber, fine_due, fine_paid
+         from ${checkoutsTable.tableName})
+      union
+        (select 'history', id, borrowernumber, fine_due, fine_paid
+         from ${historyTable.tableName})
+      ) c
+      inner join borrowers b on c.borrowernumber = b.borrowernumber
+      group by borrowernumber
+      having fee > 0
     `;
+    const countSql = `select count(1) as count from (${sql}) d`;
     const [feeResult, countResult] = await Promise.all([
-      this.db.selectRows(query),
+      this.db.selectRows({sql, options}),
       this.db.selectRow(countSql),
     ])
     feeResult.count = countResult && countResult['count'];
     return mapQueryResult(feeResult, row => row as BorrowerFeeSummary);
   }
 
+  /**
+   * Marks all fees of a borrower as paid.
+   */
   async payFees(borrowernumber: number): Promise<any> {
     const result = await Promise.all([
       this.db.execute(
@@ -231,6 +301,12 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     return borrower;
   }
 
+  /**
+   * Renews all items that are currently checked out by a borrower.
+   *
+   * Only the borrower's items that were checked out after the renewal limit are
+   * renewed.
+   */
   async renewAllItems(borrowernumber: number): Promise<any> {
     const now = new Date();
     const newDueDate = addDays(now, checkoutConfig.renewalDays);
@@ -246,10 +322,51 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     return result;
   }
 
+  async sendReminderEmail(key: string): Promise<BorrowerReminderEmailResult> {
+    const borrower = await this.get(key, {items: true, fees: true});
+    if ((!borrower.items || borrower.items.length === 0) &&
+        (!borrower.fees || borrower.fees.total === 0)) {
+      return {
+        resultCode: BorrowerReminderResultCode.NO_ITEMS_OR_FEES,
+      };
+    }
+    const recipient = borrower.emailaddress.split(',')[0];
+    if (!recipient) {
+      return {
+        resultCode: BorrowerReminderResultCode.NO_EMAIL_ADDRESS,
+      };
+    }
+    const reminderData: BorrowerReminderData = {
+      borrower,
+      config: reminderEmailConfig,
+    };
+    const emailText = await reminderEmailRenderer.render(
+        'reminder_email_tmpl.txt', reminderData);
+    const emailHtml = await reminderEmailRenderer.render(
+        'reminder_email_tmpl.html', reminderData);
+    const email: Email = {
+      ...createReminderEmailTemplate(),
+      to: recipient,
+      text: emailText,
+      html: emailHtml,
+    };
+    const result = await emailer.send(email);
+    const borrowerEmail: BorrowerEmail = {
+      borrower_id: borrower.id,
+      send_time: new Date(),
+      recipient,
+      email_text: emailText,
+    };
+    return {
+      resultCode: BorrowerReminderResultCode.OK,
+      email: borrowerEmail,
+    };
+  }
+
   initRoutes(application: ExpressApp): void {
     application.addHandler({
       method: HttpMethod.GET,
-      path: `${this.basePath}/:key/history`,
+      path: `${this.keyPath}/history`,
       handle: async (req, res) => {
         const key = req.params['key'] ?? '';
         const borrowernumber = parseInt(key, 10);
@@ -261,7 +378,7 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     });
     application.addHandler({
       method: HttpMethod.POST,
-      path: `${this.basePath}/:key/renewAllItems`,
+      path: `${this.keyPath}/renewAllItems`,
       handle: async (req, res) => {
         const key = req.params['key'] ?? '';
         const borrowernumber = parseInt(key, 10);
@@ -272,7 +389,7 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     });
     application.addHandler({
       method: HttpMethod.POST,
-      path: `${this.basePath}/:key/payFees`,
+      path: `${this.keyPath}/payFees`,
       handle: async (req, res) => {
         const key = req.params['key'] ?? '';
         const borrowernumber = parseInt(key, 10);
@@ -280,6 +397,16 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
         res.send(result);
       },
       authAction: {resource: 'borrowers', operation: 'renewAllItems'},
+    });
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: `${this.keyPath}/sendEmail`,
+      handle: async (req, res) => {
+        const key = req.params['key'] ?? '';
+        const result = await this.sendReminderEmail(key);
+        res.send(result);
+      },
+      authAction: {resource: 'borrowers', operation: 'sendEmail'},
     });
     application.addHandler({
       method: HttpMethod.GET,
