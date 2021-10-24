@@ -5,6 +5,7 @@ import {Db} from '../common/db';
 import {Flags} from '../common/entity';
 import {httpError} from '../common/error';
 import {ExpressApp, HttpMethod} from '../common/express_app';
+import {EntityQuery, mapQueryResult, QueryResult} from '../common/query';
 import {SqlQuery} from '../common/sql';
 import {EntityTable} from '../common/table';
 import {addDays} from '../common/util';
@@ -109,6 +110,8 @@ export interface Item {
 
   /** History of check-outs. */
   history?: Checkout[];
+
+  last_checkout_date?: Date|string;
 }
 
 function getItemAvailability(item: Item): ItemAvailability {
@@ -294,7 +297,8 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     }
     const now = new Date();
     checkout.date_due = addDays(now, checkoutConfig.renewalDays);
-    await checkoutsTable.update(this.db, {id: checkout.id, date_due: checkout.date_due});
+    await checkoutsTable.update(
+        this.db, {id: checkout.id, date_due: checkout.date_due});
     return item;
   }
 
@@ -331,6 +335,26 @@ export class Items extends BaseEntity<Item, ItemFlag> {
     return {item, borrower, cycle, order, orderItem};
   }
 
+  async getCheckoutReport(lastCheckoutDate: string, query: EntityQuery<Item>):
+      Promise<QueryResult<Item>> {
+    const itemsWhere = this.table.sqlWhere(query);
+    const where = itemsWhere.where ? `where ${itemsWhere.where}` : '';
+    const sql = `
+      select a.*, max(h.checkout_date) as last_checkout_date
+      from items a right join issue_history h on a.barcode = h.barcode
+      ${where}
+      group by a.barcode
+      having last_checkout_date < ?
+    `;
+    const params = [...(itemsWhere.params ?? []), lastCheckoutDate];
+    const result =
+        await this.db.selectRows({sql, params, options: query.options});
+    return mapQueryResult(result, row => {
+      const last_checkout_date = row.last_checkout_date as string;
+      return {...this.table.fromDb(row), last_checkout_date};
+    });
+  }
+
   override initRoutes(application: ExpressApp): void {
     application.addHandler({
       method: HttpMethod.POST,
@@ -341,6 +365,7 @@ export class Items extends BaseEntity<Item, ItemFlag> {
         const result = await this.checkout(barcode, borrowernumber);
         res.send(result);
       },
+      authAction: {resource: 'items', operation: 'checkout'},
     });
     application.addHandler({
       method: HttpMethod.POST,
@@ -350,6 +375,7 @@ export class Items extends BaseEntity<Item, ItemFlag> {
         const result = await this.checkin(barcode);
         res.send(result);
       },
+      authAction: {resource: 'items', operation: 'checkin'},
     });
     application.addHandler({
       method: HttpMethod.POST,
@@ -359,6 +385,7 @@ export class Items extends BaseEntity<Item, ItemFlag> {
         const result = await this.renew(barcode);
         res.send(result);
       },
+      authAction: {resource: 'items', operation: 'renew'},
     });
     application.addHandler({
       method: HttpMethod.POST,
@@ -369,6 +396,17 @@ export class Items extends BaseEntity<Item, ItemFlag> {
         const result = await this.order(barcode, borrowernumber);
         res.send(result);
       },
+      authAction: {resource: 'items', operation: 'order'},
+    });
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: `${this.apiPath}/reports/itemUsage`,
+      handle: async (req, res) => {
+        const lastCheckoutDate = req.query.lastCheckoutDate as string;
+        const result = await this.getCheckoutReport(lastCheckoutDate, this.toEntityQuery(req.query));
+        res.send(result);
+      },
+      authAction: {resource: 'reports', operation: 'read'},
     });
     super.initRoutes(application);
   }

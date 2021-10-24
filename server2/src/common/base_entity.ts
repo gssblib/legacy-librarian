@@ -91,7 +91,7 @@ export abstract class BaseEntity<T, F extends string = ''> implements
    * This includes the query options as well as the fields used to filter the
    * objects.
    */
-  private toEntityQuery(params: qs.ParsedQs): EntityQuery<T> {
+  toEntityQuery(params: qs.ParsedQs): EntityQuery<T> {
     const fields = this.toFields(params);
     const op = params['op'] === 'or' ? 'or' : undefined;
     const options = this.toQueryOptions(params);

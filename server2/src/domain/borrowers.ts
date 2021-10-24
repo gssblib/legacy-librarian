@@ -1,12 +1,12 @@
 import {BaseEntity} from '../common/base_entity';
-import {EnumColumnDomain} from '../common/column';
+import {EnumColumnDomain, QueryOp} from '../common/column';
 import {Db} from '../common/db';
 import {Flags} from '../common/entity';
 import {httpError} from '../common/error';
 import {ExpressApp, HttpMethod} from '../common/express_app';
 import {mapQueryResult, QueryOptions, QueryResult} from '../common/query';
 import {EntityTable} from '../common/table';
-import {addDays, sum} from '../common/util';
+import {addDays, dateToIsoStringWithoutTimeZone, sum} from '../common/util';
 import {Checkout, checkoutConfig, checkoutsTable, historyTable} from './checkouts';
 import {Email, emailer} from './emailer';
 import {BorrowerEmail, createReminderEmailTemplate, reminderEmailConfig, ReminderEmailConfig} from './emails';
@@ -59,12 +59,19 @@ export interface Borrower {
   /** List of currently checked-out items. */
   items?: Checkout[];
 
+  /**
+   * Optional number of checked-out items (satisfying some condition such as
+   * being overdue).
+   */
+  count?: number;
+
   /** Check-out history. */
   history?: Checkout[];
 
   /** Information about outstanding fees. */
   fees?: FeeInfo;
 
+  /** Summaries of the orders of this borrower. */
   orders?: OrderSummary[];
 }
 
@@ -363,6 +370,30 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     };
   }
 
+  /**
+   * Returns the borrowers with items that were checked out before the
+   * `lastCheckoutDate`.
+   *
+   * @param lastCheckoutDate ISO date string, for example, "2020-10-15"
+   * @param options Optional query options passed to query
+   */
+  async getBorrowersWithOverdueItems(
+      lastCheckoutDate: string,
+      options?: QueryOptions): Promise<QueryResult<Borrower>> {
+    const sql = `
+      select b.*, c.count from borrowers b
+      right join (
+        select borrowernumber, count(1) as count
+        from \`out\` a where a.checkout_date < ?
+        group by borrowernumber
+      ) c on b.borrowernumber = c.borrowernumber
+    `;
+    const params = [lastCheckoutDate];
+    const result = await this.db.selectRows({sql, params, options})
+    return mapQueryResult(
+        result, row => ({...this.table.fromDb(row), count: row.count}));
+  }
+
   initRoutes(application: ExpressApp): void {
     application.addHandler({
       method: HttpMethod.GET,
@@ -429,6 +460,17 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
         res.send(borrower);
       },
       authAction: {resource: 'profile', operation: 'read'},
+    });
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: `${this.apiPath}/reports/overdue`,
+      handle: async (req, res) => {
+        const lastCheckoutDate = req.query.last_checkout_date as string;
+        const result =
+            await this.getBorrowersWithOverdueItems(lastCheckoutDate);
+        res.send(result);
+      },
+      authAction: {resource: 'reports', operation: 'read'},
     });
     super.initRoutes(application);
   }
