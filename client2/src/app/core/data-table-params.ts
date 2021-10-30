@@ -70,6 +70,16 @@ export class DataTableParams {
     return params;
   }
 
+  toServerParams(criteria: object = {}): object {
+    return {
+      ...criteria,
+      offset: this.paginator.pageIndex * this.paginator.pageSize,
+      limit: this.paginator.pageSize,
+      returnCount: true,
+      _order: this.sortOrder(),
+    };
+  }
+
   /**
    * Translates the `sort` to a string containing the sort column name, optionally preceded by a -
    * to indicate descending order.

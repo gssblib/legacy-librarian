@@ -6,4 +6,4 @@ when a source file changes), call `npm start` which in turn will call
 
 To start without nodemon, call `npx ts-node src/main.ts`.
 
-Set `NODE_CONFIG_DIR` and `NODE_END` to pick up the configuration.
+Set `NODE_CONFIG_DIR` and `NODE_ENV` to pick up the configuration.

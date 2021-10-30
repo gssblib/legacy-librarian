@@ -1,0 +1,25 @@
+.header {
+  margin-bottom: 1rem;
+}
+
+.warning {
+  color: red;
+}
+
+.email-text {
+  white-space: pre;
+  font-family: monospace;
+  overflow: auto;;
+}
+
+label {
+  font-weight: bold;
+}
+
+label.inline {
+  margin-right: 1rem;
+}
+
+.field {
+  margin-top: 1rem;
+}

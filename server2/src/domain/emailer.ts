@@ -14,6 +14,12 @@ export interface Emailer {
   send(email: Email): Promise<Email>;
 }
 
+class FakeEmailer implements Emailer {
+  send(email: Email): Promise<Email> {
+    return Promise.resolve(email);
+  }
+}
+
 class NodemailerEmailer implements Emailer {
   async send(email: Email): Promise<Email> {
     const result = await emailTransporter.sendMail(email);
@@ -21,16 +27,18 @@ class NodemailerEmailer implements Emailer {
   }
 }
 
-export const emailer = new NodemailerEmailer();
-
 interface SmtpConfig {
   host: string;
   port: number;
   user: string;
   password: string;
+  fake?: boolean;
 }
 
 const smtpConfig: SmtpConfig = config.get('smtp');
+
+export const emailer =
+    smtpConfig.fake ? new FakeEmailer() : new NodemailerEmailer();
 
 function createTransport(): nodemailer.Transporter {
   return nodemailer.createTransport({

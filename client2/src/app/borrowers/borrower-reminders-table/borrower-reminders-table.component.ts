@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BorrowersService } from "../shared/borrowers.service";
-import { BorrowerService } from "../shared/borrower.service";
-import { Borrower, BorrowerEmail } from "../shared/borrower";
-import { merge, of, Subject } from "rxjs";
-import { catchError, finalize, map, switchMap, takeUntil, tap } from "rxjs/operators";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginator } from "@angular/material/paginator";
-import { MatSort } from "@angular/material/sort";
-import { ActivatedRoute, Router } from "@angular/router";
-import { DataTableParams } from "../../core/data-table-params";
+import { BorrowersService } from '../shared/borrowers.service';
+import { BorrowerService } from '../shared/borrower.service';
+import { Borrower, BorrowerEmail } from '../shared/borrower';
+import { merge, of, Subject } from 'rxjs';
+import { catchError, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DataTableParams } from '../../core/data-table-params';
 
 @Component({
   selector: 'gsl-borrower-reminders-table',
@@ -85,7 +85,7 @@ export class BorrowerRemindersTableComponent implements OnInit, OnDestroy {
         }),
         switchMap(() => {
           this.loading = true;
-          const params = this.params.toQueryParams({});
+          const params = this.params.toServerParams({});
           return this.borrowersService.getBorrowerReminders(this.borrower.borrowernumber, params);
         }),
         map(result => {

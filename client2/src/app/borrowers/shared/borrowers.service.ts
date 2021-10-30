@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RpcService } from '../../core/rpc.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Borrower, BorrowerEmail } from './borrower';
+import {Borrower, BorrowerEmail, BorrowerReminder} from './borrower';
 import { FormService } from '../../core/form.service';
 import { Item } from '../../items/shared/item';
 import { TableFetchResult } from '../../core/table-fetcher';
@@ -77,6 +77,10 @@ export class BorrowersService extends ModelsService<Borrower> {
   removeOrderedItem(borrowerNumber: number, orderId: number, itemId: number) {
     const resourcePath = `borrowers/${borrowerNumber}/orders/${orderId}/items/${itemId}`;
     return this.rpc.httpDelete(resourcePath);
+  }
+
+  getReminder(borrowerNumber: number): Observable<BorrowerReminder> {
+    return this.rpc.httpGet(`borrowers/${borrowerNumber}/reminder`);
   }
 
   sendReminder(borrowerNumber: number) {

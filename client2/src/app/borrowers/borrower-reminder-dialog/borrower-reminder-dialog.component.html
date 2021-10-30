@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Reminder email</h1>
+<div class="header">
+  <div class="field">
+    <label class="inline">Recipient</label>
+    <span>{{reminder.email.to}}</span>
+  </div>
+  <p *ngIf="reminder.resultCode === ResultCode.EXISTING_EMAIL_IN_WINDOW" class="warning">
+    Warning! User has already received a reminder email within the last 24 h.
+  </p>
+</div>
+<div mat-dialog-content>
+  <div class="email-text">{{reminder.email.text}}</div>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button [mat-dialog-close]="false">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true">Send</button>
+</div>

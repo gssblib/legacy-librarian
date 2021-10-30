@@ -45,6 +45,7 @@ import { BorrowerOrdersComponent } from './borrower-orders/borrower-orders.compo
 import { BorrowerOrderComponent } from './borrower-order/borrower-order.component';
 import { BorrowerRemindersComponent } from './borrower-reminders/borrower-reminders.component';
 import { BorrowerRemindersTableComponent } from './borrower-reminders-table/borrower-reminders-table.component';
+import { BorrowerReminderDialogComponent } from './borrower-reminder-dialog/borrower-reminder-dialog.component';
 
 @NgModule({
   imports: [
@@ -95,6 +96,7 @@ import { BorrowerRemindersTableComponent } from './borrower-reminders-table/borr
     BorrowerOrderComponent,
     BorrowerRemindersComponent,
     BorrowerRemindersTableComponent,
+    BorrowerReminderDialogComponent,
   ],
   providers: [
     BorrowerService,
@@ -107,6 +109,7 @@ import { BorrowerRemindersTableComponent } from './borrower-reminders-table/borr
   ],
   entryComponents: [
     RenewReturnDialogComponent,
+    BorrowerReminderDialogComponent,
   ],
 })
 export class BorrowersModule {

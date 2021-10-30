@@ -123,7 +123,7 @@ class CheckoutTable extends EntityTable<Checkout> {
   async listCheckoutItems(db: Db, query: EntityQuery<Checkout>):
       Promise<QueryResult<CheckoutItem>> {
     const from = `
-        a.*, b.* from items a inner join ${this.tableName} b
+        a.*, b.* from items a left join ${this.tableName} b
         on a.barcode = b.barcode
       `;
     const sqlQuery = this.toSqlQuery(query, from);
