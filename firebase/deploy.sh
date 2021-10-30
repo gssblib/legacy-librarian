@@ -10,6 +10,11 @@ npm install
 node_modules/@angular/cli/bin/ng build --prod --base-href "/"
 node_modules/@angular/cli/bin/ng build public --prod --base-href "/"
 
+echo "Installing server dependencies"
+
+cd ${DIR}/../server
+npm install
+
 echo "Deploying for ${DIR}"
 
 cd ${DIR}/functions
