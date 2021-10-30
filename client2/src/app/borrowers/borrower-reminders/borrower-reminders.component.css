@@ -1,0 +1,37 @@
+.header {
+  margin-top: 2rem;
+}
+
+.reminders {
+  margin-top: 2rem;
+}
+
+.email-text {
+  white-space: pre;
+}
+
+table.reminders {
+  table-layout: fixed;
+  width: 100%;
+}
+
+th.mat-column-recipient {
+  width: 20%;
+}
+
+th.mat-column-sendTime {
+  width: 20%;
+}
+
+:host ::ng-deep mat-expansion-panel.email-text {
+  box-shadow: none;
+}
+
+:host ::ng-deep .mat-expansion-panel-header {
+  padding: 0 8px 0 0;
+  font-size: inherit;
+}
+
+:host ::ng-deep .mat-expansion-panel-body {
+  padding: 0 8px 0 0;
+}

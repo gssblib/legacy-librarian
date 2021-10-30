@@ -11,7 +11,7 @@ export class ModelService<T> {
   private model: T;
 
   private readonly modelSubject = new Subject<T>();
-  modelObservable = this.modelSubject.asObservable();
+  readonly modelObservable = this.modelSubject.asObservable();
 
   constructor(private readonly modelsService: ModelsService<T>, private readonly loadParams?: any) {
     this.modelObservable.subscribe(model => this.model = model);

@@ -30,15 +30,16 @@ export class BorrowerCheckoutsTableComponent implements OnInit, OnChanges, After
   @Input()
   showActions: boolean = true;
 
-  items: Object[] = [];
-  dataSource = new MatTableDataSource<Object>([]);
-
-  @ViewChild(MatSort) sort: MatSort;
-
   @Input()
   set checkouts(checkouts) {
     this.items = checkouts.map(this.prepareCheckout);
   }
+
+  items: Object[] = [];
+
+  readonly dataSource = new MatTableDataSource<Object>([]);
+
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private itemsService: ItemsService,
               private borrowerService: BorrowerService,

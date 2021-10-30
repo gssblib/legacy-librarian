@@ -1,18 +1,22 @@
+import qs from 'qs';
 import {BaseEntity} from '../common/base_entity';
-import {EnumColumnDomain, QueryOp} from '../common/column';
+import {EnumColumnDomain} from '../common/column';
 import {Db} from '../common/db';
 import {Flags} from '../common/entity';
 import {httpError} from '../common/error';
 import {ExpressApp, HttpMethod} from '../common/express_app';
+import {getNumberParam} from '../common/express_util';
 import {mapQueryResult, QueryOptions, QueryResult} from '../common/query';
 import {EntityTable} from '../common/table';
-import {addDays, dateToIsoStringWithoutTimeZone, sum} from '../common/util';
+import {addDays, sum} from '../common/util';
 import {Checkout, checkoutConfig, checkoutsTable, historyTable} from './checkouts';
 import {Email, emailer} from './emailer';
-import {BorrowerEmail, createReminderEmailTemplate, reminderEmailConfig, ReminderEmailConfig} from './emails';
+import {BorrowerEmail, borrowerEmailTable, createReminderEmailTemplate, reminderEmailConfig, ReminderEmailConfig} from './emails';
 import {ordersTable, OrderSummary} from './orders';
 import {createTemplateRenderer} from './templates';
 import {User} from './user';
+
+const emailWindowMs = 24 * 3600 * 1000;
 
 /**
  * Collection of checkouts (current or history) with fees.
@@ -166,12 +170,13 @@ enum BorrowerReminderResultCode {
    * Email skipped because an email has already been sent within the last 24
    * hours.
    */
-  EXITING_EMAIL_IN_WINDOW = 'EXITING_EMAIL_IN_WINDOW',
+  EXISTING_EMAIL_IN_WINDOW = 'EXISTING_EMAIL_IN_WINDOW',
 }
 
-interface BorrowerReminderEmailResult {
+interface BorrowerReminder {
   resultCode: BorrowerReminderResultCode;
-  email?: BorrowerEmail;
+  borrower: Borrower;
+  email?: Email;
 }
 
 const reminderEmailRenderer =
@@ -208,6 +213,12 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
       Promise<QueryResult<Checkout>> {
     return historyTable.listBorrowerCheckoutItems(
         this.db, {borrowernumber, feesOnly, options});
+  }
+
+  listReminderEmails(borrowernumber: number, options?: QueryOptions):
+      Promise<QueryResult<BorrowerEmail>> {
+    return borrowerEmailTable.getBorrowerEmails(
+        this.db, borrowernumber, options);
   }
 
   /**
@@ -280,9 +291,16 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
   /**
    * Returns a `Borrower` with optional information subh as the checked-out
    * items and checkout history.
+   *
+   * @param key Natural key of the borrower (borrower number)
    */
-  override async get(key: string, flags: BorrowerFlags): Promise<Borrower> {
+  override get(key: string, flags: BorrowerFlags): Promise<Borrower> {
     const borrowernumber = parseInt(key, 10);
+    return this.getByBorrowerNumber(borrowernumber, flags);
+  }
+
+  async getByBorrowerNumber(borrowernumber: number, flags: BorrowerFlags = {}):
+      Promise<Borrower> {
     const borrower = await this.table.find(this.db, {fields: {borrowernumber}});
     if (!borrower) {
       throw httpError({
@@ -329,20 +347,13 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     return result;
   }
 
-  async sendReminderEmail(key: string): Promise<BorrowerReminderEmailResult> {
-    const borrower = await this.get(key, {items: true, fees: true});
-    if ((!borrower.items || borrower.items.length === 0) &&
-        (!borrower.fees || borrower.fees.total === 0)) {
-      return {
-        resultCode: BorrowerReminderResultCode.NO_ITEMS_OR_FEES,
-      };
-    }
-    const recipient = borrower.emailaddress.split(',')[0];
-    if (!recipient) {
-      return {
-        resultCode: BorrowerReminderResultCode.NO_EMAIL_ADDRESS,
-      };
-    }
+  /**
+   * Creates the reminder email for the `borrower` and `recipient`.
+   *
+   * This method generates the text and HTML version using the respective
+   * template.
+   */
+  private async createReminderEmail(borrower: Borrower): Promise<Email> {
     const reminderData: BorrowerReminderData = {
       borrower,
       config: reminderEmailConfig,
@@ -351,23 +362,82 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
         'reminder_email_tmpl.txt', reminderData);
     const emailHtml = await reminderEmailRenderer.render(
         'reminder_email_tmpl.html', reminderData);
-    const email: Email = {
+    return {
       ...createReminderEmailTemplate(),
-      to: recipient,
+      to: this.getRecipient(borrower),
       text: emailText,
       html: emailHtml,
     };
-    const result = await emailer.send(email);
-    const borrowerEmail: BorrowerEmail = {
-      borrower_id: borrower.id,
-      send_time: new Date(),
-      recipient,
-      email_text: emailText,
-    };
+  }
+
+  /**
+   * Creates the reminder email for the borrower identified by the
+   * `borrowernumber`.
+   *
+   * The reminder is only created if the borrower has checked-out items or
+   * outstanding fees and no email has been sent to the same recipient and
+   * borrower within the last 24 hours.
+   */
+  async getReminderEmail(borrowernumber: number): Promise<BorrowerReminder> {
+    const borrower = await this.getByBorrowerNumber(
+        borrowernumber, {items: true, fees: true});
+    if ((!borrower.items || borrower.items.length === 0) &&
+        (!borrower.fees || borrower.fees.total === 0)) {
+      return {
+        resultCode: BorrowerReminderResultCode.NO_ITEMS_OR_FEES,
+        borrower,
+      };
+    }
+    if (!this.getRecipient(borrower)) {
+      return {
+        resultCode: BorrowerReminderResultCode.NO_EMAIL_ADDRESS,
+        borrower,
+      };
+    }
+    const latestEmail =
+        await borrowerEmailTable.getLatestBorrowerEmail(this.db, borrower.id);
+    if (latestEmail) {
+      const now = new Date();
+      const sendTime = new Date(latestEmail.send_time);
+      if (now.getTime() - sendTime.getTime() < emailWindowMs) {
+        return {
+          resultCode: BorrowerReminderResultCode.EXISTING_EMAIL_IN_WINDOW,
+          borrower,
+        };
+      }
+    }
+    const email: Email = await this.createReminderEmail(borrower);
     return {
       resultCode: BorrowerReminderResultCode.OK,
-      email: borrowerEmail,
+      borrower,
+      email,
     };
+  }
+
+  private getRecipient(borrower: Borrower): string {
+    return borrower.emailaddress.split(',')[0];
+  }
+
+  /**
+   * Creates, sends, and stores the reminder email for the borrower identified
+   * by the `borrowernumber` if needed.
+   */
+  async sendReminderEmail(borrowernumber: number): Promise<BorrowerReminder> {
+    const reminder = await this.getReminderEmail(borrowernumber);
+    if (!reminder.email ||
+        reminder.resultCode !== BorrowerReminderResultCode.OK) {
+      return reminder;
+    }
+    const email = reminder.email;
+    const result = await emailer.send(email);
+    const borrowerEmail: BorrowerEmail = {
+      borrower_id: reminder.borrower.id,
+      send_time: new Date(),
+      recipient: email?.to,
+      email_text: email.text,
+    };
+    await borrowerEmailTable.create(this.db, borrowerEmail);
+    return reminder;
   }
 
   /**
@@ -394,15 +464,37 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
         result, row => ({...this.table.fromDb(row), count: row.count}));
   }
 
+  private getBorrowerNumber(params: qs.ParsedQs): number|undefined {
+    return getNumberParam(params, 'key');
+  }
+
   initRoutes(application: ExpressApp): void {
     application.addHandler({
       method: HttpMethod.GET,
       path: `${this.keyPath}/history`,
       handle: async (req, res) => {
-        const key = req.params['key'] ?? '';
-        const borrowernumber = parseInt(key, 10);
+        const borrowernumber = this.getBorrowerNumber(req.params);
+        if (borrowernumber === undefined) {
+          res.status(400).send('invalid borrower number');
+          return;
+        }
         const result = await this.history(
             borrowernumber, false, this.toQueryOptions(req.query));
+        res.send(result);
+      },
+      authAction: {resource: 'borrowers', operation: 'read'},
+    });
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: `${this.keyPath}/reminders`,
+      handle: async (req, res) => {
+        const borrowernumber = this.getBorrowerNumber(req.params);
+        if (borrowernumber === undefined) {
+          res.status(400).send('invalid borrower number');
+          return;
+        }
+        const result = await this.listReminderEmails(
+            borrowernumber, this.toQueryOptions(req.query));
         res.send(result);
       },
       authAction: {resource: 'borrowers', operation: 'read'},
@@ -411,8 +503,11 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
       method: HttpMethod.POST,
       path: `${this.keyPath}/renewAllItems`,
       handle: async (req, res) => {
-        const key = req.params['key'] ?? '';
-        const borrowernumber = parseInt(key, 10);
+        const borrowernumber = this.getBorrowerNumber(req.params);
+        if (borrowernumber === undefined) {
+          res.status(400).send('invalid borrower number');
+          return;
+        }
         const result = await this.renewAllItems(borrowernumber);
         res.send(result);
       },
@@ -422,8 +517,11 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
       method: HttpMethod.POST,
       path: `${this.keyPath}/payFees`,
       handle: async (req, res) => {
-        const key = req.params['key'] ?? '';
-        const borrowernumber = parseInt(key, 10);
+        const borrowernumber = this.getBorrowerNumber(req.params);
+        if (borrowernumber === undefined) {
+          res.status(400).send('invalid borrower number');
+          return;
+        }
         const result = await this.payFees(borrowernumber);
         res.send(result);
       },
@@ -433,11 +531,15 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
       method: HttpMethod.POST,
       path: `${this.keyPath}/sendEmail`,
       handle: async (req, res) => {
-        const key = req.params['key'] ?? '';
-        const result = await this.sendReminderEmail(key);
+        const borrowernumber = this.getBorrowerNumber(req.params);
+        if (borrowernumber === undefined) {
+          res.status(400).send('invalid borrower number');
+          return;
+        }
+        const result = await this.sendReminderEmail(borrowernumber);
         res.send(result);
       },
-      authAction: {resource: 'borrowers', operation: 'sendEmail'},
+      // authAction: {resource: 'borrowers', operation: 'sendEmail'},
     });
     application.addHandler({
       method: HttpMethod.GET,

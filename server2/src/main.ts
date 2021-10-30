@@ -20,6 +20,18 @@ const application = new ExpressApp(app);
 login.initRoutes(app);
 library.initRoutes(application);
 
+function errorHander(
+    err: any, req: express.Request, res: express.Response,
+    next: express.NextFunction) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send('invalid token\n');
+  } else {
+    next(err);
+  }
+}
+
+app.use(errorHander);
+
 app.listen(3000, () => {
   console.log(`The application is listening on port ${port}!`);
 });

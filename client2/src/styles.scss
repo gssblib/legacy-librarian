@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import '~@angular/material/theming';
+
 @include mat-core();
 
 @import '~@mat-datetimepicker/core/datetimepicker/datetimepicker-theme.scss';
@@ -12,12 +13,12 @@ $gssb-theme-warn: mat-palette($mat-red);
 /*$gssb-theme: mat-light-theme($gssb-theme-primary, $gssb-theme-accent, $gssb-theme-warn);*/
 
 $gssb-theme: (
-    primary: $gssb-theme-primary,
-    accent: $gssb-theme-accent,
-    warn: $gssb-theme-warn,
-    is-dark: false,
-    foreground: $mat-light-theme-foreground,
-    background: $mat-light-theme-background
+  primary: $gssb-theme-primary,
+  accent: $gssb-theme-accent,
+  warn: $gssb-theme-warn,
+  is-dark: false,
+  foreground: $mat-light-theme-foreground,
+  background: $mat-light-theme-background
 );
 
 @include angular-material-theme($gssb-theme);
@@ -39,6 +40,7 @@ $gssb-theme: (
 .mat-row:hover {
   background: #eee;
 }
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -64,18 +66,44 @@ $gssb-theme: (
 .pulse {
   animation-name: pulse_animation;
   animation-duration: 500ms;
-  transform-origin:70% 70%;
+  transform-origin: 70% 70%;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
 
 @keyframes pulse_animation {
-  0% { transform: scale(1.0); }
-  50% { transform: scale(0.7); }
-  100% { transform: scale(1.0); }
+  0% {
+    transform: scale(1.0);
+  }
+  50% {
+    transform: scale(0.7);
+  }
+  100% {
+    transform: scale(1.0);
+  }
 }
 
 /* */
 .mat-dialog-content {
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Remove shadow and padding from expansion panels in table cells.
+.gsl-expansion-table-cell {
+  mat-expansion-panel.email-text {
+    box-shadow: none;
+  }
+
+  .mat-expansion-panel-header {
+    padding: 0 8px 0 0;
+    font-size: inherit;
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0 8px 0 0;
+  }
+}
+
+.gsl-hide {
+  display: none;
 }

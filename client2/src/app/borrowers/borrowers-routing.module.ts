@@ -10,6 +10,7 @@ import { BorrowerProfileComponent } from "./borrower-profile/borrower-profile.co
 import { BorrowerHistoryComponent } from './borrower-history/borrower-history.component';
 import { BorrowerOrdersComponent } from "./borrower-orders/borrower-orders.component";
 import { BorrowerOrderComponent } from "./borrower-order/borrower-order.component";
+import { BorrowerRemindersComponent } from "./borrower-reminders/borrower-reminders.component";
 
 @NgModule({
   imports: [
@@ -54,6 +55,10 @@ import { BorrowerOrderComponent } from "./borrower-order/borrower-order.componen
           {
             path: 'history',
             component: BorrowerHistoryComponent,
+          },
+          {
+            path: 'reminders',
+            component: BorrowerRemindersComponent,
           },
         ]
       },

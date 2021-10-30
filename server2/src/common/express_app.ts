@@ -63,7 +63,7 @@ export interface HttpHandler {
 }
 
 /**
- * Wrapper of an express `Aplication`.
+ * Wrapper of an express `Application`.
  *
  * This wrapper encodes the conventions for handlers and other application
  * settings.

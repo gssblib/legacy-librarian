@@ -20,3 +20,11 @@ export class Borrower {
     return `${this.surname}, ${this.firstname}`;
   }
 }
+
+export interface BorrowerEmail {
+  id: number;
+  borrower_id: number;
+  recipient: string;
+  send_time: Date|string;
+  email_text: string;
+}

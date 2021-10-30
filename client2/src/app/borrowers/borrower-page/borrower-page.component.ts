@@ -19,6 +19,7 @@ export class BorrowerPageComponent implements OnInit {
     { link: 'orders', label: 'Orders', action: 'borrowers.read' },
     { link: 'profile', label: 'Profile', action: 'borrowers.view' },
     { link: 'history', label: 'History', action: 'borrowers.view' },
+    { link: 'reminders', label: 'Reminders', action: 'borrowers.view' },
   ];
 
   borrower: Borrower;
