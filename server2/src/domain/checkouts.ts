@@ -106,7 +106,7 @@ class CheckoutTable extends EntityTable<Checkout> {
   /**
    * Converts a joined `Item` and `Checkout` row to a `CheckoutItem`.
    */
-  private toCheckoutItem(row: any): CheckoutItem {
+  toCheckoutItem(row: any): CheckoutItem {
     const item = itemsTable.fromDb(row);
     const checkout = this.fromDb(row);
     return {...item, ...checkout};

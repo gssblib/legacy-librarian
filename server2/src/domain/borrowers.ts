@@ -8,7 +8,7 @@ import {ExpressApp, HttpMethod} from '../common/express_app';
 import {getNumberParam} from '../common/express_util';
 import {mapQueryResult, QueryOptions, QueryResult} from '../common/query';
 import {EntityTable} from '../common/table';
-import {addDays, sum} from '../common/util';
+import {addDays, putIfAbsent, sum} from '../common/util';
 import {Checkout, checkoutConfig, checkoutsTable, historyTable} from './checkouts';
 import {Email, emailer} from './emailer';
 import {BorrowerEmail, borrowerEmailTable, createReminderEmailTemplate, reminderEmailConfig, ReminderEmailConfig} from './emails';
@@ -26,10 +26,10 @@ interface FeeInfo {
   total: number;
 
   /** Current check-outs with outstanding fees. */
-  items: Checkout[];
+  items?: Checkout[];
 
   /** Returned items with outstanding fees. */
-  history: Checkout[];
+  history?: Checkout[];
 }
 
 type BorrowerState = 'ACTIVE'|'INACTIVE';
@@ -143,6 +143,27 @@ interface BorrowerFeeSummary {
   fee: number;
 }
 
+interface BorrowerCheckout {
+  borrowernumber: number;
+  firstname: string;
+  surname: string;
+  emailaddress: string;
+  sycamoreid: string;
+  barcode: string;
+  title: string;
+  category: string;
+  author: string;
+  checkout_date: string|Date;
+  date_due: string|Date;
+  fine_due: number;
+  fine_paid: number;
+}
+
+interface BorrowerFine {
+  borrowernumber: number;
+  fine: number;
+}
+
 /**
  * Data passed to the templates for the reminder emails.
  */
@@ -175,7 +196,7 @@ enum BorrowerReminderResultCode {
 
 /**
  * Result of generating a reminder for a borrower.
- * 
+ *
  * Reminders are only generated for borrowers with outstanding items or fees.
  * This is indicated in the `resultCode`.
  */
@@ -256,17 +277,22 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     // Note that the sub-selects in the union must specify the columns
     // explicitly and include a unique key so that the union matches the correct
     // columns and does not merge rows with the same borrower number and fines.
+    //
+    // The join with the `items` table ensures that we don't count items that
+    // have been deleted (we should delete the checkouts instead and make sure
+    // this happens when items are deleted).
     const sql = `
       select
         b.borrowernumber, b.surname, b.contactname, b.firstname,
         sum(greatest(0, c.fine_due - c.fine_paid)) as fee
       from (
-        (select 'checkout', id, borrowernumber, fine_due, fine_paid
+        (select 'checkout', id, borrowernumber, fine_due, fine_paid, barcode
          from ${checkoutsTable.tableName})
       union
-        (select 'history', id, borrowernumber, fine_due, fine_paid
+        (select 'history', id, borrowernumber, fine_due, fine_paid, barcode
          from ${historyTable.tableName})
       ) c
+      inner join items i on c.barcode = i.barcode
       inner join borrowers b on c.borrowernumber = b.borrowernumber
       group by borrowernumber
       having fee > 0
@@ -390,6 +416,10 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
   async getReminderEmail(borrowernumber: number): Promise<BorrowerReminder> {
     const borrower = await this.getByBorrowerNumber(
         borrowernumber, {items: true, fees: true});
+    return this.createReminder(borrower);
+  }
+
+  async createReminder(borrower: Borrower): Promise<BorrowerReminder> {
     if ((!borrower.items || borrower.items.length === 0) &&
         (!borrower.fees || borrower.fees.total === 0)) {
       return {
@@ -421,6 +451,92 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     };
   }
 
+  /**
+   * Returns the borrowers with checked-out items.
+   *
+   * The returned `Borrower` objects contain all the information needed
+   * to generate the reminder emails, that is, the checked-out items and
+   * the total outstanding fees.
+   */
+  private async listAllReminderBorrowers(): Promise<Borrower[]> {
+    const checkoutsSql = `
+        select
+          b.*, i.barcode, i.title, i.category, i.author,
+          o.checkout_date, o.date_due, o.fine_due, o.fine_paid
+        from \`out\` o
+        inner join borrowers b on o.borrowernumber = b.borrowernumber
+        inner join items i on o.barcode = i.barcode
+        order by b.borrowernumber
+      `;
+    const feesSql = `
+        select
+          b.borrowernumber, sum(greatest(0, h.fine_due - h.fine_paid)) as fine
+        from issue_history h
+        inner join borrowers b on h.borrowernumber = b.borrowernumber
+        group by b.borrowernumber
+        having fine > 0
+      `;
+    const [checkoutsResult, feesResult] = await Promise.all([
+      await this.db.selectRows({sql: checkoutsSql}),
+      await this.db.selectRows({sql: feesSql}),
+    ]);
+
+    // Group the checked-out items joined with the borrower data by borrower
+    // to create the `Borrower` objects (with the lists of checked-out items).
+    const borrowersByBorrowerNumber = new Map<number, Borrower>();
+    for (const row of checkoutsResult.rows) {
+      const borrowernumber = row.borrowernumber;
+      const borrower = putIfAbsent(
+          borrowersByBorrowerNumber, borrowernumber,
+          () => ({...this.table.fromDb(row), items: []}));
+      borrower.items?.push(checkoutsTable.toCheckoutItem(row));
+    }
+    const borrowers = Array.from(borrowersByBorrowerNumber.values());
+
+    // Add fines for returned items.
+    const finesByBorrowerNumber = new Map<number, number>(
+        feesResult.rows.map(row => [row.borrowernumber, row.fine]));
+    for (const borrower of borrowers) {
+      const checkoutFine = totalFine(borrower.items ?? []);
+      const historyFine =
+          finesByBorrowerNumber.get(borrower.borrowernumber) ?? 0;
+      borrower.fees = {total: checkoutFine + historyFine};
+    }
+    return borrowers;
+  }
+
+  /**
+   * Returns the reminder data for the borrowers with checked-out items.
+   */
+  private async generateReminders(): Promise<BorrowerReminder[]> {
+    const borrowers = await this.listAllReminderBorrowers();
+    const reminders: BorrowerReminder[] = [];
+    for (const borrower of borrowers) {
+      const reminder = await this.createReminder(borrower);
+      if (reminder.resultCode === BorrowerReminderResultCode.OK) {
+        reminders.push(reminder);
+      }
+    }
+    return reminders;
+  }
+
+  /**
+   * Generates and send the reminder emails for the borrowers with checked-out
+   * items.
+   */
+  private async sendReminders(): Promise<BorrowerReminder[]> {
+    const reminders = await this.generateReminders();
+    for (const reminder of reminders) {
+      if (!reminder.email) {
+        continue;
+      }
+      const result = await emailer.send(reminder.email);
+      const borrowerEmail = this.toBorrowerEmail(reminder);
+      await borrowerEmailTable.create(this.db, borrowerEmail);
+    }
+    return reminders;
+  }
+
   private getRecipient(borrower: Borrower): string {
     return borrower.emailaddress.split(',')[0];
   }
@@ -436,14 +552,19 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
     }
     const email = reminder.email;
     const result = await emailer.send(email);
-    const borrowerEmail: BorrowerEmail = {
-      borrower_id: reminder.borrower.id,
-      send_time: new Date(),
-      recipient: email?.to,
-      email_text: email.text,
-    };
+    const borrowerEmail = this.toBorrowerEmail(reminder);
     await borrowerEmailTable.create(this.db, borrowerEmail);
     return reminder;
+  }
+
+  private toBorrowerEmail(reminder: BorrowerReminder): BorrowerEmail {
+    const email = reminder.email!;
+    return {
+      borrower_id: reminder.borrower.id,
+      send_time: new Date(),
+      recipient: email.to,
+      email_text: email.text,
+    };
   }
 
   /**
@@ -504,6 +625,24 @@ export class Borrowers extends BaseEntity<Borrower, BorrowerFlag> {
         res.send(result);
       },
       authAction: {resource: 'borrowers', operation: 'read'},
+    });
+    application.addHandler({
+      method: HttpMethod.GET,
+      path: `${this.basePath}/reminders`,
+      handle: async (req, res) => {
+        const result = await this.generateReminders();
+        res.send(result);
+      },
+      authAction: {resource: 'borrowers', operation: 'read'},
+    });
+    application.addHandler({
+      method: HttpMethod.POST,
+      path: `${this.basePath}/sendReminders`,
+      handle: async (req, res) => {
+        const result = await this.sendReminders();
+        res.send(result);
+      },
+      authAction: {resource: 'borrowers', operation: 'sendEmail'},
     });
     application.addHandler({
       method: HttpMethod.GET,

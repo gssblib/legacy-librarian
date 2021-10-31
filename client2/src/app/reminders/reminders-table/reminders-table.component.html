@@ -1,0 +1,27 @@
+<p *ngIf="dataSource.data.length === 0">
+  No reminder emails for this borrower.
+</p>
+<div class="table" [class.gsl-hide]="dataSource.data.length === 0">
+  <table mat-table [dataSource]="dataSource" class="reminders">
+    <ng-container matColumnDef="recipient">
+      <th mat-header-cell *matHeaderCellDef>Recipient</th>
+      <td mat-cell *matCellDef="let reminder">{{ reminder.email?.to }}</td>
+    </ng-container>
+    <ng-container matColumnDef="emailText">
+      <th mat-header-cell *matHeaderCellDef>Email text</th>
+      <td mat-cell *matCellDef="let reminder" class="gsl-expansion-table-cell">
+        <mat-expansion-panel class="email-text">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="email-text">{{ firstLine(reminder.email?.text) }}</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <span class="email-text">{{ rest(reminder.email?.text) }}</span>
+        </mat-expansion-panel>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+</div>

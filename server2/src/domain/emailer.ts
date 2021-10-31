@@ -15,7 +15,12 @@ export interface Emailer {
 }
 
 class FakeEmailer implements Emailer {
+  constructor() {
+    console.log('using FakeEmailer');
+  }
+
   send(email: Email): Promise<Email> {
+    console.log('fake emailer send:', email);
     return Promise.resolve(email);
   }
 }
