@@ -61,6 +61,14 @@ export class BorrowersService extends ModelsService<Borrower> {
       .pipe(map(result => new TableFetchResult(result.rows, result.count)));
   }
 
+  generateReminders(): Observable<BorrowerReminder[]> {
+    return this.rpc.httpGet('borrowers/reminders');
+  }
+
+  sendReminders(): Observable<BorrowerReminder[]> {
+    return this.rpc.httpPost('borrowers/sendReminders');
+  }
+
   getBorrowerHistory(id: number, params: any): Observable<TableFetchResult<ItemCheckout>> {
     return this.rpc.httpGet(`borrowers/${id}/history`, params)
       .pipe(map(result => new TableFetchResult(result.rows, result.count)));

@@ -1,0 +1,16 @@
+<mat-card class="card">
+  <h3>Reminders</h3>
+
+  <mat-form-field appearance="outline" floatLabel="always" class="message-field">
+    <mat-label>Extra message</mat-label>
+    <textarea matInput autocomplete="off" rows="4" cols="60"></textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="generateReminders()">Generate reminders</button>
+  <button mat-raised-button color="primary"
+          (confirm)="sendReminders()" *ngIf="reminders.length > 0"
+          gslConfirmationDialog
+          title="Confirm sending emails"
+          message="Are you sure you want to send the reminder emails?">Send reminders</button>
+
+  <gsl-reminders-table [reminders]="reminders"></gsl-reminders-table>
+</mat-card>

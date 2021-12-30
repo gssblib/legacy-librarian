@@ -85,7 +85,7 @@ export class RpcService {
    * @param body POST payload
    * @returns {Observable<Object>} JSON result observable
    */
-  httpPost(path: string, body?: any): Observable<Object> {
+  httpPost(path: string, body?: any): Observable<any> {
     return this.handleHttpResult(
       this.http.post(this.config.apiPath(path), body, this.addJwt()));
   }

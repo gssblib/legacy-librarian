@@ -1,0 +1,12 @@
+.email-text {
+  white-space: pre;
+}
+
+table.reminders {
+  table-layout: fixed;
+  width: 100%;
+}
+
+th.mat-column-recipient {
+  width: 20%;
+}

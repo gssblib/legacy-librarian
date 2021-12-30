@@ -46,6 +46,11 @@
         <mat-icon>local_atm</mat-icon>
         Fee<span class="accesskey">s</span>
       </a>
+      <a mat-list-item routerLink="/reminders" accesskey="m" routerLinkActive="active"
+         *gslAuthorized="'fees.read'">
+        <mat-icon>notifications</mat-icon>
+        Re<span class="accesskey">m</span>inders
+      </a>
       <a mat-list-item routerLink="/reports/item-usage" accesskey="o" routerLinkActive="active"
          *gslAuthorized="'reports.read'">
         <mat-icon>poll</mat-icon>

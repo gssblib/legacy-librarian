@@ -1,0 +1,10 @@
+.card {
+}
+
+.message-field {
+  width: 100%;
+}
+
+button + button {
+  margin-left: 2rem;
+}
