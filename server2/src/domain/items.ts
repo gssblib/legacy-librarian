@@ -138,7 +138,7 @@ export class ItemTable extends EntityTable<Item> {
     this.addColumn({name: 'age', label: 'Reading age', domain: ItemAge});
     this.addColumn({name: 'serial', label: 'Number in series'});
     this.addColumn({name: 'seriestitle', label: 'Series title'});
-    this.addColumn({name: 'classification'});
+    this.addColumn({name: 'classification', queryOp: 'contains'});
     this.addColumn({name: 'itemnotes', label: 'Notes'});
     this.addColumn({name: 'replacementprice', label: 'Replacment price'});
     this.addColumn({name: 'state', required: true, domain: ItemState});
