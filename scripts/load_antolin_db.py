@@ -37,16 +37,16 @@ def main(argv=sys.argv[1:]):
     cur = conn.cursor()
 
     filename = args[0]
-    print "reading antolin CSV file", filename
+    print("reading antolin CSV file", filename)
 
     csv_io = open(filename, 'r')
     reader = csv.reader(csv_io, delimiter=";", quotechar='"')
-    # Drop header row.
-    reader.next()
 
     seen = []
     duplicates = 0
     for idx, row in enumerate(reader):
+        if idx == 0:
+            continue
         if idx % 100 == 0:
             sys.stdout.write('.')
             sys.stdout.flush()
@@ -71,20 +71,19 @@ def main(argv=sys.argv[1:]):
         try:
             cur.execute(
                 insert_sql,
-                (author.decode('utf-8'),
-                 title.decode('utf-8'),
-                 publisher.decode('utf-8'),
+                (author, title, publisher,
                  isbn10, isbn10f, isbn13, isbn13f, bookid,
                  datetime.date(year, month, day),
                  grade, read
                 )
             )
         except Exception as err:
+            print(err)
             import pdb; pdb.set_trace()
     conn.commit()
-    print
-    print u'Books loaded:', len(seen)
-    print u'Duplicates:', duplicates
+    print()
+    print(u'Books loaded:', len(seen))
+    print(u'Duplicates:', duplicates)
 
 if __name__ == '__main__':
     main()
