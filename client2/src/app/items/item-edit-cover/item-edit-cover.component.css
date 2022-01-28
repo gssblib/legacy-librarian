@@ -12,7 +12,7 @@
   text-align: center;
 }
 
-/deep/ .missing-cover-image mat-icon {
+::ng-deep .missing-cover-image mat-icon {
   font-size: 180px;
   width: 180px;
   color: #eee;
@@ -31,6 +31,6 @@
   opacity: 0.5;
 }
 
-/deep/ .file-over .missing-cover-image mat-icon {
+::ng-deep .file-over .missing-cover-image mat-icon {
   opacity: 0.5;
 }

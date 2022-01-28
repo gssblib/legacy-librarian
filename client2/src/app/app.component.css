@@ -22,7 +22,7 @@
   padding: 1em;
 }
 
-/deep/ .main mat-card.content {
+::ng-deep .main mat-card.content {
   min-height: 20em;
 }
 
@@ -57,7 +57,7 @@
   .menu {
     display: none;
   }
-  /deep/ mat-sidenav-content {
+  ::ng-deep mat-sidenav-content {
     margin-left: 0 !important;
   }
 }

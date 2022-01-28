@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RpcService } from './rpc.service';
 import { XHRBackend } from '@angular/http';
 import { ConfigService } from './config.service';
@@ -20,7 +20,7 @@ describe('RpcService', () => {
   });
 
   describe('httpGet', () => {
-    it('should return an observable with a json result', async(() => {
+    it('should return an observable with a json result', waitForAsync(() => {
       const rpcService = TestBed.get(RpcService);
 
       // Mock a successful JSON HTTP response.

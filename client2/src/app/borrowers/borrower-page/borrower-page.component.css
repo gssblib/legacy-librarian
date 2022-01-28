@@ -1,4 +1,4 @@
-/deep/ mat-tab-body {
+::ng-deep mat-tab-body {
   padding-top: 1em;
 }
 

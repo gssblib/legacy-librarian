@@ -11,34 +11,34 @@ import { CatalogOrderPageComponent } from "./catalog-order-page/catalog-order-pa
 @NgModule({
   imports: [
     RouterModule.forRoot([
-      {
+    {
         path: '',
         component: HomeComponent,
-      },
-      {
+    },
+    {
         path: 'items',
         component: CatalogSearchPageComponent,
         canActivate: [AuthGuard],
-      },
-      {
+    },
+    {
         path: 'checkedout',
-        component:  CheckedOutPageComponent,
+        component: CheckedOutPageComponent,
         canActivate: [AuthGuard],
-      },
-      {
+    },
+    {
         path: 'order',
-        component:  CatalogOrderPageComponent,
+        component: CatalogOrderPageComponent,
         canActivate: [AuthGuard],
-      },
-      {
+    },
+    {
         path: 'login',
         component: SycamoreLoginPageComponent
-      },
-      {
+    },
+    {
         path: '**',
         component: NotFoundComponent
-      },
-    ])
+    },
+], { relativeLinkResolution: 'legacy' })
   ],
   exports: [
     RouterModule

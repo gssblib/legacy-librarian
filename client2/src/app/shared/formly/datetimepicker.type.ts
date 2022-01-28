@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { FieldType } from '@ngx-formly/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatDatetimepickerInput } from "@mat-datetimepicker/core";
+import { MatDatetimepickerComponent } from "@mat-datetimepicker/core";
 
 /**
  * Formly forms type component for the mat-datetimepicker.
@@ -41,7 +41,7 @@ import { MatDatetimepickerInput } from "@mat-datetimepicker/core";
 })
 export class FormlyDatetimepickerTypeComponent extends FieldType implements AfterViewInit {
   @ViewChild(MatInput, { static: true }) formFieldControl!: MatInput;
-  @ViewChild(MatDatetimepickerInput, { static: true }) input!: MatDatetimepickerInput<any>;
+  @ViewChild(MatDatetimepickerComponent, { static: true }) input!: MatDatetimepickerComponent<any>;
 
   defaultOptions = {
     templateOptions: {

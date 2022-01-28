@@ -8,12 +8,11 @@ import { CheckoutPageComponent } from "./checkouts/checkout-page/checkout-page.c
 @NgModule({
   imports: [
     RouterModule.forRoot([
-      { path: '', component: HomeComponent },
-
-      { path: 'login', component: InternalLoginPageComponent },
-      { path: 'checkout', component: CheckoutPageComponent },
-      { path: '**', component: NotFoundComponent },
-    ])
+    { path: '', component: HomeComponent },
+    { path: 'login', component: InternalLoginPageComponent },
+    { path: 'checkout', component: CheckoutPageComponent },
+    { path: '**', component: NotFoundComponent },
+], { relativeLinkResolution: 'legacy' })
   ],
   exports: [
     RouterModule
