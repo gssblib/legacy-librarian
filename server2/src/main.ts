@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import config from 'config';
 import cookieParser from 'cookie-parser';
 import express from 'express';
@@ -13,7 +12,7 @@ console.log(`Starting library server on port ${port}`);
 const app: express.Application = express();
 const authConfig: {cookie: string} = config.get('auth');
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cookieParser(authConfig.cookie));
 
 const application = new ExpressApp(app);
@@ -21,7 +20,7 @@ login.initRoutes(app);
 library.initRoutes(application);
 
 function errorHander(
-    err: any, req: express.Request, res: express.Response,
+    err: any, _: express.Request, res: express.Response,
     next: express.NextFunction) {
   if (err.name === 'UnauthorizedError') {
     res.status(401).send('invalid token\n');
