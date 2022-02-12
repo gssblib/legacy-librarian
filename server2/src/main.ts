@@ -31,6 +31,6 @@ function errorHander(
 
 app.use(errorHander);
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log(`The application is listening on port ${port}!`);
 });
