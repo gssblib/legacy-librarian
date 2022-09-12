@@ -28,7 +28,6 @@ DBCOL_BORROWER_PHONE="phone"
 DBCOL_BORROWER_EMAIL="emailaddress"
 
 def _csv_row_to_borrower(row, borrower_dict):
-    
     """
     Converts a row (given as a dict) to a borrower dictionary.
     """
@@ -36,13 +35,10 @@ def _csv_row_to_borrower(row, borrower_dict):
 
     SID = row[SRC_SYCAMORE_ID].strip()
     assert(len(SID)==7)
-    
-    borrower[DBCOL_BORROWER_SYCAMODE_ID] = SID 
 
-    borrower[DBCOL_BORROWER_CONTACTNAME] = row[SRC_FAMILY_NAME] 
-
+    borrower[DBCOL_BORROWER_SYCAMODE_ID] = SID
+    borrower[DBCOL_BORROWER_CONTACTNAME] = row[SRC_FAMILY_NAME]
     borrower[DBCOL_BORROWER_FIRSTNAME] = row[SRC_CHILD_FIRST_NAME]
-    
     borrower[DBCOL_BORROWER_SURNAME] = row[SRC_LAST_NAME]
 
     # There may be three phone number columns in the CSV file for home, work,
@@ -52,19 +48,24 @@ def _csv_row_to_borrower(row, borrower_dict):
 
     # The email address are separated by a pipe in the CSV Email column and by a
     # comma in the database column.
-    borrower[DBCOL_BORROWER_EMAIL] = ', '.join([x.strip() for x in row[SRC_FAMILY_EMAILS].split('|')])
-    
+    borrower[DBCOL_BORROWER_EMAIL] = (
+        ', '.join([x.strip() for x in row[SRC_FAMILY_EMAILS].split('|')])
+    )
 
     if SID not in borrower_dict:
         borrower_dict[SID]=borrower
     else:
-        #only update the dict with additional data.
-        #csv sanity check. These columns should be the same for everyone with the same sycamore ID
+        # only update the dict with additional data.  csv sanity check. These columns
+        # should be the same for everyone with the same sycamore ID
         for item in [DBCOL_BORROWER_CONTACTNAME, DBCOL_BORROWER_EMAIL]:
-            if borrower_dict[SID][item]!=borrower[item]:
-                raise ValueError(f"Found conflicting data on column {item} for borrower with ID {SID}")
-      
-        borrower_dict[SID][DBCOL_BORROWER_FIRSTNAME]+=("," + borrower[DBCOL_BORROWER_FIRSTNAME])
+            if borrower_dict[SID][item] != borrower[item]:
+                raise ValueError(
+                    f"Found conflicting data on column {item} for "
+                    f"borrower with ID {SID}")
+
+        borrower_dict[SID][DBCOL_BORROWER_FIRSTNAME] += (
+            "," + borrower[DBCOL_BORROWER_FIRSTNAME]
+        )
 
 
     return borrower
@@ -80,7 +81,7 @@ def _get_borrowers(csv_filename):
         reader = csv.DictReader(csvFile)
         for row in reader:
             _csv_row_to_borrower(row, borrower_dict)
-    
+
     for __, borrower in borrower_dict.items():
 
       #clean up the comma-separated list of childrens names so it follows the
@@ -92,7 +93,7 @@ def _get_borrowers(csv_filename):
         borrower[DBCOL_BORROWER_FIRSTNAME]=clist[0]
       else:
         raise ValueError("firstnames array was of size 0")
-        
+
     return borrower_dict
 
 def get_new_borrower_number(cursor):
@@ -103,31 +104,34 @@ def get_new_borrower_number(cursor):
 
 def update_or_create_borrower(cursor, borrower):
 
-    #keys to identify the record:
+    # keys to identify the record:
     id_dict = { k: borrower[k] for k in [DBCOL_BORROWER_SYCAMODE_ID] }
 
-    #which rows to update or insert:
+    # which rows to update or insert:
     update_dict = { k: borrower[k] for k in [ DBCOL_BORROWER_FIRSTNAME,
                                             DBCOL_BORROWER_CONTACTNAME,
                                             DBCOL_BORROWER_SURNAME,
                                             DBCOL_BORROWER_EMAIL,
                                             DBCOL_BORROWER_PHONE ]}
 
-    #which rows to only define if a new item is being inserted:
+    # which rows to only define if a new item is being inserted:
     create_dict = { DBCOL_BORROWER_NUMBER: get_new_borrower_number(cursor) }
 
-    #actually do it.
-    return dbtools.update_or_create( cursor=cursor,
-                              table="borrowers",
-                              id_dict=id_dict,
-                              update_dict=update_dict,
-                              create_only_dict=create_dict)
+    # actually do it.
+    return dbtools.update_or_create(
+        cursor=cursor,
+        table="borrowers",
+        id_dict=id_dict,
+        update_dict=update_dict,
+        create_only_dict=create_dict
+    )
 
 
 if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser(parents = [dbtools.getArgParser()], conflict_handler='resolve')
-    parser.add_argument('-i', '--input', required=True, dest='input', help='CSV Input Filename.')
+    parser = argparse.ArgumentParser(
+        parents = [dbtools.getArgParser()], conflict_handler='resolve')
+    parser.add_argument(
+        '-i', '--input', required=True, dest='input', help='CSV Input Filename.')
     parsed_args = parser.parse_args()
 
     conn = dbtools.init_connection(parsed_args)

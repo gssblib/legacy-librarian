@@ -27,7 +27,7 @@ def update_or_create(cursor, table, id_dict, update_dict, create_only_dict={}, p
         final_dict.update(update_dict)
         final_dict.update(create_only_dict)
         query = "INSERT INTO " + table + "(" + ",".join(final_dict.keys()) + ")"\
-                " VALUES (" + ",".join(["%(" + k + ")s" for k in final_dict.keys()]) + ")" 
+                " VALUES (" + ",".join(["%(" + k + ")s" for k in final_dict.keys()]) + ")"
 
         cursor.execute(query, final_dict)
         return True
@@ -41,7 +41,7 @@ def update_or_create(cursor, table, id_dict, update_dict, create_only_dict={}, p
 
         if pk_name in update_dict:
             raise ValueError("You can't update the primary key!")
-        
+
         query = "UPDATE " + table + " SET " + ", ".join([ str(k) + "=%(" + k + ")s" for k in update_dict.keys()]) + " WHERE " + pk_name + "=%(id)s"
         final_dict=update_dict.copy()
         final_dict[pk_name]=item[pk_name]
@@ -58,20 +58,30 @@ def init_connection(parsed_args):
         password=parsed_args.password,
         database=parsed_args.database,
         charset='utf8',
-        cursorclass=pymysql.cursors.DictCursor)
+        cursorclass=pymysql.cursors.DictCursor,
+        host=parsed_args.host,
+        port=parsed_args.port,
+    )
 
     return conn
 
 
 def getArgParser(parents=[],add_help=True):
-    parser = argparse.ArgumentParser(description='DB Connection Params', parents=parents, add_help=add_help)
+    parser = argparse.ArgumentParser(
+        description='DB Connection Params', parents=parents, add_help=add_help)
 
     parser.add_argument('-d', '--database', dest='database', default='spils',
-                    help='The database to store the data in.')
+                        help='The database to store the data in.')
     parser.add_argument('-u', '--username', dest='username', default='gssb',
-                    help='The username for the database.')
+                        help='The username for the database.')
     parser.add_argument('-p', '--password', dest='password',
-                    help='The password for the database.')
+                        help='The password for the database.')
+    parser.add_argument('--port', dest='port', type=int,
+                        help='The port for the database.')
+    parser.add_argument('--protocol', dest='protocol',
+                        help='The protocol for the database.')
+    parser.add_argument('--host', dest='host',
+                        help='The host for the database.')
 
     #todo, alternatively provide an ENV and parse this from file.
 
